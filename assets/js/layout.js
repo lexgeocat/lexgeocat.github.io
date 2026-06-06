@@ -106,7 +106,7 @@
       '</ul></div>' +
       '<div class="ft-col"><h4>Contenido</h4><ul>' +
       '<li><a href="' + root('pages/recursos.html') + '"><i class="fa-solid fa-chevron-right"></i>Recursos</a></li>' +
-      '<li><a href="' + CFG.blogUrl + '" target="_blank" rel="noopener"><i class="fa-solid fa-chevron-right"></i>Blog</a></li>' +
+      '<li><a href="' + CFG.blogUrl + '"><i class="fa-solid fa-chevron-right"></i>Blog</a></li>' +
       '</ul></div>' +
       '<div class="ft-col"><h4>Plataforma</h4><ul>' +
       '<li><a href="' + root('pages/acerca-de.html') + '"><i class="fa-solid fa-chevron-right"></i>Sobre Mí</a></li>' +

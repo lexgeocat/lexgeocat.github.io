@@ -1,110 +1,313 @@
 ﻿<!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>LexGeoCat — Derecho, Catastro y Geomática</title>
-  <meta name="description" content="Plataforma especializada en consultoría, recursos y formación en derecho, catastro y SIG en Bolivia.">
-  <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <meta name="description"
+    content="Plataforma especializada en consultoría, recursos y formación en derecho, catastro y SIG en Bolivia.">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap"
+    rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
   <link href="assets/css/main.css" rel="stylesheet">
 </head>
+
 <body data-page="inicio" data-depth="0">
-<div id="site-header"></div>
+  <div id="site-header"></div>
 
-<div class="ticker" style="margin-top:calc(var(--h) + 48px)">
-  <div class="ticker-label"><i class="fa-solid fa-bolt" style="margin-right:6px"></i>Destacado</div>
-  <div class="ticker-track"><div class="ticker-inner" id="ticker-inner">
-    <span class="ticker-item"><i class="fa-solid fa-scale-balanced"></i>Derecho y Territorio en Bolivia</span>
-    <span class="ticker-item"><i class="fa-solid fa-map"></i>Catastro Multifinalitario Urbano</span>
-    <span class="ticker-item"><i class="fa-solid fa-layer-group"></i>Sistemas de Información Geográfica</span>
-    <span class="ticker-item"><i class="fa-solid fa-compass-drafting"></i>Ordenamiento Territorial</span>
-    <span class="ticker-item"><i class="fa-solid fa-microchip"></i>Tecnología e Innovación Pública</span>
-    <span class="ticker-item"><i class="fa-solid fa-database"></i>Geodatos e Infraestructura de Datos</span>
-    <span class="ticker-item"><i class="fa-solid fa-scale-balanced"></i>Derecho y Territorio en Bolivia</span>
-    <span class="ticker-item"><i class="fa-solid fa-map"></i>Catastro Multifinalitario Urbano</span>
-    <span class="ticker-item"><i class="fa-solid fa-layer-group"></i>Sistemas de Información Geográfica</span>
-    <span class="ticker-item"><i class="fa-solid fa-compass-drafting"></i>Ordenamiento Territorial</span>
-    <span class="ticker-item"><i class="fa-solid fa-microchip"></i>Tecnología e Innovación Pública</span>
-    <span class="ticker-item"><i class="fa-solid fa-database"></i>Geodatos e Infraestructura de Datos</span>
-  </div></div>
-</div>
-
-<section class="hero">
-  <div class="hero-bg"><div class="hero-bg-grid"></div><div class="hero-bg-glow1"></div><div class="hero-bg-glow2"></div><div class="hero-bg-map"></div></div>
-  <div class="c"><div class="hero-grid">
-    <div class="hero-content">
-      <div class="hero-logo-badge"><div class="logo-icon"><i class="fa-solid fa-map-location-dot"></i></div><span class="hero-logo-text">Lex<span>Geo</span>Cat</span></div>
-      <h1 class="hero-title">LexGeoCat<span class="line-sub" style="display:block;margin-top:10px;font-size:2.2rem;">Derecho, Catastro &amp; Geomática al alcance de todos</span></h1>
-      <p class="hero-desc">Plataforma especializada en consultoría, recursos y formación técnica en materia legal, catastral y sistemas de información geográfica adaptados al contexto boliviano.</p>
-      <div class="hero-btns">
-        <a class="btn btn-gold" href="#servicios-detalle"><i class="fa-solid fa-briefcase"></i>Ver Servicios</a>
-        <a class="btn btn-ghost" href="https://lexgeocat.blogspot.com/" target="_blank" rel="noopener"><i class="fa-solid fa-newspaper"></i>Explorar Blog</a>
-      </div>
-      <div class="hero-stats">
-        <div class="hstat"><div class="hstat-n" id="stat-articulos" data-count="0">0</div><div class="hstat-l">Artículos</div></div>
-        <div class="hstat"><div class="hstat-n" id="stat-categorias" data-count="0">0</div><div class="hstat-l">Categorías</div></div>
-        <div class="hstat"><div class="hstat-n" id="stat-recursos" data-count="0">0</div><div class="hstat-l">Recursos</div></div>
-        <div class="hstat"><div class="hstat-n" id="stat-especialidades" data-count="0">0</div><div class="hstat-l">Especialidades</div></div>
+  <div class="ticker" style="margin-top:calc(var(--h) + 48px)">
+    <div class="ticker-label"><i class="fa-solid fa-bolt" style="margin-right:6px"></i>Destacado</div>
+    <div class="ticker-track">
+      <div class="ticker-inner" id="ticker-inner">
+        <span class="ticker-item"><i class="fa-solid fa-scale-balanced"></i>Derecho y Territorio en Bolivia</span>
+        <span class="ticker-item"><i class="fa-solid fa-map"></i>Catastro Multifinalitario Urbano</span>
+        <span class="ticker-item"><i class="fa-solid fa-layer-group"></i>Sistemas de Información Geográfica</span>
+        <span class="ticker-item"><i class="fa-solid fa-compass-drafting"></i>Ordenamiento Territorial</span>
+        <span class="ticker-item"><i class="fa-solid fa-microchip"></i>Tecnología e Innovación Pública</span>
+        <span class="ticker-item"><i class="fa-solid fa-database"></i>Geodatos e Infraestructura de Datos</span>
+        <span class="ticker-item"><i class="fa-solid fa-scale-balanced"></i>Derecho y Territorio en Bolivia</span>
+        <span class="ticker-item"><i class="fa-solid fa-map"></i>Catastro Multifinalitario Urbano</span>
+        <span class="ticker-item"><i class="fa-solid fa-layer-group"></i>Sistemas de Información Geográfica</span>
+        <span class="ticker-item"><i class="fa-solid fa-compass-drafting"></i>Ordenamiento Territorial</span>
+        <span class="ticker-item"><i class="fa-solid fa-microchip"></i>Tecnología e Innovación Pública</span>
+        <span class="ticker-item"><i class="fa-solid fa-database"></i>Geodatos e Infraestructura de Datos</span>
       </div>
     </div>
-    <div class="hero-visual"><div class="floating-dashboard"><div class="fd-bg-map"></div>
-      <div class="fd-card fdc-1 reveal"><i class="fa-solid fa-scale-balanced"></i><div><h4>Derecho Territorial</h4><p>Normativa boliviana</p></div></div>
-      <div class="fd-card fdc-2 reveal"><i class="fa-solid fa-map-location-dot"></i><div><h4>Catastro Técnico</h4><p>Saneamiento predial</p></div></div>
-      <div class="fd-card fdc-3 reveal"><i class="fa-solid fa-layer-group"></i><div><h4>SIG &amp; Geomática</h4><p>PostGIS &amp; QGIS</p></div></div>
-    </div></div>
-  </div></div>
-</section>
-
-<section class="sec-stripe" id="categorias-servicios"><div class="c">
-  <div class="sh center"><span class="sl">Especialidades</span><h2 class="st">Áreas de Conocimiento</h2><p class="sd">Explora el contenido organizado por disciplinas y áreas de especialización técnica.</p></div>
-  <div class="g g3">
-    <a class="cat-card reveal" href="pages/derecho.html" style="--c1:#4A1B0C;--c2:#8B3E1A;--cc:#C8960C;--ctag-bg:var(--gold-lt);--ctag-bd:rgba(200,150,12,.2)"><i class="fa-solid fa-scale-balanced ci"></i><h3 class="ct">Derecho</h3><p class="cd">Legislación boliviana, derecho civil, procedimientos judiciales y normativa territorial.</p><span class="cat-tag"><i class="fa-solid fa-arrow-right"></i>Explorar</span></a>
-    <a class="cat-card reveal" href="pages/catastro.html" style="--c1:#0A2A2A;--c2:#0F5555;--cc:#0F6E6E;--ctag-bg:var(--teal-lt);--ctag-bd:rgba(15,110,110,.2)"><i class="fa-solid fa-map ci" style="color:var(--teal)"></i><h3 class="ct">Catastro Multifinalitario</h3><p class="cd">Registro predial, valuación fiscal, nomenclatura catastral y sistemas de información territorial predial.</p><span class="cat-tag" style="color:var(--teal);background:var(--teal-lt);border-color:rgba(15,110,110,.2)"><i class="fa-solid fa-arrow-right"></i>Explorar</span></a>
-    <a class="cat-card reveal" href="pages/gis.html" style="--c1:#1A2E1A;--c2:#2D5C2D;--cc:#3A5E3A;--ctag-bg:#EEF5EE;--ctag-bd:rgba(58,94,58,.2)"><i class="fa-solid fa-layer-group ci" style="color:var(--sage)"></i><h3 class="ct">SIG &amp; Geomática</h3><p class="cd">Sistemas de información geográfica, teledetección, cartografía digital y análisis espacial avanzado.</p><span class="cat-tag" style="color:var(--sage);background:#EEF5EE;border-color:rgba(58,94,58,.2)"><i class="fa-solid fa-arrow-right"></i>Explorar</span></a>
-    <a class="cat-card reveal" href="pages/ordenamiento.html" style="--c1:#0D1B2A;--c2:#1B3148;--cc:#C8960C;--ctag-bg:var(--gold-lt);--ctag-bd:rgba(200,150,12,.2)"><i class="fa-solid fa-compass-drafting ci"></i><h3 class="ct">Ordenamiento Territorial</h3><p class="cd">Planificación urbana, zonificación, normativa de uso de suelo y gestión territorial a nivel municipal.</p><span class="cat-tag"><i class="fa-solid fa-arrow-right"></i>Explorar</span></a>
-    <a class="cat-card reveal" href="pages/tecnologia.html" style="--c1:#1A1A2E;--c2:#2B2B5C;--cc:#7C6FC8;--ctag-bg:#F0EFF9;--ctag-bd:rgba(124,111,200,.2)"><i class="fa-solid fa-microchip ci" style="color:#7C6FC8"></i><h3 class="ct">Tecnología e Innovación</h3><p class="cd">Software GIS, bases de datos espaciales, automatización y soluciones tecnológicas para modernizar el sector público.</p><span class="cat-tag" style="color:#7C6FC8;background:#F0EFF9;border-color:rgba(124,111,200,.2)"><i class="fa-solid fa-arrow-right"></i>Explorar</span></a>
-    <a class="cat-card reveal" href="pages/recursos.html" style="--c1:#2E1A0A;--c2:#5A3A1A;--cc:#C8660C;--ctag-bg:#FEF3E8;--ctag-bd:rgba(200,102,12,.2)"><i class="fa-solid fa-folder-open ci" style="color:#C8660C"></i><h3 class="ct">Recursos y Herramientas</h3><p class="cd">Plantillas, formatos legales, guías técnicas, software recomendado y recursos de libre descarga.</p><span class="cat-tag" style="color:#C8660C;background:#FEF3E8;border-color:rgba(200,102,12,.2)"><i class="fa-solid fa-arrow-right"></i>Explorar</span></a>
   </div>
-</div></section>
 
-<section class="sec" id="servicios-detalle"><div class="c">
-  <div class="sh center"><span class="sl">Servicios</span><h2 class="st">¿En qué puedo ayudarte?</h2><p class="sd">Servicios profesionales especializados en el cruce entre derecho, catastro y tecnología.</p></div>
-  <div class="g g4">
-    <div class="svc-card reveal" style="--sc1:#C8960C;--sc2:#E8B020"><div class="svc-icon" style="background:var(--gold-lt);color:var(--gold);border-color:rgba(200,150,12,.2)"><i class="fa-solid fa-file-contract"></i></div><h3 class="svc-title">Asesoría Legal</h3><p class="svc-desc">Consultas en derecho civil, procedimientos notariales, usucapión, derecho registral y normativa catastral boliviana.</p><a class="svc-link" href="#contacto-servicios"><i class="fa-solid fa-arrow-right"></i>Consultar</a></div>
-    <div class="svc-card reveal" style="--sc1:#0F6E6E;--sc2:#1AA0A0"><div class="svc-icon" style="background:var(--teal-lt);color:var(--teal);border-color:rgba(15,110,110,.2)"><i class="fa-solid fa-map-location-dot"></i></div><h3 class="svc-title">Gestión Catastral</h3><p class="svc-desc">Levantamientos topográficos, planos catastrales, fichas prediales, geocodificación y actualización de información territorial.</p><a class="svc-link" href="#contacto-servicios"><i class="fa-solid fa-arrow-right"></i>Consultar</a></div>
-    <div class="svc-card reveal" style="--sc1:#3A5E3A;--sc2:#559055"><div class="svc-icon" style="background:#EEF5EE;color:var(--sage);border-color:rgba(58,94,58,.2)"><i class="fa-solid fa-layer-group"></i></div><h3 class="svc-title">Consultoría SIG</h3><p class="svc-desc">Diseño e implementación de sistemas de información geográfica, bases de datos PostGIS, cartografía digital y análisis espacial.</p><a class="svc-link" href="#contacto-servicios"><i class="fa-solid fa-arrow-right"></i>Consultar</a></div>
-    <div class="svc-card reveal" style="--sc1:#7C6FC8;--sc2:#9D92E0"><div class="svc-icon" style="background:#F0EFF9;color:#7C6FC8;border-color:rgba(124,111,200,.2)"><i class="fa-solid fa-laptop-code"></i></div><h3 class="svc-title">Desarrollo SIG</h3><p class="svc-desc">Automatización con AutoLISP, Python/PostGIS, aplicaciones web para gestión territorial y sistemas de información municipal.</p><a class="svc-link" href="#contacto-servicios"><i class="fa-solid fa-arrow-right"></i>Consultar</a></div>
-  </div>
-</div></section>
-
-<section class="sec-stripe" id="recursos-servicios"><div class="c">
-  <div class="sh center"><span class="sl">Recursos</span><h2 class="st">Herramientas y Materiales</h2><p class="sd">Recursos útiles para profesionales del derecho, catastro y geomática en Bolivia.</p></div>
-  <div class="g g-auto" id="recursos-grid"></div>
-  <div style="text-align:center;margin-top:40px"><a class="btn btn-gold" href="pages/recursos.html"><i class="fa-solid fa-folder-open"></i>Ver todos los recursos</a></div>
-</div></section>
-
-<section class="sec-dark" id="nosotros-servicios"><div class="c"><div class="about-wrap">
-  <div class="about-img-wrap"><div class="about-img" style="background:linear-gradient(135deg,var(--ink),var(--ink3));height:440px;display:flex;align-items:center;justify-content:center;border-radius:var(--rl)"><div style="text-align:center"><i class="fa-solid fa-map-location-dot" style="font-size:4rem;color:var(--gold2);margin-bottom:16px"></i><div style="font-family:var(--font-h);font-size:1.4rem;font-weight:700;color:#fff">Cristian B. Ruiz Q.</div><div style="font-size:.8rem;color:rgba(255,255,255,.5);margin-top:4px">R.N.T. Nº 970285</div></div></div><div class="about-badge-wrap"><div class="about-badge-n">2+</div><div class="about-badge-l">Especialidades</div></div></div>
-  <div class="about-content"><span class="sl">Sobre Mí</span><h2 class="st" style="color:#fff">Cristian B. Ruiz Q.</h2><p style="font-size:1.1rem;color:var(--gold2);font-weight:600;margin-bottom:12px;">Abogado &amp; Técnico en Catastro y Ordenamiento Territorial</p><p>Soy profesional con doble titulación en Derecho y Catastro y Ordenamiento Territorial, registrado en la Sociedad de Ingenieros de Bolivia (R.N.T. Nº 970285). Cuento con experiencia en gestión catastral, cartografía, administración urbana y ordenamiento territorial.</p><p>A través de esta plataforma comparto guías, recursos y artículos especializados para hacer el derecho, el catastro y la geomática accesibles para todos en Bolivia.</p><div style="margin-top:28px"><a class="btn btn-gold" href="pages/acerca-de.html"><i class="fa-solid fa-user"></i>Conocer más sobre mí</a></div></div>
-</div></div></section>
-
-<section class="sec" id="contacto-servicios"><div class="c">
-  <div class="sh center"><span class="sl">Contacto</span><h2 class="st">Contacto Rápido</h2><p class="sd">Consultas profesionales, colaboraciones o asesoramiento directo.</p></div>
-  <div class="contact-wrap">
-    <div class="contact-info"><h3>Información de Contacto</h3><p>Disponible para consultas en derecho, catastro, GIS y servicios relacionados con la gestión territorial y el ordenamiento urbano en Bolivia.</p>
-      <div class="contact-item"><div class="contact-icon"><i class="fa-solid fa-location-dot"></i></div><div class="contact-text"><h4>Ubicación</h4><p>Viacha, Departamento de La Paz, Bolivia</p></div></div>
-      <div class="contact-item"><div class="contact-icon"><i class="fa-solid fa-envelope"></i></div><div class="contact-text"><h4>Correo Electrónico</h4><p>lexgeocat@gmail.com</p></div></div>
-      <div class="contact-item"><div class="contact-icon"><i class="fa-solid fa-id-card"></i></div><div class="contact-text"><h4>Registro Profesional</h4><p>SIB — R.N.T. Nº 970285</p></div></div>
-      <div style="margin-top:32px;"><a class="btn btn-whatsapp" href="https://wa.me/59170000000" target="_blank" rel="noopener" style="display:inline-flex;width:100%;justify-content:center;"><i class="fa-brands fa-whatsapp"></i>Escríbeme por WhatsApp</a></div>
+  <section class="hero">
+    <div class="hero-bg">
+      <div class="hero-bg-grid"></div>
+      <div class="hero-bg-glow1"></div>
+      <div class="hero-bg-glow2"></div>
+      <div class="hero-bg-map"></div>
     </div>
-    <div class="cf-form" style="padding:32px;text-align:center;background:var(--card);border:1px solid var(--border);border-radius:var(--r)"><p style="font-size:1.05rem;font-weight:600;color:var(--text);margin-bottom:12px">¿Quieres contactarme directamente?</p><p style="font-size:.85rem;color:var(--text2);margin-bottom:20px"><i class="fa-solid fa-envelope" style="color:var(--gold)"></i> <strong>lexgeocat@gmail.com</strong></p><a class="btn btn-gold" href="pages/contacto.html"><i class="fa-solid fa-envelope"></i>Ir al formulario de contacto</a></div>
-  </div>
-</div></section>
+    <div class="c">
+      <div class="hero-grid">
+        <div class="hero-content">
+          <div class="hero-logo-badge">
+            <div class="logo-icon"><i class="fa-solid fa-map-location-dot"></i></div><span
+              class="hero-logo-text">Lex<span>Geo</span>Cat</span>
+          </div>
+          <h1 class="hero-title">LexGeoCat<span class="line-sub"
+              style="display:block;margin-top:10px;font-size:2.2rem;">Derecho, Catastro &amp; Geomática al alcance de
+              todos</span></h1>
+          <p class="hero-desc">Plataforma especializada en consultoría, recursos y formación técnica en materia legal,
+            catastral y sistemas de información geográfica adaptados al contexto boliviano.</p>
+          <div class="hero-btns">
+            <a class="btn btn-gold" href="#servicios-detalle"><i class="fa-solid fa-briefcase"></i>Ver Servicios</a>
+            <a class="btn btn-ghost" href="https://lexgeocat.blogspot.com/" target="_blank" rel="noopener"><i
+                class="fa-solid fa-newspaper"></i>Explorar Blog</a>
+          </div>
+          <div class="hero-stats">
+            <div class="hstat">
+              <div class="hstat-n" id="stat-articulos" data-count="0">0</div>
+              <div class="hstat-l">Artículos</div>
+            </div>
+            <div class="hstat">
+              <div class="hstat-n" id="stat-categorias" data-count="0">0</div>
+              <div class="hstat-l">Categorías</div>
+            </div>
+            <div class="hstat">
+              <div class="hstat-n" id="stat-recursos" data-count="0">0</div>
+              <div class="hstat-l">Recursos</div>
+            </div>
+            <div class="hstat">
+              <div class="hstat-n" id="stat-especialidades" data-count="0">0</div>
+              <div class="hstat-l">Especialidades</div>
+            </div>
+          </div>
+        </div>
+        <div class="hero-visual">
+          <div class="floating-dashboard">
+            <div class="fd-bg-map"></div>
+            <div class="fd-card fdc-1 reveal"><i class="fa-solid fa-scale-balanced"></i>
+              <div>
+                <h4>Derecho Territorial</h4>
+                <p>Normativa boliviana</p>
+              </div>
+            </div>
+            <div class="fd-card fdc-2 reveal"><i class="fa-solid fa-map-location-dot"></i>
+              <div>
+                <h4>Catastro Técnico</h4>
+                <p>Saneamiento predial</p>
+              </div>
+            </div>
+            <div class="fd-card fdc-3 reveal"><i class="fa-solid fa-layer-group"></i>
+              <div>
+                <h4>SIG &amp; Geomática</h4>
+                <p>PostGIS &amp; QGIS</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-<div id="site-footer"></div>
-<script src="assets/js/config.js"></script>
-<script src="assets/js/layout.js"></script>
-<script src="assets/js/main.js"></script>
+  <section class="sec-stripe" id="categorias-servicios">
+    <div class="c">
+      <div class="sh center"><span class="sl">Especialidades</span>
+        <h2 class="st">Áreas de Conocimiento</h2>
+        <p class="sd">Explora el contenido organizado por disciplinas y áreas de especialización técnica.</p>
+      </div>
+      <div class="g g3">
+        <a class="cat-card reveal" href="pages/derecho.html"
+          style="--c1:#4A1B0C;--c2:#8B3E1A;--cc:#C8960C;--ctag-bg:var(--gold-lt);--ctag-bd:rgba(200,150,12,.2)"><i
+            class="fa-solid fa-scale-balanced ci"></i>
+          <h3 class="ct">Derecho</h3>
+          <p class="cd">Legislación boliviana, derecho civil, procedimientos judiciales y normativa territorial.</p>
+          <span class="cat-tag"><i class="fa-solid fa-arrow-right"></i>Explorar</span>
+        </a>
+        <a class="cat-card reveal" href="pages/catastro.html"
+          style="--c1:#0A2A2A;--c2:#0F5555;--cc:#0F6E6E;--ctag-bg:var(--teal-lt);--ctag-bd:rgba(15,110,110,.2)"><i
+            class="fa-solid fa-map ci" style="color:var(--teal)"></i>
+          <h3 class="ct">Catastro Multifinalitario</h3>
+          <p class="cd">Registro predial, valuación fiscal, nomenclatura catastral y sistemas de información territorial
+            predial.</p><span class="cat-tag"
+            style="color:var(--teal);background:var(--teal-lt);border-color:rgba(15,110,110,.2)"><i
+              class="fa-solid fa-arrow-right"></i>Explorar</span>
+        </a>
+        <a class="cat-card reveal" href="pages/gis.html"
+          style="--c1:#1A2E1A;--c2:#2D5C2D;--cc:#3A5E3A;--ctag-bg:#EEF5EE;--ctag-bd:rgba(58,94,58,.2)"><i
+            class="fa-solid fa-layer-group ci" style="color:var(--sage)"></i>
+          <h3 class="ct">SIG &amp; Geomática</h3>
+          <p class="cd">Sistemas de información geográfica, teledetección, cartografía digital y análisis espacial
+            avanzado.</p><span class="cat-tag"
+            style="color:var(--sage);background:#EEF5EE;border-color:rgba(58,94,58,.2)"><i
+              class="fa-solid fa-arrow-right"></i>Explorar</span>
+        </a>
+        <a class="cat-card reveal" href="pages/ordenamiento.html"
+          style="--c1:#0D1B2A;--c2:#1B3148;--cc:#C8960C;--ctag-bg:var(--gold-lt);--ctag-bd:rgba(200,150,12,.2)"><i
+            class="fa-solid fa-compass-drafting ci"></i>
+          <h3 class="ct">Ordenamiento Territorial</h3>
+          <p class="cd">Planificación urbana, zonificación, normativa de uso de suelo y gestión territorial a nivel
+            municipal.</p><span class="cat-tag"><i class="fa-solid fa-arrow-right"></i>Explorar</span>
+        </a>
+        <a class="cat-card reveal" href="pages/tecnologia.html"
+          style="--c1:#1A1A2E;--c2:#2B2B5C;--cc:#7C6FC8;--ctag-bg:#F0EFF9;--ctag-bd:rgba(124,111,200,.2)"><i
+            class="fa-solid fa-microchip ci" style="color:#7C6FC8"></i>
+          <h3 class="ct">Tecnología e Innovación</h3>
+          <p class="cd">Software GIS, bases de datos espaciales, automatización y soluciones tecnológicas para
+            modernizar el sector público.</p><span class="cat-tag"
+            style="color:#7C6FC8;background:#F0EFF9;border-color:rgba(124,111,200,.2)"><i
+              class="fa-solid fa-arrow-right"></i>Explorar</span>
+        </a>
+        <a class="cat-card reveal" href="pages/recursos.html"
+          style="--c1:#2E1A0A;--c2:#5A3A1A;--cc:#C8660C;--ctag-bg:#FEF3E8;--ctag-bd:rgba(200,102,12,.2)"><i
+            class="fa-solid fa-folder-open ci" style="color:#C8660C"></i>
+          <h3 class="ct">Recursos y Herramientas</h3>
+          <p class="cd">Plantillas, formatos legales, guías técnicas, software recomendado y recursos de libre descarga.
+          </p><span class="cat-tag" style="color:#C8660C;background:#FEF3E8;border-color:rgba(200,102,12,.2)"><i
+              class="fa-solid fa-arrow-right"></i>Explorar</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec" id="servicios-detalle">
+    <div class="c">
+      <div class="sh center"><span class="sl">Servicios</span>
+        <h2 class="st">¿En qué puedo ayudarte?</h2>
+        <p class="sd">Servicios profesionales especializados en el cruce entre derecho, catastro y tecnología.</p>
+      </div>
+      <div class="g g4">
+        <div class="svc-card reveal" style="--sc1:#C8960C;--sc2:#E8B020">
+          <div class="svc-icon" style="background:var(--gold-lt);color:var(--gold);border-color:rgba(200,150,12,.2)"><i
+              class="fa-solid fa-file-contract"></i></div>
+          <h3 class="svc-title">Asesoría Legal</h3>
+          <p class="svc-desc">Consultas en derecho civil, procedimientos notariales, usucapión, derecho registral y
+            normativa catastral boliviana.</p><a class="svc-link" href="#contacto-servicios"><i
+              class="fa-solid fa-arrow-right"></i>Consultar</a>
+        </div>
+        <div class="svc-card reveal" style="--sc1:#0F6E6E;--sc2:#1AA0A0">
+          <div class="svc-icon" style="background:var(--teal-lt);color:var(--teal);border-color:rgba(15,110,110,.2)"><i
+              class="fa-solid fa-map-location-dot"></i></div>
+          <h3 class="svc-title">Gestión Catastral</h3>
+          <p class="svc-desc">Levantamientos topográficos, planos catastrales, fichas prediales, geocodificación y
+            actualización de información territorial.</p><a class="svc-link" href="#contacto-servicios"><i
+              class="fa-solid fa-arrow-right"></i>Consultar</a>
+        </div>
+        <div class="svc-card reveal" style="--sc1:#3A5E3A;--sc2:#559055">
+          <div class="svc-icon" style="background:#EEF5EE;color:var(--sage);border-color:rgba(58,94,58,.2)"><i
+              class="fa-solid fa-layer-group"></i></div>
+          <h3 class="svc-title">Consultoría SIG</h3>
+          <p class="svc-desc">Diseño e implementación de sistemas de información geográfica, bases de datos PostGIS,
+            cartografía digital y análisis espacial.</p><a class="svc-link" href="#contacto-servicios"><i
+              class="fa-solid fa-arrow-right"></i>Consultar</a>
+        </div>
+        <div class="svc-card reveal" style="--sc1:#7C6FC8;--sc2:#9D92E0">
+          <div class="svc-icon" style="background:#F0EFF9;color:#7C6FC8;border-color:rgba(124,111,200,.2)"><i
+              class="fa-solid fa-laptop-code"></i></div>
+          <h3 class="svc-title">Desarrollo SIG</h3>
+          <p class="svc-desc">Automatización con AutoLISP, Python/PostGIS, aplicaciones web para gestión territorial y
+            sistemas de información municipal.</p><a class="svc-link" href="#contacto-servicios"><i
+              class="fa-solid fa-arrow-right"></i>Consultar</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec-stripe" id="recursos-servicios">
+    <div class="c">
+      <div class="sh center"><span class="sl">Recursos</span>
+        <h2 class="st">Herramientas y Materiales</h2>
+        <p class="sd">Recursos útiles para profesionales del derecho, catastro y geomática en Bolivia.</p>
+      </div>
+      <div class="g g-auto" id="recursos-grid"></div>
+      <div style="text-align:center;margin-top:40px"><a class="btn btn-gold" href="pages/recursos.html"><i
+            class="fa-solid fa-folder-open"></i>Ver todos los recursos</a></div>
+    </div>
+  </section>
+
+  <section class="sec-dark" id="nosotros-servicios">
+    <div class="c">
+      <div class="about-wrap">
+        <div class="about-img-wrap">
+          <div class="about-img"
+            style="background:linear-gradient(135deg,var(--ink),var(--ink3));height:440px;display:flex;align-items:center;justify-content:center;border-radius:var(--rl)">
+            <div style="text-align:center"><i class="fa-solid fa-map-location-dot"
+                style="font-size:4rem;color:var(--gold2);margin-bottom:16px"></i>
+              <div style="font-family:var(--font-h);font-size:1.4rem;font-weight:700;color:#fff">Cristian B. Ruiz Q.
+              </div>
+              <div style="font-size:.8rem;color:rgba(255,255,255,.5);margin-top:4px">R.N.T. Nº 970285</div>
+            </div>
+          </div>
+          <div class="about-badge-wrap">
+            <div class="about-badge-n">2+</div>
+            <div class="about-badge-l">Especialidades</div>
+          </div>
+        </div>
+        <div class="about-content"><span class="sl">Sobre Mí</span>
+          <h2 class="st" style="color:#fff">Cristian B. Ruiz Q.</h2>
+          <p style="font-size:1.1rem;color:var(--gold2);font-weight:600;margin-bottom:12px;">Abogado &amp; Técnico en
+            Catastro y Ordenamiento Territorial</p>
+          <p>Soy profesional con doble titulación en Derecho y Catastro y Ordenamiento Territorial, registrado en la
+            Sociedad de Ingenieros de Bolivia (R.N.T. Nº 970285). Cuento con experiencia en gestión catastral,
+            cartografía, administración urbana y ordenamiento territorial.</p>
+          <p>A través de esta plataforma comparto guías, recursos y artículos especializados para hacer el derecho, el
+            catastro y la geomática accesibles para todos en Bolivia.</p>
+          <div style="margin-top:28px"><a class="btn btn-gold" href="pages/acerca-de.html"><i
+                class="fa-solid fa-user"></i>Conocer más sobre mí</a></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec" id="contacto-servicios">
+    <div class="c">
+      <div class="sh center"><span class="sl">Contacto</span>
+        <h2 class="st">Contacto Rápido</h2>
+        <p class="sd">Consultas profesionales, colaboraciones o asesoramiento directo.</p>
+      </div>
+      <div class="contact-wrap">
+        <div class="contact-info">
+          <h3>Información de Contacto</h3>
+          <p>Disponible para consultas en derecho, catastro, GIS y servicios relacionados con la gestión territorial y
+            el ordenamiento urbano en Bolivia.</p>
+          <div class="contact-item">
+            <div class="contact-icon"><i class="fa-solid fa-location-dot"></i></div>
+            <div class="contact-text">
+              <h4>Ubicación</h4>
+              <p>Viacha, Departamento de La Paz, Bolivia</p>
+            </div>
+          </div>
+          <div class="contact-item">
+            <div class="contact-icon"><i class="fa-solid fa-envelope"></i></div>
+            <div class="contact-text">
+              <h4>Correo Electrónico</h4>
+              <p>lexgeocat@gmail.com</p>
+            </div>
+          </div>
+          <div class="contact-item">
+            <div class="contact-icon"><i class="fa-solid fa-id-card"></i></div>
+            <div class="contact-text">
+              <h4>Registro Profesional</h4>
+              <p>SIB — R.N.T. Nº 970285</p>
+            </div>
+          </div>
+          <div style="margin-top:32px;"><a class="btn btn-whatsapp" href="https://wa.me/59176711790" target="_blank"
+              rel="noopener" style="display:inline-flex;width:100%;justify-content:center;"><i
+                class="fa-brands fa-whatsapp"></i>Escríbeme por WhatsApp</a></div>
+        </div>
+        <div class="cf-form"
+          style="padding:32px;text-align:center;background:var(--card);border:1px solid var(--border);border-radius:var(--r)">
+          <p style="font-size:1.05rem;font-weight:600;color:var(--text);margin-bottom:12px">¿Quieres contactarme
+            directamente?</p>
+          <p style="font-size:.85rem;color:var(--text2);margin-bottom:20px"><i class="fa-solid fa-envelope"
+              style="color:var(--gold)"></i> <strong>lexgeocat@gmail.com</strong></p><a class="btn btn-gold"
+            href="pages/contacto.html"><i class="fa-solid fa-envelope"></i>Ir al formulario de contacto</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div id="site-footer"></div>
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/layout.js"></script>
+  <script src="assets/js/main.js"></script>
 </body>
+
 </html>

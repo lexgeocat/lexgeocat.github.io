@@ -15,7 +15,7 @@ window.LGC_CONFIG = {
   bloggerSearch: 'https://lexgeocat.blogspot.com/search?q=',
 
   email: 'lexgeocat@gmail.com',
-  whatsapp: '59170000000',
+  whatsapp: '59176711790',
   location: 'Viacha, Departamento de La Paz, Bolivia',
   rnt: '970285',
 
@@ -23,7 +23,7 @@ window.LGC_CONFIG = {
     facebook: 'https://www.facebook.com/lexgeocat',
     youtube: 'https://www.youtube.com/@lexgeocat',
     linkedin: 'https://www.linkedin.com/in/lexgeocat',
-    whatsapp: 'https://wa.me/59170000000'
+    whatsapp: 'https://wa.me/59176711790'
   },
 
   nav: [
@@ -42,7 +42,7 @@ window.LGC_CONFIG = {
       ]
     },
     { id: 'recursos', label: 'Recursos', href: 'pages/recursos.html', icon: 'fa-folder-open' },
-    { id: 'blog', label: 'Blog', href: '__BLOG__', icon: 'fa-newspaper', external: true },
+    { id: 'blog', label: 'Blog', href: '__BLOG__', icon: 'fa-newspaper' },
     { id: 'acerca', label: 'Sobre Mí', href: 'pages/acerca-de.html', icon: 'fa-user' },
     { id: 'contacto', label: 'Contacto', href: 'pages/contacto.html', icon: 'fa-envelope' }
   ]
