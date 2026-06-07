@@ -21,7 +21,7 @@
     if (saved) applyTheme(saved);
     else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) applyTheme('dark');
     else applyTheme('light');
-  } catch (e) {}
+  } catch (e) { }
 
   document.addEventListener('DOMContentLoaded', function () {
     var btn = document.getElementById('th-btn');
@@ -30,7 +30,7 @@
         var d = document.documentElement.getAttribute('data-theme') === 'dark';
         var n = d ? 'light' : 'dark';
         applyTheme(n);
-        try { localStorage.setItem(KEY, n); } catch (e) {}
+        try { localStorage.setItem(KEY, n); } catch (e) { }
       });
     }
   });
@@ -138,8 +138,8 @@
     function loadFeed(path, cb) {
       var id = '_lgc_' + Math.random().toString(36).substr(2, 9);
       window[id] = function (d) {
-        try { cb(d); } catch (e) {}
-        try { delete window[id]; } catch (e2) {}
+        try { cb(d); } catch (e) { }
+        try { delete window[id]; } catch (e2) { }
       };
       var s = document.createElement('script');
       s.src = feedBase + path + (path.indexOf('?') >= 0 ? '&' : '?') + 'alt=json&callback=' + id;

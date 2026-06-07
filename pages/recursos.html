@@ -1,47 +1,91 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Recursos — LexGeoCat</title>
-  <meta name="description" content="Plantillas, guías técnicas, formatos y herramientas para derecho, catastro y geomática en Bolivia.">
-  <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <meta name="description"
+    content="Plantillas, guías técnicas, formatos y herramientas para derecho, catastro y geomática en Bolivia.">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap"
+    rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
   <link href="../assets/css/main.css" rel="stylesheet">
 </head>
+
 <body data-page="recursos" data-depth="1">
-<div id="site-header"></div>
+  <div id="site-header"></div>
 
-<section class="page-hero">
-  <div class="c">
-    <div class="page-hero-icon"><i class="fa-solid fa-folder-open"></i></div>
-    <span class="sl">Biblioteca</span>
-    <h1 class="st">Recursos y Herramientas</h1>
-    <p class="sd">Plantillas, formatos legales, guías técnicas y materiales de apoyo para profesionales del territorio.</p>
-  </div>
-</section>
-
-<section class="page-content">
-  <div class="c">
-    <div class="g g-auto" style="margin-bottom:48px">
-      <div class="res-card reveal"><div class="res-icon" style="background:var(--gold-lt);color:var(--gold)"><i class="fa-solid fa-file-pdf"></i></div><div class="res-body"><h4>Formatos legales</h4><p>Modelos de escritos, solicitudes y documentos de apoyo para trámites territoriales.</p><span class="res-tag" style="background:var(--gold-lt);color:var(--gold);border-color:rgba(200,150,12,.2)">Derecho</span></div></div>
-      <div class="res-card reveal"><div class="res-icon" style="background:var(--teal-lt);color:var(--teal)"><i class="fa-solid fa-map"></i></div><div class="res-body"><h4>Guías catastrales</h4><p>Manuales técnicos para levantamientos, fichas prediales y nomenclatura catastral.</p><span class="res-tag" style="background:var(--teal-lt);color:var(--teal);border-color:rgba(15,110,110,.2)">Catastro</span></div></div>
-      <div class="res-card reveal"><div class="res-icon" style="background:#EEF5EE;color:var(--sage)"><i class="fa-solid fa-layer-group"></i></div><div class="res-body"><h4>Tutoriales SIG</h4><p>Material de QGIS, PostGIS y cartografía digital orientado al contexto boliviano.</p><span class="res-tag" style="background:#EEF5EE;color:var(--sage);border-color:rgba(58,94,58,.2)">GIS</span></div></div>
-      <div class="res-card reveal"><div class="res-icon" style="background:#F0EFF9;color:#7C6FC8"><i class="fa-solid fa-code"></i></div><div class="res-body"><h4>Scripts y automatización</h4><p>Herramientas Python, AutoLISP y plantillas para agilizar flujos de trabajo GIS.</p><span class="res-tag" style="background:#F0EFF9;color:#7C6FC8;border-color:rgba(124,111,200,.2)">Tecnología</span></div></div>
+  <section class="page-hero">
+    <div class="c">
+      <div class="page-hero-icon"><i class="fa-solid fa-folder-open"></i></div>
+      <span class="sl">Biblioteca</span>
+      <h1 class="st">Recursos y Herramientas</h1>
+      <p class="sd">Plantillas, formatos legales, guías técnicas y materiales de apoyo para profesionales del
+        territorio.</p>
     </div>
-    <div class="sh center"><span class="sl">Blog</span><h2 class="st">Recursos publicados</h2><p class="sd">Entradas del blog con etiqueta Recursos (alojadas en Blogger).</p></div>
-    <div class="g g-auto" id="recursos-grid"></div>
-    <div class="blog-cta">
-      <h3>¿Buscas más material?</h3>
-      <p>Explora la biblioteca completa de recursos en el blog de LexGeoCat.</p>
-      <a class="btn btn-gold" href="https://lexgeocat.blogspot.com/search/label/Recursos" target="_blank" rel="noopener"><i class="fa-solid fa-folder-open"></i> Ver todos en el blog</a>
-    </div>
-  </div>
-</section>
+  </section>
 
-<div id="site-footer"></div>
-<script src="../assets/js/config.js"></script>
-<script src="../assets/js/layout.js"></script>
-<script src="../assets/js/main.js"></script>
+  <section class="page-content">
+    <div class="c">
+      <div class="g g-auto" style="margin-bottom:48px">
+        <div class="res-card reveal">
+          <div class="res-icon" style="background:var(--gold-lt);color:var(--gold)"><i class="fa-solid fa-file-pdf"></i>
+          </div>
+          <div class="res-body">
+            <h4>Formatos legales</h4>
+            <p>Modelos de escritos, solicitudes y documentos de apoyo para trámites territoriales.</p><span
+              class="res-tag"
+              style="background:var(--gold-lt);color:var(--gold);border-color:rgba(200,150,12,.2)">Derecho</span>
+          </div>
+        </div>
+        <div class="res-card reveal">
+          <div class="res-icon" style="background:var(--teal-lt);color:var(--teal)"><i class="fa-solid fa-map"></i>
+          </div>
+          <div class="res-body">
+            <h4>Guías catastrales</h4>
+            <p>Manuales técnicos para levantamientos, fichas prediales y nomenclatura catastral.</p><span
+              class="res-tag"
+              style="background:var(--teal-lt);color:var(--teal);border-color:rgba(15,110,110,.2)">Catastro</span>
+          </div>
+        </div>
+        <div class="res-card reveal">
+          <div class="res-icon" style="background:#EEF5EE;color:var(--sage)"><i class="fa-solid fa-layer-group"></i>
+          </div>
+          <div class="res-body">
+            <h4>Tutoriales SIG</h4>
+            <p>Material de QGIS, PostGIS y cartografía digital orientado al contexto boliviano.</p><span class="res-tag"
+              style="background:#EEF5EE;color:var(--sage);border-color:rgba(58,94,58,.2)">GIS</span>
+          </div>
+        </div>
+        <div class="res-card reveal">
+          <div class="res-icon" style="background:#F0EFF9;color:#7C6FC8"><i class="fa-solid fa-code"></i></div>
+          <div class="res-body">
+            <h4>Scripts y automatización</h4>
+            <p>Herramientas Python, AutoLISP y plantillas para agilizar flujos de trabajo GIS.</p><span class="res-tag"
+              style="background:#F0EFF9;color:#7C6FC8;border-color:rgba(124,111,200,.2)">Tecnología</span>
+          </div>
+        </div>
+      </div>
+      <div class="sh center"><span class="sl">Blog</span>
+        <h2 class="st">Recursos publicados</h2>
+        <p class="sd">Entradas del blog con etiqueta Recursos (alojadas en Blogger).</p>
+      </div>
+      <div class="g g-auto" id="recursos-grid"></div>
+      <div class="blog-cta">
+        <h3>¿Buscas más material?</h3>
+        <p>Explora la biblioteca completa de recursos en el blog de LexGeoCat.</p>
+        <a class="btn btn-gold" href="https://lexgeocat.blogspot.com/search/label/Recursos" target="_blank"
+          rel="noopener"><i class="fa-solid fa-folder-open"></i> Ver todos en el blog</a>
+      </div>
+    </div>
+  </section>
+
+  <div id="site-footer"></div>
+  <script src="../assets/js/config.js"></script>
+  <script src="../assets/js/layout.js"></script>
+  <script src="../assets/js/main.js"></script>
 </body>
+
 </html>
