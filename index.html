@@ -4,39 +4,191 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>LexGeoCat — Derecho, Catastro y Geomática</title>
+
+  <!-- ═══ PRECONNECT (mejora LCP hasta 300ms) ═══ -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+
+  <!-- ═══ TITLE (fórmula: Keyword Principal | Marca + Ubicación) ═══ -->
+  <title>Consultoría en Derecho, Catastro y SIG en Bolivia | LexGeoCat — Viacha, La Paz</title>
+
+  <!-- ═══ META BÁSICOS ═══ -->
   <meta name="description"
-    content="Plataforma especializada en consultoría, recursos y formación en derecho, catastro y SIG en Bolivia.">
+    content="Asesoría legal, gestión catastral y consultoría SIG en Bolivia. Abogado y técnico en Catastro con experiencia en ordenamiento territorial, usucapión y sistemas PostGIS/QGIS. Viacha, La Paz.">
+  <meta name="keywords"
+    content="derecho territorial Bolivia, catastro urbano La Paz, SIG Bolivia, ordenamiento territorial Viacha, asesoría legal catastral, usucapión Bolivia, PostGIS Bolivia, geomática Bolivia, registro predial, valuación fiscal">
+  <meta name="author" content="Cristian B. Ruiz Q.">
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+  <meta name="language" content="Spanish">
+
+  <!-- ═══ GEO TAGS (SEO local — esencial para Bolivia) ═══ -->
+  <meta name="geo.region" content="BO-L">
+  <meta name="geo.placename" content="Viacha, La Paz, Bolivia">
+  <meta name="geo.position" content="-16.6539;-68.2958">
+  <meta name="ICBM" content="-16.6539, -68.2958">
+
+  <!-- ═══ CANONICAL ═══ -->
   <link rel="canonical" href="https://lexgeocat.github.io/">
-  <meta name="robots" content="index,follow">
-  <meta property="og:title" content="LexGeoCat — Derecho, Catastro y Geomática">
-  <meta property="og:description" content="Plataforma especializada en consultoría, recursos y formación en derecho, catastro y SIG en Bolivia.">
+
+  <!-- ═══ OPEN GRAPH ═══ -->
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://lexgeocat.github.io/">
-  <meta property="og:image" content="https://lexgeocat.github.io/assets/img/og-image.jpg">
+  <meta property="og:site_name" content="LexGeoCat">
+  <meta property="og:title" content="LexGeoCat — Derecho, Catastro y Geomática en Bolivia">
+  <meta property="og:description"
+    content="Plataforma especializada en asesoría legal, catastro multifinalitario y SIG adaptada al contexto boliviano. Cristian B. Ruiz Q. — R.N.T. Nº 970285.">
+  <meta property="og:image" content="https://lexgeocat.github.io/assets/img/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="LexGeoCat — Derecho, Catastro y Geomática en Bolivia">
+  <meta property="og:locale" content="es_BO">
+  <meta property="article:author" content="Cristian B. Ruiz Q.">
+
+  <!-- ═══ TWITTER / X ═══ -->
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="LexGeoCat — Derecho, Catastro y Geomática">
-  <meta name="twitter:description" content="Plataforma especializada en consultoría, recursos y formación en derecho, catastro y SIG en Bolivia.">
+  <meta name="twitter:site" content="@lexgeocat">
+  <meta name="twitter:creator" content="@lexgeocat">
+  <meta name="twitter:title" content="LexGeoCat — Derecho, Catastro y Geomática en Bolivia">
+  <meta name="twitter:description"
+    content="Asesoría legal, gestión catastral y consultoría SIG adaptada al contexto boliviano.">
   <meta name="twitter:image" content="https://lexgeocat.github.io/assets/img/og-image.jpg">
+  <meta name="twitter:image:alt" content="LexGeoCat — Derecho, Catastro y Geomática en Bolivia">
+
+  <!-- ═══ SCHEMA.ORG — BLOQUE COMPLETO ═══ -->
   <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "WebSite",
-    "url": "https://lexgeocat.github.io/",
-    "name": "LexGeoCat",
-    "description": "Plataforma especializada en consultoría, recursos y formación en derecho, catastro y SIG en Bolivia.",
-    "author": {
+  [
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "url": "https://lexgeocat.github.io/",
+      "name": "LexGeoCat",
+      "description": "Plataforma especializada en consultoría, recursos y formación en derecho, catastro y SIG en Bolivia.",
+      "inLanguage": "es-BO",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": {
+          "@type": "EntryPoint",
+          "urlTemplate": "https://lexgeocat.blogspot.com/search?q={search_term_string}"
+        },
+        "query-input": "required name=search_term_string"
+      }
+    },
+    {
+      "@context": "https://schema.org",
       "@type": "Person",
-      "name": "Cristian B. Ruiz Q.",
-      "url": "https://lexgeocat.github.io/pages/acerca-de.html"
+      "name": "Cristian Brayan Ruiz Quiroga",
+      "alternateName": "Cristian B. Ruiz Q.",
+      "url": "https://lexgeocat.github.io/pages/acerca-de.html",
+      "jobTitle": ["Abogado", "Técnico en Catastro y Ordenamiento Territorial"],
+      "description": "Profesional con doble titulación en Derecho y Catastro y Ordenamiento Territorial, registrado en la Sociedad de Ingenieros de Bolivia (R.N.T. Nº 970285).",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Viacha",
+        "addressRegion": "La Paz",
+        "addressCountry": "BO"
+      },
+      "email": "lexgeocat@gmail.com",
+      "telephone": "+59176711790",
+      "memberOf": {
+        "@type": "Organization",
+        "name": "Sociedad de Ingenieros de Bolivia",
+        "identifier": "R.N.T. Nº 970285"
+      },
+      "knowsAbout": [
+        "Derecho Civil Bolivia",
+        "Catastro Multifinalitario",
+        "Sistemas de Información Geográfica",
+        "PostGIS",
+        "QGIS",
+        "Ordenamiento Territorial",
+        "Usucapión Bolivia"
+      ],
+      "sameAs": [
+        "https://lexgeocat.blogspot.com/",
+        "https://wa.me/59176711790"
+      ]
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": ["LocalBusiness", "ProfessionalService"],
+      "name": "LexGeoCat",
+      "description": "Consultoría profesional en derecho territorial, catastro multifinalitario y sistemas de información geográfica en Bolivia.",
+      "url": "https://lexgeocat.github.io/",
+      "logo": "https://lexgeocat.github.io/assets/img/og-image.jpg",
+      "image": "https://lexgeocat.github.io/assets/img/og-image.jpg",
+      "telephone": "+59176711790",
+      "email": "lexgeocat@gmail.com",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Viacha",
+        "addressRegion": "La Paz",
+        "addressCountry": "BO"
+      },
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": -16.6539,
+        "longitude": -68.2958
+      },
+      "areaServed": {
+        "@type": "Country",
+        "name": "Bolivia"
+      },
+      "priceRange": "$$",
+      "hasOfferCatalog": {
+        "@type": "OfferCatalog",
+        "name": "Servicios Profesionales",
+        "itemListElement": [
+          {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Asesoría Legal en Derecho Civil y Territorial"}},
+          {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Gestión y Levantamiento Catastral"}},
+          {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Consultoría SIG y Geomática"}},
+          {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Desarrollo de Sistemas de Información Territorial"}}
+        ]
+      }
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "¿Qué es el catastro multifinalitario urbano en Bolivia?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "El catastro multifinalitario es el sistema de registro predial que integra información jurídica, física y económica de los bienes inmuebles. En Bolivia, está regulado por la Ley de Municipalidades y permite a los gobiernos autónomos municipales gestionar el territorio, determinar el impuesto a la propiedad y planificar el ordenamiento urbano."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "¿Qué documentos se necesitan para un proceso de usucapión en Bolivia?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Para iniciar un proceso de usucapión en Bolivia se requieren: certificado de tradición y libertad del inmueble, plano de ubicación y superficie, declaración de testigos que acrediten posesión continua y pacífica por más de 10 años, y documentación que demuestre la posesión efectiva del bien."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "¿Cómo puedo solicitar asesoría en catastro o derecho territorial en Viacha?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Puede contactarnos directamente por WhatsApp al +591 76711790 o escribir a lexgeocat@gmail.com. Atendemos consultas en derecho civil, catastro predial, SIG y ordenamiento territorial para el departamento de La Paz y Bolivia en general."
+          }
+        }
+      ]
     }
-  }
+  ]
   </script>
+
+  <!-- ═══ FONTS (preload crítico) ═══ -->
   <link
     href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap"
     rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
   <link href="assets/css/main.css" rel="stylesheet">
+
+  <!-- ═══ FAVICON (si no tienes, créalo) ═══ -->
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/img/favicon-32.png">
+  <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
 </head>
 
 <body data-page="inicio" data-depth="0">
