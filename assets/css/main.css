@@ -4317,3 +4317,51 @@ svg.fd-bg-map {
 .logo-wrap h1 span {
   color: var(--gold)
 }
+
+/* Estilos para el nuevo contenedor de estadísticas en el footer */
+.footer-stats-container {
+  display: flex;
+  justify-content: center;
+  /* Centra los elementos horizontalmente */
+  align-items: center;
+  /* Alinea verticalmente */
+  gap: 20px;
+  /* Espacio entre el contador y la info del país */
+  margin-top: 25px;
+  /* Espacio desde el contenido anterior del footer */
+  margin-bottom: 15px;
+  /* Espacio antes de copyright */
+  flex-wrap: wrap;
+  /* Permite que los elementos se apilen en pantallas pequeñas */
+  text-align: center;
+  /* Centra el texto si los elementos se apilan */
+}
+
+#visitor-country-info {
+  display: flex;
+  /* Asegura que se muestre como flex */
+  align-items: center;
+  gap: 8px;
+  /* Espacio entre la bandera y el texto */
+}
+
+#visitor-country-info img {
+  border: 1px solid var(--border);
+  /* Borde sutil para las banderas */
+  box-shadow: 0 0 3px rgba(0, 0, 0, 0.1);
+  /* Sombra ligera */
+}
+
+/* Ajustes para pantallas pequeñas si es necesario */
+@media (max-width: 600px) {
+  .footer-stats-container {
+    flex-direction: column;
+    /* Apila los elementos verticalmente */
+    gap: 10px;
+  }
+
+  #visitor-country-info {
+    margin-top: 5px;
+    /* Un poco más de espacio si se apilan */
+  }
+}

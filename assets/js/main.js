@@ -104,8 +104,66 @@
     }
   });
 
-  /* --- SCROLL REVEAL --- */
-  var rIO;
+/* --- COUNTER AND VISITOR INFO --- */
+(function () {
+  // Configuración de Counter.dev
+  // Usando el websiteId proporcionado: a3fdab0e-876c-43ba-9d03-908573d0b327
+  var counterDevConfig = {
+    websiteId: 'a3fdab0e-876c-43ba-9d03-908573d0b327',
+    utcoffset: -4 // Proporcionado en el script de ejemplo
+  };
+
+  // Inyectar script de Counter.dev
+  var counterScript = document.createElement('script');
+  counterScript.src = 'https://cdn.counter.dev/script.js';
+  counterScript.setAttribute('data-id', counterDevConfig.websiteId);
+  if (counterDevConfig.utcoffset !== undefined) { // Asegurarse de que utcoffset esté definido
+    counterScript.setAttribute('data-utcoffset', counterDevConfig.utcoffset);
+  }
+  counterScript.async = true;
+  document.body.appendChild(counterScript);
+
+  // Placeholder para el contador
+  var counterPlaceholder = document.getElementById('counter-dev-placeholder');
+  if (counterPlaceholder) {
+    counterPlaceholder.innerHTML = '<span style="color: var(--text3); font-size: 0.85rem;">Cargando visitas...</span>';
+  }
+
+  // Detectar país del visitante y mostrar bandera
+  var visitorCountryInfo = document.getElementById('visitor-country-info');
+  if (visitorCountryInfo) {
+    fetch('https://ip-api.com/json/?fields=status,message,country,countryCode,isp,query')
+      .then(function (response) {
+        if (!response.ok) {
+          throw new Error('Network response was not ok: ' + response.status + ' ' + response.statusText);
+        }
+        return response.json();
+      })
+      .then(function (data) {
+        if (data.status === 'success' && data.countryCode) {
+          var countryCode = data.countryCode.toLowerCase();
+          var countryName = data.country;
+          var flagUrl = 'https://flagcdn.com/w20/' + countryCode + '.png';
+
+          visitorCountryInfo.innerHTML = `
+            <span style="color: var(--text3); font-size: 0.85rem; display: flex; align-items: center; gap: 8px;">
+              <img src="${flagUrl}" alt="${countryName}" style="width: 20px; height: auto; vertical-align: middle; border: 1px solid var(--border); box-shadow: 0 0 3px rgba(0,0,0,0.1);">
+              <span>${countryName}</span>
+            </span>
+          `;
+          visitorCountryInfo.style.display = 'flex'; // Mostrar el contenedor una vez que tengamos datos
+        } else {
+          console.warn('Could not determine visitor country:', data.status, data.message);
+        }
+      })
+      .catch(function (error) {
+        console.error('Error fetching visitor country:', error);
+      });
+  }
+})(); // Cierre de la IIFE para el contador y la info del visitante
+
+/* --- SCROLL REVEAL --- */
+var rIO;
   if (typeof IntersectionObserver !== 'undefined') {
     rIO = new IntersectionObserver(function (entries) {
       entries.forEach(function (e, i) {

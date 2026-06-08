@@ -121,7 +121,11 @@
       '<a href="' + root('pages/privacidad.html') + '">Privacidad</a>' +
       '<a href="' + root('pages/terminos.html') + '">Términos</a>' +
       '<a href="' + root('pages/contacto.html') + '">Contacto</a>' +
-      '</div></div></footer>' +
+      '</div></div></div>' + // Cierre de ft-btm-right y ft-btm
+      '<div class="footer-stats-container">' + // Nuevo contenedor para estadísticas
+      '  <div id="counter-dev-placeholder"></div>' + // Espacio para Counter.dev
+      '  <div id="visitor-country-info" style="display: none;"></div>' + // Espacio para bandera y país del visitante (inicialmente oculto)
+      '</div>' +
       '<button aria-label="Volver arriba" id="top" type="button"><i class="fa-solid fa-arrow-up"></i></button>' +
       '<div aria-modal="true" id="srch-overlay" role="dialog"><div class="srch-modal">' +
       '<div class="srch-modal-header"><i class="fa-solid fa-magnifying-glass"></i>' +
@@ -129,8 +133,8 @@
       '<button aria-label="Cerrar búsqueda" class="srch-modal-close" id="srch-modal-close" type="button"><i class="fa-solid fa-xmark"></i></button></div>' +
       '<div class="srch-modal-body" id="srch-modal-body"><div class="srch-status"><i class="fa-solid fa-magnifying-glass"></i><span>La búsqueda se realiza en el blog alojado en Blogger. Escribe y presiona Enter.</span></div></div>' +
       '</div></div>'
-    );
-  }
+  );
+}
 
   var headerEl = document.getElementById('site-header');
   var footerEl = document.getElementById('site-footer');
