@@ -850,10 +850,6 @@ h5 {
   }
 }
 
-/* ──────────────────────────────────────────────────────────
-   HERO-BG-MAP → CURVAS DE NIVEL ESTILO HUD / TONY STARK
-   Reemplaza el antiguo .hero-bg-map (SVG inline en HTML)
-   ────────────────────────────────────────────────────────── */
 .hero-bg-map {
   position: absolute;
   inset: 0;
@@ -864,14 +860,10 @@ h5 {
   /* ⚠ Ver nota al final: se recomienda usar <svg> inline en HTML */
   background: none;
   /* se anula el antiguo background-image */
+  z-index: 0;
+  overflow: visible;
+  pointer-events: none;
 }
-
-/*
-  IMPORTANTE: Para las curvas de nivel Tony Stark, el enfoque más
-  limpio es reemplazar el <div class="hero-bg-map"> por un <svg> inline
-  dentro de .hero-bg. El CSS de animación va aquí.
-  Pega este bloque <svg> dentro del .hero-bg en tu HTML (ver hero-bg-map.html adjunto).
-*/
 
 .hero-bg-map svg {
   position: absolute;
@@ -925,11 +917,6 @@ h5 {
   align-items: center
 }
 
-/* ──────────────────────────────────────────────────────────
-   FD-BG-MAP → PLANO CATASTRAL + ROSA DE LOS VIENTOS
-   Reemplaza el antiguo background-image con un <svg> inline
-   en el .floating-dashboard (ver hero-fd-bg-map.html adjunto)
-   ────────────────────────────────────────────────────────── */
 .fd-bg-map {
   position: absolute;
   width: 420px;
@@ -1025,8 +1012,8 @@ svg.fd-bg-map {
 }
 
 .fdc-4 {
-  bottom: 45%;
-  right: 75%;
+  bottom: 35%;
+  right: 70%;
   transform: translateX(-50%);
   animation: lgc-float1 6.5s ease-in-out infinite
 }
@@ -1111,7 +1098,7 @@ svg.fd-bg-map {
 
 .hero-content {
   position: relative;
-  z-index: 1;
+  z-index: 5;
   max-width: 780px
 }
 
@@ -1326,36 +1313,109 @@ svg.fd-bg-map {
   }
 }
 
+/* ── RESPONSIVE 768px ── */
 @media (max-width: 768px) {
   .hero {
     padding-top: calc(var(--h) + 48px + 40px);
-    min-height: auto
+    min-height: auto;
   }
 
   .hero-title {
-    font-size: 2.4rem
+    font-size: 2.4rem;
   }
 
   .hero-title .line-sub {
-    font-size: 1.8rem
+    font-size: 1.8rem;
   }
 
   .hero-desc {
-    font-size: .95rem
+    font-size: .95rem;
   }
 
   .hero-stats {
-    flex-wrap: wrap
+    flex-wrap: wrap;
   }
 
   .hstat {
     flex: 50%;
     border-right: none;
-    border-bottom: 1px solid rgba(255, 255, 255, .08)
+    border-bottom: 1px solid rgba(255, 255, 255, .08);
   }
 
   .hstat:nth-child(odd) {
-    border-right: 1px solid rgba(255, 255, 255, .08) !important
+    border-right: 1px solid rgba(255, 255, 255, .08) !important;
+  }
+}
+
+/* ══ ANIMACIONES MARCADOR LA PAZ — globales ══ */
+@keyframes lgc-lpaz-pulse-outer {
+  0% {
+    transform: scale(1);
+    opacity: 0.35;
+  }
+
+  70% {
+    transform: scale(1.8);
+    opacity: 0;
+  }
+
+  100% {
+    transform: scale(1);
+    opacity: 0;
+  }
+}
+
+@keyframes lgc-lpaz-pulse-mid {
+  0% {
+    transform: scale(1);
+    opacity: 0.55;
+  }
+
+  60% {
+    transform: scale(1.7);
+    opacity: 0;
+  }
+
+  100% {
+    transform: scale(1);
+    opacity: 0;
+  }
+}
+
+@keyframes lgc-lpaz-dot-glow {
+
+  0%,
+  100% {
+    opacity: 0.9;
+  }
+
+  50% {
+    opacity: 0.6;
+  }
+}
+
+.lpaz-pulse-outer {
+  animation: lgc-lpaz-pulse-outer 3s ease-out infinite;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.lpaz-pulse-mid {
+  animation: lgc-lpaz-pulse-mid 3s ease-out infinite 0.6s;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.lpaz-dot {
+  animation: lgc-lpaz-dot-glow 3s ease-in-out infinite 1s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+  .lpaz-pulse-outer,
+  .lpaz-pulse-mid,
+  .lpaz-dot {
+    animation: none;
   }
 }
 

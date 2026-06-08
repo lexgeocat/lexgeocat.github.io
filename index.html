@@ -193,13 +193,13 @@
 
 <body data-page="inicio" data-depth="0">
   <div id="site-header"></div>
-
   <section class="hero">
     <div class="hero-bg">
       <div class="hero-bg-grid"></div>
       <div class="hero-bg-glow1"></div>
       <div class="hero-bg-glow2"></div>
-      <!-- CURVAS DE NIVEL TONY STARK — hero background -->
+
+      <!-- ══ PLANO TOPOGRÁFICO HUD — fondo hero ══ -->
       <svg class="hero-bg-map" viewBox="0 0 1400 900" preserveAspectRatio="xMidYMid slice"
         xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
         <defs>
@@ -210,145 +210,42 @@
           <mask id="hero-mask">
             <rect width="1400" height="900" fill="url(#hero-fade)" />
           </mask>
+          <filter id="loc-glow" x="-200%" y="-200%" width="500%" height="500%">
+            <feGaussianBlur stdDeviation="5" result="blur" />
+            <feMerge>
+              <feMergeNode in="blur" />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+          </filter>
         </defs>
+        <g mask="url(#hero-mask)" class="hero-contour-group">
+          <circle cx="425" cy="300" r="32" fill="none" stroke="#C8960C" stroke-width="0.7" class="lpaz-pulse-outer" />
+          <!-- Anillo de pulso medio -->
+          <circle cx="425" cy="300" r="20" fill="none" stroke="#C8960C" stroke-width="1" class="lpaz-pulse-mid" />
+          <!-- Anillo fijo interior -->
+          <circle cx="425" cy="300" r="10" fill="none" stroke="#C8960C" stroke-width="1.2" />
+          <!-- Punto central -->
+          <circle cx="425" cy="300" r="4.5" fill="#C8960C" filter="url(#loc-glow)" class="lpaz-dot" />
+          <circle cx="425" cy="300" r="2" fill="#fff" />
 
-        <g mask="url(#hero-mask)" class="hero-contour-group" opacity="0.5">
+          <!-- Línea callout diagonal al cuadro -->
+          <line x1="425" y1="300" x2="740" y2="390" stroke="#C8960C" stroke-width="0.9" stroke-dasharray="4,3"
+            opacity="0.7" />
 
-          <!-- ═══ CURVAS PRINCIPALES — Altiplano Viacha ~3800m ═══ -->
+          <!-- Cuadro de coordenadas HUD -->
+          <rect x="738" y="340" width="150" height="72" rx="3" fill="rgba(13,27,42,0.92)" stroke="#C8960C"
+            stroke-width="0.9" />
+          <line x1="738" y1="357" x2="938" y2="357" stroke="#C8960C" stroke-width="0.4" opacity="0.55" />
+          <text x="744" y="353" font-family="DM Mono,monospace" font-size="8" fill="#C8960C" opacity="0.65"
+            letter-spacing="0.08em">PUNTO DE UBICACIÓN</text>
+          <text x="744" y="372" font-family="DM Mono,monospace" font-size="11" fill="#C8960C" font-weight="bold"
+            letter-spacing="0.04em">Lat: 17°02'20.20"S</text>
+          <text x="744" y="388" font-family="DM Mono,monospace" font-size="11" fill="#C8960C"
+            letter-spacing="0.04em">Long: 68°17'45.88"W</text>
+          <text x="744" y="404" font-family="DM Mono,monospace" font-size="7.5" fill="#C8960C" opacity="0.5"
+            letter-spacing="0.05em">alt. 3827m · WGS84 · UTM 19S</text>
 
-          <!-- Cota 3780 — baja -->
-          <path d="M-100 820 C120 808, 320 815, 520 805 S820 793, 1080 800 S1320 810, 1500 814" fill="none"
-            stroke="#C8960C" stroke-width="0.7" opacity="0.2" />
-          <text x="60" y="803" font-family="DM Mono,monospace" font-size="9" fill="#C8960C" opacity="0.35"
-            letter-spacing="0.06em">3780m</text>
-
-          <!-- Cota 3800 -->
-          <path d="M-100 720 C130 704, 330 712, 530 700 S840 686, 1100 694 S1340 706, 1500 710" fill="none"
-            stroke="#C8960C" stroke-width="0.9" opacity="0.28" />
-          <text x="60" y="697" font-family="DM Mono,monospace" font-size="9" fill="#C8960C" opacity="0.45"
-            letter-spacing="0.06em">3800m</text>
-
-          <!-- Cota 3800 — duplicada ligeramente para volumen -->
-          <path d="M-100 680 C140 660, 350 670, 550 655 S860 638, 1120 648 S1360 662, 1500 667" fill="none"
-            stroke="#C8960C" stroke-width="0.5" opacity="0.12" stroke-dasharray="5,4" />
-
-          <!-- Cota 3820 — curva maestra gruesa -->
-          <path d="M-100 600 C140 577, 340 589, 545 570 S870 548, 1140 560 S1380 576, 1500 582" fill="none"
-            stroke="#C8960C" stroke-width="1.8" opacity="0.5" />
-          <text x="60" y="567" font-family="DM Mono,monospace" font-size="10" fill="#C8960C" opacity="0.65"
-            letter-spacing="0.06em" font-weight="bold">3820m</text>
-
-          <!-- Cota entre 3820–3840 fina punteada -->
-          <path d="M-100 548 C145 522, 345 536, 548 514 S878 490, 1148 503 S1385 521, 1500 527" fill="none"
-            stroke="#C8960C" stroke-width="0.6" opacity="0.18" stroke-dasharray="4,5" />
-
-          <!-- Cota 3840 -->
-          <path d="M-100 490 C148 462, 348 476, 552 452 S882 426, 1152 440 S1388 460, 1500 466" fill="none"
-            stroke="#C8960C" stroke-width="1" opacity="0.32" />
-          <text x="60" y="449" font-family="DM Mono,monospace" font-size="9" fill="#C8960C" opacity="0.5"
-            letter-spacing="0.06em">3840m</text>
-
-          <!-- Cota 3860 — maestra -->
-          <path d="M-100 400 C152 368, 355 384, 560 356 S895 326, 1162 342 S1395 364, 1500 372" fill="none"
-            stroke="#C8960C" stroke-width="1.8" opacity="0.45" />
-          <text x="60" y="353" font-family="DM Mono,monospace" font-size="10" fill="#C8960C" opacity="0.6"
-            letter-spacing="0.06em" font-weight="bold">3860m</text>
-
-          <!-- Cota entre fina -->
-          <path d="M-100 350 C155 315, 358 332, 564 302 S900 270, 1166 287 S1398 312, 1500 319" fill="none"
-            stroke="#C8960C" stroke-width="0.5" opacity="0.14" stroke-dasharray="4,5" />
-
-          <!-- Cota 3880 -->
-          <path d="M-100 296 C158 258, 362 276, 568 242 S908 208, 1172 226 S1402 252, 1500 260" fill="none"
-            stroke="#C8960C" stroke-width="1" opacity="0.28" />
-          <text x="60" y="239" font-family="DM Mono,monospace" font-size="9" fill="#C8960C" opacity="0.45"
-            letter-spacing="0.06em">3880m</text>
-
-          <!-- Cota 3900 — maestra superior -->
-          <path d="M-100 198 C162 155, 368 175, 576 135 S918 96, 1180 116 S1408 146, 1500 155" fill="none"
-            stroke="#C8960C" stroke-width="1.8" opacity="0.35" />
-          <text x="60" y="132" font-family="DM Mono,monospace" font-size="10" fill="#C8960C" opacity="0.52"
-            letter-spacing="0.06em" font-weight="bold">3900m</text>
-
-          <!-- Cota 3920 -->
-          <path d="M-100 92 C168 44, 375 68, 585 24 S928 -18, 1192 2 S1415 38, 1500 48" fill="none" stroke="#C8960C"
-            stroke-width="0.9" opacity="0.2" />
-          <text x="60" y="22" font-family="DM Mono,monospace" font-size="9" fill="#C8960C" opacity="0.3"
-            letter-spacing="0.06em">3920m</text>
-
-          <!-- ═══ TICKMARKS DE PENDIENTE ═══ -->
-          <g stroke="#C8960C" stroke-width="0.5" opacity="0.25">
-            <!-- fila cota 3800 -->
-            <line x1="180" y1="710" x2="178" y2="728" />
-            <line x1="380" y1="702" x2="378" y2="720" />
-            <line x1="580" y1="694" x2="578" y2="712" />
-            <line x1="780" y1="690" x2="778" y2="708" />
-            <line x1="980" y1="696" x2="978" y2="714" />
-            <line x1="1180" y1="704" x2="1178" y2="722" />
-            <!-- fila cota 3820 -->
-            <line x1="200" y1="586" x2="198" y2="602" />
-            <line x1="400" y1="574" x2="398" y2="590" />
-            <line x1="600" y1="560" x2="598" y2="576" />
-            <line x1="800" y1="554" x2="798" y2="570" />
-            <line x1="1000" y1="562" x2="998" y2="578" />
-            <line x1="1200" y1="573" x2="1198" y2="589" />
-            <!-- fila cota 3840 -->
-            <line x1="220" y1="480" x2="218" y2="495" />
-            <line x1="420" y1="465" x2="418" y2="480" />
-            <line x1="620" y1="448" x2="618" y2="463" />
-            <line x1="820" y1="440" x2="818" y2="455" />
-            <line x1="1020" y1="448" x2="1018" y2="463" />
-            <line x1="1220" y1="459" x2="1218" y2="474" />
-            <!-- fila cota 3860 -->
-            <line x1="240" y1="375" x2="238" y2="390" />
-            <line x1="440" y1="358" x2="438" y2="373" />
-            <line x1="640" y1="338" x2="638" y2="353" />
-            <line x1="840" y1="328" x2="838" y2="343" />
-            <line x1="1040" y1="336" x2="1038" y2="351" />
-            <line x1="1240" y1="351" x2="1238" y2="366" />
-            <!-- fila cota 3880 -->
-            <line x1="260" y1="268" x2="258" y2="283" />
-            <line x1="460" y1="248" x2="458" y2="263" />
-            <line x1="660" y1="226" x2="658" y2="241" />
-            <line x1="860" y1="215" x2="858" y2="230" />
-            <line x1="1060" y1="224" x2="1058" y2="239" />
-            <line x1="1260" y1="240" x2="1258" y2="255" />
-          </g>
-
-          <!-- ═══ DATOS HUD — corners ═══ -->
-          <!-- inferior izquierda -->
-          <g opacity="0.4" font-family="DM Mono,monospace">
-            <text x="24" y="876" font-size="9" fill="#C8960C" letter-spacing="0.08em">WGS84 · UTM 19S · PSAD56
-              REF</text>
-            <text x="24" y="890" font-size="8" fill="#C8960C" opacity="0.6" letter-spacing="0.06em">Equidistancia: 20m ·
-              Viacha, La Paz, Bolivia</text>
-          </g>
-          <!-- inferior derecha -->
-          <g opacity="0.4" font-family="DM Mono,monospace">
-            <text x="1376" y="876" font-size="9" fill="#C8960C" letter-spacing="0.08em" text-anchor="end">16°39'S
-              68°17'W</text>
-            <text x="1376" y="890" font-size="8" fill="#C8960C" opacity="0.6" letter-spacing="0.06em"
-              text-anchor="end">Sistema Nac. Geodésico · BO</text>
-          </g>
-          <!-- superior derecha -->
-          <text x="1376" y="22" font-family="DM Mono,monospace" font-size="8" fill="#C8960C" text-anchor="end"
-            opacity="0.3" letter-spacing="0.08em">LexGeoCat · R.N.T. Nº 970285</text>
-
-          <!-- ═══ ESCALA GRÁFICA HUD ═══ -->
-          <g transform="translate(24,848)" opacity="0.5">
-            <line x1="0" y1="0" x2="120" y2="0" stroke="#C8960C" stroke-width="1.2" />
-            <line x1="0" y1="-5" x2="0" y2="5" stroke="#C8960C" stroke-width="1.2" />
-            <line x1="60" y1="-3" x2="60" y2="3" stroke="#C8960C" stroke-width="0.8" />
-            <line x1="120" y1="-5" x2="120" y2="5" stroke="#C8960C" stroke-width="1.2" />
-            <text x="0" y="-8" font-family="DM Mono,monospace" font-size="8" fill="#C8960C"
-              text-anchor="middle">0</text>
-            <text x="60" y="-8" font-family="DM Mono,monospace" font-size="8" fill="#C8960C"
-              text-anchor="middle">50m</text>
-            <text x="120" y="-8" font-family="DM Mono,monospace" font-size="8" fill="#C8960C"
-              text-anchor="middle">100m</text>
-          </g>
-
-          <!-- ═══ LÍNEAS CRUCE / REFERENCIAS HUD ═══ -->
+          <!-- ════ LÍNEAS CRUCE / REFERENCIAS HUD ════ -->
           <line x1="700" y1="0" x2="700" y2="900" stroke="#C8960C" stroke-width="0.4" opacity="0.08"
             stroke-dasharray="8,6" />
           <line x1="0" y1="450" x2="1400" y2="450" stroke="#C8960C" stroke-width="0.4" opacity="0.08"
@@ -357,13 +254,15 @@
         </g>
       </svg>
     </div>
+
     <div class="c">
       <div class="hero-grid">
+
+        <!-- ══ HERO CONTENT (izquierda — sin cambios) ══ -->
         <div class="hero-content">
           <h1 class="hero-title">Lex<span>Geo</span>Cat<span class="line-sub"
               style="display:block;margin-top:10px;font-size:2rem;font-weight:400;font-style:italic;">Derecho, Catastro
-              y
-              Ordenamiento Territorial, Geografía y Geomática</span></h1>
+              y Ordenamiento Territorial, Geografía y Geomática</span></h1>
           <p class="hero-desc">Plataforma especializada en consultoría, recursos y formación técnica en materia legal,
             catastral y sistemas de información geográfica adaptados al contexto boliviano.</p>
           <div class="hero-btns">
@@ -390,227 +289,119 @@
             </div>
           </div>
         </div>
+
+        <!-- ══ HERO VISUAL (derecha — rediseñado) ══ -->
         <div class="hero-visual">
           <div class="floating-dashboard">
             <svg class="fd-bg-map" viewBox="0 0 420 420" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
               <defs>
-                <radialGradient id="fd-fade" cx="50%" cy="50%" r="50%">
-                  <stop offset="25%" stop-color="white" stop-opacity="1" />
+                <radialGradient id="fd-fade" cx="50%" cy="55%" r="52%">
+                  <stop offset="20%" stop-color="white" stop-opacity="1" />
                   <stop offset="100%" stop-color="white" stop-opacity="0" />
                 </radialGradient>
                 <mask id="fd-mask">
                   <rect width="420" height="420" fill="url(#fd-fade)" />
                 </mask>
+                <!-- Filtro glow sutil para el marcador La Paz -->
+                <filter id="lpaz-glow" x="-80%" y="-80%" width="260%" height="260%">
+                  <feGaussianBlur stdDeviation="4" result="blur" />
+                  <feMerge>
+                    <feMergeNode in="blur" />
+                    <feMergeNode in="SourceGraphic" />
+                  </feMerge>
+                </filter>
+                <!-- Filtro glow para el contorno Bolivia -->
+                <filter id="bol-glow" x="-10%" y="-10%" width="120%" height="120%">
+                  <feGaussianBlur stdDeviation="2.5" result="blur" />
+                  <feMerge>
+                    <feMergeNode in="blur" />
+                    <feMergeNode in="SourceGraphic" />
+                  </feMerge>
+                </filter>
               </defs>
-
-              <g mask="url(#fd-mask)">
-
-                <!-- ── GRILLA CATASTRAL FINA ── -->
-                <g fill="none" stroke="#C8960C" stroke-width="0.25" opacity="0.35">
-                  <line x1="0" y1="70" x2="420" y2="70" />
-                  <line x1="0" y1="140" x2="420" y2="140" />
-                  <line x1="0" y1="210" x2="420" y2="210" />
-                  <line x1="0" y1="280" x2="420" y2="280" />
-                  <line x1="0" y1="350" x2="420" y2="350" />
-                  <line x1="70" y1="0" x2="70" y2="420" />
-                  <line x1="140" y1="0" x2="140" y2="420" />
-                  <line x1="210" y1="0" x2="210" y2="420" />
-                  <line x1="280" y1="0" x2="280" y2="420" />
-                  <line x1="350" y1="0" x2="350" y2="420" />
+              <g transform="translate(82,28) scale(0.19)" filter="url(#bol-glow)">
+                <g transform="translate(200,200)">
+                  <path
+                    d="M108.6 576.1l0.1-5-0.2-2.4-0.7-2-1-1.3-1.3-1.3-2.6-2.2-1.1-0.4-3.4-0.4-0.1 0 1.1-1.8 1.1-3.8 0.7-1.5 0.3-0.1 1.1-0.2 0.4-0.1 3.6-3.3 2-1.4 1.8-0.7 1.9-0.3 1.7-0.7 1.5-1.7 0.3-1-0.3-0.5-0.5-0.2-0.2-0.4 0.2-0.7 0.4-0.4 2.8-1.7 0.8-0.9 1.7-3.8 6.7-7.2 0.9-1.5 1.3-3.7 0.6-1 1-0.6 2.4-0.2 1.2-0.3 3.8-2 1.1-0.9 1.1-1.4 0.8-1.1-1.7-2.4-0.4-1.2 0.2-2.1-0.1-4 0.2-1.4 0.6-1.2 1.7-2.2 2.2-1.1 7.4-3 1.5-2.3-0.7-1.9-1.5-1-3.5-1.4-2.6-3-1.5-0.9-1.9 0.7-2.1-0.7-0.7-0.1-0.8 0.3-1.2 1-0.8 0.3-1.7 0-1.5-0.6-1.5-0.8-1.2-1.1-2.3-2.9-1.5-3.7-2.7-7.1-2.8-7.1-2.8-7-2.9-7.1-0.8-2-0.3-2 0.6-2.1 4.2-6.5 0.4-1.3 0.1-1.4 0.4-1.3 0.8-1.3 0.7-0.3 1.8-0.6 0.5-0.3 0-0.6-0.8-2.1 0.4-1.1 1.1-1.4 1.2-1.1 2.2-0.8 0.9-2.6 1.3-0.1 1.6 0.1 1-0.8 0.1-1.3-1.5-1.5-1.6-2.4-1.1-1-3.9-2.9-1.1-1.1-3.8-5.9-1.1-1-1.4-1.3-0.4-1.2 0.3-1.3 1-2.6 0.2-0.5-0.3-5.6 0.1-1.1 0.6-0.9 1.5-0.9 3.6-1.1 1.1-0.6 0.9-2 0.4-8.7 0.8-1.3 1.3-0.1 1.5 0.3 1.5 0 0.4-0.7-0.2-3.2 0.2-1.1 0.4-0.3 1.1-0.3 0.5-0.3 2.6-3 1.2-0.9 4.3-2.4 1.3-1.3-0.3-1.3-0.9-1.4-0.5-1.2 0-2.6 0.1-1.3 0.3-1.2 1.7-1.2 2.2-0.6 4.4-0.6 1.3-1.3-0.3-2.4-1.6-4.6-0.4-2.3-0.4-1-0.7-1-3.5-2.4-0.9-1.2-0.4-2.2 0-2.4-0.2-2.3-1.2-1.8-0.8-2.6-0.1-0.9 0.2-1.1 0.3-0.8 0-0.8-0.7-1-3.5-2.9-1.4-1.9 0.9-1.6 0.9 0 2 0.3 0.7-0.1 0.6-0.8 0-0.8-0.1-0.8 0.2-0.9 0.5-0.8 1.4-1.5 0.5-0.9 0.6-1.6 0.4-1.7-0.2-1.5 0.7-13.3-0.9-5.3-0.2-2.7 0.5-8-0.1-1-0.8-6.6 0-2.9 0.3-1.6 2.1-1.6 0.7-1.6 0.8-1.3 1.5 0.2 0.8-1.9 1-1.4 1.4-0.9 5.4-1.5 0.5-0.6 1.5-3-0.6-0.8-2.2-0.5-0.6-0.7 0.1-1.1 0.6-1 0.9-0.7 2-1.1 0.9-0.8 0.8-1 0.5-1.1 0.4-1.3 0.4-0.6 0.7-0.3-0.4-0.6-1.6-2.9-6.9-12.2-6.8-12.2-6.9-12.2-6.9-12.2-6.8-12.2-6.9-12.2-6.9-12.1-6.9-12.2-0.2-0.4-0.2-0.4-0.3-0.4-0.2-0.4-0.2-0.4-0.3-0.5-0.2-0.4-0.2-0.4 4.9 0.2 2.6-0.2 4.4-1.1 2.2 0.3 2.2 0.6 2.4 0.4 3.7-0.1 5.2 0.6 2.4 0.5 2.3-0.2 1 0.2 4.9 2.1 0.3 0.1 0.6 0 0.3-0.1 1.5 0 3.1 0.8 1.6 0.2 1.7-0.4 1.8-0.7 1.8-0.3 1.9 0.6 1.2 0.5-1.1 1.6-0.8 1.6-0.4 1.7 0.3 2.8 0.2 0.6 0.5 0.4 1.2 0 9.4-1.9 1.8-1 3.4-2.4 2.9-1 1.1-0.2 1.1 0 1.1 0.2 0.9-0.2 2.1-2 1.2-0.6 3.1-0.3 1.2-0.5 1.3-1 1.3-1.3 1.1-1.4 0.9-1.4 1.7-4 0.9-1.3 3.7-4 2.4-4.3 0.9-1.1 1.5-1.1 2.1-1 1.1-0.4 1.1-0.1 1.8 0.3 7.9-0.4 1 0.2 0.9 0.3 1.3 0.7 2.6 2 1.2 0.6 2.3-0.6 1.1-2 0.6-2.4 0.7-2 0.7-0.7 2-1.7 0.8-1 1.3-2.1 0.8-0.9 1-0.9 1.3-0.4 2.3-1.1 2.7-0.9 1.4-0.9 1.1-1.1 0.9-1.2 0.3-0.8 0-0.5 0.2-0.5 0.7-0.6 0.6-0.2 3-0.1 0.7-0.1 0.7-0.2 0.5-0.4 0.1-0.7-0.4-1.4 0.1-0.6 1-0.5 1.5-0.3 2.7-0.1 1.2 0.2 2.6 0.7 1.1 0 0.8-0.5 0.5-0.7 0.4-0.8 0.5-0.5 0.7-0.2 1.3-0.1 0.7-0.1 3.1-1.8 10.6-10.9 8.7-6.7 1.2-0.7 5.4-2.1 0.7-0.4 0.3-0.5 0.2-0.8 0.2-0.7 0.4-0.5 0.7-0.2 7.8-1.4 4 0.3 1.3-0.2 1.3-0.4 2.8-1.6 1-0.4 6.5-1 1.2-0.4 2-1.4 1.2-0.5 3.6-0.3 0.3 0.1 0.2 0.3 0.3 0.2 0.4 0.1 0.3-0.3 0.4-0.8 0.3-0.2 1-0.2 0.4 0.1 0.8 0.3 1.7 1 0.9 0.2 1.2-0.2 3-1.9 1.2-0.3 1.2-0.1 0.9 0.1 2.7 0.6 0.8 0.1 0.8-0.5 1.1-1.1 0.1 0.5 0.3 0.5 0.3 0.6 0.4 0.2 0.7-0.1 0.2-0.6-0.1-0.7 0.1-0.5 0.6-1.3 0.4-0.3 0.4 0.9 0.1 0.6 0.2 0.5 0.3 0.4 0.6 0.2 2.5-1 1-0.1-0.2 1.6-0.3 0.8 0.3 0.2 0.6-0.1 0.5 0.1 0.2 0 0.7-0.3 0.3 0 0.4 0.2 0.6 0.7 0.3 0.3 2 1.3 0.9 0.5 1.2 0.2 0.8 0 0.3-0.3 0.2-0.5 0.3-0.5 0.1-0.2 0.1-0.6 0.1-0.3 0.3-0.2 0.8-0.1 0.3-0.1 0.7-0.9 0.7-1 0.2-0.6 0.3-1 0.4-0.6 3-2.5 0.9-1 0.6-0.1 1.8 0 1.2 0.4 1.8 1.6 0.9 2.1 0.2 0.2 0.9 3 0.6 0.7 0.9 0.8 0.8 0.9 0.4 1-0.3 1.6-1.4 2.7-0.6 1.5-0.2 2.7 0.3 2.7 0.5 2.6 1.3 3.4 0.2 1.5 0.2 2.9 0.1 0.6 0.7 1.6 0.1 0.7-0.2 0.6-1.1 1.8-0.7 3.2-0.8 1.6-2.5 1.2-0.9 1.3-0.7 1.5-0.3 1.2 0.1 0.5 0.1 0.2 0.3 0.3-1.6 2.8-0.9 0.9-1.6 0.4 0 0.4 0.7 1.2 0.2 0.5-0.1 0.3-0.3 0.6-0.1 0.4 0.1 0.6 0.2 0.7 0.2 0.6 0.2 0.2 0.2 0.7-0.4 3.3 0 1 1.1 1.3 1.2 0.7 0.9 1 0.4 1.9-0.1 1.2-0.5 2.5-1 3.1 0.4 0.8 2.6 0.7 1.1 0.8 1 1.1 0.6 1 0.4 5.7 0.2 0.4 0.3 0.4 0.4 0.5 0 0.8-0.3 0.6-0.4 0.4-0.5 0.4-0.6 0.4-1 1.6-0.1 1.2 0.4 1.2 0.2 1.4-0.5 1.2-2.5 2-1 1.1-0.2 1.7 0.8 1 1.1 0.8 0.6 0.9-0.4 1-0.9 0.6-0.6 0.7 0.1 1.6 0.8 1.3 1.4 1 1.2 0.7 0.6 0.4-0.3 0.9-1.1 1.3-0.4 0.8-0.1 0.7 0.1 0.5 2.2 5.8 1.8 1.9 2.3-0.6 1.6 0.9 0.7 0.6 0.5 0.8 0 0.7-0.5 1.2 0 0.9 0.2 0.9 0.4 0.2 0.4 0 0.8 0.3 1.4 1 0.5 0.6-1.6 0.5-0.2 0.6 0.3 1.6-0.1 0.7-0.6 1-0.1 0.7 0 2.4 0.4 0.9 0.9 1 1.2 0.9 0.8 0.3 0.5-0.7 0.4-3.2 0.3-0.9 0.4-0.5 0.9-0.3 0.2 0.6-0.2 1.6 0.9 0.9 1.2 0.5 1.1 0.6 0.6 2.2 0.8 1.5 0.3 0.7 0.1 0.7-0.1 1.3 0 0.7 0.4 1.4 0.3 0.6 0.7 0.4 0.2 0 0.7 0.3 0.4 0.7 0.1 0.8-0.3 0.7-0.9 1.3-0.1 1.2 0.5 1.1 0.7 0.8 1 0.5 1 0.3 2.8 0.1 1.4 0.3 1.4 0.5 1.4 0.2 1.4-0.6 0.8 0.4 1.2 0.3 1.1 0.4 0.5 1 0.3 1.4 0.8 1.2 2.1 2.3-0.5 0.9 0.3 0.8 0.8 0.3 0.8-0.2 0.1-0.6 0.3-1.7 0.2-0.4 1.1-0.2 0.2 0.4 0.3 1.1 0 0.6-0.4 0.8 0 0.5 0.2 0.3 0.5 0.6 0.2 0.2 0.6 0.7 1.6 1 3.2 1.4 0.8 0.1 1.7 0 0.4 0.1 1.1 0.9 1.3 0.7 0.1-0.2 0-0.2 0.1-0.1 1 0.1 0.3 0.1 1.1 1 0.2 0.5 0.1 0.8-0.1 1.5-0.3 1.4-1.2 2.7 0.2 1.2 0.4 0.3 1.4 0.5 0.6 0.3 0.6 0.7 0.8 1.4 0.5 0.7 0.8 0.9 1.1 0.8 1.2 0.6 1.6 0.2 2.6-0.5 1 0.3 0.7 2.1 0.6 0.2 0.6-0.2 0.4-0.1 0.4-0.3 0.7-0.8 0.7-0.2 1.4-0.2 1.1 0.4 1 0.6 1.8 2 0.7 0.2 0.7-0.7 0.9-1.4 1 1.2 4 0.1 1.4 2 1.3-0.2 2-0.8 0.9 0.3 0.6 0.6 0.7 0.5 1.2 0 0.8-0.7 0.4-0.6 0.4-0.6 2.2-2.8 0.1-0.4 1.1-0.1 2-0.7 0.9-0.1 9.5 1.4 0.2 0.1 3.5 1.9 2.8 2.3 1.1 0.5 1.4 0.3 0.9 0 0.7 0.1 0.7 0.3 0.6 0.5 0.5 0.7 0.1 0.7 0.1 0.6 0.2 0.7 0.6 0.5 0.5 0.2 0.5 0.2 0.2 0.8 0.3 0.4 2.5 1.9 1.4 0.4 0.8 0.3 1.9 1.5 0.8 0.3 4.7 0 0.7-0.2 0.3-0.5 0.6-0.6 1.4-1 0.3 0 0.8 0.1 0.3-0.1 0.3-0.3 0.3-0.7 0.3-0.3 1.8-0.8 0.2-0.2 0.7 0.2 1.3 0.6 2 0.5 0.7 0.9 0.5 2.4 0.2 0.5 0.5 0.3 0.2 0.4-0.5 0.8-0.1 0.4 0.1 0.4 0.2 0.3 1.5 1.2 0.7 0.9 0.3 0.6 0.2 1.5 0.5 1.3 0.8 1 0.8 0.6 0.7 0.3 0.6 0 0.6-0.1 0.6-0.4 0.6-0.2 0.3 0.4 0.2 0.7 3.5 4.5 0.2 0.4 0.3 0.3 0.7 0.2 0.7 0 0.5 0.1 0.3 0.4 0.1 0.6 0.3 1.1 0.9 0.9 1.1 0.8 1.3 0.7 0.1-1.4 0.7-0.3 1.1 0 1.3-0.2 0.8-0.5 0.7-0.6 0.8-0.1 1.3 0.8 0.6 0.5 0.4 0.6 0.3 0.6 0.1 1.6 0.3 0.3 5.7 2.5 4.1-0.1 1.3 0.2 0.9 0.6 1.8 2.2 0.2 0.3 0.1 0.7 0.2 0.1 0.9 0 0.2 0 1.2 0.7 0.5 0.2 3.1 0.4 0.8-0.1 0.8-0.7 1.3 0.6 1.1-0.3 1-0.5 2.4-0.6 0.7-0.1 0.7 0.2 1.8 1.2 0.1-1.6 0.6 0.2 1.5 1.8 0.7 0.3 0.6-0.2 0.4 0.1 0.1 1 0 4.5 0.2 1.2 0.7 0.9 1.4 1.1 2.9 3.2 0.9 0.5 0.1 0.2 1 1.6 0.4 0.3 1.4 0.7 1.2 0.7 3.2 3.2 0.6 0.5 1.3 0.6 0.5 0.5 0.3 0.5 1.3 4.6 0.8 0.6 1.5 0.3 1.3-0.3 1.3-0.4 1.3-0.3 1.3 0.6 1.2-0.8 1.5-0.6 1.7-0.4 4.7-0.4 0.2 0.1 0.3 0 1.8 1.7 0.7 0.4 3.1 0.7 3-0.3 2.8-1.1 4.5-2.3 1 0 1 0.5 2.4 0.4 1.3 0.8 0.8 0.3 0.7 0 1.5-0.4 4.4 0.1 0.6-0.4 0.4-1.3 1-0.7 2.8-0.4 0.2-0.2 0.8-0.5 0.9-0.2 0.4 0.7 0 2.7 1.2 1.4 2.9 0.5 3.2 0.2 2.2 0.5 1.2 1.2 0.5 0.3 4.5 1.9 5 4 4.8 3.8 2.3 1.2 1.5 0.4 0.5 0.2 0.2 0.3 0.4 0.8 0.2 0.3 0.6 0.3 5 1.2 1.2 0.7 0.5 1.2 0.1 1.9 0.4 1.8 0.6 1.8 0.6 1.4 0.6 0.6 1.4 1.2 0.1 0.4-0.3 0.7 0.4 0.4 0.7 0.3 0.4 0.3 0.1 0.6 0 0.4-0.6 1.3-0.8 3.1-0.7 1.5-1.2 1-1.6 0.5-0.4 0.3-0.4 0.9-0.2 1.6-0.1 1.5 0.2 0.9 0.9 1.6 0 1.7-0.2 1.8 0 1.9 0.7 1.2 3.6 3 0.5 1.1 1 4.3 2.2 4.8 0.3 2.9-2 0.7 1.1 2.2 3.2 2.2 0.8 1.5 0.2 4.1 0.3 5.6 0.2 5.6 0.3 5.6 0.2 5.6 0.3 4.4-0.4 0.8-7.5 0.1-12.7 0.1 3.5 3.1 4.5 5.5 7.1 8.6 6.1 7.2 0.9 1.5 0.5 1.7 0.9 10.2 1.2 13.8 0.9 10.1 0.4 7.4 0.5 7.7 1.2 3 2.1 0.6 4.5 0.1 12.6 0.5 12.5 0.4 12.6 0.5 12.5 0.4 12.5 0.5 12.6 0.5 12.5 0.4 12.6 0.5 4.7 0.1 1.5-0.1 1.3-0.7 0.5-0.7 1-1.7 0.4-0.3 2.9 0.1 0.7 0.6 0.3 6.6-0.3 1-1.5 1.3-0.1 1.2 1.3 2.5-0.8 2.5-6.6 7.5-1.1 2.1-0.5 2.3 0.2 3 1.4 5.2 0.2 2.7-0.2 0.5-0.5 1.2-0.2 0.6 0 0.9 0.7 3.4 1.1 2.1 0.4 1.2 0.4 4.8 0.3 1.1 0.7 1.2 0.4 1.5 0.1 6.2 0.3 2.6 1.2 2 2.5 1.4 2.1 0.3 0.6 0.2 0.7 0.4 1.1 1 0.7 0.4 0.5 0.1 1.1 0.2 0.6 0.3 0.7 1 1.1 2.3 1 0.8 0.9 0.2 0.8 0.1 0.7 0.2 0.8 0.6 1.8 2 0.8 0.5 2.3 1 0.8 0.5 2.8 2.4 1.9 0.8 2.5 0.6 2.5 0.2 1.9-0.6 1.5-0.2 1.2 0.1 1.4 0.6 0.9 1 0.7 1.5 0.2 1.7-0.1 1.7 0.1 1.1 0 2.7 0.1 1.2 0.5 1.3 0.7 0.9 0.9 0.8 0.9 0.7 1.1 0.4-0.6 2.2 0.2 0.8 1.2 1.5 1 1.7-0.2 1.2-2 0.2 6.1 10.7 3.4 8.5 2.3 4.2 2.6 1.5 1.3 0 1.1 0.2 0.6 0.6-0.1 1.6-4.5 0-1.2 0.3-0.9 0.8-1 3.4-3.1 9.9-3.1 9.9-3.1 10-3.1 9.9-0.8 2.4 2.7 0.2 0.7 0.6 0.3 1.3 0.3 4.2 0.4 3-3.7 0.3-1.1 0.7-1.5 3.2-2.1 4.3-4.5 9.5-4.5 9.5-2 4.3-0.8 1.8-1.8 3.8-1.8 3.8-0.8 1.7-2.3 4.9 0.5 2 5 4.6 5.3 4.9 6.6 6.1-0.6 0.9-0.8 1.1-0.9 1-1.5 0.7-1.6-0.4-1.1-0.1-0.5 0.3-0.1 0.6-0.5 0.6-0.6 0.4-0.8 0.1-1.7 0.7-2 3-1.7 0.7-0.5 0.2-0.8 1.2-0.3 0.4-0.8 0.5-2.8 1-0.1-1.8 1-3.7 0.1-1.5-0.1-2.9 0.2-1.6-0.2-2.2-1.2-4-0.1-2.2 0.2-2.4-0.2-1-0.7-0.8-2.6-1.6-6.2-3.8-6.1-3.8-6.1-3.9-6.2-3.8-6.1-3.8-6.2-3.8-6.1-3.9-6.1-3.8-3.4-2-1.8-1.4-2-1.4-1.3-0.3-5.4 0-12.4 0.2-12.4 0.2-12.4 0.1-12.4 0.2-5.4 0.1-9.9 2.1-22.3 4.9-22.3 4.8-22.3 4.9-22.3 4.8-1.4 0.3-3.1 0.4-3.1 0.5-1.4 0.2-5.9 0.9-1 0.5-0.6 0.8-1.2 3.4-1.8 5.2-1.9 5.1-1.8 5.2-1.9 5.1-0.9 1.8-0.8 1.8-0.4 0.9-0.5 0.9-0.8 1.8-1.1 1.7-1.1 1.7-1.1 1.7-1.1 1.6-2.9 4.3-3 4.3-2.9 4.3-3 4.2-1.3 2-1.5 2.1-2.4 3.7-0.5 1.8 0 6.4 0.1 6.2 0.1 6.8 0.1 10.3-0.2 4.6-2.2 7.3-2.1 7.3-2.3 7.9-2.4 8.2-2.3 7.5-3 10.3-2.4 8-2.9 9.7-1.7 6.3-1.9 6.7-1.5 3.6-0.6-0.2-0.2-0.5 0-0.7-0.3-0.6-0.8-0.8-2.8-2.1-3.1-1.5-1-1-0.5-1.2 0-2.3-0.4-0.9 0.2-0.5 0-0.7-0.4-2.7-0.2-0.7-1-0.2-2.8-0.6-9.8 0.6-20.7-0.1-20.7-0.2-2.6 0.5-1 0.6-3.1 2.7-0.7-0.3-2.7-2.5-1.4-0.6-6.1-0.4-1.8 0.3-0.9 0.5-0.2 0.2-0.1 0.4-0.6 1.6-0.2 1.4-0.3 0.5-0.5 0.6-0.5 0.2-0.4 0.2-0.4 0.2-0.6 1.2-1 4-2 5.2-0.5 0.8-1.4 0.7-0.5 0.6-4.8 12.8-1.6 2.3-3.4 3.3-1 1.7-2.8 10.7-0.1 5.1-0.6 1.4-1.5 5.5 0.1 0.9-1.2-0.6-0.3-3.3-0.8-1 0.5-1.7-0.2-1.9-0.9-1.6-1.4-0.7-0.7-0.6-1.8-3.8-0.6-0.5-0.6-0.2-0.4-0.4-0.2-1.1 0.1-0.8 0.3-1.4 0-0.7 0.3-0.8 0.5-0.6 0.5-0.7 0.1-1.1-3.6-3.6-1-1.3-0.4-1.7-0.2-0.4-1.2-0.8-0.4-0.5 0.1-0.7 0.5-1.4-0.1-0.8-0.9-0.8-1.4-0.9-0.8-1.3 0.6-1.6 0.9-1.1 0.4-1 0-1.1-0.6-1.5-0.6-0.8-1.7-2.2-0.6-0.4-1.4-0.3-1.4-0.8-1.3-0.9-1.4-0.2-0.5-0.2-0.6 0.1-1.2 0.5-0.6 0.1-2.6-0.6-4.6-2.6-12.4-2.9-11.2 0.1-17.5 0.2-3.5-0.4-4.6-0.6-0.6 0-0.3 0.3-0.3 0.3-0.5 0.3-9.2 1-2-0.6-1.9-1.4-8.4-10-1.5-0.8-6-1.1-0.4-0.4-0.8-3.4-2-2.2-2.8-1.5-5.6-1.8-1.2 0.4-3.1 11.7-0.6 6.6-0.3 1-0.4 0.9-0.2 0.1-0.2-0.2-0.9 0.1-0.5 0.4-0.6 0.5-0.4 0.7-0.2 0.7-1.6 1.2-8.8 2.6-7.6 2.1-0.3 0.3-0.2 0.6-0.2 0.4-0.3 0.1-1.1-0.3-1.3-0.2-0.7-0.2-0.7-0.1-0.9 0.4-1.5 1.3-0.9 1.4-0.5 1.7-0.7 5.3-0.5 1.6-0.9 1-0.1 0.6 0.4 2.1-0.1 0.7-0.7 0.5-7.4 2.4-1.8 0.9-1.3 1.4-0.6 1-0.9 0.6-1 0.2-1.4-0.1-1.2 0 0.6 6.7-0.2 1.5-0.7 1.1-5 4-1.9 2.3-3.4 5.7-20.8 4.5-2.4 0.5-4.6 0.3-10.2-0.6-2.1-0.7-0.5-0.5-1.5-2.2-0.3 0-2.5-0.5-0.7-1.1-0.3-1.8 0-5.5 2.1-10.6 0-1.4-2-4-0.6-3.6-0.5-1.5-2.6-4.7-0.4-1.4 0-1.4 1.1-4.5 0-1.4-0.6-1.7-1.9-2.7-0.2-0.7 0.2-0.7 0.8-1.2 0.3-0.6-0.3-1.6-0.8-1.7-1.1-1.5-1.3-0.9-3.2-3.1-1.6-1.5-0.6-0.8-0.3-1.1-0.7-11.6-1.4-5.5-4.1-7.5-0.5-2.4 0.3-17.3-0.9-3.1-13.8-22.9-1-1-1.5-0.4-2.7 0.1-1-0.1-1.4-0.9-1.5-0.9-1.1-3-0.1-9.1 0.5-1.6 1-1.5 4.5-3.9 0.1-1.3-2-1.6-1.7-0.7-3.1-2-6.7-3.3-1.5-1.1-1.4-1.5-1.4-1.9-1-2.2-0.2-2.2 0.7-1.8 1.5-1.2 3.8-1.3-2.6-4.7-0.8-2.3 0.1-2.8 0.3-2-0.2-0.7-2.1-0.4-2-1.3-0.3-1.4 1.2-1.2 8-2.5 2.1-0.2 0.9 0.2 0.7 0.2 0.6-0.1 0.6-0.7 0.3-0.7 0.6-2.4 0-1.4 1.4-3.2 0.2-1-0.1-0.5-0.3-0.4-0.3-0.9 0-2.1-0.1-0.5-0.5-1-0.6-0.4-2.1-0.9-1.1-0.8-2.1-2.2-3.2-2.5-0.4-0.9 0.1-1.3 0.9-1.4 2.7-2.4 1.2-1.3 3.6-5.4 2.9-4.5 1.4-2 1-0.9 2.6-1.2 0.6-0.5-0.5-1.3-1.2-1.4-1.3-1.3-7.1-5.2-2.3-0.9-1.8-1.1-2.4-4.1-1.5-1.6-6.2-5.5-2.1-1.5-3.1-1.1-0.9-0.6-0.7-1-1.6-3.6-1.2-2.2-0.8-1-1-0.6 1.9-2.7 0.6-1.3 0-1.5-0.2-0.8-3.7-7.7 0-0.1 0-0.1 0.5-0.9 0.1-1-0.1-0.9-0.5-0.9-1.5-2.8-0.6-3.4 0-3.6 0.5-3.3 0-1.6-0.5-1.4-2.3-4.1-0.3-1.1 0.2-3.8-0.1-0.6-1-3-0.1-0.6 0-0.7-0.2-1.6-0.7-1.1-2-2.2-0.9-3.2 1.9-2.1 2.4-1.9 0.5-3-0.7-1.1-0.8 0-1 0.4-1.4 0.1-1.1-0.4-1.1-0.4-2-1.3-1.5-0.4-0.5-0.1-0.4-0.5-1.4-1.5-1 0.2-0.8 0.6-0.8 0-1-1.7-0.6-2.5-0.1-5.1-0.4-2.5-1.7-3.2-2.3-2.6-5.3-4.8-1.4-2.1-0.6-2.5-0.3-5.5z"
+                    fill="rgba(200,150,12,0.08)" stroke="#C8960C" stroke-width="5" />
                 </g>
+              </g>
 
-                <!-- ── CALLE / VÍA PÚBLICA ── -->
-                <g opacity="0.35" stroke="#C8960C" fill="none">
-                  <line x1="0" y1="35" x2="420" y2="35" stroke-width="0.5" stroke-dasharray="8,4" />
-                  <text x="16" y="27" font-family="DM Mono,monospace" font-size="7" fill="#C8960C">AV. PRINCIPAL —
-                    VIACHA</text>
-                </g>
+              <!-- ── LABEL BOLIVIA ── -->
+              <text x="195" y="170" font-family="DM Mono,monospace" font-size="8" fill="#C8960C" text-anchor="middle"
+                letter-spacing="0.12em">BOLIVIA</text>
+              <circle cx="155" cy="158" r="16" fill="none" stroke="#C8960C" stroke-width="0.8" opacity="0.35"
+                class="lpaz-pulse-outer" />
+              <!-- Anillo de pulso medio -->
+              <circle cx="155" cy="158" r="10" fill="none" stroke="#C8960C" stroke-width="1" opacity="0.55"
+                class="lpaz-pulse-mid" />
+              <!-- Punto central -->
+              <circle cx="155" cy="158" r="4" fill="rgba(200,150,12,0.9)" stroke="#C8960C" stroke-width="1.2"
+                filter="url(#lpaz-glow)" class="lpaz-dot" />
+              <!-- Punto interior brillante -->
+              <circle cx="155" cy="158" r="1.8" fill="#fff" opacity="0.9" />
 
-                <!-- ── PARCELA CATASTRAL PRINCIPAL (PREDIO 0344) ── -->
-                <polygon points="105,105 245,98 268,135 260,235 180,250 140,245 108,200" fill="rgba(200,150,12,0.07)"
-                  stroke="#C8960C" stroke-width="1.3" opacity="0.9" />
+              <!-- ══ NORTE GEOGRÁFICO — integrado junto a Bolivia ══ -->
+              <g transform="translate(330,130)">
+                <circle cx="0" cy="0" r="36" fill="rgba(13,27,42,0.82)" stroke="#C8960C" stroke-width="0.9" />
+                <circle cx="0" cy="0" r="28" fill="none" stroke="#C8960C" stroke-width="0.35" opacity="0.4" />
+                <circle cx="0" cy="0" r="32" fill="none" stroke="#C8960C" stroke-width="0.2" opacity="0.25" />
 
-                <!-- Vértices -->
-                <g fill="#C8960C" opacity="0.95">
-                  <circle cx="105" cy="105" r="2.8" />
-                  <circle cx="245" cy="98" r="2.8" />
-                  <circle cx="268" cy="135" r="2.8" />
-                  <circle cx="260" cy="235" r="2.8" />
-                  <circle cx="180" cy="250" r="2.8" />
-                  <circle cx="140" cy="245" r="2.8" />
-                  <circle cx="108" cy="200" r="2.8" />
-                </g>
+                <line x1="0" y1="-28" x2="0" y2="-36" stroke="#C8960C" stroke-width="1.4" />
+                <line x1="0" y1="28" x2="0" y2="36" stroke="#C8960C" stroke-width="0.9" />
+                <line x1="-28" y1="0" x2="-36" y2="0" stroke="#C8960C" stroke-width="0.9" />
+                <line x1="28" y1="0" x2="36" y2="0" stroke="#C8960C" stroke-width="0.9" />
 
-                <!-- Numeración de vértices -->
-                <g font-family="DM Mono,monospace" font-size="7" fill="#C8960C" opacity="0.55">
-                  <text x="94" y="101">V1</text>
-                  <text x="248" y="94">V2</text>
-                  <text x="272" y="130">V3</text>
-                  <text x="264" y="248">V4</text>
-                  <text x="178" y="267">V5</text>
-                  <text x="127" y="260">V6</text>
-                  <text x="88" y="203">V7</text>
-                </g>
+                <line x1="19.8" y1="-19.8" x2="22.6" y2="-22.6" stroke="#C8960C" stroke-width="0.5" opacity="0.5" />
+                <line x1="19.8" y1="19.8" x2="22.6" y2="22.6" stroke="#C8960C" stroke-width="0.5" opacity="0.5" />
+                <line x1="-19.8" y1="19.8" x2="-22.6" y2="22.6" stroke="#C8960C" stroke-width="0.5" opacity="0.5" />
+                <line x1="-19.8" y1="-19.8" x2="-22.6" y2="-22.6" stroke="#C8960C" stroke-width="0.5" opacity="0.5" />
 
-                <!-- ── ACOTACIONES ── -->
-                <g font-family="DM Mono,monospace" font-size="8" fill="#C8960C" opacity="0.75" stroke="#C8960C"
-                  stroke-width="0.7">
+                <polygon points="0,-24 7,5 0,0" fill="#C8960C" />
+                <polygon points="0,-24 -7,5 0,0" fill="rgba(200,150,12,0.22)" />
+                <polygon points="0,24 5,5 0,0" fill="rgba(200,150,12,0.18)" />
+                <polygon points="0,24 -5,5 0,0" fill="rgba(200,150,12,0.08)" />
+                <circle cx="0" cy="0" r="3" fill="rgba(13,27,42,0.95)" stroke="#C8960C" stroke-width="0.9" />
 
-                  <!-- Norte (V1→V2): 15.20m -->
-                  <line x1="105" y1="96" x2="245" y2="89" />
-                  <line x1="105" y1="92" x2="105" y2="100" />
-                  <line x1="245" y1="85" x2="245" y2="93" />
-                  <text x="168" y="88" text-anchor="middle" font-size="7.5">15.20m</text>
+                <text x="0" y="-40" font-family="DM Mono,monospace" font-size="13" fill="#C8960C" text-anchor="middle"
+                  font-weight="bold" letter-spacing="0.08em">N</text>
+                <text x="0" y="48" font-family="DM Mono,monospace" font-size="7" fill="#C8960C"
+                  text-anchor="middle">S</text>
+                <text x="46" y="3" font-family="DM Mono,monospace" font-size="7" fill="#C8960C"
+                  text-anchor="middle">E</text>
+                <text x="-46" y="3" font-family="DM Mono,monospace" font-size="7" fill="#C8960C"
+                  text-anchor="middle">W</text>
+              </g>
+              <!-- ── GRILLA GEODÉSICA DE FONDO ── -->
+              <g fill="none" stroke="#C8960C" stroke-width="0.3">
+                <line x1="0" y1="70" x2="420" y2="70" />
+                <line x1="0" y1="140" x2="420" y2="140" />
+                <line x1="0" y1="210" x2="420" y2="210" />
+                <line x1="0" y1="280" x2="420" y2="280" />
+                <line x1="0" y1="350" x2="420" y2="350" />
+                <line x1="70" y1="0" x2="70" y2="420" />
+                <line x1="140" y1="0" x2="140" y2="420" />
+                <line x1="210" y1="0" x2="210" y2="420" />
+                <line x1="280" y1="0" x2="280" y2="420" />
+                <line x1="350" y1="0" x2="350" y2="420" />
+              </g>
 
-                  <!-- Este (V2→V4): 10.80m -->
-                  <line x1="271" y1="135" x2="279" y2="135" />
-                  <line x1="275" y1="135" x2="275" y2="235" />
-                  <line x1="271" y1="235" x2="279" y2="235" />
-                  <text x="288" y="188" text-anchor="start" font-size="7.5">10.80m</text>
-
-                  <!-- Sur (V6→V4): 12.60m -->
-                  <line x1="140" y1="252" x2="260" y2="242" />
-                  <text x="198" y="265" text-anchor="middle" font-size="7.5">12.60m</text>
-
-                  <!-- Oeste (V1→V7): 9.40m -->
-                  <line x1="95" y1="105" x2="95" y2="200" />
-                  <text x="80" y="156" text-anchor="end" font-size="7.5">9.40m</text>
-                </g>
-
-                <!-- ── IDENTIFICACIÓN DEL PREDIO ── -->
-                <text x="185" y="152" font-family="DM Mono,monospace" font-size="8.5" fill="#C8960C"
-                  text-anchor="middle" font-weight="bold" opacity="0.9">PREDIO 0344</text>
-                <text x="185" y="164" font-family="DM Mono,monospace" font-size="6.5" fill="#C8960C"
-                  text-anchor="middle" opacity="0.55">URB. VIACHA · La Paz</text>
-
-                <!-- ── PUNTO DE REFERENCIA CON COORDENADA 17°02'20.20" ── -->
-                <!-- Punto -->
-                <circle cx="185" cy="178" r="4.5" fill="none" stroke="#C8960C" stroke-width="1.6" opacity="0.95" />
-                <circle cx="185" cy="178" r="1.8" fill="#C8960C" opacity="0.95" />
-                <!-- Cruz de puntero -->
-                <line x1="185" y1="166" x2="185" y2="158" stroke="#C8960C" stroke-width="0.9" opacity="0.7" />
-                <line x1="185" y1="190" x2="185" y2="198" stroke="#C8960C" stroke-width="0.9" opacity="0.7" />
-                <line x1="173" y1="178" x2="165" y2="178" stroke="#C8960C" stroke-width="0.9" opacity="0.7" />
-                <line x1="197" y1="178" x2="205" y2="178" stroke="#C8960C" stroke-width="0.9" opacity="0.7" />
-
-                <!-- Línea punteada al callout -->
-                <line x1="193" y1="171" x2="310" y2="125" stroke="#C8960C" stroke-width="0.9" stroke-dasharray="3,2"
-                  opacity="0.65" />
-
-                <!-- Caja de coordenada técnica -->
-                <rect x="308" y="106" width="106" height="50" rx="3" fill="rgba(13,27,42,0.9)" stroke="#C8960C"
-                  stroke-width="0.9" />
-                <line x1="308" y1="119" x2="414" y2="119" stroke="#C8960C" stroke-width="0.4" opacity="0.5" />
-
-                <text x="313" y="117" font-family="DM Mono,monospace" font-size="6.5" fill="#C8960C" opacity="0.6"
-                  letter-spacing="0.05em">COORD. REFERENCIA</text>
-                <text x="313" y="131" font-family="DM Mono,monospace" font-size="8" fill="#C8960C" font-weight="bold"
-                  letter-spacing="0.03em">17°02'20.20"</text>
-                <text x="313" y="142" font-family="DM Mono,monospace" font-size="6.5" fill="#C8960C" opacity="0.7">S
-                  68°17'45.88" W</text>
-                <text x="313" y="151" font-family="DM Mono,monospace" font-size="6" fill="#C8960C" opacity="0.45">alt.
-                  3827m · WGS84</text>
-
-                <!-- ── PARCELAS VECINAS ── -->
-                <g fill="none" stroke="#C8960C" stroke-width="0.5" opacity="0.28">
-                  <rect x="115" y="38" width="120" height="60" fill="rgba(200,150,12,0.03)" />
-                  <text x="175" y="72" font-family="DM Mono,monospace" font-size="6.5" fill="#C8960C"
-                    text-anchor="middle">PREDIO 0342</text>
-
-                  <polygon points="268,100 355,106 358,228 268,235" fill="rgba(200,150,12,0.03)" />
-                  <text x="310" y="172" font-family="DM Mono,monospace" font-size="6" fill="#C8960C"
-                    text-anchor="middle">0343</text>
-
-                  <polygon points="98,248 262,260 257,325 96,315" fill="rgba(200,150,12,0.03)" />
-                  <text x="178" y="292" font-family="DM Mono,monospace" font-size="6.5" fill="#C8960C"
-                    text-anchor="middle">PREDIO 0341</text>
-
-                  <polygon points="35,96 105,100 108,200 38,207" fill="rgba(200,150,12,0.03)" />
-                  <text x="70" y="155" font-family="DM Mono,monospace" font-size="6" fill="#C8960C"
-                    text-anchor="middle">0340</text>
-                </g>
-
-                <!-- ── ESCALA GRÁFICA ── -->
-                <g transform="translate(22,378)" opacity="0.6">
-                  <line x1="0" y1="0" x2="64" y2="0" stroke="#C8960C" stroke-width="1.1" />
-                  <line x1="0" y1="-4" x2="0" y2="4" stroke="#C8960C" stroke-width="1.1" />
-                  <line x1="32" y1="-3" x2="32" y2="3" stroke="#C8960C" stroke-width="0.7" />
-                  <line x1="64" y1="-4" x2="64" y2="4" stroke="#C8960C" stroke-width="1.1" />
-                  <text x="0" y="-7" font-family="DM Mono,monospace" font-size="7" fill="#C8960C"
-                    text-anchor="middle">0</text>
-                  <text x="32" y="-7" font-family="DM Mono,monospace" font-size="7" fill="#C8960C"
-                    text-anchor="middle">5m</text>
-                  <text x="64" y="-7" font-family="DM Mono,monospace" font-size="7" fill="#C8960C"
-                    text-anchor="middle">10m</text>
-                  <text x="0" y="12" font-family="DM Mono,monospace" font-size="6" fill="#C8960C" opacity="0.45">E:
-                    1/200 · GAMV</text>
-                </g>
-
-                <!-- ── SELLO INFERIOR ── -->
-                <rect x="22" y="395" width="205" height="22" rx="2" fill="rgba(13,27,42,0.8)" stroke="#C8960C"
-                  stroke-width="0.6" opacity="0.65" />
-                <line x1="22" y1="405" x2="227" y2="405" stroke="#C8960C" stroke-width="0.4" opacity="0.45" />
-                <text x="114" y="403" font-family="DM Mono,monospace" font-size="6.5" fill="#C8960C"
-                  text-anchor="middle" opacity="0.7" letter-spacing="0.06em">PLANO CATASTRAL URBANO</text>
-                <text x="114" y="413" font-family="DM Mono,monospace" font-size="6" fill="#C8960C" text-anchor="middle"
-                  opacity="0.55">LexGeoCat · R.N.T. Nº 970285</text>
-
-                <!-- ════════════════════════════════════════════════
-         ROSA DE LOS VIENTOS — PROFESIONAL TÉCNICA
-         Posición: esquina superior derecha del plano
-         ════════════════════════════════════════════════ -->
-                <g transform="translate(346,46)" opacity="0.95">
-
-                  <!-- Anillo exterior decorativo -->
-                  <circle cx="0" cy="0" r="36" fill="rgba(13,27,42,0.82)" stroke="#C8960C" stroke-width="0.9" />
-                  <!-- Anillo interior guía -->
-                  <circle cx="0" cy="0" r="28" fill="none" stroke="#C8960C" stroke-width="0.35" opacity="0.4" />
-                  <!-- Anillo decorativo intermedio -->
-                  <circle cx="0" cy="0" r="32" fill="none" stroke="#C8960C" stroke-width="0.2" opacity="0.25" />
-
-                  <!-- ── TICKS CARDINALES ── -->
-                  <line x1="0" y1="-28" x2="0" y2="-36" stroke="#C8960C" stroke-width="1.4" />
-                  <line x1="0" y1="28" x2="0" y2="36" stroke="#C8960C" stroke-width="0.9" />
-                  <line x1="-28" y1="0" x2="-36" y2="0" stroke="#C8960C" stroke-width="0.9" />
-                  <line x1="28" y1="0" x2="36" y2="0" stroke="#C8960C" stroke-width="0.9" />
-
-                  <!-- ── TICKS INTERCARDINALES ── -->
-                  <line x1="19.8" y1="-19.8" x2="22.6" y2="-22.6" stroke="#C8960C" stroke-width="0.5" opacity="0.5" />
-                  <line x1="19.8" y1="19.8" x2="22.6" y2="22.6" stroke="#C8960C" stroke-width="0.5" opacity="0.5" />
-                  <line x1="-19.8" y1="19.8" x2="-22.6" y2="22.6" stroke="#C8960C" stroke-width="0.5" opacity="0.5" />
-                  <line x1="-19.8" y1="-19.8" x2="-22.6" y2="-22.6" stroke="#C8960C" stroke-width="0.5" opacity="0.5" />
-
-                  <!-- ── FLECHA NORTE — bicolor técnica ── -->
-                  <!-- mitad derecha (iluminada) -->
-                  <polygon points="0,-24 7,5 0,0" fill="#C8960C" />
-                  <!-- mitad izquierda (sombra) -->
-                  <polygon points="0,-24 -7,5 0,0" fill="rgba(200,150,12,0.22)" />
-                  <!-- balanceo sur -->
-                  <polygon points="0,24 5,5 0,0" fill="rgba(200,150,12,0.18)" />
-                  <polygon points="0,24 -5,5 0,0" fill="rgba(200,150,12,0.08)" />
-
-                  <!-- Centro -->
-                  <circle cx="0" cy="0" r="3" fill="rgba(13,27,42,0.95)" stroke="#C8960C" stroke-width="0.9" />
-
-                  <!-- ══ N — grande, sobre la flecha ══ -->
-                  <text x="0" y="-40" font-family="DM Mono,monospace" font-size="13" fill="#C8960C" text-anchor="middle"
-                    font-weight="bold" letter-spacing="0.08em">N</text>
-
-                  <!-- ── S, E, O ── -->
-                  <text x="0" y="48" font-family="DM Mono,monospace" font-size="7" fill="#C8960C" text-anchor="middle"
-                    opacity="0.55">S</text>
-                  <text x="46" y="3" font-family="DM Mono,monospace" font-size="7" fill="#C8960C" text-anchor="middle"
-                    opacity="0.55">E</text>
-                  <text x="-46" y="3" font-family="DM Mono,monospace" font-size="7" fill="#C8960C" text-anchor="middle"
-                    opacity="0.55">O</text>
-
-                  <!-- ── Label declinación magnética ── -->
-                  <text x="0" y="58" font-family="DM Mono,monospace" font-size="5.5" fill="#C8960C" text-anchor="middle"
-                    opacity="0.38">MN · Dec.Mag.02°W</text>
-                </g>
-
+              <!-- ════ ESCALA GRÁFICA ════ -->
+              <g transform="translate(100,300)">
+                <line x1="0" y1="0" x2="140" y2="0" stroke="#C8960C" stroke-width="1.2" />
+                <line x1="0" y1="-6" x2="0" y2="6" stroke="#C8960C" stroke-width="1.2" />
+                <line x1="70" y1="-3" x2="70" y2="3" stroke="#C8960C" stroke-width="0.8" />
+                <line x1="140" y1="-6" x2="140" y2="6" stroke="#C8960C" stroke-width="1.2" />
+                <text x="0" y="-9" font-family="DM Mono,monospace" font-size="8" fill="#C8960C"
+                  text-anchor="middle">0</text>
+                <text x="70" y="-9" font-family="DM Mono,monospace" font-size="8" fill="#C8960C"
+                  text-anchor="middle">50m</text>
+                <text x="140" y="-9" font-family="DM Mono,monospace" font-size="8" fill="#C8960C"
+                  text-anchor="middle">100m</text>
               </g>
             </svg>
+
+            <!-- ── FD CARDS (sin cambios) ── -->
             <div class="fd-card fdc-1 reveal">
               <i class="fa-solid fa-scale-balanced"></i>
               <div>
