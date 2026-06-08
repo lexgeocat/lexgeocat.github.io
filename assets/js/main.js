@@ -156,7 +156,8 @@
         try { delete window[id]; } catch (e2) { }
       };
       var s = document.createElement('script');
-      s.src = feedBase + path + (path.indexOf('?') >= 0 ? '&' : '?') + 'alt=json&callback=' + id;
+      s.src = feedBase + path + (path.indexOf('?') >= 0 ? '&' : '?') + 'alt=json-in-script&callback=' + id;
+      s.onerror = function () { try { delete window[id]; } catch (e) {} };
       document.body.appendChild(s);
     }
     function setStat(id, n) {
@@ -164,6 +165,9 @@
       if (!el) return;
       el.setAttribute('data-count', n);
       el.textContent = n;
+      if (typeof cIO !== 'undefined' && cIO) {
+        try { cIO.observe(el); } catch (e) {}
+      }
     }
     loadFeed('?max-results=0', function (d) {
       var n = (d.feed && d.feed.openSearch$totalResults) ? parseInt(d.feed.openSearch$totalResults.$t, 10) : 0;
@@ -193,7 +197,7 @@
     var box = document.getElementById(containerId);
     if (!box) return;
     var cb = '__cb_' + containerId.replace(/-/g, '_');
-    var url = CFG.bloggerFeed + '/-/' + encodeURIComponent(label) + '?alt=json&max-results=' + (limit || 6) + '&callback=' + cb;
+    var url = CFG.bloggerFeed + '/-/' + encodeURIComponent(label) + '?alt=json-in-script&max-results=' + (limit || 6) + '&callback=' + cb;
     window[cb] = function (data) {
       var entries = (data.feed && data.feed.entry) || [];
       if (!entries.length) {
