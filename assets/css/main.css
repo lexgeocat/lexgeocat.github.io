@@ -763,7 +763,7 @@ h5 {
   }
 }
 
-/* ===== HERO ===== */
+/* ===== HERO BASE ===== */
 .hero {
   min-height: 100vh;
   display: flex;
@@ -780,14 +780,18 @@ h5 {
   pointer-events: none
 }
 
+/* ── GRILLA BASE ── */
 .hero-bg-grid {
   position: absolute;
   inset: 0;
-  background-image: linear-gradient(rgba(200, 150, 12, .06) 1px, transparent 1px), linear-gradient(90deg, rgba(200, 150, 12, .06) 1px, transparent 1px);
+  background-image:
+    linear-gradient(rgba(200, 150, 12, .05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(200, 150, 12, .05) 1px, transparent 1px);
   background-size: 48px 48px;
   mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 40%, transparent 100%)
 }
 
+/* ── GLOWS ── */
 .hero-bg-glow1 {
   position: absolute;
   top: -20%;
@@ -795,7 +799,8 @@ h5 {
   width: 700px;
   height: 700px;
   background: radial-gradient(circle, rgba(200, 150, 12, .12), transparent 60%);
-  border-radius: 50%
+  border-radius: 50%;
+  animation: lgc-glow-move 15s ease-in-out infinite alternate
 }
 
 .hero-bg-glow2 {
@@ -805,86 +810,185 @@ h5 {
   width: 600px;
   height: 600px;
   background: radial-gradient(circle, rgba(15, 110, 110, .1), transparent 60%);
-  border-radius: 50%
+  border-radius: 50%;
+  animation: lgc-glow-move 18s ease-in-out infinite alternate-reverse
 }
 
+@keyframes lgc-glow-move {
+  from {
+    transform: translate(0, 0) scale(1)
+  }
+
+  to {
+    transform: translate(-5%, 5%) scale(1.1)
+  }
+}
+
+/* ── SCAN LINE HUD (línea de barrido estilo Stark) ── */
+.hero-bg::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 1px;
+  top: 0;
+  background: linear-gradient(90deg, transparent 5%, rgba(200, 150, 12, .25) 40%, rgba(200, 150, 12, .25) 60%, transparent 95%);
+  animation: lgc-scan 10s linear infinite;
+  pointer-events: none;
+  z-index: 1
+}
+
+@keyframes lgc-scan {
+  0% {
+    transform: translateY(0vh);
+    opacity: .8
+  }
+
+  100% {
+    transform: translateY(100vh);
+    opacity: 0
+  }
+}
+
+/* ──────────────────────────────────────────────────────────
+   HERO-BG-MAP → CURVAS DE NIVEL ESTILO HUD / TONY STARK
+   Reemplaza el antiguo .hero-bg-map (SVG inline en HTML)
+   ────────────────────────────────────────────────────────── */
 .hero-bg-map {
   position: absolute;
-  right: 0;
-  top: 0;
-  bottom: 0;
-  width: 50%;
-  opacity: .04;
-  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 400'%3E%3Cpath d='M50 200 Q100 150 150 200 T250 200 T350 200' stroke='%23ffffff' fill='none' stroke-width='1'/%3E%3Cpath d='M0 100 Q50 80 100 100 T200 100 T300 100 T400 100' stroke='%23ffffff' fill='none' stroke-width='.5'/%3E%3Cpath d='M0 300 Q50 280 100 300 T200 300 T300 300 T400 300' stroke='%23ffffff' fill='none' stroke-width='.5'/%3E%3Ccircle cx='150' cy='200' r='4' fill='%23ffffff'/%3E%3Ccircle cx='250' cy='150' r='3' fill='%23ffffff'/%3E%3Ccircle cx='320' cy='250' r='5' fill='%23ffffff'/%3E%3C/svg%3E") no-repeat center/cover
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 1;
+  /* El SVG se embebe directamente aquí como background-image    */
+  /* ⚠ Ver nota al final: se recomienda usar <svg> inline en HTML */
+  background: none;
+  /* se anula el antiguo background-image */
 }
 
-/* Hero Grid & Layout */
+/*
+  IMPORTANTE: Para las curvas de nivel Tony Stark, el enfoque más
+  limpio es reemplazar el <div class="hero-bg-map"> por un <svg> inline
+  dentro de .hero-bg. El CSS de animación va aquí.
+  Pega este bloque <svg> dentro del .hero-bg en tu HTML (ver hero-bg-map.html adjunto).
+*/
+
+.hero-bg-map svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+@keyframes lgc-contour-drift {
+  0% {
+    transform: translateX(0) translateY(0)
+  }
+
+  50% {
+    transform: translateX(-8px) translateY(-6px)
+  }
+
+  100% {
+    transform: translateX(0) translateY(0)
+  }
+}
+
+.hero-contour-group {
+  animation: lgc-contour-drift 25s ease-in-out infinite;
+  transform-origin: center center
+}
+
+/* ── HERO GRID & LAYOUT ── */
 .hero-grid {
   display: grid;
   grid-template-columns: 1.15fr 0.85fr;
   gap: 48px;
   align-items: center;
-  width: 100%;
+  width: 100%
 }
 
 .hero-visual {
   position: relative;
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: center
 }
 
 .floating-dashboard {
   position: relative;
   width: 100%;
-  max-width: 380px;
-  height: 380px;
+  max-width: 480px;
+  height: 480px;
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: center
 }
 
+/* ──────────────────────────────────────────────────────────
+   FD-BG-MAP → PLANO CATASTRAL + ROSA DE LOS VIENTOS
+   Reemplaza el antiguo background-image con un <svg> inline
+   en el .floating-dashboard (ver hero-fd-bg-map.html adjunto)
+   ────────────────────────────────────────────────────────── */
 .fd-bg-map {
   position: absolute;
-  width: 320px;
-  height: 320px;
-  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M30,20 L70,20 L80,50 L50,80 L20,50 Z' stroke='%23C8960C' stroke-width='0.4' fill='none' stroke-dasharray='2,2'/%3E%3Ccircle cx='50' cy='50' r='35' stroke='rgba(200,150,12,0.1)' stroke-width='0.8' fill='none'/%3E%3Ccircle cx='50' cy='50' r='20' stroke='rgba(255,255,255,0.05)' stroke-width='0.5' fill='none'/%3E%3C/svg%3E") no-repeat center/contain;
-  opacity: 0.85;
-  animation: lgc-spin 80s linear infinite;
+  width: 420px;
+  height: 420px;
+  /* elimina el background-image anterior */
+  background: none;
+  opacity: 1;
+  animation: lgc-float-pan 12s ease-in-out infinite alternate;
+  will-change: transform
 }
 
-@keyframes lgc-spin {
+/* Si usas <svg class="fd-bg-map"> directamente (recomendado): */
+svg.fd-bg-map {
+  position: absolute;
+  width: 420px;
+  height: 420px;
+  animation: lgc-float-pan 12s ease-in-out infinite alternate;
+  will-change: transform
+}
+
+@keyframes lgc-float-pan {
   from {
-    transform: rotate(0deg);
+    transform: scale(1) translate(0, 0)
   }
 
   to {
-    transform: rotate(360deg);
+    transform: scale(1.02) translate(2px, -2px)
   }
 }
 
+/* ── FD CARDS ── */
 .fd-card {
   position: absolute;
-  background: rgba(27, 49, 72, 0.75);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(27, 49, 72, 0.5);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
   padding: 14px 18px;
   border-radius: var(--r);
   display: flex;
   align-items: center;
   gap: 12px;
-  box-shadow: var(--sh3);
-  transition: all 0.3s;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  transition: all 0.4s ease-out;
   width: 230px;
-  z-index: 2;
+  z-index: 2
+}
+
+.fd-card:hover {
+  background: rgba(27, 49, 72, 0.7);
+  border-color: var(--gold2);
+  transform: translateY(-5px) scale(1.02)
 }
 
 .fd-card i {
   font-size: 1.4rem;
   color: var(--gold2);
   width: 28px;
-  text-align: center;
+  text-align: center
 }
 
 .fd-card h4 {
@@ -892,42 +996,56 @@ h5 {
   font-size: 0.82rem;
   font-weight: 600;
   color: #fff;
-  margin-bottom: 2px;
+  margin-bottom: 2px
 }
 
 .fd-card p {
   font-size: 0.7rem;
   color: rgba(255, 255, 255, 0.6);
-  margin: 0;
+  margin: 0
 }
 
 .fdc-1 {
-  top: 10%;
-  left: -5%;
-  animation: lgc-float1 6s ease-in-out infinite;
+  top: 5%;
+  left: 50%;
+  transform: translateX(-50%);
+  animation: lgc-float1 6s ease-in-out infinite
 }
 
 .fdc-2 {
-  top: 40%;
-  right: -5%;
-  animation: lgc-float2 7s ease-in-out infinite;
+  top: 0%;
+  right: 60%;
+  animation: lgc-float2 7s ease-in-out infinite
 }
 
 .fdc-3 {
-  bottom: 10%;
-  left: 10%;
-  animation: lgc-float3 8s ease-in-out infinite;
+  bottom: 30%;
+  left: 60%;
+  animation: lgc-float3 8s ease-in-out infinite
+}
+
+.fdc-4 {
+  bottom: 45%;
+  right: 75%;
+  transform: translateX(-50%);
+  animation: lgc-float1 6.5s ease-in-out infinite
+}
+
+.fdc-5 {
+  top: 75%;
+  left: 20%;
+  animation: lgc-float2 7.5s ease-in-out infinite
 }
 
 @keyframes lgc-float1 {
 
   0%,
   100% {
-    transform: translateY(0);
+    transform: translateY(0)
   }
 
   50% {
-    transform: translateY(-10px);
+    transform: translateY(-10px)
   }
 }
 
@@ -935,11 +1053,11 @@ h5 {
 
   0%,
   100% {
-    transform: translateY(0);
+    transform: translateY(0)
   }
 
   50% {
-    transform: translateY(-12px);
+    transform: translateY(-12px)
   }
 }
 
@@ -947,19 +1065,20 @@ h5 {
 
   0%,
   100% {
-    transform: translateY(0);
+    transform: translateY(0)
   }
 
   50% {
-    transform: translateY(-8px);
+    transform: translateY(-8px)
   }
 }
 
+/* ── HERO CONTENT ── */
 .hero-logo-badge {
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  margin-bottom: 18px;
+  margin-bottom: 18px
 }
 
 .hero-logo-badge .logo-icon {
@@ -970,12 +1089,12 @@ h5 {
   border-radius: 6px;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: center
 }
 
 .hero-logo-badge .logo-icon i {
   color: var(--gold2);
-  font-size: 14px;
+  font-size: 14px
 }
 
 .hero-logo-badge .hero-logo-text {
@@ -983,11 +1102,11 @@ h5 {
   font-size: 1.5rem;
   font-weight: 700;
   color: #fff;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.02em
 }
 
 .hero-logo-badge .hero-logo-text span {
-  color: var(--gold2);
+  color: var(--gold2)
 }
 
 .hero-content {
@@ -1024,6 +1143,10 @@ h5 {
   color: #fff;
   margin-bottom: 20px;
   letter-spacing: -.02em
+}
+
+.hero-title span {
+  color: var(--gold2)
 }
 
 .hero-title .line-accent {
@@ -1126,21 +1249,21 @@ h5 {
   background: rgba(200, 150, 12, .08)
 }
 
-/* WhatsApp Custom Button */
 .btn-whatsapp {
   background: #25D366 !important;
   color: #fff !important;
   box-shadow: 0 4px 14px rgba(37, 211, 102, .3) !important;
-  border: none;
+  border: none
 }
 
 .btn-whatsapp:hover {
   background: #20BA5A !important;
   color: #fff !important;
   transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(37, 211, 102, .4) !important;
+  box-shadow: 0 8px 24px rgba(37, 211, 102, .4) !important
 }
 
+/* ── HERO STATS ── */
 .hero-stats {
   display: flex;
   gap: 0;
@@ -1192,17 +1315,18 @@ h5 {
   margin-top: 5px
 }
 
-@media(max-width:900px) {
+/* ── RESPONSIVE ── */
+@media (max-width: 900px) {
   .hero-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr
   }
 
   .hero-visual {
-    display: none;
+    display: none
   }
 }
 
-@media(max-width:768px) {
+@media (max-width: 768px) {
   .hero {
     padding-top: calc(var(--h) + 48px + 40px);
     min-height: auto

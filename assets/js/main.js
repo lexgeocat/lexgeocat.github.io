@@ -3,7 +3,21 @@
 
   var CFG = window.LGC_CONFIG || {};
 
+  /* --- HERO PARALLAX EFFECT --- */
+  document.addEventListener('DOMContentLoaded', function () {
+    var bgMap = document.querySelector('.hero-bg-map');
+    if (!bgMap) return;
+    window.addEventListener('mousemove', function (e) {
+      var x = (e.clientX / window.innerWidth) - 0.5;
+      var y = (e.clientY / window.innerHeight) - 0.5;
+      var moveX = x * 30;
+      var moveY = y * 30;
+      bgMap.style.transform = 'translate(' + moveX + 'px, ' + moveY + 'px)';
+    });
+  });
+
   /* --- PRELOADER --- */
+
   function hideLoader() {
     var l = document.getElementById('ld');
     if (l) l.classList.add('hide');
