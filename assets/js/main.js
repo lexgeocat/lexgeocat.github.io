@@ -111,48 +111,86 @@
 
   var cfg = CFG || {};
   var counterId = cfg.counterWebsiteId;
-  var counterLabel = cfg.counterLabel || 'Visitas';
+  var readUrl = cfg.counterReadUrl;
+  var cacheSeconds = Number(cfg.counterReadCacheSeconds) || 300;
   var geoUrl = cfg.geoProvider || 'https://ipapi.co/json/';
   var cacheHours = Number(cfg.geoCacheHours) || 24;
 
   var counterEl = document.getElementById('counter-dev-placeholder');
   var countryEl = document.getElementById('visitor-country-info');
 
-  function setCounter(text) {
+  function setCounter(n) {
     if (!counterEl) return;
-    var valueEl = counterEl.querySelector('.fs-counter-value');
-    if (valueEl) valueEl.textContent = text;
+    var valueEl = counterEl.querySelector('.hdr-stat-value');
+    if (valueEl) valueEl.textContent = n.toLocaleString('es');
   }
 
-  function loadCounter() {
-    if (!counterId) return;
+  function setCounterTooltip(n) {
+    if (!counterEl) return;
+    var label = (cfg.counterLabel || 'Visitas');
+    counterEl.setAttribute('data-tip', label + ': ' + n.toLocaleString('es'));
+    counterEl.setAttribute('aria-label', label + ': ' + n.toLocaleString('es'));
+  }
+
+  function setCountryTooltip(name) {
+    if (!countryEl) return;
+    countryEl.setAttribute('data-tip', 'Visitando desde ' + name);
+    countryEl.setAttribute('aria-label', 'Visitando desde ' + name);
+  }
+
+  function sumVisits(payload) {
+    if (!payload) return 0;
+    if (typeof payload === 'number') return payload;
+    if (Array.isArray(payload)) {
+      return payload.reduce(function (acc, row) {
+        var v = row && (row.visits ?? row.count ?? row.hits ?? row.visitors ?? 0);
+        return acc + (parseInt(v, 10) || 0);
+      }, 0);
+    }
+    if (typeof payload === 'object') {
+      var v = payload.visits ?? payload.count ?? payload.hits ?? payload.visitors ?? payload.data?.visits;
+      if (typeof v === 'number') return v;
+      if (v && typeof v === 'object') return sumVisits(v);
+    }
+    return 0;
+  }
+
+  function injectHitScript() {
+    if (!counterId || document.getElementById('lgc-counter-hit')) return;
     var s = document.createElement('script');
+    s.id = 'lgc-counter-hit';
     s.src = 'https://cdn.counter.dev/script.js';
     s.setAttribute('data-id', counterId);
     if (cfg.counterUtcOffset !== undefined && cfg.counterUtcOffset !== null) {
       s.setAttribute('data-utcoffset', String(cfg.counterUtcOffset));
     }
     s.async = true;
-    s.onerror = function () { setCounter('—'); };
     document.body.appendChild(s);
+  }
 
-    var attempts = 0;
-    var timer = setInterval(function () {
-      attempts++;
-      var badge = document.getElementById('sjs-count-visits') ||
-                  document.querySelector('[data-counter-dev="visits"]') ||
-                  document.querySelector('.counter-dev-visits');
-      if (badge) {
-        var n = (badge.textContent || '').trim();
-        if (n) { setCounter(n); clearInterval(timer); }
-      }
-      if (attempts > 40) { // ~10s
-        clearInterval(timer);
-        if (counterEl && !counterEl.querySelector('.fs-counter-value').textContent.trim().length) {
-          setCounter('—');
+  function readCounter() {
+    if (!readUrl) return Promise.reject(new Error('no url'));
+    var key = 'lgc_counter_v1';
+    try {
+      var c = JSON.parse(localStorage.getItem(key) || 'null');
+      if (c && (Date.now() - c.ts) < cacheSeconds * 1000) return Promise.resolve(c.n);
+    } catch (e) {}
+
+    return fetch(readUrl, { headers: { 'Accept': 'application/json' } })
+      .then(function (r) {
+        if (!r.ok) throw new Error('http ' + r.status);
+        return r.text();
+      })
+      .then(function (txt) {
+        var n = 0;
+        try { n = sumVisits(JSON.parse(txt)); } catch (e) { n = sumVisits(txt); }
+        if (!n) {
+          var m = String(txt).match(/(\d{1,9})\s*visits?/i);
+          if (m) n = parseInt(m[1], 10) || 0;
         }
-      }
-    }, 250);
+        try { localStorage.setItem(key, JSON.stringify({ ts: Date.now(), n: n })); } catch (e) {}
+        return n;
+      });
   }
 
   function loadCountry() {
@@ -167,14 +205,13 @@
       var code = (data.country_code || data.country || '').toString().toLowerCase();
       var name = data.country_name || data.country || '';
       if (!code || !name) return;
-      var img = countryEl.querySelector('.fs-flag');
-      var nameEl = countryEl.querySelector('.fs-country-name');
+      var img = countryEl.querySelector('.hdr-stat-flag');
       if (img) {
         img.src = 'https://flagcdn.com/w40/' + code + '.png';
-        img.srcset = 'https://flagcdn.com/w80/' + code + '.png 2x';
-        img.alt = 'Bandera de ' + name;
+        img.srcset = 'https://flagcdn.com/w40/' + code + '.png 1x, https://flagcdn.com/w80/' + code + '.png 2x';
+        img.alt = name;
       }
-      if (nameEl) nameEl.textContent = name;
+      setCountryTooltip(name);
       countryEl.hidden = false;
     }
 
@@ -194,7 +231,18 @@
   }
 
   function init() {
-    loadCounter();
+    injectHitScript();
+    readCounter()
+      .then(function (n) {
+        setCounter(n);
+        setCounterTooltip(n);
+      })
+      .catch(function () {
+        if (counterEl) {
+          var v = counterEl.querySelector('.hdr-stat-value');
+          if (v) v.textContent = '—';
+        }
+      });
     loadCountry();
   }
 

@@ -6,6 +6,8 @@ window.LGC_CONFIG = {
   counterWebsiteId: 'a3fdab0e-876c-43ba-9d03-908573d0b327',
   counterUtcOffset: -4,
   counterLabel: 'Visitas',
+  counterReadUrl: 'https://api.counter.dev/api/v1/lexgeocat.github.io?start=2000-01-01&end=2099-12-31',
+  counterReadCacheSeconds: 300,
   geoProvider: 'https://ipapi.co/json/',
   geoCacheHours: 24,
   siteName: 'LexGeoCat',

@@ -76,6 +76,16 @@
       '<a aria-label="LinkedIn" class="hdr-social-btn lk" href="' + CFG.social.linkedin + '" rel="noopener" target="_blank"><i class="fa-brands fa-linkedin-in"></i></a>' +
       '<a aria-label="WhatsApp" class="hdr-social-btn wa" href="' + CFG.social.whatsapp + '" rel="noopener" target="_blank"><i class="fa-brands fa-whatsapp"></i></a>' +
       '</div>' +
+      '<div class="hdr-stats" id="hdr-stats" aria-label="Estadísticas de visitas">' +
+      '<span class="hdr-stat" id="counter-dev-placeholder" role="status" aria-live="polite" data-tip="' + (CFG.counterLabel || 'Visitas') + '">' +
+      '<i class="fa-solid fa-eye"></i>' +
+      '<span class="hdr-stat-value">0</span>' +
+      '</span>' +
+      '<span class="hdr-stat-sep" aria-hidden="true"></span>' +
+      '<span class="hdr-stat hdr-stat-country" id="visitor-country-info" hidden data-tip="">' +
+      '<img alt="" class="hdr-stat-flag" loading="lazy">' +
+      '</span>' +
+      '</div>' +
       '<button aria-label="Buscar en el blog" class="srch-wrap srch-open-btn" id="srch-open-btn" type="button"><i class="fa-solid fa-magnifying-glass" style="color:var(--text3);font-size:12px"></i><span style="font-family:var(--font-b);font-size:.83rem;color:var(--text3);background:transparent;border:none;outline:none;width:160px;text-align:left;cursor:pointer">Buscar artículos...</span><kbd style="font-size:.65rem;color:var(--text3);background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:2px 6px;font-family:var(--font-m)">⌘K</kbd></button>' +
       '<button aria-label="Cambiar tema" class="icon-btn th-btn" id="th-btn" type="button"><i class="fa-solid fa-moon"></i><i class="fa-solid fa-sun"></i></button>' +
       '<button aria-label="Menú" class="icon-btn ham" id="ham" type="button"><i class="fa-solid fa-bars"></i></button>' +
@@ -122,19 +132,6 @@
       '<a href="' + root('pages/terminos.html') + '">Términos</a>' +
       '<a href="' + root('pages/contacto.html') + '">Contacto</a>' +
       '</div></div></div>' +
-      '<div class="footer-stats" aria-label="Estadísticas de visitas">' +
-      '<div class="footer-stats-inner">' +
-      '<div class="fs-counter" id="counter-dev-placeholder" role="status" aria-live="polite">' +
-      '<i class="fa-solid fa-eye"></i>' +
-      '<span class="fs-counter-label">' + (CFG.counterLabel || 'Visitas') + ':</span>' +
-      '<span class="fs-counter-value">…</span>' +
-      '</div>' +
-      '<div class="fs-divider" aria-hidden="true"></div>' +
-      '<div class="fs-country" id="visitor-country-info" hidden>' +
-      '<img alt="" class="fs-flag" loading="lazy">' +
-      '<span class="fs-country-name"></span>' +
-      '</div>' +
-      '</div></div>' +
       '<button aria-label="Volver arriba" id="top" type="button"><i class="fa-solid fa-arrow-up"></i></button>' +
       '<div aria-modal="true" id="srch-overlay" role="dialog"><div class="srch-modal">' +
       '<div class="srch-modal-header"><i class="fa-solid fa-magnifying-glass"></i>' +
