@@ -29,7 +29,7 @@ jobs:
           COUNTRIES=$(curl -s \
             -H "Authorization: Bearer $GOAT_TOKEN" \
             -H "Accept: application/json" \
-            "https://cris99.goatcounter.com/api/v0/stats/browsers?stat=country&limit=5&start=2000-01-01&end=2099-12-31" \
+            "https://cris99.goatcounter.com/api/v0/stats/browsers?stat=country&limit=10&start=2000-01-01&end=2099-12-31" \
             | jq '[.stats[] | {id, name, count}] // []')
 
           jq -n \

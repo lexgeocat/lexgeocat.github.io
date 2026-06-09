@@ -161,19 +161,33 @@
     }
 
     function loadCounter() {
+      // Fuente 1: Endpoint JSON oficial de GoatCounter (sin API key, CORS-friendly)
+      function tryGoatJson() {
+        fetch('https://' + goatCode + '.goatcounter.com/counter/TOTAL.json')
+          .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+          .then(function (data) {
+            var n = parseInt(String(data.count || '0').replace(/[^0-9]/g, ''), 10) || 0;
+            if (n > 0) { lsSet(COUNTER_CACHE_KEY, { ts: Date.now(), n: n }); setCounterText(n); }
+            else tryLocalStats();
+          })
+          .catch(tryLocalStats);
+      }
+      // Fuente 2: stats.json (GitHub Action, datos del servidor)
+      function tryLocalStats() {
+        fetch(STATS_URL + '?' + Date.now())
+          .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+          .then(function (data) {
+            var n = parseInt(data.total, 10) || 0;
+            lsSet(COUNTER_CACHE_KEY, { ts: Date.now(), n: n });
+            setCounterText(n);
+          })
+          .catch(function () { setCounterText(0); });
+      }
       var cached = lsGet(COUNTER_CACHE_KEY);
       if (cached && (Date.now() - cached.ts) < COUNTER_CACHE_MS && cached.n > 0) {
         setCounterText(cached.n); return;
       }
-
-      fetch(STATS_URL + '?' + Date.now())
-        .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
-        .then(function (data) {
-          var n = parseInt(data.total, 10) || 0;
-          lsSet(COUNTER_CACHE_KEY, { ts: Date.now(), n: n });
-          setCounterText(n);
-        })
-        .catch(function () { setCounterText(0); });
+      tryGoatJson();
     }
 
     /* ── 2. PAÍS ACTUAL (bandera del visitante) ───── */
