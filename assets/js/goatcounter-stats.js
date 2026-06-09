@@ -2,7 +2,7 @@
     'use strict';
 
     var GC_API = 'https://lexgeocat.goatcounter.com/api/v0';
-    var GC_TOKEN = 'e44zvv3oc6kcs8ak5auoqwdpmefvb285ljtm1x7zdd8dselbc';
+    var GC_TOKEN = '12ho0qypjqrv516mxxmvjjuj9b1v35tklso1s9j1dyckggebqn1';
     var REFRESH_MS = 5 * 60 * 1000;
     var FLAG_CDN = 'https://flagcdn.com/16x12/';
 
