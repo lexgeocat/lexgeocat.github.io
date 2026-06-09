@@ -1,16 +1,20 @@
 /**
  * LexGeoCat — Configuración del sitio estático (GitHub Pages)
  * Ajusta blogUrl y basePath antes de publicar.
+ *
+ * SEGURIDAD: goatToken fue removido de aquí.
+ * El token sólo vive en GitHub Actions Secrets (GOAT_TOKEN).
+ * El cliente sólo lee assets/data/stats.json generado por el Action.
  */
 window.LGC_CONFIG = {
   counterLabel: 'Visitas',
   goatCounterCode: 'cris99',
   goatCounterTz: 'America/La_Paz',
-  goatCounterCacheSeconds: 600,
-  goatToken: 'c6q8qtkrrhdkrg6ipv2ahvjjxoco7lc8eghw13lm7e9wvkk5m', /* usado por GitHub Action (.github/workflows/goatcounter-stats.yml) */
+
   // Geo: se intenta Cloudflare Trace primero (sin límites), fallback a ipapi.co
   geoProvider: 'https://ipapi.co/json/',
   geoCacheHours: 24,
+
   siteName: 'LexGeoCat',
   tagline: 'Derecho · Catastro · Geomática · Tecnología',
 
