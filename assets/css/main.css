@@ -4318,3 +4318,93 @@ svg.fd-bg-map {
   color: var(--gold)
 }
 
+/* ===== GOATCOUNTER STATS WIDGET (header) ===== */
+.gc-stats-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 12px;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 50px;
+  font-family: var(--font-m);
+  font-size: .72rem;
+  color: var(--text2);
+  white-space: nowrap;
+  min-width: 60px;
+  transition: border-color .25s
+}
+
+.gc-stats-bar:hover {
+  border-color: var(--gold)
+}
+
+.gc-stat-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px
+}
+
+.gc-stat-item i {
+  color: var(--gold);
+  font-size: 11px
+}
+
+.gc-val {
+  font-weight: 600;
+  color: var(--text);
+  letter-spacing: .02em
+}
+
+.gc-lbl {
+  color: var(--text3);
+  font-size: .66rem;
+  letter-spacing: .05em
+}
+
+.gc-sep {
+  color: var(--border2);
+  font-size: .7rem;
+  padding: 0 2px
+}
+
+.gc-locs {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  flex-wrap: nowrap
+}
+
+.gc-flag-item {
+  cursor: default;
+  font-size: .95rem;
+  line-height: 1;
+  transition: transform .18s;
+  display: inline-block
+}
+
+.gc-flag-item:hover {
+  transform: scale(1.3)
+}
+
+.gc-tooltip {
+  position: absolute;
+  z-index: 99999;
+  background: var(--ink);
+  color: var(--gold2);
+  font-family: var(--font-m);
+  font-size: .7rem;
+  padding: 5px 10px;
+  border-radius: var(--rs);
+  border: 1px solid rgba(200, 150, 12, .25);
+  pointer-events: none;
+  white-space: nowrap;
+  box-shadow: var(--sh2)
+}
+
+/* Ocultar en móvil (ya hay poco espacio) */
+@media (max-width: 900px) {
+  .gc-stats-bar {
+    display: none
+  }
+}

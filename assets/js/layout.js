@@ -82,6 +82,9 @@
       '<a aria-label="LinkedIn" class="hdr-social-btn lk" href="' + CFG.social.linkedin + '" rel="noopener" target="_blank"><i class="fa-brands fa-linkedin-in"></i></a>' +
       '<a aria-label="WhatsApp" class="hdr-social-btn wa" href="' + CFG.social.whatsapp + '" rel="noopener" target="_blank"><i class="fa-brands fa-whatsapp"></i></a>' +
       '</div>' +
+      // ── WIDGET GOATCOUNTER ──
+      '<div class="gc-stats-bar" id="gc-stats-widget"></div>' +
+      // ─────────────────────
       '<button aria-label="Buscar en el blog" class="srch-wrap srch-open-btn" id="srch-open-btn" type="button"><i class="fa-solid fa-magnifying-glass" style="color:var(--text3);font-size:12px"></i><span style="font-family:var(--font-b);font-size:.83rem;color:var(--text3);background:transparent;border:none;outline:none;width:160px;text-align:left;cursor:pointer">Buscar artículos...</span><kbd style="font-size:.65rem;color:var(--text3);background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:2px 6px;font-family:var(--font-m)">⌘K</kbd></button>' +
       '<button aria-label="Cambiar tema" class="icon-btn th-btn" id="th-btn" type="button"><i class="fa-solid fa-moon"></i><i class="fa-solid fa-sun"></i></button>' +
       '<button aria-label="Menú" class="icon-btn ham" id="ham" type="button"><i class="fa-solid fa-bars"></i></button>' +
@@ -135,8 +138,8 @@
       '<button aria-label="Cerrar búsqueda" class="srch-modal-close" id="srch-modal-close" type="button"><i class="fa-solid fa-xmark"></i></button></div>' +
       '<div class="srch-modal-body" id="srch-modal-body"><div class="srch-status"><i class="fa-solid fa-magnifying-glass"></i><span>La búsqueda se realiza en el blog alojado en Blogger. Escribe y presiona Enter.</span></div></div>' +
       '</div></div>'
-  );
-}
+    );
+  }
 
   var headerEl = document.getElementById('site-header');
   var footerEl = document.getElementById('site-footer');
