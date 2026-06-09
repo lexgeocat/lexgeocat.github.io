@@ -16,22 +16,49 @@ jobs:
 
       - name: Fetch stats from GoatCounter API
         env:
-          GOAT_TOKEN: ${{ secrets.GOAT_TOKEN || 'c6q8qtkrrhdkrg6ipv2ahvjjxoco7lc8eghw13lm7e9wvkk5m' }}
+          GOAT_TOKEN: ${{ secrets.GOAT_TOKEN }}
         run: |
           mkdir -p assets/data
 
-          TOTAL=$(curl -s \
+          # ── TOTAL DE VISITAS ──────────────────────────────────────────────────
+          # Endpoint correcto: /api/v0/stats/hits devuelve { hits: [...] }
+          # Sumamos el campo "count" de cada entrada para obtener el total real.
+          TOTAL_RESPONSE=$(curl -s \
             -H "Authorization: Bearer $GOAT_TOKEN" \
             -H "Accept: application/json" \
-            "https://cris99.goatcounter.com/api/v0/stats/total?start=2000-01-01&end=2099-12-31" \
-            | jq '.total // 0')
+            "https://cris99.goatcounter.com/api/v0/stats/hits?start=2000-01-01&end=2099-12-31&daily=false")
 
-          COUNTRIES=$(curl -s \
+          # La respuesta tiene { hits: [ {day, count} ] }
+          # Sumamos todos los count
+          TOTAL=$(echo "$TOTAL_RESPONSE" | jq '[.hits[]?.count // 0] | add // 0')
+
+          # Fallback: si hits no funciona, intentamos endpoint /count público
+          if [ "$TOTAL" = "0" ] || [ -z "$TOTAL" ]; then
+            TOTAL_PUBLIC=$(curl -s "https://cris99.goatcounter.com/counter/TOTAL.json" 2>/dev/null || echo '{"count":"0"}')
+            TOTAL=$(echo "$TOTAL_PUBLIC" | jq -r '.count // "0"' | tr -d ',.' | grep -oE '[0-9]+' | head -1 || echo 0)
+            TOTAL=${TOTAL:-0}
+          fi
+
+          echo "Total visits: $TOTAL"
+
+          # ── TOP PAÍSES ────────────────────────────────────────────────────────
+          # Endpoint correcto: /api/v0/stats/countries (NO "browsers?stat=country")
+          COUNTRIES_RESPONSE=$(curl -s \
             -H "Authorization: Bearer $GOAT_TOKEN" \
             -H "Accept: application/json" \
-            "https://cris99.goatcounter.com/api/v0/stats/browsers?stat=country&limit=10&start=2000-01-01&end=2099-12-31" \
-            | jq '[.stats[] | {id, name, count}] // []')
+            "https://cris99.goatcounter.com/api/v0/stats/countries?start=2000-01-01&end=2099-12-31&limit=10")
 
+          # La respuesta tiene { stats: [ {id, name, count, count_unique} ] }
+          COUNTRIES=$(echo "$COUNTRIES_RESPONSE" | jq '[.stats[]? | {id: .id, name: .name, count: (.count // 0)}] | sort_by(-.count) // []')
+
+          # Fallback a array vacío si falla
+          if [ "$COUNTRIES" = "null" ] || [ -z "$COUNTRIES" ]; then
+            COUNTRIES="[]"
+          fi
+
+          echo "Countries fetched: $(echo "$COUNTRIES" | jq length)"
+
+          # ── ESCRIBIR stats.json ───────────────────────────────────────────────
           jq -n \
             --argjson total "$TOTAL" \
             --argjson countries "$COUNTRIES" \
@@ -39,7 +66,8 @@ jobs:
             '{total: $total, countries: $countries, updated_at: $updated_at}' \
             > assets/data/stats.json
 
-          echo "Total: $TOTAL | Countries: $(echo "$COUNTRIES" | jq length)"
+          echo "Written stats.json — Total: $TOTAL"
+          cat assets/data/stats.json
 
       - name: Commit and push if changed
         run: |

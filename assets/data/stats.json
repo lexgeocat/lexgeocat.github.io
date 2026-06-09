@@ -1,12 +1,41 @@
 {
-  "total": 33,
+  "total": 37,
   "countries": [
-    {"id": "BO", "name": "Bolivia", "count": 12},
-    {"id": "NL", "name": "Netherlands", "count": 6},
-    {"id": "GB", "name": "United Kingdom", "count": 5},
-    {"id": "FR", "name": "France", "count": 4},
-    {"id": "RU", "name": "Russia", "count": 3},
-    {"id": "US", "name": "United States", "count": 3}
+    {
+      "id": "BO",
+      "name": "Bolivia",
+      "count": 13
+    },
+    {
+      "id": "FR",
+      "name": "France",
+      "count": 6
+    },
+    {
+      "id": "NL",
+      "name": "Netherlands",
+      "count": 6
+    },
+    {
+      "id": "GB",
+      "name": "United Kingdom",
+      "count": 5
+    },
+    {
+      "id": "RU",
+      "name": "Russia",
+      "count": 3
+    },
+    {
+      "id": "US",
+      "name": "United States",
+      "count": 3
+    },
+    {
+      "id": "SG",
+      "name": "Singapore",
+      "count": 1
+    }
   ],
   "updated_at": "2026-06-09T12:00:00Z"
 }

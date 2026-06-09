@@ -3,21 +3,22 @@
 
   var CFG = window.LGC_CONFIG || {};
 
-  /* --- HERO PARALLAX EFFECT --- */
+  /* ─────────────────────────────────────────────
+     HERO PARALLAX
+  ───────────────────────────────────────────── */
   document.addEventListener('DOMContentLoaded', function () {
     var bgMap = document.querySelector('.hero-bg-map');
     if (!bgMap) return;
     window.addEventListener('mousemove', function (e) {
       var x = (e.clientX / window.innerWidth) - 0.5;
       var y = (e.clientY / window.innerHeight) - 0.5;
-      var moveX = x * 30;
-      var moveY = y * 30;
-      bgMap.style.transform = 'translate(' + moveX + 'px, ' + moveY + 'px)';
+      bgMap.style.transform = 'translate(' + (x * 30) + 'px, ' + (y * 30) + 'px)';
     });
   });
 
-  /* --- PRELOADER --- */
-
+  /* ─────────────────────────────────────────────
+     PRELOADER
+  ───────────────────────────────────────────── */
   function hideLoader() {
     var l = document.getElementById('ld');
     if (l) l.classList.add('hide');
@@ -25,13 +26,15 @@
   window.addEventListener('load', function () { setTimeout(hideLoader, 350); });
   setTimeout(hideLoader, 4500);
 
-  /* --- THEME --- */
-  var KEY = 'lgc-theme';
+  /* ─────────────────────────────────────────────
+     THEME
+  ───────────────────────────────────────────── */
+  var THEME_KEY = 'lgc-theme';
   function applyTheme(t) {
     document.documentElement.setAttribute('data-theme', t === 'dark' ? 'dark' : 'light');
   }
   try {
-    var saved = localStorage.getItem(KEY);
+    var saved = localStorage.getItem(THEME_KEY);
     if (saved) applyTheme(saved);
     else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) applyTheme('dark');
     else applyTheme('light');
@@ -41,47 +44,49 @@
     var btn = document.getElementById('th-btn');
     if (btn) {
       btn.addEventListener('click', function () {
-        var d = document.documentElement.getAttribute('data-theme') === 'dark';
-        var n = d ? 'light' : 'dark';
-        applyTheme(n);
-        try { localStorage.setItem(KEY, n); } catch (e) { }
+        var isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+        var next = isDark ? 'light' : 'dark';
+        applyTheme(next);
+        try { localStorage.setItem(THEME_KEY, next); } catch (e) { }
       });
     }
   });
 
-  /* --- HEADER SCROLL --- */
-  var lastY = 0;
+  /* ─────────────────────────────────────────────
+     HEADER SCROLL + NAV HIDE
+  ───────────────────────────────────────────── */
+  var lastScrollY = 0;
   function onScroll() {
     var y = window.scrollY;
     var hdr = document.getElementById('hdr');
     var navBar = document.getElementById('nav-bar');
+    var topBtn = document.getElementById('top');
     if (hdr) {
       if (y > 30) hdr.classList.add('scrolled');
       else hdr.classList.remove('scrolled');
     }
     if (navBar) {
-      if (y > lastY && y > 200) navBar.classList.add('hidden');
+      if (y > lastScrollY && y > 200) navBar.classList.add('hidden');
       else navBar.classList.remove('hidden');
     }
-    lastY = y;
-    var top = document.getElementById('top');
-    if (top) {
-      if (y > 600) top.classList.add('show');
-      else top.classList.remove('show');
+    if (topBtn) {
+      if (y > 600) topBtn.classList.add('show');
+      else topBtn.classList.remove('show');
     }
+    lastScrollY = y;
   }
   window.addEventListener('scroll', onScroll, { passive: true });
 
   document.addEventListener('DOMContentLoaded', function () {
     var topBtn = document.getElementById('top');
-    if (topBtn) {
-      topBtn.addEventListener('click', function () {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      });
-    }
+    if (topBtn) topBtn.addEventListener('click', function () {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
   });
 
-  /* --- MOBILE MENU --- */
+  /* ─────────────────────────────────────────────
+     MOBILE MENU
+  ───────────────────────────────────────────── */
   document.addEventListener('DOMContentLoaded', function () {
     var ham = document.getElementById('ham');
     var menu = document.getElementById('mob-menu');
@@ -104,45 +109,68 @@
     }
   });
 
-  /* --- COUNTER AND VISITOR INFO --- */
+  /* ═══════════════════════════════════════════════════════
+     CONTADOR + BANDERAS — lógica central reescrita
+  ═══════════════════════════════════════════════════════ */
   (function () {
     if (window.__lgcCounterInit) return;
     window.__lgcCounterInit = true;
 
     var cfg = CFG || {};
-    var goatCode = cfg.goatCounterCode;
+    var goatCode = cfg.goatCounterCode;   // 'cris99'
+    var goatToken = cfg.goatToken;        // token para llamadas desde cliente (solo lectura pública)
     var geoUrl = cfg.geoProvider || 'https://ipapi.co/json/';
 
-    // Resuelve ruta correcta desde cualquier nivel (/, /pages/, etc.)
-    var _depth = parseInt(document.body.getAttribute('data-depth') || '0', 10);
-    var _prefix = '';
-    for (var _i = 0; _i < _depth; _i++) _prefix += '../';
-    var STATS_URL = _prefix + 'assets/data/stats.json';
+    /* ── Resolver ruta a stats.json desde cualquier profundidad ── */
+    var depth = parseInt(document.body.getAttribute('data-depth') || '0', 10);
+    var prefix = '';
+    for (var i = 0; i < depth; i++) prefix += '../';
+    var STATS_URL = prefix + 'assets/data/stats.json';
 
-    var GEO_CACHE_MS = 30 * 60 * 1000;  // 30 min
-    var COUNTER_CACHE_MS = 10 * 60 * 1000;  // 10 min
-    var COUNTRY_CACHE_MS = 15 * 60 * 1000;  // 15 min
+    /* ── TTL de caché ── */
+    var TTL_COUNTER = 10 * 60 * 1000;  // 10 min  — counter
+    var TTL_COUNTRIES = 15 * 60 * 1000;  // 15 min  — top países
+    var TTL_GEO = 30 * 60 * 1000;  // 30 min  — país del visitante
 
-    // Keys con versión: al cambiar, se invalida todo localStorage anterior
-    var CACHE_VER = 4;
-    var GEO_KEY = 'lgc_geo_v' + CACHE_VER;
-    var COUNTER_CACHE_KEY = 'lgc_ctr_v' + CACHE_VER;
-    var COUNTRY_CACHE_KEY = 'lgc_ctop_v' + CACHE_VER;
+    /* ── Claves localStorage versionadas (al cambiar VER se invalida todo) ── */
+    var VER = 5;
+    var KEY_CTR = 'lgc_ctr_v' + VER;
+    var KEY_CTOP = 'lgc_ctop_v' + VER;
+    var KEY_GEO = 'lgc_geo_v' + VER;
 
-    // Limpia keys antiguas de localStorage para evitar conflictos
-    try { ['lgc_ctr_v3', 'lgc_ctop_v3', 'lgc_geo_v3', 'lgc_local_v3', 'lgc_local_ses_v3'].forEach(function(k) { localStorage.removeItem(k); }); } catch (e) {}
+    /* ── Limpiar versiones anteriores ── */
+    [1, 2, 3, 4].forEach(function (v) {
+      try {
+        ['lgc_ctr_v', 'lgc_ctop_v', 'lgc_geo_v', 'lgc_local_v', 'lgc_local_ses_v'].forEach(function (k) {
+          localStorage.removeItem(k + v);
+        });
+      } catch (e) { }
+    });
 
+    /* ── Helpers localStorage ── */
+    function lsGet(k) {
+      try { return JSON.parse(localStorage.getItem(k) || 'null'); } catch (e) { return null; }
+    }
+    function lsSet(k, v) {
+      try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { }
+    }
+    function isFresh(cached, ttl) {
+      return cached && cached.ts && (Date.now() - cached.ts) < ttl;
+    }
+
+    /* ── Elementos del DOM ── */
     var counterEl = document.getElementById('counter-dev-placeholder');
     var countryEl = document.getElementById('visitor-country-info');
+    var statsEl = document.getElementById('hdr-stats');
 
-    /* ── Helpers ────────────────────────────────────── */
-    function lsGet(k) { try { return JSON.parse(localStorage.getItem(k) || 'null'); } catch (e) { return null; } }
-    function lsSet(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { } }
-
-    /* ── 1. CONTADOR — datos desde stats.json (server-side, sin CORS) ───── */
-
-    function setCounterText(n) {
-      if (!counterEl) return;
+    /* ─────────────────────────────────────────────────────────────
+       1. CONTADOR DE VISITAS
+       Fuentes en orden de prioridad:
+         A) GoatCounter endpoint público /counter/TOTAL.json  (sin auth)
+         B) stats.json  (generado por GitHub Action cada hora)
+    ───────────────────────────────────────────────────────────── */
+    function setCounterUI(n) {
+      if (!counterEl || !n) return;
       var valueEl = counterEl.querySelector('.hdr-stat-value');
       if (valueEl) valueEl.textContent = n.toLocaleString('es');
       var label = cfg.counterLabel || 'Visitas';
@@ -150,10 +178,10 @@
       counterEl.setAttribute('aria-label', label + ': ' + n.toLocaleString('es'));
     }
 
-    function injectGoatCounter() {
-      if (!goatCode || document.getElementById('lgc-goat-counter')) return;
+    function injectGoatScript() {
+      if (!goatCode || document.getElementById('lgc-goat-script')) return;
       var s = document.createElement('script');
-      s.id = 'lgc-goat-counter';
+      s.id = 'lgc-goat-script';
       s.async = true;
       s.setAttribute('data-goatcounter', 'https://' + goatCode + '.goatcounter.com/count');
       s.src = 'https://gc.zgo.at/count.js';
@@ -161,206 +189,282 @@
     }
 
     function loadCounter() {
-      // Fuente 1: Endpoint JSON oficial de GoatCounter (sin API key, CORS-friendly)
-      function tryGoatJson() {
-        fetch('https://' + goatCode + '.goatcounter.com/counter/TOTAL.json')
-          .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
-          .then(function (data) {
-            var n = parseInt(String(data.count || '0').replace(/[^0-9]/g, ''), 10) || 0;
-            if (n > 0) { lsSet(COUNTER_CACHE_KEY, { ts: Date.now(), n: n }); setCounterText(n); }
-            else tryLocalStats();
-          })
-          .catch(tryLocalStats);
+      /* Usa caché si está fresco */
+      var cached = lsGet(KEY_CTR);
+      if (isFresh(cached, TTL_COUNTER) && cached.n > 0) {
+        setCounterUI(cached.n);
+        /* Refresca en background sin bloquear */
+        fetchCounterBackground();
+        return;
       }
-      // Fuente 2: stats.json (GitHub Action, datos del servidor)
-      function tryLocalStats() {
-        fetch(STATS_URL + '?' + Date.now())
-          .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
-          .then(function (data) {
-            var n = parseInt(data.total, 10) || 0;
-            lsSet(COUNTER_CACHE_KEY, { ts: Date.now(), n: n });
-            setCounterText(n);
-          })
-          .catch(function () { setCounterText(0); });
-      }
-      var cached = lsGet(COUNTER_CACHE_KEY);
-      if (cached && (Date.now() - cached.ts) < COUNTER_CACHE_MS && cached.n > 0) {
-        setCounterText(cached.n); return;
-      }
-      tryGoatJson();
+      fetchCounterBackground();
     }
 
-    /* ── 2. PAÍS ACTUAL (bandera del visitante) ───── */
+    function fetchCounterBackground() {
+      /* Fuente A: endpoint público de GoatCounter (no requiere token,
+         pero el sitio debe tener "Public access to your stats" habilitado
+         en Settings → API token → Allow to view public stats)            */
+      var publicUrl = 'https://' + goatCode + '.goatcounter.com/counter/TOTAL.json';
 
-    function countryName(code) {
+      fetch(publicUrl, { cache: 'no-store' })
+        .then(function (r) {
+          if (!r.ok) throw new Error('public-counter-' + r.status);
+          return r.json();
+        })
+        .then(function (data) {
+          /*  GoatCounter devuelve { "count": "37", "count_unique": "14" }
+              o { "count": "1,234" } con separador de miles                */
+          var raw = String(data.count || data.total || '0');
+          var n = parseInt(raw.replace(/[^0-9]/g, ''), 10) || 0;
+          if (n > 0) {
+            lsSet(KEY_CTR, { ts: Date.now(), n: n });
+            setCounterUI(n);
+          } else {
+            throw new Error('public-counter-zero');
+          }
+        })
+        .catch(function () {
+          /* Fuente B: stats.json generado por GitHub Action */
+          fetchCounterFromStats();
+        });
+    }
+
+    function fetchCounterFromStats() {
+      fetch(STATS_URL + '?_=' + Date.now(), { cache: 'no-store' })
+        .then(function (r) { if (!r.ok) throw new Error('stats-' + r.status); return r.json(); })
+        .then(function (data) {
+          var n = parseInt(data.total, 10) || 0;
+          if (n > 0) {
+            lsSet(KEY_CTR, { ts: Date.now(), n: n });
+            setCounterUI(n);
+          }
+        })
+        .catch(function () {
+          /* Si hay caché aunque sea viejo, úsalo */
+          var stale = lsGet(KEY_CTR);
+          if (stale && stale.n > 0) setCounterUI(stale.n);
+        });
+    }
+
+    /* ─────────────────────────────────────────────────────────────
+       2. PAÍS DEL VISITANTE ACTUAL (bandera dinámica)
+       Fuentes:
+         A) Cloudflare Trace  — gratuita, sin rate-limit, sin CORS
+         B) ipapi.co          — fallback (1000 req/día free)
+    ───────────────────────────────────────────────────────────── */
+
+    /* Mapeo de nombres en español para países que Intl puede devolver
+       en inglés o con nombres poco usados en BO                     */
+    var COUNTRY_NAMES_ES = {
+      'bo': 'Bolivia', 'ar': 'Argentina', 'br': 'Brasil', 'cl': 'Chile',
+      'pe': 'Perú', 'co': 'Colombia', 'uy': 'Uruguay', 'py': 'Paraguay',
+      've': 've', 'ec': 'Ecuador', 'us': 'EE.UU.', 'gb': 'Reino Unido',
+      'fr': 'Francia', 'de': 'Alemania', 'es': 'España', 'it': 'Italia',
+      'nl': 'Países Bajos', 'ru': 'Rusia', 'cn': 'China', 'jp': 'Japón',
+      'mx': 'México', 'sg': 'Singapur', 'au': 'Australia', 'ca': 'Canadá',
+      'in': 'India', 'kr': 'Corea del Sur', 'tr': 'Turquía', 'pl': 'Polonia',
+      'pt': 'Portugal', 'se': 'Suecia', 'no': 'Noruega', 'fi': 'Finlandia',
+      'dk': 'Dinamarca', 'be': 'Bélgica', 'ch': 'Suiza', 'at': 'Austria',
+      'cz': 'República Checa', 'ua': 'Ucrania', 'ro': 'Rumanía',
+      'hu': 'Hungría', 'gr': 'Grecia', 'za': 'Sudáfrica', 'ng': 'Nigeria',
+      'eg': 'Egipto', 'ma': 'Marruecos', 'ke': 'Kenia', 'gh': 'Ghana',
+      'sa': 'Arabia Saudita', 'ae': 'Emiratos Árabes', 'il': 'Israel',
+      'id': 'Indonesia', 'th': 'Tailandia', 'vn': 'Vietnam', 'ph': 'Filipinas',
+      'my': 'Malasia', 'pk': 'Pakistán', 'bd': 'Bangladés', 'lk': 'Sri Lanka',
+      'nz': 'Nueva Zelanda', 'mx': 'México', 'cr': 'Costa Rica',
+      'gt': 'Guatemala', 'cu': 'Cuba', 'do': 'Rep. Dominicana',
+      'pa': 'Panamá', 'hn': 'Honduras', 'sv': 'El Salvador', 'ni': 'Nicaragua'
+    };
+
+    function countryDisplayName(code) {
+      var lower = (code || '').toLowerCase();
+      if (COUNTRY_NAMES_ES[lower]) return COUNTRY_NAMES_ES[lower];
+      /* Fallback a Intl.DisplayNames */
       try {
-        var n = new Intl.DisplayNames(['es'], { type: 'region' }).of(code.toUpperCase());
-        return n || code.toUpperCase();
-      } catch (e) { return code.toUpperCase(); }
+        var n = new Intl.DisplayNames(['es'], { type: 'region' }).of(lower.toUpperCase());
+        return n || lower.toUpperCase();
+      } catch (e) { return lower.toUpperCase(); }
     }
 
-    function renderCurrentFlag(code, name) {
-      if (!countryEl) return;
+    function renderVisitorFlag(codeRaw) {
+      if (!countryEl || !codeRaw) return;
+      var code = codeRaw.toLowerCase().trim();
+      if (!code || code === 'undefined' || code === 'null' || code.length !== 2) return;
+      var name = countryDisplayName(code);
       var img = countryEl.querySelector('.hdr-stat-flag');
       if (img) {
         img.src = 'https://flagcdn.com/w40/' + code + '.png';
         img.srcset = 'https://flagcdn.com/w40/' + code + '.png 1x, https://flagcdn.com/w80/' + code + '.png 2x';
         img.alt = name;
+        img.loading = 'eager';
       }
       countryEl.setAttribute('data-tip', 'Visitando desde ' + name);
       countryEl.setAttribute('aria-label', 'Visitando desde ' + name);
       countryEl.hidden = false;
     }
 
-    function loadCurrentCountry() {
-      var cached = lsGet(GEO_KEY);
-      var now = Date.now();
-
-      function saveGeo(code, ip) {
-        var prevIp = cached && cached.ip;
-        if (prevIp && ip && prevIp !== ip) {
-          lsSet(GEO_KEY, { ts: 0, data: { country_code: code }, ip: ip });
-        } else {
-          lsSet(GEO_KEY, { ts: now, data: { country_code: code }, ip: ip || '' });
-        }
+    function loadVisitorCountry() {
+      var cached = lsGet(KEY_GEO);
+      /* Muestra inmediatamente el caché mientras refresca en background */
+      if (cached && cached.code) {
+        renderVisitorFlag(cached.code);
       }
+      /* Si caché es fresco, no hace fetch pero igual muestra */
+      if (isFresh(cached, TTL_GEO) && cached.code) return;
 
-      function applyGeo(code, ip) {
-        if (!code || code === 'undefined') return;
-        renderCurrentFlag(code, countryName(code));
-        saveGeo(code, ip);
-      }
-
-      var isFresh = cached && (now - cached.ts) < GEO_CACHE_MS;
-      if (isFresh) {
-        renderCurrentFlag(
-          (cached.data.country_code || '').toLowerCase(),
-          countryName(cached.data.country_code)
-        ); return;
-      }
-
-      // Fuente 1: Cloudflare Trace (sin CORS, sin rate limit, gratuita)
-      function tryCloudflare() {
-        fetch('https://1.1.1.1/cdn-cgi/trace')
-          .then(function (r) { if (!r.ok) throw new Error(r.status); return r.text(); })
-          .then(function (text) {
-            var data = {};
-            text.split('\n').forEach(function (line) {
-              var idx = line.indexOf('=');
-              if (idx > 0) data[line.slice(0, idx).trim()] = line.slice(idx + 1).trim();
-            });
-            if (data.loc) applyGeo(data.loc.toLowerCase(), data.ip || '');
-            else throw new Error('no loc');
-          })
-          .catch(tryFallback);
-      }
-
-      // Fuente 2: ipapi.co (fallback si Cloudflare falla)
-      function tryFallback() {
-        fetch(geoUrl, { headers: { 'Accept': 'application/json' } })
-          .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
-          .then(function (data) {
-            if (data && data.error) throw new Error('geo error');
-            if (data) {
-              var code = (data.country_code || '').toLowerCase();
-              if (code) applyGeo(code, data.ip || data.IPv4 || '');
-            }
-          })
-          .catch(function () {
-            if (cached && cached.data) renderCurrentFlag(
-              (cached.data.country_code || '').toLowerCase(),
-              countryName(cached.data.country_code)
-            );
+      /* Fuente A: Cloudflare Trace — responde en texto plano key=value,
+         sin CORS, sin auth, sin rate-limit, devuelve campo "loc" en mayúsculas */
+      fetch('https://1.1.1.1/cdn-cgi/trace', { cache: 'no-store' })
+        .then(function (r) { if (!r.ok) throw new Error('cf-' + r.status); return r.text(); })
+        .then(function (text) {
+          var map = {};
+          text.split('\n').forEach(function (line) {
+            var idx = line.indexOf('=');
+            if (idx > 0) map[line.slice(0, idx).trim()] = line.slice(idx + 1).trim();
           });
-      }
-
-      tryCloudflare();
+          var code = (map.loc || '').toLowerCase();
+          if (!code || code.length !== 2) throw new Error('cf-no-loc');
+          lsSet(KEY_GEO, { ts: Date.now(), code: code, ip: map.ip || '' });
+          renderVisitorFlag(code);
+        })
+        .catch(function () {
+          /* Fuente B: ipapi.co */
+          fetch(geoUrl, { cache: 'no-store', headers: { 'Accept': 'application/json' } })
+            .then(function (r) { if (!r.ok) throw new Error('ipapi-' + r.status); return r.json(); })
+            .then(function (data) {
+              if (data && data.error) throw new Error('ipapi-error');
+              var code = (data.country_code || data.country || '').toLowerCase();
+              if (!code || code.length !== 2) throw new Error('ipapi-no-code');
+              lsSet(KEY_GEO, { ts: Date.now(), code: code, ip: data.ip || '' });
+              renderVisitorFlag(code);
+            })
+            .catch(function () {
+              /* Nada que hacer — la bandera simplemente no se muestra */
+            });
+        });
     }
 
-    /* ── 3. TOP 5 PAÍSES — desde stats.json (server-side, sin CORS) ─
-     *
-     * Los datos vienen de assets/data/stats.json, generado cada hora por
-     * GitHub Actions (.github/workflows/goatcounter-stats.yml) llamando
-     * a la API de GoatCounter desde el servidor (sin CORS).
-     *
-     * La bandera del visitante actual se obtiene via Cloudflare Trace.
-     */
-
-    function renderTop5(countries) {
-      // countries = [{ country: "Bolivia", count: 6, id: "BO" }, ...]
-      if (!countries || countries.length < 2) return;
-      var statsEl = document.getElementById('hdr-stats');
+    /* ─────────────────────────────────────────────────────────────
+       3. TOP PAÍSES (banderas en el header)
+       Fuente única: stats.json (generado por GitHub Action desde
+       la API privada de GoatCounter con el token del servidor)
+    ───────────────────────────────────────────────────────────── */
+    function renderTop5Countries(countries) {
+      if (!countries || countries.length < 1) return;
       if (!statsEl) return;
 
       var old = document.getElementById('lgc-top5');
       if (old) old.remove();
 
-      var wrap = document.createElement('div');
+      var wrap = document.createElement('span');
       wrap.id = 'lgc-top5';
       wrap.setAttribute('aria-label', 'Top países visitantes');
-      wrap.style.cssText = 'display:flex;align-items:center;gap:6px;margin-left:8px;padding-left:8px;border-left:1px solid var(--border);flex-wrap:nowrap';
+      wrap.style.cssText = [
+        'display:inline-flex',
+        'align-items:center',
+        'gap:5px',
+        'margin-left:6px',
+        'padding-left:8px',
+        'border-left:1px solid var(--border)',
+        'flex-wrap:nowrap'
+      ].join(';');
 
-      countries.slice(0, 5).forEach(function (c) {
-        // GoatCounter devuelve id como código ISO de 2 letras en mayúsculas, ej: "BO", "US"
-        var code = (c.id || c.country_code || '').toLowerCase();
-        var name = c.country || c.name || '';
-        if (!name || name === code.toUpperCase()) name = countryName(code);
-        var hits = c.count || c.hits || 0;
-        if (!code) return;
+      var shown = 0;
+      countries.forEach(function (c) {
+        if (shown >= 5) return;
+        var code = (c.id || c.country_code || '').toLowerCase().trim();
+        if (!code || code.length !== 2) return;
+
+        var name = c.name || countryDisplayName(code);
+        /* Normaliza nombres en inglés que vienen de GoatCounter */
+        var nameEs = countryDisplayName(code);
+        var hits = parseInt(c.count || c.hits || 0, 10);
 
         var item = document.createElement('span');
-        item.style.cssText = 'display:flex;align-items:center;gap:3px;font-size:.72rem;color:var(--text3);white-space:nowrap;cursor:default';
-        item.setAttribute('data-tip', name + ': ' + hits + (hits === 1 ? ' visita' : ' visitas'));
-        item.setAttribute('aria-label', name + ': ' + hits + ' visitas');
+        item.style.cssText = [
+          'display:inline-flex',
+          'align-items:center',
+          'gap:3px',
+          'font-size:.7rem',
+          'color:var(--text3)',
+          'white-space:nowrap',
+          'cursor:default'
+        ].join(';');
+        item.setAttribute('data-tip', nameEs + ': ' + hits + (hits === 1 ? ' visita' : ' visitas'));
+        item.setAttribute('aria-label', nameEs + ': ' + hits + ' visitas');
 
         var flag = document.createElement('img');
         flag.src = 'https://flagcdn.com/w20/' + code + '.png';
         flag.srcset = 'https://flagcdn.com/w20/' + code + '.png 1x, https://flagcdn.com/w40/' + code + '.png 2x';
-        flag.alt = name;
+        flag.alt = nameEs;
         flag.width = 18;
         flag.height = 12;
-        flag.style.cssText = 'border-radius:2px;object-fit:cover;flex-shrink:0';
-        flag.loading = 'lazy';
+        flag.style.cssText = 'border-radius:2px;object-fit:cover;flex-shrink:0;vertical-align:middle';
+        flag.loading = 'eager';
 
         var count = document.createElement('span');
-        count.style.cssText = 'font-family:var(--font-m,monospace);font-size:.7rem;font-weight:600;color:var(--text2)';
+        count.style.cssText = [
+          'font-family:var(--font-m,monospace)',
+          'font-size:.68rem',
+          'font-weight:600',
+          'color:var(--text2)'
+        ].join(';');
         count.textContent = hits;
 
         item.appendChild(flag);
         item.appendChild(count);
         wrap.appendChild(item);
+        shown++;
       });
 
+      if (shown === 0) return;
+
+      /* Inserta después del separador o al final del contenedor */
       var sep = statsEl.querySelector('.hdr-stat-sep');
       if (sep) sep.insertAdjacentElement('afterend', wrap);
       else statsEl.appendChild(wrap);
     }
 
-    function loadCountryTop5() {
-      var cached = lsGet(COUNTRY_CACHE_KEY);
-      if (cached && (Date.now() - cached.ts) < COUNTRY_CACHE_MS) {
-        renderTop5(cached.data); return;
+    function loadTop5Countries() {
+      var cached = lsGet(KEY_CTOP);
+      /* Renderiza caché inmediatamente */
+      if (cached && cached.data && cached.data.length > 0) {
+        renderTop5Countries(cached.data);
       }
+      /* Si es fresco, no refresca */
+      if (isFresh(cached, TTL_COUNTRIES) && cached.data && cached.data.length > 0) return;
 
-      fetch(STATS_URL + '?' + Date.now())
-        .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+      fetch(STATS_URL + '?_=' + Date.now(), { cache: 'no-store' })
+        .then(function (r) { if (!r.ok) throw new Error('stats-' + r.status); return r.json(); })
         .then(function (data) {
-          var stats = (data && data.countries) || [];
-          if (stats.length) {
-            lsSet(COUNTRY_CACHE_KEY, { ts: Date.now(), data: stats });
-            renderTop5(stats);
-          }
+          var countries = (data && Array.isArray(data.countries) && data.countries.length > 0)
+            ? data.countries
+            : null;
+          if (!countries) throw new Error('no-countries');
+          /* Ordena por count descendente (el Action ya los ordena, pero por si acaso) */
+          countries = countries.slice().sort(function (a, b) {
+            return (parseInt(b.count, 10) || 0) - (parseInt(a.count, 10) || 0);
+          });
+          lsSet(KEY_CTOP, { ts: Date.now(), data: countries });
+          renderTop5Countries(countries);
         })
-        .catch(function () {});
+        .catch(function () {
+          /* Usa caché aunque esté vencido */
+          var stale = lsGet(KEY_CTOP);
+          if (stale && stale.data && stale.data.length > 0) {
+            renderTop5Countries(stale.data);
+          }
+        });
     }
 
-    /* ── 4. INIT ─────────────────────────────────── */
+    /* ─────────────────────────────────────────────────────────────
+       4. INIT — dispara todo en paralelo
+    ───────────────────────────────────────────────────────────── */
     function init() {
-      injectGoatCounter();
-      // Las 3 llamadas se disparan en paralelo (Promise no bloqueante)
+      injectGoatScript();
       loadCounter();
-      loadCurrentCountry();
-      loadCountryTop5();
+      loadVisitorCountry();
+      loadTop5Countries();
     }
 
     if (document.readyState === 'loading') {
@@ -368,9 +472,12 @@
     } else {
       init();
     }
-  })(); // Fin: contador y banderas
 
-  /* --- SCROLL REVEAL --- */
+  })(); /* fin bloque contador + banderas */
+
+  /* ─────────────────────────────────────────────
+     SCROLL REVEAL
+  ───────────────────────────────────────────── */
   var rIO;
   if (typeof IntersectionObserver !== 'undefined') {
     rIO = new IntersectionObserver(function (entries) {
@@ -385,7 +492,9 @@
     document.querySelectorAll('.reveal').forEach(function (el) { rIO.observe(el); });
   }
 
-  /* --- COUNTER ANIMATION --- */
+  /* ─────────────────────────────────────────────
+     COUNTER ANIMATION (hero stats)
+  ───────────────────────────────────────────── */
   if (typeof IntersectionObserver !== 'undefined') {
     var cIO = new IntersectionObserver(function (entries) {
       entries.forEach(function (e) {
@@ -411,10 +520,14 @@
     document.querySelectorAll('.hstat-n[data-count]').forEach(function (el) { cIO.observe(el); });
   }
 
-  /* --- STATS FROM BLOGGER FEED (JSONP) --- */
+  /* ─────────────────────────────────────────────
+     STATS DESDE BLOGGER FEED (JSONP)
+     — artículos, categorías, recursos
+  ───────────────────────────────────────────── */
   (function () {
     if (!CFG.bloggerFeed) return;
     var feedBase = CFG.bloggerFeed;
+
     function loadFeed(path, cb) {
       var id = '_lgc_' + Math.random().toString(36).substr(2, 9);
       window[id] = function (d) {
@@ -426,6 +539,7 @@
       s.onerror = function () { try { delete window[id]; } catch (e) { } };
       document.body.appendChild(s);
     }
+
     function setStat(id, n) {
       var el = document.getElementById(id);
       if (!el) return;
@@ -435,14 +549,19 @@
         try { cIO.observe(el); } catch (e) { }
       }
     }
+
     loadFeed('?max-results=0', function (d) {
-      var n = (d.feed && d.feed.openSearch$totalResults) ? parseInt(d.feed.openSearch$totalResults.$t, 10) : 0;
+      var n = (d.feed && d.feed.openSearch$totalResults)
+        ? parseInt(d.feed.openSearch$totalResults.$t, 10) : 0;
       setStat('stat-articulos', n);
     });
+
     loadFeed('/-/Recursos?max-results=0', function (d) {
-      var n = (d.feed && d.feed.openSearch$totalResults) ? parseInt(d.feed.openSearch$totalResults.$t, 10) : 0;
+      var n = (d.feed && d.feed.openSearch$totalResults)
+        ? parseInt(d.feed.openSearch$totalResults.$t, 10) : 0;
       setStat('stat-recursos', n);
     });
+
     loadFeed('?max-results=200', function (d) {
       var entries = (d.feed && d.feed.entry) || [];
       var labels = {};
@@ -457,17 +576,21 @@
     });
   })();
 
-  /* --- LOAD FEED GRID --- */
+  /* ─────────────────────────────────────────────
+     LOAD FEED GRID (páginas de temáticas)
+  ───────────────────────────────────────────── */
   function loadFeedGrid(label, containerId, badgeCls, limit) {
     if (!CFG.bloggerFeed) return;
     var box = document.getElementById(containerId);
     if (!box) return;
     var cb = '__cb_' + containerId.replace(/-/g, '_');
-    var url = CFG.bloggerFeed + '/-/' + encodeURIComponent(label) + '?alt=json-in-script&max-results=' + (limit || 6) + '&callback=' + cb;
+    var url = CFG.bloggerFeed + '/-/' + encodeURIComponent(label) +
+      '?alt=json-in-script&max-results=' + (limit || 6) + '&callback=' + cb;
     window[cb] = function (data) {
       var entries = (data.feed && data.feed.entry) || [];
       if (!entries.length) {
-        box.innerHTML = '<p style="color:var(--text3);text-align:center;padding:20px;grid-column:1/-1;font-size:.85rem">Los recursos del blog aparecerán aquí cuando publiques entradas con la etiqueta "' + label + '".</p>';
+        box.innerHTML = '<p style="color:var(--text3);text-align:center;padding:20px;grid-column:1/-1;font-size:.85rem">' +
+          'Los recursos del blog aparecerán aquí cuando publiques entradas con la etiqueta "' + label + '".</p>';
         return;
       }
       box.innerHTML = entries.map(function (e) {
@@ -488,14 +611,20 @@
           : '<div class="pc-noimg"><i class="fa-solid fa-book-open"></i></div>';
         var dateStr = '';
         if (e.published && e.published.$t) {
-          dateStr = new Date(e.published.$t).toLocaleDateString('es', { year: 'numeric', month: 'short', day: 'numeric' });
+          dateStr = new Date(e.published.$t).toLocaleDateString('es', {
+            year: 'numeric', month: 'short', day: 'numeric'
+          });
         }
-        return '<article class="pc reveal"><div class="pc-img">' + imgHtml +
-          '<span class="pc-badge ' + badgeCls + '">' + label + '</span></div><div class="pc-body">' +
+        return '<article class="pc reveal">' +
+          '<div class="pc-img">' + imgHtml +
+          '<span class="pc-badge ' + badgeCls + '">' + label + '</span></div>' +
+          '<div class="pc-body">' +
           '<div class="pc-meta"><i class="fa-regular fa-calendar"></i> ' + dateStr + '</div>' +
           '<h3 class="pc-title"><a href="' + postUrl + '" target="_blank" rel="noopener">' + title + '</a></h3>' +
-          '<p class="pc-snip">' + snip + '</p><div class="pc-ft">' +
-          '<a class="pc-read" href="' + postUrl + '" target="_blank" rel="noopener">Leer en el blog <i class="fa-solid fa-arrow-right"></i></a>' +
+          '<p class="pc-snip">' + snip + '</p>' +
+          '<div class="pc-ft">' +
+          '<a class="pc-read" href="' + postUrl + '" target="_blank" rel="noopener">' +
+          'Leer en el blog <i class="fa-solid fa-arrow-right"></i></a>' +
           '</div></div></article>';
       }).join('');
       if (rIO) box.querySelectorAll('.reveal').forEach(function (el) { rIO.observe(el); });
@@ -508,11 +637,13 @@
 
   document.addEventListener('DOMContentLoaded', function () {
     loadFeedGrid('Recursos', 'recursos-grid', 'def', 6);
-    var pageGrid = document.body.getAttribute('data-feed-label');
-    if (pageGrid) loadFeedGrid(pageGrid, 'topic-posts-grid', 'def', 6);
+    var pageLabel = document.body.getAttribute('data-feed-label');
+    if (pageLabel) loadFeedGrid(pageLabel, 'topic-posts-grid', 'def', 6);
   });
 
-  /* --- SEARCH → BLOGGER --- */
+  /* ─────────────────────────────────────────────
+     SEARCH MODAL → redirige a Blogger
+  ───────────────────────────────────────────── */
   document.addEventListener('DOMContentLoaded', function () {
     var overlay = document.getElementById('srch-overlay');
     var input = document.getElementById('srch-modal-input');
@@ -520,13 +651,8 @@
     var closeBtn = document.getElementById('srch-modal-close');
     if (!overlay || !input) return;
 
-    function openSearch() {
-      overlay.classList.add('open');
-      input.focus();
-    }
-    function closeSearch() {
-      overlay.classList.remove('open');
-    }
+    function openSearch() { overlay.classList.add('open'); input.focus(); }
+    function closeSearch() { overlay.classList.remove('open'); }
     function doSearch() {
       var q = input.value.trim();
       if (!q) return;
@@ -542,14 +668,13 @@
       if (e.key === 'Escape') closeSearch();
     });
     document.addEventListener('keydown', function (e) {
-      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
-        e.preventDefault();
-        openSearch();
-      }
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') { e.preventDefault(); openSearch(); }
     });
   });
 
-  /* --- CONTACT FORM --- */
+  /* ─────────────────────────────────────────────
+     CONTACT FORM → abre cliente de mail
+  ───────────────────────────────────────────── */
   document.addEventListener('DOMContentLoaded', function () {
     var form = document.getElementById('contact-form');
     if (!form) return;
@@ -563,4 +688,5 @@
       window.location.href = 'mailto:' + CFG.email + '?subject=' + subject + '&body=' + body;
     });
   });
+
 })();
