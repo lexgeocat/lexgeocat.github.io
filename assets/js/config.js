@@ -11,7 +11,7 @@ window.LGC_CONFIG = {
   goatCounterCode: 'cris99',
   goatCounterTz: 'America/La_Paz',
   goatCounterCacheSeconds: 600,
-  goatToken: '1n3711akdpy4fe46phz98kj71j747lj0gtdhhzycbqckd3lun',
+  goatToken: 'c6q8qtkrrhdkrg6ipv2ahvjjxoco7lc8eghw13lm7e9wvkk5m', /*read stadistic fron goatcounter token*/
   geoProvider: 'https://ipapi.co/json/',
   geoCacheHours: 24,
   siteName: 'LexGeoCat',

@@ -114,7 +114,7 @@
     var goatCode = cfg.goatCounterCode;
     // Token de solo lectura de GoatCounter: Settings > API en tu panel goatcounter.com
     // Agregalo en config.js como: goatToken: 'TU_TOKEN_AQUI'
-    var goatToken = cfg.goatToken || '1n3711akdpy4fe46phz98kj71j747lj0gtdhhzycbqckd3lun';
+    var goatToken = cfg.goatToken || 'c6q8qtkrrhdkrg6ipv2ahvjjxoco7lc8eghw13lm7e9wvkk5m';
     var geoUrl = cfg.geoProvider || 'https://ipapi.co/json/';
 
     var GEO_CACHE_MS = 30 * 60 * 1000;  // 30 min
