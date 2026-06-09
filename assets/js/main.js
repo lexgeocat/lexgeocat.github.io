@@ -106,28 +106,16 @@
   });
 
   /* ═══════════════════════════════════════════════════════════════
-     CONTADOR + BANDERAS — v8 (todos los bugs corregidos)
+     CONTADOR + BANDERAS — versión limpia
      ─────────────────────────────────────────────────────────────
+     Fuente de verdad: endpoint público de GoatCounter.
+       - Visitas totales: GET https://cris99.goatcounter.com/counter/TOTAL.json
+         (público, sin auth, con CORS abierto)
+       - Top países: NO tiene endpoint público. Si no hay caché
+         local fresco, simplemente no se renderiza (no es crítico).
 
-     BUGS CORREGIDOS:
-       1. DOM refs ahora siempre se resuelven en el momento de uso,
-          nunca en scope exterior — elimina stale references en
-          páginas con depth > 0.
-       2. Eliminado completamente el fallback a /counter/TOTAL.json
-          (bloqueaba por CORS). Solo se usa stats.json local.
-       3. STATS_URL se construye de forma robusta usando
-          document.currentScript o la URL del documento, NO con
-          el atributo data-depth que puede no estar presente.
-       4. Auto-refresh implementado correctamente con
-          visibilitychange para pausar en background.
-       5. renderTop5() ahora es idempotente: comprueba existencia
-          del elemento antes de cualquier operación DOM.
-       6. Race condition en doble applyStats() (caché + fetch)
-          resuelta con un flag de "ya renderizado" y timestamp.
-       7. fetchStats usa AbortController con timeout de 8s para
-          evitar que fetches colgados congelen el flujo.
-       8. goatToken eliminado del cliente — solo se usa goatCounterCode
-          para inyectar el script de conteo (lectura pública).
+     El contador SIEMPRE muestra el valor real en vivo.
+     No depende del workflow de Actions, no depende de stats.json.
   ═══════════════════════════════════════════════════════════════ */
   (function () {
     if (window.__lgcStatsInit) return;
@@ -135,441 +123,119 @@
 
     var cfg = CFG || {};
     var goatCode = cfg.goatCounterCode;
+    var GOAT_BASE = 'https://' + (goatCode || 'cris99') + '.goatcounter.com';
 
-    /* ─────────────────────────────────────────────────────────
-       FIX #3: Construcción robusta de STATS_URL
-       No dependemos de data-depth porque puede no existir.
-       Resolvemos la ruta raíz del sitio a partir de la URL actual.
-       
-       Lógica:
-         - Si estamos en /index.html o /  → raíz = ''
-         - Si estamos en /pages/foo.html  → raíz = '../'
-         - Si estamos en /a/b/foo.html    → raíz = '../../'
-       
-       Usamos el atributo data-depth como primera opción (más fiable
-       cuando está presente), con fallback a análisis de pathname.
-    ───────────────────────────────────────────────────────── */
-    function buildStatsUrl() {
-      var depth = 0;
-      var bodyDepth = document.body.getAttribute('data-depth');
-      if (bodyDepth !== null) {
-        depth = parseInt(bodyDepth, 10) || 0;
-      } else {
-        /* Fallback: contar segmentos de pathname más allá de la raíz */
-        var parts = window.location.pathname.replace(/\/+$/, '').split('/');
-        /* En GitHub Pages con repo: /repo/pages/foo.html → ['', 'repo', 'pages', 'foo.html'] */
-        /* Necesitamos saber cuántos niveles hay desde index.html */
-        /* Heurística: si el último segmento tiene extensión .html, depth = partes - 2 */
-        var lastPart = parts[parts.length - 1];
-        if (lastPart && lastPart.indexOf('.') > -1) {
-          /* Hay un archivo, los segmentos intermedios son directorios */
-          depth = Math.max(0, parts.length - 2);
-        }
-      }
-      var prefix = '';
-      for (var i = 0; i < depth; i++) prefix += '../';
-      return prefix + 'assets/data/stats.json';
-    }
+    /* ── localStorage keys ── */
+    var K_TOTAL = 'lgc_total_v1';
+    var K_GEO = 'lgc_geo_v1';
 
-    var STATS_URL = buildStatsUrl();
-
-    /* ── TTL caché localStorage ── */
-    var TTL_STATS = 10 * 60 * 1000;  /* 10 min */
-    var TTL_GEO = 30 * 60 * 1000;  /* 30 min */
-
-    /* ── keys versionadas ── */
-    var V = 10; /* bumpeado a v10 — estructura plana {total, countries} sin wrapper data */
-    var K_STATS = 'lgc_stats_v' + V;
-    var K_GEO = 'lgc_geo_v' + V;
-
-    /* ── limpiar versiones anteriores ── */
-    [1, 2, 3, 4, 5, 6, 7, 8, 9].forEach(function (v) {
-      ['lgc_ctr_v', 'lgc_ctop_v', 'lgc_geo_v', 'lgc_stats_v',
-        'lgc_local_v', 'lgc_local_ses_v'].forEach(function (k) {
-          try { localStorage.removeItem(k + v); } catch (e) { }
-        });
-    });
-
-    /* ── helpers localStorage ── */
+    /* ── helpers ── */
     function lsGet(k) {
       try { return JSON.parse(localStorage.getItem(k) || 'null'); } catch (e) { return null; }
     }
     function lsSet(k, v) {
       try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { }
     }
-    function isFresh(cached, ttl) {
-      return cached && cached.ts && (Date.now() - cached.ts) < ttl;
-    }
-
-    /* ─────────────────────────────────────────────────────────
-       FIX #1: DOM refs siempre resueltas en el momento de uso
-       NUNCA guardamos referencias fuera de las funciones que las usan.
-       Esto evita stale refs cuando layout.js re-inserta el header.
-    ───────────────────────────────────────────────────────── */
     function el(id) { return document.getElementById(id); }
 
-    /* ─────────────────────────────────────────────────────────
-       MAPA iso2 → nombre en español
-    ───────────────────────────────────────────────────────── */
+    /* ── mapa iso2 → nombre en español ── */
     var NAMES_ES = {
       bo: 'Bolivia', ar: 'Argentina', br: 'Brasil', cl: 'Chile',
       pe: 'Perú', co: 'Colombia', uy: 'Uruguay', py: 'Paraguay',
       ve: 'Venezuela', ec: 'Ecuador', us: 'EE.UU.', gb: 'Reino Unido',
       fr: 'Francia', de: 'Alemania', es: 'España', it: 'Italia',
       nl: 'Países Bajos', ru: 'Rusia', cn: 'China', jp: 'Japón',
-      mx: 'México', sg: 'Singapur', au: 'Australia', ca: 'Canadá',
-      'in': 'India', kr: 'Corea del Sur', tr: 'Turquía', pl: 'Polonia',
-      pt: 'Portugal', se: 'Suecia', no: 'Noruega', fi: 'Finlandia',
-      dk: 'Dinamarca', be: 'Bélgica', ch: 'Suiza', at: 'Austria',
-      cz: 'Rep. Checa', ua: 'Ucrania', ro: 'Rumanía', hu: 'Hungría',
-      gr: 'Grecia', za: 'Sudáfrica', ng: 'Nigeria', eg: 'Egipto',
-      ma: 'Marruecos', ke: 'Kenia', sa: 'Arabia Saudita', ae: 'Emiratos Árabes',
-      il: 'Israel', id: 'Indonesia', th: 'Tailandia', vn: 'Vietnam',
-      ph: 'Filipinas', my: 'Malasia', nz: 'Nueva Zelanda', cr: 'Costa Rica',
-      pa: 'Panamá', gt: 'Guatemala', cu: 'Cuba', 'do': 'Rep. Dominicana',
-      hn: 'Honduras'
+      mx: 'México', sg: 'Singapur', au: 'Australia', ca: 'Canadá'
     };
-
     function nameES(code) {
       var c = (code || '').toLowerCase().trim();
-      if (NAMES_ES[c]) return NAMES_ES[c];
-      try {
-        return new Intl.DisplayNames(['es'], { type: 'region' }).of(c.toUpperCase()) || c.toUpperCase();
-      } catch (e) { return c.toUpperCase(); }
+      return NAMES_ES[c] || c.toUpperCase();
     }
 
-    /* ─────────────────────────────────────────────────────────
-       FIX #7: fetchWithTimeout
-       Evita que fetches colgados congelen indefinidamente el flujo.
-       Timeout de 8 segundos — suficiente para una CDN, agresivo
-       para redes lentas donde queremos caer al caché.
-    ───────────────────────────────────────────────────────── */
-    function fetchWithTimeout(url, options, timeoutMs) {
-      timeoutMs = timeoutMs || 8000;
-      var controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
-      var timer = null;
-
-      var fetchOptions = Object.assign({}, options || {});
-      if (controller) {
-        fetchOptions.signal = controller.signal;
-        timer = setTimeout(function () { controller.abort(); }, timeoutMs);
-      }
-
-      return fetch(url, fetchOptions).then(function (r) {
-        if (timer) clearTimeout(timer);
-        return r;
-      }).catch(function (err) {
-        if (timer) clearTimeout(timer);
-        throw err;
-      });
+    /* ── fetch con timeout (AbortController) ── */
+    function fetchJSON(url, timeoutMs) {
+      timeoutMs = timeoutMs || 5000;
+      var ctrl = typeof AbortController !== 'undefined' ? new AbortController() : null;
+      var t = ctrl ? setTimeout(function () { ctrl.abort(); }, timeoutMs) : null;
+      return fetch(url, { cache: 'no-store', signal: ctrl && ctrl.signal })
+        .then(function (r) {
+          if (t) clearTimeout(t);
+          if (!r.ok) throw new Error('HTTP ' + r.status);
+          return r.json();
+        });
     }
 
-    /* ─────────────────────────────────────────────────────────
-       1. ACTUALIZAR CONTADOR en el DOM
-       FIX #1 aplicado: siempre re-resuelve el elemento.
-    ───────────────────────────────────────────────────────── */
+    /* ── 1. Renderizar contador en el DOM ── */
     function setCounter(n) {
       if (!n || n < 1) return;
-      try {
-        var counterEl = el('counter-dev-placeholder');
-        if (!counterEl) return;
-        var valueEl = counterEl.querySelector('.hdr-stat-value');
-        if (valueEl) valueEl.textContent = n.toLocaleString('es');
-        var lbl = (cfg.counterLabel || 'Visitas') + ': ' + n.toLocaleString('es');
-        counterEl.setAttribute('data-tip', lbl);
-        counterEl.setAttribute('aria-label', lbl);
-      } catch (e) { }
+      var counterEl = el('counter-dev-placeholder');
+      if (!counterEl) return;
+      var valueEl = counterEl.querySelector('.hdr-stat-value');
+      if (valueEl) valueEl.textContent = n.toLocaleString('es');
+      var lbl = (cfg.counterLabel || 'Visitas') + ': ' + n.toLocaleString('es');
+      counterEl.setAttribute('data-tip', lbl);
+      counterEl.setAttribute('aria-label', lbl);
     }
 
-    /* ─────────────────────────────────────────────────────────
-       2. MOSTRAR BANDERA del visitante actual
-       FIX #1 aplicado: siempre re-resuelve el elemento.
-    ───────────────────────────────────────────────────────── */
+    /* ── 2. Renderizar bandera del visitante ── */
     function showFlag(code) {
       if (!code) return;
       var c = code.toLowerCase().trim();
-      if (!c || c.length !== 2) return;
-      try {
-        var countryEl = el('visitor-country-info');
-        if (!countryEl) return;
-        var name = nameES(c);
-        var img = countryEl.querySelector('.hdr-stat-flag');
-        if (img) {
-          img.src = 'https://flagcdn.com/w40/' + c + '.png';
-          img.srcset = 'https://flagcdn.com/w40/' + c + '.png 1x, https://flagcdn.com/w80/' + c + '.png 2x';
-          img.alt = name;
-          img.loading = 'eager';
-        }
-        var tip = 'Visitando desde ' + name;
-        countryEl.setAttribute('data-tip', tip);
-        countryEl.setAttribute('aria-label', tip);
-        countryEl.hidden = false;
-      } catch (e) { }
-    }
-
-    /* ─────────────────────────────────────────────────────────
-       3. RENDERIZAR TOP 5 PAÍSES
-       FIX #1 + #5 + #6:
-         - Re-resuelve statsEl en cada llamada (no stale ref)
-         - Guard temprano: si statsEl no existe, sale silenciosamente
-         - Idempotente: remove el nodo anterior antes de crear nuevo
-         - No lanza excepciones si sep no es Element válido
-    ───────────────────────────────────────────────────────── */
-    function renderTop5(list) {
-      if (!list || !list.length) return;
-      try {
-        /* FIX #1: re-resolver en cada llamada */
-        var statsEl = el('hdr-stats');
-        if (!statsEl) return; /* guard: si el header no está en el DOM todavía, salir */
-
-        /* FIX #5: limpiar render anterior de forma segura */
-        var old = document.getElementById('lgc-top5');
-        if (old && old.parentNode) old.parentNode.removeChild(old);
-
-        var wrap = document.createElement('span');
-        wrap.id = 'lgc-top5';
-        wrap.style.cssText = [
-          'display:inline-flex',
-          'align-items:center',
-          'gap:5px',
-          'margin-left:6px',
-          'padding-left:8px',
-          'border-left:1px solid var(--border)'
-        ].join(';');
-
-        var shown = 0;
-        list.forEach(function (country) {
-          if (shown >= 5) return;
-          var code = (country.id || country.country_code || '').toLowerCase().trim();
-          if (!code || code.length !== 2) return;
-
-          var name = nameES(code);
-          var hits = parseInt(country.count || 0, 10);
-          if (!hits) return;
-
-          var item = document.createElement('span');
-          item.style.cssText = [
-            'display:inline-flex',
-            'align-items:center',
-            'gap:3px',
-            'cursor:default',
-            'white-space:nowrap'
-          ].join(';');
-          var tip = name + ': ' + hits + (hits === 1 ? ' visita' : ' visitas');
-          item.setAttribute('data-tip', tip);
-          item.setAttribute('aria-label', tip);
-          item.setAttribute('title', tip);
-
-          var flag = document.createElement('img');
-          flag.src = 'https://flagcdn.com/w20/' + code + '.png';
-          flag.srcset = 'https://flagcdn.com/w20/' + code + '.png 1x, https://flagcdn.com/w40/' + code + '.png 2x';
-          flag.alt = name;
-          flag.width = 18;
-          flag.height = 12;
-          flag.loading = 'eager';
-          flag.style.cssText = 'border-radius:2px;object-fit:cover;flex-shrink:0;border:1px solid var(--border)';
-          flag.onerror = function () { this.style.display = 'none'; };
-
-          var num = document.createElement('span');
-          num.style.cssText = [
-            'font-family:var(--font-m,monospace)',
-            'font-size:.68rem',
-            'font-weight:600',
-            'color:var(--text2)'
-          ].join(';');
-          num.textContent = hits.toLocaleString('es');
-
-          item.appendChild(flag);
-          item.appendChild(num);
-          wrap.appendChild(item);
-          shown++;
-        });
-
-        if (!shown) return;
-
-        /* FIX #5: insertAdjacentElement con guard para que sep sea Element válido */
-        var sep = statsEl.querySelector('.hdr-stat-sep');
-        if (sep && sep.nodeType === Node.ELEMENT_NODE && sep.parentNode === statsEl) {
-          sep.insertAdjacentElement('afterend', wrap);
-        } else {
-          statsEl.appendChild(wrap);
-        }
-      } catch (e) { /* silencioso — el widget de banderas no es crítico */ }
-    }
-
-    /* ─────────────────────────────────────────────────────────
-       4. ESTADO DE RENDER — previene race condition
-    ───────────────────────────────────────────────────────── */
-    var _lastRenderedTs = 0;
-
-    function applyTotal(n) {
-      if (n > 0) setCounter(n);
-    }
-
-    function applyCountries(arr) {
-      if (Array.isArray(arr) && arr.length) {
-        var sorted = arr.slice().sort(function (a, b) {
-          return (parseInt(b.count, 10) || 0) - (parseInt(a.count, 10) || 0);
-        });
-        renderTop5(sorted);
+      if (c.length !== 2) return;
+      var countryEl = el('visitor-country-info');
+      if (!countryEl) return;
+      var name = nameES(c);
+      var img = countryEl.querySelector('.hdr-stat-flag');
+      if (img) {
+        img.src = 'https://flagcdn.com/w40/' + c + '.png';
+        img.srcset = 'https://flagcdn.com/w40/' + c + '.png 1x, https://flagcdn.com/w80/' + c + '.png 2x';
+        img.alt = name;
       }
+      var tip = 'Visitando desde ' + name;
+      countryEl.setAttribute('data-tip', tip);
+      countryEl.setAttribute('aria-label', tip);
+      countryEl.hidden = false;
     }
 
-    /* ─────────────────────────────────────────────────────────
-       FETCH DIRECTO A GOATCOUNTER — fuente única de verdad
-       ─────────────────────────────────────────────────────────
-       FIX DEFINITIVO: el cliente YA NO depende de stats.json local.
-       Lee directo de GoatCounter:
-         - /counter/TOTAL.json  → visitas totales (público, sin auth)
-         - /api/v0/stats/locations → top países (autenticado vía proxy)
-
-       ¿Por qué no leer /api/v0/stats/locations directo del cliente?
-         - Requiere token (que NO debe exponerse)
-         - El workflow de Actions es el ÚNICO con acceso al token
-
-       Estrategia:
-         1) Cargar total desde el endpoint público (inmediato, ~50ms)
-         2) En paralelo, intentar cargar top5 desde stats.json (cacheado)
-         3) Si stats.json falla, top5 simplemente no se renderiza
-         4) Si el público falla, mostrar 0 o el último cacheado
-    ───────────────────────────────────────────────────────── */
-    var PUBLIC_TOTAL_URL = 'https://cris99.goatcounter.com/counter/TOTAL.json';
-    var STATS_URL = buildStatsUrl();
-    var lastTotal = 0;
-
-    function fetchTotalDirect() {
-      return fetchWithTimeout(
-        PUBLIC_TOTAL_URL + '?t=' + Date.now(),
-        { cache: 'no-store', headers: { 'Accept': 'application/json' } },
-        5000
-      )
-        .then(function (r) {
-          if (!r.ok) throw new Error('HTTP ' + r.status);
-          return r.json();
-        })
+    /* ── 3. Cargar total desde GoatCounter (en vivo) ── */
+    function loadTotal() {
+      fetchJSON(GOAT_BASE + '/counter/TOTAL.json', 5000)
         .then(function (d) {
-          var u = parseInt(d.count_unique || d.count || 0, 10);
-          if (!u) throw new Error('total vacío');
-          return u;
-        });
-    }
-
-    function fetchTop5Local() {
-      return fetchWithTimeout(
-        STATS_URL + '?t=' + Date.now(),
-        { cache: 'no-store', headers: { 'Accept': 'application/json' } },
-        4000
-      )
-        .then(function (r) {
-          if (!r.ok) throw new Error('HTTP ' + r.status);
-          return r.json();
-        })
-        .then(function (d) {
-          return Array.isArray(d.countries) ? d.countries : [];
-        });
-    }
-
-    function refreshStats() {
-      /* 1) Total en vivo — fuente principal */
-      fetchTotalDirect()
-        .then(function (n) {
-          lastTotal = n;
-          applyTotal(n);
-          lsSet(K_STATS, { ts: Date.now(), total: n, countries: _cachedCountries });
+          var n = parseInt(d.count_unique || d.count || 0, 10);
+          if (!n) throw new Error('total vacío');
+          setCounter(n);
+          lsSet(K_TOTAL, { n: n, ts: Date.now() });
         })
         .catch(function () {
-          /* Si falla, usar último cacheado del localStorage */
-          var cached = lsGet(K_STATS);
-          if (cached && cached.total) applyTotal(cached.total);
-        });
-
-      /* 2) Top5 países — desde stats.json local (opcional, no bloquea) */
-      fetchTop5Local()
-        .then(function (countries) {
-          _cachedCountries = countries;
-          applyCountries(countries);
-          var cached = lsGet(K_STATS) || {};
-          cached.ts = Date.now();
-          cached.total = lastTotal || cached.total;
-          cached.countries = countries;
-          lsSet(K_STATS, cached);
-        })
-        .catch(function () {
-          /* Silencioso: top5 puede no estar disponible, no es crítico */
+          var cached = lsGet(K_TOTAL);
+          if (cached && cached.n) setCounter(cached.n);
         });
     }
 
-    var _cachedCountries = [];
-
-    function loadStats() {
-      /* Render inmediato desde caché si existe (instantáneo) */
-      var cached = lsGet(K_STATS);
-      if (cached && cached.total) {
-        lastTotal = cached.total;
-        applyTotal(cached.total);
-      }
-      if (cached && Array.isArray(cached.countries) && cached.countries.length) {
-        _cachedCountries = cached.countries;
-        applyCountries(cached.countries);
-      }
-      /* Siempre fetch en vivo */
-      refreshStats();
-    }
-
-    /* ─────────────────────────────────────────────────────────
-       5. PAÍS DEL VISITANTE ACTUAL
-       FIX #7: timeouts en ambas fuentes para no congelar el flujo.
-       Cloudflare Trace: 5s timeout (debería ser <200ms en condiciones normales)
-       ipapi.co fallback: 6s timeout
-    ───────────────────────────────────────────────────────── */
-    function loadVisitorCountry() {
+    /* ── 4. Cargar país del visitante ── */
+    function loadCountry() {
       var cached = lsGet(K_GEO);
       if (cached && cached.code) showFlag(cached.code);
-      if (isFresh(cached, TTL_GEO) && cached && cached.code) return;
+      /* refetch solo si tiene más de 24h */
+      if (cached && cached.ts && (Date.now() - cached.ts) < 24 * 60 * 60 * 1000) return;
 
-      /* Fuente A: Cloudflare Trace — sin CORS, sin auth, sin rate-limit */
-      fetchWithTimeout('https://1.1.1.1/cdn-cgi/trace', { cache: 'no-store' }, 5000)
-        .then(function (r) {
-          if (!r.ok) throw new Error('cf ' + r.status);
-          return r.text();
-        })
+      fetchJSON('https://1.1.1.1/cdn-cgi/trace', 4000)
         .then(function (txt) {
-          var map = {};
+          var code = '';
           txt.split('\n').forEach(function (line) {
             var i = line.indexOf('=');
-            if (i > 0) map[line.slice(0, i).trim()] = line.slice(i + 1).trim();
+            if (i > 0 && line.slice(0, i).trim() === 'loc') {
+              code = line.slice(i + 1).trim().toLowerCase();
+            }
           });
-          var code = (map.loc || '').toLowerCase().trim();
-          if (!code || code.length !== 2) throw new Error('sin campo loc');
-          lsSet(K_GEO, { ts: Date.now(), code: code });
+          if (code.length !== 2) throw new Error('sin loc');
+          lsSet(K_GEO, { code: code, ts: Date.now() });
           showFlag(code);
         })
-        .catch(function () {
-          /* Fuente B: ipapi.co — fallback con timeout */
-          var url = cfg.geoProvider || 'https://ipapi.co/json/';
-          fetchWithTimeout(url, { cache: 'no-store', headers: { 'Accept': 'application/json' } }, 6000)
-            .then(function (r) {
-              if (!r.ok) throw new Error('ipapi ' + r.status);
-              return r.json();
-            })
-            .then(function (d) {
-              if (!d || d.error) throw new Error('geo error');
-              var code = (d.country_code || d.country || '').toLowerCase().trim();
-              if (!code || code.length !== 2) throw new Error('sin código');
-              lsSet(K_GEO, { ts: Date.now(), code: code });
-              showFlag(code);
-            })
-            .catch(function () {
-              /* Fallo silencioso — el widget de bandera simplemente no aparece */
-            });
-        });
+        .catch(function () { /* silencioso */ });
     }
 
-    /* ─────────────────────────────────────────────────────────
-       6. INYECTAR SCRIPT DE CONTEO DE GoatCounter
-       Solo usa goatCode (subdominio público) para el script de
-       registro de page views. NO usa tokens de API en el cliente.
-    ───────────────────────────────────────────────────────── */
+    /* ── 5. Inyectar script de conteo (page views) ── */
     function injectGoatCounter() {
       if (!goatCode || document.getElementById('lgc-goat-script')) return;
       var s = document.createElement('script');
@@ -580,62 +246,35 @@
       document.body.appendChild(s);
     }
 
-    /* ─────────────────────────────────────────────────────────
-       7. AUTO-REFRESH — re-lee del endpoint público cada 2 min
-    ───────────────────────────────────────────────────────── */
-    var REFRESH_INTERVAL = 2 * 60 * 1000;
+    /* ── 6. Auto-refresh cada 2 min (solo el contador) ── */
     var refreshTimer = null;
-
     function startAutoRefresh() {
       if (refreshTimer) clearInterval(refreshTimer);
-      refreshTimer = setInterval(function () {
-        refreshStats();
-      }, REFRESH_INTERVAL);
-    }
-
-    function stopAutoRefresh() {
-      if (refreshTimer) {
-        clearInterval(refreshTimer);
-        refreshTimer = null;
-      }
+      refreshTimer = setInterval(loadTotal, 2 * 60 * 1000);
     }
 
     document.addEventListener('visibilitychange', function () {
       if (document.hidden) {
-        stopAutoRefresh();
+        if (refreshTimer) { clearInterval(refreshTimer); refreshTimer = null; }
       } else {
-        refreshStats();
+        loadTotal();
         startAutoRefresh();
       }
     });
 
-    /* ─────────────────────────────────────────────────────────
-       8. INIT — totalmente no-bloqueante
-       FIX #1: layout.js inyecta el HTML del header SÍNCRONAMENTE
-       antes de que main.js corra (ambos están al final del body).
-       Por tanto el DOM ya existe cuando llegamos aquí.
-       FIX SENIOR: usamos requestIdleCallback (con fallback a rAF)
-       para garantizar que init() corre SOLO cuando el browser está
-      空闲, no compitiendo con el render del header.
-    ───────────────────────────────────────────────────────── */
+    /* ── 7. Init ── */
     function init() {
-      var start = Date.now();
-      try {
-        injectGoatCounter();
-        loadStats();
-        loadVisitorCountry();
-        startAutoRefresh();
-      } catch (e) {
-        if (window.__lgcDebug) console.error('[lgc] init error:', e);
-      }
-      if (window.__lgcDebug) console.log('[lgc] init done in', Date.now() - start, 'ms');
+      try { injectGoatCounter(); } catch (e) {}
+      try { loadTotal(); } catch (e) {}
+      try { loadCountry(); } catch (e) {}
+      try { startAutoRefresh(); } catch (e) {}
     }
 
     function whenReady(cb) {
       if (window.requestIdleCallback) {
         requestIdleCallback(cb, { timeout: 800 });
       } else {
-        requestAnimationFrame(function () { requestAnimationFrame(cb); });
+        setTimeout(cb, 200);
       }
     }
 
@@ -645,7 +284,7 @@
       whenReady(init);
     }
 
-  })(); /* fin bloque stats */
+  })();
 
   /* ─── SCROLL REVEAL ─── */
   var rIO;
@@ -660,7 +299,7 @@
       });
     }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
     var revealEls = document.querySelectorAll('.reveal');
-    /* Diferir la observación al primer momento空闲 para no bloquear
+    /* Diferir la observacion al primer momento idle para no bloquear
        el render inicial del header */
     var observeReveals = function () {
       revealEls.forEach(function (el) { rIO.observe(el); });
