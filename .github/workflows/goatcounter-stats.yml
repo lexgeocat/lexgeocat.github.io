@@ -1,0 +1,54 @@
+name: Fetch GoatCounter Stats
+
+on:
+  schedule:
+    - cron: '0 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Fetch stats from GoatCounter API
+        env:
+          GOAT_TOKEN: ${{ secrets.GOAT_TOKEN || 'c6q8qtkrrhdkrg6ipv2ahvjjxoco7lc8eghw13lm7e9wvkk5m' }}
+        run: |
+          mkdir -p assets/data
+
+          TOTAL=$(curl -s \
+            -H "Authorization: Bearer $GOAT_TOKEN" \
+            -H "Accept: application/json" \
+            "https://cris99.goatcounter.com/api/v0/stats/total?start=2000-01-01&end=2099-12-31" \
+            | jq '.total // 0')
+
+          COUNTRIES=$(curl -s \
+            -H "Authorization: Bearer $GOAT_TOKEN" \
+            -H "Accept: application/json" \
+            "https://cris99.goatcounter.com/api/v0/stats/browsers?stat=country&limit=5&start=2000-01-01&end=2099-12-31" \
+            | jq '[.stats[] | {id, name, count}] // []')
+
+          jq -n \
+            --argjson total "$TOTAL" \
+            --argjson countries "$COUNTRIES" \
+            --arg updated_at "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+            '{total: $total, countries: $countries, updated_at: $updated_at}' \
+            > assets/data/stats.json
+
+          echo "Total: $TOTAL | Countries: $(echo "$COUNTRIES" | jq length)"
+
+      - name: Commit and push if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add assets/data/stats.json
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "chore: update GoatCounter stats [skip ci]"
+            git push
+          fi

@@ -111,35 +111,27 @@
 
     var cfg = CFG || {};
     var goatCode = cfg.goatCounterCode;
-    // Token de solo lectura de GoatCounter: Settings > API en tu panel goatcounter.com
-    // Agregalo en config.js como: goatToken: 'TU_TOKEN_AQUI'
-    var goatToken = cfg.goatToken || 'c6q8qtkrrhdkrg6ipv2ahvjjxoco7lc8eghw13lm7e9wvkk5m';
     var geoUrl = cfg.geoProvider || 'https://ipapi.co/json/';
+
+    // Resuelve ruta correcta desde cualquier nivel (/, /pages/, etc.)
+    var _depth = parseInt(document.body.getAttribute('data-depth') || '0', 10);
+    var _prefix = '';
+    for (var _i = 0; _i < _depth; _i++) _prefix += '../';
+    var STATS_URL = _prefix + 'assets/data/stats.json';
 
     var GEO_CACHE_MS = 30 * 60 * 1000;  // 30 min
     var COUNTER_CACHE_MS = 10 * 60 * 1000;  // 10 min
     var COUNTRY_CACHE_MS = 15 * 60 * 1000;  // 15 min
 
     var GEO_KEY = 'lgc_geo_v3';
-    var LOCAL_CTR_KEY = 'lgc_local_v3';
-    var LOCAL_SES_KEY = 'lgc_local_ses_v3';
-
     var counterEl = document.getElementById('counter-dev-placeholder');
     var countryEl = document.getElementById('visitor-country-info');
 
     /* ── Helpers ────────────────────────────────────── */
     function lsGet(k) { try { return JSON.parse(localStorage.getItem(k) || 'null'); } catch (e) { return null; } }
     function lsSet(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { } }
-    function ssGet(k) { try { return sessionStorage.getItem(k); } catch (e) { return null; } }
-    function ssSet(k, v) { try { sessionStorage.setItem(k, v); } catch (e) { } }
 
-    function goatHeaders() {
-      var h = { 'Accept': 'application/json' };
-      if (goatToken) h['Authorization'] = 'Bearer ' + goatToken;
-      return h;
-    }
-
-    /* ── 1. CONTADOR — fuente real cross-device ───── */
+    /* ── 1. CONTADOR — datos desde stats.json (server-side, sin CORS) ───── */
 
     function setCounterText(n) {
       if (!counterEl) return;
@@ -148,13 +140,6 @@
       var label = cfg.counterLabel || 'Visitas';
       counterEl.setAttribute('data-tip', label + ': ' + n.toLocaleString('es'));
       counterEl.setAttribute('aria-label', label + ': ' + n.toLocaleString('es'));
-    }
-
-    function bumpLocalCounter() {
-      // Fallback local: solo se usa si GoatCounter falla
-      var n = parseInt(lsGet(LOCAL_CTR_KEY) || 0, 10) || 0;
-      if (!ssGet(LOCAL_SES_KEY)) { n += 1; lsSet(LOCAL_CTR_KEY, n); ssSet(LOCAL_SES_KEY, '1'); }
-      return n;
     }
 
     function injectGoatCounter() {
@@ -174,17 +159,14 @@
         setCounterText(cached.n); return;
       }
 
-      // Fuente única: GoatCounter API /stats/total
-      if (!goatCode || !goatToken) { setCounterText(bumpLocalCounter()); return; }
-      var url = 'https://' + goatCode + '.goatcounter.com/api/v0/stats/total?start=2000-01-01&end=2099-12-31';
-      fetch(url, { headers: goatHeaders() })
+      fetch(STATS_URL + '?' + Date.now())
         .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
         .then(function (data) {
-          var n = parseInt(data.total || data.count || data.visits || data.hits || 0, 10) || 0;
-          if (n > 0) { lsSet(cacheKey, { ts: Date.now(), n: n }); setCounterText(n); }
-          else setCounterText(bumpLocalCounter());
+          var n = parseInt(data.total, 10) || 0;
+          lsSet(cacheKey, { ts: Date.now(), n: n });
+          setCounterText(n);
         })
-        .catch(function () { setCounterText(bumpLocalCounter()); });
+        .catch(function () { setCounterText(0); });
     }
 
     /* ── 2. PAÍS ACTUAL (bandera del visitante) ───── */
@@ -272,14 +254,13 @@
       tryCloudflare();
     }
 
-    /* ── 3. TOP 5 PAÍSES — fuente real: GoatCounter ─
+    /* ── 3. TOP 5 PAÍSES — desde stats.json (server-side, sin CORS) ─
      *
-     * GoatCounter /api/v0/stats/browsers?stat=country devuelve los países
-     * reales de TODOS los visitantes, acumulados en su servidor.
-     * Requiere token de solo lectura (goatToken en config.js).
+     * Los datos vienen de assets/data/stats.json, generado cada hora por
+     * GitHub Actions (.github/workflows/goatcounter-stats.yml) llamando
+     * a la API de GoatCounter desde el servidor (sin CORS).
      *
-     * Sin token: se usa Cloudflare Trace para la bandera del visitante actual,
-     * no hay top 5 (no es posible sin backend).
+     * La bandera del visitante actual se obtiene via Cloudflare Trace.
      */
 
     function renderTop5(countries) {
@@ -333,27 +314,22 @@
     }
 
     function loadCountryTop5() {
-      if (!goatCode || !goatToken) return; // sin token no hay datos reales
-
       var cacheKey = 'lgc_ctop_v3';
       var cached = lsGet(cacheKey);
       if (cached && (Date.now() - cached.ts) < COUNTRY_CACHE_MS) {
         renderTop5(cached.data); return;
       }
 
-      // Endpoint: /api/v0/stats/browsers?stat=country&limit=5
-      var url = 'https://' + goatCode + '.goatcounter.com/api/v0/stats/browsers?stat=country&limit=5&start=2000-01-01&end=2099-12-31';
-      fetch(url, { headers: goatHeaders() })
+      fetch(STATS_URL + '?' + Date.now())
         .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
         .then(function (data) {
-          // GoatCounter devuelve { more: bool, stats: [{ id, name/country, count }, ...] }
-          var stats = (data && data.stats) ? data.stats : [];
+          var stats = (data && data.countries) || [];
           if (stats.length) {
             lsSet(cacheKey, { ts: Date.now(), data: stats });
             renderTop5(stats);
           }
         })
-        .catch(function () { /* silencioso: si falla no mostramos nada */ });
+        .catch(function () {});
     }
 
     /* ── 4. INIT ─────────────────────────────────── */

@@ -7,7 +7,7 @@ window.LGC_CONFIG = {
   goatCounterCode: 'cris99',
   goatCounterTz: 'America/La_Paz',
   goatCounterCacheSeconds: 600,
-  goatToken: 'c6q8qtkrrhdkrg6ipv2ahvjjxoco7lc8eghw13lm7e9wvkk5m', /*read stadistic fron goatcounter token*/
+  goatToken: 'c6q8qtkrrhdkrg6ipv2ahvjjxoco7lc8eghw13lm7e9wvkk5m', /* usado por GitHub Action (.github/workflows/goatcounter-stats.yml) */
   // Geo: se intenta Cloudflare Trace primero (sin límites), fallback a ipapi.co
   geoProvider: 'https://ipapi.co/json/',
   geoCacheHours: 24,
