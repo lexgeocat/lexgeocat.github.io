@@ -1,5 +1,10 @@
 {
-  "total": 0,
-  "countries": [],
+  "total": 22,
+  "countries": [
+    {"id": "BO", "name": "Bolivia", "count": 12},
+    {"id": "NL", "name": "Netherlands", "count": 5},
+    {"id": "US", "name": "United States", "count": 3},
+    {"id": "FR", "name": "France", "count": 2}
+  ],
   "updated_at": "2026-06-09T00:00:00Z"
 }

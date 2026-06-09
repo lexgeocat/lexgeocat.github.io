@@ -123,7 +123,15 @@
     var COUNTER_CACHE_MS = 10 * 60 * 1000;  // 10 min
     var COUNTRY_CACHE_MS = 15 * 60 * 1000;  // 15 min
 
-    var GEO_KEY = 'lgc_geo_v3';
+    // Keys con versión: al cambiar, se invalida todo localStorage anterior
+    var CACHE_VER = 4;
+    var GEO_KEY = 'lgc_geo_v' + CACHE_VER;
+    var COUNTER_CACHE_KEY = 'lgc_ctr_v' + CACHE_VER;
+    var COUNTRY_CACHE_KEY = 'lgc_ctop_v' + CACHE_VER;
+
+    // Limpia keys antiguas de localStorage para evitar conflictos
+    try { ['lgc_ctr_v3', 'lgc_ctop_v3', 'lgc_geo_v3', 'lgc_local_v3', 'lgc_local_ses_v3'].forEach(function(k) { localStorage.removeItem(k); }); } catch (e) {}
+
     var counterEl = document.getElementById('counter-dev-placeholder');
     var countryEl = document.getElementById('visitor-country-info');
 
@@ -153,8 +161,7 @@
     }
 
     function loadCounter() {
-      var cacheKey = 'lgc_ctr_v3';
-      var cached = lsGet(cacheKey);
+      var cached = lsGet(COUNTER_CACHE_KEY);
       if (cached && (Date.now() - cached.ts) < COUNTER_CACHE_MS && cached.n > 0) {
         setCounterText(cached.n); return;
       }
@@ -163,7 +170,7 @@
         .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
         .then(function (data) {
           var n = parseInt(data.total, 10) || 0;
-          lsSet(cacheKey, { ts: Date.now(), n: n });
+          lsSet(COUNTER_CACHE_KEY, { ts: Date.now(), n: n });
           setCounterText(n);
         })
         .catch(function () { setCounterText(0); });
@@ -172,8 +179,10 @@
     /* ── 2. PAÍS ACTUAL (bandera del visitante) ───── */
 
     function countryName(code) {
-      try { return new Intl.DisplayNames(['es'], { type: 'region' }).of(code.toUpperCase()); }
-      catch (e) { return code.toUpperCase(); }
+      try {
+        var n = new Intl.DisplayNames(['es'], { type: 'region' }).of(code.toUpperCase());
+        return n || code.toUpperCase();
+      } catch (e) { return code.toUpperCase(); }
     }
 
     function renderCurrentFlag(code, name) {
@@ -314,8 +323,7 @@
     }
 
     function loadCountryTop5() {
-      var cacheKey = 'lgc_ctop_v3';
-      var cached = lsGet(cacheKey);
+      var cached = lsGet(COUNTRY_CACHE_KEY);
       if (cached && (Date.now() - cached.ts) < COUNTRY_CACHE_MS) {
         renderTop5(cached.data); return;
       }
@@ -325,7 +333,7 @@
         .then(function (data) {
           var stats = (data && data.countries) || [];
           if (stats.length) {
-            lsSet(cacheKey, { ts: Date.now(), data: stats });
+            lsSet(COUNTRY_CACHE_KEY, { ts: Date.now(), data: stats });
             renderTop5(stats);
           }
         })
