@@ -3,6 +3,11 @@
  * Ajusta blogUrl y basePath antes de publicar.
  */
 window.LGC_CONFIG = {
+  counterWebsiteId: 'a3fdab0e-876c-43ba-9d03-908573d0b327',
+  counterUtcOffset: -4,
+  counterLabel: 'Visitas',
+  geoProvider: 'https://ipapi.co/json/',
+  geoCacheHours: 24,
   siteName: 'LexGeoCat',
   tagline: 'Derecho · Catastro · Geomática · Tecnología',
 

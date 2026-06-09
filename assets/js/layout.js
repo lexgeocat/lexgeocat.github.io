@@ -121,11 +121,20 @@
       '<a href="' + root('pages/privacidad.html') + '">Privacidad</a>' +
       '<a href="' + root('pages/terminos.html') + '">Términos</a>' +
       '<a href="' + root('pages/contacto.html') + '">Contacto</a>' +
-      '</div></div></div>' + // Cierre de ft-btm-right y ft-btm
-      '<div class="footer-stats-container">' + // Nuevo contenedor para estadísticas
-      '  <div id="counter-dev-placeholder"></div>' + // Espacio para Counter.dev
-      '  <div id="visitor-country-info" style="display: none;"></div>' + // Espacio para bandera y país del visitante (inicialmente oculto)
+      '</div></div></div>' +
+      '<div class="footer-stats" aria-label="Estadísticas de visitas">' +
+      '<div class="footer-stats-inner">' +
+      '<div class="fs-counter" id="counter-dev-placeholder" role="status" aria-live="polite">' +
+      '<i class="fa-solid fa-eye"></i>' +
+      '<span class="fs-counter-label">' + (CFG.counterLabel || 'Visitas') + ':</span>' +
+      '<span class="fs-counter-value">…</span>' +
       '</div>' +
+      '<div class="fs-divider" aria-hidden="true"></div>' +
+      '<div class="fs-country" id="visitor-country-info" hidden>' +
+      '<img alt="" class="fs-flag" loading="lazy">' +
+      '<span class="fs-country-name"></span>' +
+      '</div>' +
+      '</div></div>' +
       '<button aria-label="Volver arriba" id="top" type="button"><i class="fa-solid fa-arrow-up"></i></button>' +
       '<div aria-modal="true" id="srch-overlay" role="dialog"><div class="srch-modal">' +
       '<div class="srch-modal-header"><i class="fa-solid fa-magnifying-glass"></i>' +

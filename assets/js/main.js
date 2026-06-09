@@ -106,59 +106,102 @@
 
 /* --- COUNTER AND VISITOR INFO --- */
 (function () {
-  // Configuración de Counter.dev
-  // Usando el websiteId proporcionado: a3fdab0e-876c-43ba-9d03-908573d0b327
-  var counterDevConfig = {
-    websiteId: 'a3fdab0e-876c-43ba-9d03-908573d0b327',
-    utcoffset: -4 // Proporcionado en el script de ejemplo
-  };
+  if (window.__lgcCounterInit) return;
+  window.__lgcCounterInit = true;
 
-  // Inyectar script de Counter.dev
-  var counterScript = document.createElement('script');
-  counterScript.src = 'https://cdn.counter.dev/script.js';
-  counterScript.setAttribute('data-id', counterDevConfig.websiteId);
-  if (counterDevConfig.utcoffset !== undefined) { // Asegurarse de que utcoffset esté definido
-    counterScript.setAttribute('data-utcoffset', counterDevConfig.utcoffset);
-  }
-  counterScript.async = true;
-  document.body.appendChild(counterScript);
+  var cfg = CFG || {};
+  var counterId = cfg.counterWebsiteId;
+  var counterLabel = cfg.counterLabel || 'Visitas';
+  var geoUrl = cfg.geoProvider || 'https://ipapi.co/json/';
+  var cacheHours = Number(cfg.geoCacheHours) || 24;
 
-  // Placeholder para el contador
-  var counterPlaceholder = document.getElementById('counter-dev-placeholder');
-  if (counterPlaceholder) {
-    counterPlaceholder.innerHTML = '<span style="color: var(--text3); font-size: 0.85rem;">Cargando visitas...</span>';
+  var counterEl = document.getElementById('counter-dev-placeholder');
+  var countryEl = document.getElementById('visitor-country-info');
+
+  function setCounter(text) {
+    if (!counterEl) return;
+    var valueEl = counterEl.querySelector('.fs-counter-value');
+    if (valueEl) valueEl.textContent = text;
   }
 
-  // Detectar país del visitante y mostrar bandera
-  var visitorCountryInfo = document.getElementById('visitor-country-info');
-  if (visitorCountryInfo) {
-    fetch('https://ip-api.com/json/?fields=status,message,country,countryCode,isp,query')
-      .then(function (response) {
-        if (!response.ok) {
-          throw new Error('Network response was not ok: ' + response.status + ' ' + response.statusText);
+  function loadCounter() {
+    if (!counterId) return;
+    var s = document.createElement('script');
+    s.src = 'https://cdn.counter.dev/script.js';
+    s.setAttribute('data-id', counterId);
+    if (cfg.counterUtcOffset !== undefined && cfg.counterUtcOffset !== null) {
+      s.setAttribute('data-utcoffset', String(cfg.counterUtcOffset));
+    }
+    s.async = true;
+    s.onerror = function () { setCounter('—'); };
+    document.body.appendChild(s);
+
+    var attempts = 0;
+    var timer = setInterval(function () {
+      attempts++;
+      var badge = document.getElementById('sjs-count-visits') ||
+                  document.querySelector('[data-counter-dev="visits"]') ||
+                  document.querySelector('.counter-dev-visits');
+      if (badge) {
+        var n = (badge.textContent || '').trim();
+        if (n) { setCounter(n); clearInterval(timer); }
+      }
+      if (attempts > 40) { // ~10s
+        clearInterval(timer);
+        if (counterEl && !counterEl.querySelector('.fs-counter-value').textContent.trim().length) {
+          setCounter('—');
         }
-        return response.json();
+      }
+    }, 250);
+  }
+
+  function loadCountry() {
+    if (!countryEl) return;
+    var cacheKey = 'lgc_geo_v1';
+    var cached = null;
+    try { cached = JSON.parse(localStorage.getItem(cacheKey) || 'null'); } catch (e) {}
+    var fresh = cached && (Date.now() - cached.ts) < cacheHours * 3600 * 1000;
+
+    function apply(data) {
+      if (!data) return;
+      var code = (data.country_code || data.country || '').toString().toLowerCase();
+      var name = data.country_name || data.country || '';
+      if (!code || !name) return;
+      var img = countryEl.querySelector('.fs-flag');
+      var nameEl = countryEl.querySelector('.fs-country-name');
+      if (img) {
+        img.src = 'https://flagcdn.com/w40/' + code + '.png';
+        img.srcset = 'https://flagcdn.com/w80/' + code + '.png 2x';
+        img.alt = 'Bandera de ' + name;
+      }
+      if (nameEl) nameEl.textContent = name;
+      countryEl.hidden = false;
+    }
+
+    if (fresh) { apply(cached.data); return; }
+
+    fetch(geoUrl, { headers: { 'Accept': 'application/json' } })
+      .then(function (r) {
+        if (!r.ok) throw new Error('geo http ' + r.status);
+        return r.json();
       })
       .then(function (data) {
-        if (data.status === 'success' && data.countryCode) {
-          var countryCode = data.countryCode.toLowerCase();
-          var countryName = data.country;
-          var flagUrl = 'https://flagcdn.com/w20/' + countryCode + '.png';
-
-          visitorCountryInfo.innerHTML = `
-            <span style="color: var(--text3); font-size: 0.85rem; display: flex; align-items: center; gap: 8px;">
-              <img src="${flagUrl}" alt="${countryName}" style="width: 20px; height: auto; vertical-align: middle; border: 1px solid var(--border); box-shadow: 0 0 3px rgba(0,0,0,0.1);">
-              <span>${countryName}</span>
-            </span>
-          `;
-          visitorCountryInfo.style.display = 'flex'; // Mostrar el contenedor una vez que tengamos datos
-        } else {
-          console.warn('Could not determine visitor country:', data.status, data.message);
-        }
+        if (data && data.error) throw new Error(data.reason || 'geo error');
+        try { localStorage.setItem(cacheKey, JSON.stringify({ ts: Date.now(), data: data })); } catch (e) {}
+        apply(data);
       })
-      .catch(function (error) {
-        console.error('Error fetching visitor country:', error);
-      });
+      .catch(function () { /* silent */ });
+  }
+
+  function init() {
+    loadCounter();
+    loadCountry();
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init, { once: true });
+  } else {
+    init();
   }
 })(); // Cierre de la IIFE para el contador y la info del visitante
 

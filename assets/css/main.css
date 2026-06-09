@@ -4319,49 +4319,85 @@ svg.fd-bg-map {
 }
 
 /* Estilos para el nuevo contenedor de estadísticas en el footer */
-.footer-stats-container {
+.footer-stats {
   display: flex;
   justify-content: center;
-  /* Centra los elementos horizontalmente */
   align-items: center;
-  /* Alinea verticalmente */
-  gap: 20px;
-  /* Espacio entre el contador y la info del país */
-  margin-top: 25px;
-  /* Espacio desde el contenido anterior del footer */
-  margin-bottom: 15px;
-  /* Espacio antes de copyright */
-  flex-wrap: wrap;
-  /* Permite que los elementos se apilen en pantallas pequeñas */
-  text-align: center;
-  /* Centra el texto si los elementos se apilan */
+  padding: 14px 16px 18px;
+  border-top: 1px solid var(--border);
+  margin-top: 0;
+  background: transparent;
 }
 
-#visitor-country-info {
-  display: flex;
-  /* Asegura que se muestre como flex */
+.footer-stats-inner {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  padding: 8px 16px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--card);
+  font-family: var(--font-m);
+  font-size: .82rem;
+  color: var(--text3);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, .04);
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.fs-counter,
+.fs-country {
+  display: inline-flex;
   align-items: center;
   gap: 8px;
-  /* Espacio entre la bandera y el texto */
+  line-height: 1;
 }
 
-#visitor-country-info img {
+.fs-counter i {
+  color: var(--gold);
+  font-size: .9rem;
+}
+
+.fs-counter-label {
+  color: var(--text3);
+  letter-spacing: .02em;
+}
+
+.fs-counter-value {
+  color: var(--text);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  min-width: 1.5ch;
+  text-align: left;
+}
+
+.fs-divider {
+  width: 1px;
+  height: 14px;
+  background: var(--border);
+}
+
+.fs-flag {
+  width: 20px;
+  height: 14px;
+  object-fit: cover;
+  border-radius: 2px;
   border: 1px solid var(--border);
-  /* Borde sutil para las banderas */
-  box-shadow: 0 0 3px rgba(0, 0, 0, 0.1);
-  /* Sombra ligera */
+  box-shadow: 0 0 3px rgba(0, 0, 0, .08);
+  background: var(--bg);
+}
+
+.fs-country-name {
+  color: var(--text2);
 }
 
 /* Ajustes para pantallas pequeñas si es necesario */
 @media (max-width: 600px) {
-  .footer-stats-container {
-    flex-direction: column;
-    /* Apila los elementos verticalmente */
+  .footer-stats-inner {
     gap: 10px;
+    padding: 8px 12px;
+    font-size: .78rem;
   }
-
-  #visitor-country-info {
-    margin-top: 5px;
-    /* Un poco más de espacio si se apilan */
-  }
+  .fs-divider { display: none; }
+  .footer-stats-inner { flex-direction: row; }
 }
