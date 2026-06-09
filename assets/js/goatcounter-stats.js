@@ -24,20 +24,42 @@
         return COUNTRY_ES[code] || code;
     }
 
-    // Redondea a hora en punto, formato requerido por la API
+    // Redondea a la hora en punto, formato exacto que requiere la API de GC
     function toHour(d) {
         var r = new Date(d);
         r.setUTCMinutes(0, 0, 0);
-        // GoatCounter requiere exactamente este formato sin milisegundos
         return r.toISOString().replace('.000Z', 'Z');
     }
 
+    // Construye los query params de rango temporal
     function dateRange() {
         return 'start=' + encodeURIComponent('2024-01-01T00:00:00Z') +
             '&end=' + encodeURIComponent(toHour(new Date()));
     }
 
-    // ── Tooltip ──────────────────────────────────────────────────────────────
+    // Fetch genérico contra la API REST de GoatCounter con Bearer token
+    function apiFetch(path, cb) {
+        // Construye la URL evitando doble '?' cuando path ya trae query params
+        var sep = path.indexOf('?') >= 0 ? '&' : '?';
+        var url = GC_BASE + '/api/v0' + path + sep + dateRange();
+
+        fetch(url, {
+            method: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + GC_TOKEN,
+                'Content-Type': 'application/json'
+            },
+            cache: 'no-store'
+        })
+            .then(function (r) {
+                if (!r.ok) throw new Error('HTTP ' + r.status + ' en ' + path);
+                return r.json();
+            })
+            .then(cb)
+            .catch(function (e) { console.warn('[GC]', e.message); });
+    }
+
+    // ── Tooltip ───────────────────────────────────────────────────────────────
     var _tip = null;
 
     function showTip(item) {
@@ -70,81 +92,57 @@
     document.addEventListener('scroll', hideTip, { passive: true });
 
     // ── Total de vistas ───────────────────────────────────────────────────────
-    // Usa el endpoint PÚBLICO /counter//.json (no requiere auth, CORS abierto).
-    // Requiere "Allow adding visitor counts on your website" activo en Settings.
+    // /stats/total devuelve { total: N, total_utc: N }
     function updateViews() {
-        fetch(GC_BASE + '/counter//.json', { cache: 'no-store' })
-            .then(function (r) {
-                if (!r.ok) throw new Error(r.status);
-                return r.json();
-            })
-            .then(function (data) {
-                var el = document.getElementById('gc-total-views');
-                if (!el) return;
-                // data.count es string formateado "1,234" — lo mostramos directo
-                el.textContent = data.count || '0';
-            })
-            .catch(function (e) {
-                console.warn('[GC] vistas:', e.message,
-                    '— activa "Allow visitor counts" en GoatCounter Settings');
-            });
+        apiFetch('/stats/total', function (data) {
+            var el = document.getElementById('gc-total-views');
+            if (!el) return;
+            var n = (data && typeof data.total === 'number') ? data.total : 0;
+            el.textContent = n.toLocaleString('es-BO');
+        });
     }
 
     // ── Banderas de países ────────────────────────────────────────────────────
-    // Usa la API REST con Bearer token.
-    // El campo `id` en /stats/locations es el código ISO-2 ("BO", "AR"...).
-    // El campo `name` es el nombre display ("Bolivia").
+    // /stats/locations devuelve { stats: [{ id: "BO", name: "Bolivia", count: N }] }
     function updateFlags() {
-        var url = GC_BASE + '/api/v0/stats/locations?limit=8&' + dateRange();
-        fetch(url, {
-            headers: {
-                'Authorization': 'Bearer ' + GC_TOKEN,
-                'Content-Type': 'application/json'
-            },
-            cache: 'no-store'
-        })
-            .then(function (r) {
-                if (!r.ok) throw new Error(r.status);
-                return r.json();
-            })
-            .then(function (data) {
-                var wrap = document.getElementById('gc-flags-wrap');
-                if (!wrap) return;
-                var stats = (data && Array.isArray(data.stats)) ? data.stats : [];
-                if (!stats.length) return;
+        apiFetch('/stats/locations?limit=8', function (data) {
+            var wrap = document.getElementById('gc-flags-wrap');
+            if (!wrap) return;
+            var stats = (data && Array.isArray(data.stats)) ? data.stats : [];
+            if (!stats.length) return;
 
-                var html = '';
-                stats.forEach(function (loc) {
-                    // id viene como "BO", "AR", etc. — tomar primeros 2 chars por si lleva región
-                    var raw = (loc.id || '').toUpperCase();
-                    var code = raw.slice(0, 2);
-                    if (code.length !== 2 || !/^[A-Z]{2}$/.test(code)) return;
-                    var views = (loc.count || 0).toLocaleString('es-BO');
-                    var label = countryName(code) + ': ' + views + ' vistas';
-                    html += '<span class="gc-flag-item" data-tip="' + label + '">' +
-                        '<img class="gc-flag-img" src="' + FLAG_CDN + code.toLowerCase() + '.png"' +
-                        ' alt="' + countryName(code) + '" width="16" height="12" loading="lazy">' +
-                        '</span>';
-                });
-                if (html) {
-                    wrap.innerHTML = html;
-                    wrap.querySelectorAll('.gc-flag-item').forEach(function (item) {
-                        item.addEventListener('mouseenter', function () { showTip(item); });
-                        item.addEventListener('mouseleave', hideTip);
-                        item.addEventListener('click', function (e) {
-                            e.stopPropagation();
-                            item._tip ? hideTip() : showTip(item);
-                        });
-                    });
-                }
-            })
-            .catch(function (e) {
-                // Silencio — si CORS falla las banderas simplemente no aparecen
-                console.warn('[GC] banderas:', e.message);
+            var html = '';
+            stats.forEach(function (loc) {
+                // id es el código ISO-2 del país ("BO", "AR"...)
+                // Si viniera con región tipo "BO-L", slice(0,2) da "BO"
+                var raw = (loc.id || '').toUpperCase();
+                var code = raw.slice(0, 2);
+                if (!/^[A-Z]{2}$/.test(code)) return;
+                var views = (loc.count || 0).toLocaleString('es-BO');
+                var label = countryName(code) + ': ' + views + ' vistas';
+                html +=
+                    '<span class="gc-flag-item" data-tip="' + label + '">' +
+                    '<img class="gc-flag-img"' +
+                    ' src="' + FLAG_CDN + code.toLowerCase() + '.png"' +
+                    ' alt="' + countryName(code) + '"' +
+                    ' width="16" height="12" loading="lazy">' +
+                    '</span>';
             });
+
+            if (!html) return;
+            wrap.innerHTML = html;
+            wrap.querySelectorAll('.gc-flag-item').forEach(function (item) {
+                item.addEventListener('mouseenter', function () { showTip(item); });
+                item.addEventListener('mouseleave', hideTip);
+                item.addEventListener('click', function (e) {
+                    e.stopPropagation();
+                    item._tip ? hideTip() : showTip(item);
+                });
+            });
+        });
     }
 
-    // ── Widget ────────────────────────────────────────────────────────────────
+    // ── Init ──────────────────────────────────────────────────────────────────
     function buildWidget() {
         var el = document.getElementById('gc-stats-widget');
         if (!el) return;
