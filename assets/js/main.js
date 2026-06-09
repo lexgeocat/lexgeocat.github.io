@@ -3,6 +3,32 @@
 
   var CFG = window.LGC_CONFIG || {};
 
+  /* ═══════════════════════════════════════════════════════════════
+     PRELOADER — siempre se oculta, sin depender del evento `load`
+     ─────────────────────────────────────────────────────────────
+     El `load` event puede tardar 20+ segundos si Google Fonts o
+     FontAwesome fallan (firewall, DNS lento, etc). El loader se
+     queda visible todo ese tiempo, dando sensación de página colgada.
+     FIX: ocultar el loader de forma AGRESIVA con rAF + timeout duro
+     de 1.2s, sin esperar a recursos externos.
+  ═══════════════════════════════════════════════════════════════ */
+  function hideLoader() {
+    var l = document.getElementById('ld');
+    if (l && !l.classList.contains('hide')) l.classList.add('hide');
+  }
+  function showLoader() {
+    var l = document.getElementById('ld');
+    if (l) l.classList.remove('hide');
+  }
+  /* Ocultar lo antes posible — siguiente frame, no esperamos al load */
+  requestAnimationFrame(function () {
+    requestAnimationFrame(function () { hideLoader(); });
+  });
+  /* Red de seguridad: nunca más de 1.2s visibles */
+  setTimeout(hideLoader, 1200);
+  /* Si por alguna razón queremos mostrarlo de nuevo (raro), exponer */
+  window.__lgcLoader = { show: showLoader, hide: hideLoader };
+
   /* ─── HERO PARALLAX ─── */
   document.addEventListener('DOMContentLoaded', function () {
     var bgMap = document.querySelector('.hero-bg-map');
@@ -13,14 +39,6 @@
       bgMap.style.transform = 'translate(' + (x * 30) + 'px, ' + (y * 30) + 'px)';
     });
   });
-
-  /* ─── PRELOADER ─── */
-  function hideLoader() {
-    var l = document.getElementById('ld');
-    if (l) l.classList.add('hide');
-  }
-  window.addEventListener('load', function () { setTimeout(hideLoader, 350); });
-  setTimeout(hideLoader, 4500);
 
   /* ─── THEME ─── */
   var THEME_KEY = 'lgc-theme';
@@ -593,26 +611,39 @@
     });
 
     /* ─────────────────────────────────────────────────────────
-       8. INIT
+       8. INIT — totalmente no-bloqueante
        FIX #1: layout.js inyecta el HTML del header SÍNCRONAMENTE
        antes de que main.js corra (ambos están al final del body).
        Por tanto el DOM ya existe cuando llegamos aquí.
-       Aún así, usamos DOMContentLoaded como red de seguridad.
+       FIX SENIOR: usamos requestIdleCallback (con fallback a rAF)
+       para garantizar que init() corre SOLO cuando el browser está
+      空闲, no compitiendo con el render del header.
     ───────────────────────────────────────────────────────── */
     function init() {
-      injectGoatCounter();
-      loadStats();
-      loadVisitorCountry();
-      startAutoRefresh();
+      var start = Date.now();
+      try {
+        injectGoatCounter();
+        loadStats();
+        loadVisitorCountry();
+        startAutoRefresh();
+      } catch (e) {
+        if (window.__lgcDebug) console.error('[lgc] init error:', e);
+      }
+      if (window.__lgcDebug) console.log('[lgc] init done in', Date.now() - start, 'ms');
+    }
+
+    function whenReady(cb) {
+      if (window.requestIdleCallback) {
+        requestIdleCallback(cb, { timeout: 800 });
+      } else {
+        requestAnimationFrame(function () { requestAnimationFrame(cb); });
+      }
     }
 
     if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', init, { once: true });
+      document.addEventListener('DOMContentLoaded', function () { whenReady(init); }, { once: true });
     } else {
-      /* Red de seguridad: diferir al siguiente frame para garantizar que
-         cualquier IIFE síncrono pendiente (layout.js) haya terminado de
-         inyectar el header antes de que init() busque elementos en el DOM. */
-      requestAnimationFrame(function () { init(); });
+      whenReady(init);
     }
 
   })(); /* fin bloque stats */
@@ -628,8 +659,18 @@
           rIO.unobserve(entry.target);
         }
       });
-    }, { threshold: 0.08 });
-    document.querySelectorAll('.reveal').forEach(function (el) { rIO.observe(el); });
+    }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+    var revealEls = document.querySelectorAll('.reveal');
+    /* Diferir la observación al primer momento空闲 para no bloquear
+       el render inicial del header */
+    var observeReveals = function () {
+      revealEls.forEach(function (el) { rIO.observe(el); });
+    };
+    if (window.requestIdleCallback) {
+      requestIdleCallback(observeReveals, { timeout: 1000 });
+    } else {
+      setTimeout(observeReveals, 100);
+    }
   }
 
   /* ─── COUNTER ANIMATION (hero stats) ─── */
@@ -641,7 +682,7 @@
         var raw = el.getAttribute('data-count');
         if (!raw) return;
         var target = parseInt(raw, 10);
-        if (isNaN(target)) { cIO.unobserve(el); return; }
+        if (isNaN(target) || target <= 0) { cIO.unobserve(el); return; }
         var suffix = el.textContent.replace(/[0-9]/g, '');
         var dur = 1600;
         var t0 = performance.now();
@@ -655,7 +696,14 @@
         cIO.unobserve(el);
       });
     }, { threshold: 0.5 });
-    document.querySelectorAll('.hstat-n[data-count]').forEach(function (el) { cIO.observe(el); });
+    var observeCounters = function () {
+      document.querySelectorAll('.hstat-n[data-count]').forEach(function (el) { cIO.observe(el); });
+    };
+    if (window.requestIdleCallback) {
+      requestIdleCallback(observeCounters, { timeout: 1000 });
+    } else {
+      setTimeout(observeCounters, 100);
+    }
   }
 
   /* ─── STATS DESDE BLOGGER FEED ─── */
