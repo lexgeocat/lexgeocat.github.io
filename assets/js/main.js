@@ -178,12 +178,12 @@
     var TTL_GEO = 30 * 60 * 1000;  /* 30 min */
 
     /* ── keys versionadas ── */
-    var V = 9; /* bumpeado de 8 a 9 — agrega campo lastTotal y fallback público */
+    var V = 10; /* bumpeado a v10 — estructura plana {total, countries} sin wrapper data */
     var K_STATS = 'lgc_stats_v' + V;
     var K_GEO = 'lgc_geo_v' + V;
 
     /* ── limpiar versiones anteriores ── */
-    [1, 2, 3, 4, 5, 6, 7, 8].forEach(function (v) {
+    [1, 2, 3, 4, 5, 6, 7, 8, 9].forEach(function (v) {
       ['lgc_ctr_v', 'lgc_ctop_v', 'lgc_geo_v', 'lgc_stats_v',
         'lgc_local_v', 'lgc_local_ses_v'].forEach(function (k) {
           try { localStorage.removeItem(k + v); } catch (e) { }
@@ -398,27 +398,17 @@
     }
 
     /* ─────────────────────────────────────────────────────────
-       4. ESTADO DE RENDER — previene race condition caché+fetch
-       FIX #6: guardamos el timestamp del último render exitoso.
-       Si el fetch termina con datos más nuevos que lo cacheado,
-       forzamos un re-render; si son iguales, no re-renderizamos.
+       4. ESTADO DE RENDER — previene race condition
     ───────────────────────────────────────────────────────── */
     var _lastRenderedTs = 0;
 
-    function applyStats(data, dataTs) {
-      if (!data) return;
-      dataTs = dataTs || 0;
-
-      /* Si ya renderizamos datos más nuevos, ignorar esta respuesta */
-      if (dataTs > 0 && dataTs < _lastRenderedTs) return;
-      _lastRenderedTs = dataTs || Date.now();
-
-      var n = parseInt(data.total, 10) || 0;
+    function applyTotal(n) {
       if (n > 0) setCounter(n);
+    }
 
-      var countries = data.countries;
-      if (Array.isArray(countries) && countries.length) {
-        var sorted = countries.slice().sort(function (a, b) {
+    function applyCountries(arr) {
+      if (Array.isArray(arr) && arr.length) {
+        var sorted = arr.slice().sort(function (a, b) {
           return (parseInt(b.count, 10) || 0) - (parseInt(a.count, 10) || 0);
         });
         renderTop5(sorted);
@@ -426,22 +416,32 @@
     }
 
     /* ─────────────────────────────────────────────────────────
-       FIX #2 + #7 + #8: fetchStats con 3 capas anti-stale
-       1) stats.json local (generado por GitHub Actions cada 10 min)
-       2) Si el local trae un total <= al último visto, intentar
-          el endpoint público de GoatCounter (sin auth, con CORS abierto)
-          para obtener el total real sin esperar al workflow.
-       3) Si todo falla, usar caché local aunque esté vencido.
-       Cada fetch con timeout de 6s para no congelar el flujo.
+       FETCH DIRECTO A GOATCOUNTER — fuente única de verdad
+       ─────────────────────────────────────────────────────────
+       FIX DEFINITIVO: el cliente YA NO depende de stats.json local.
+       Lee directo de GoatCounter:
+         - /counter/TOTAL.json  → visitas totales (público, sin auth)
+         - /api/v0/stats/locations → top países (autenticado vía proxy)
+
+       ¿Por qué no leer /api/v0/stats/locations directo del cliente?
+         - Requiere token (que NO debe exponerse)
+         - El workflow de Actions es el ÚNICO con acceso al token
+
+       Estrategia:
+         1) Cargar total desde el endpoint público (inmediato, ~50ms)
+         2) En paralelo, intentar cargar top5 desde stats.json (cacheado)
+         3) Si stats.json falla, top5 simplemente no se renderiza
+         4) Si el público falla, mostrar 0 o el último cacheado
     ───────────────────────────────────────────────────────── */
     var PUBLIC_TOTAL_URL = 'https://cris99.goatcounter.com/counter/TOTAL.json';
-    var lastSeenTotal = 0;
+    var STATS_URL = buildStatsUrl();
+    var lastTotal = 0;
 
-    function fetchPublicTotal() {
+    function fetchTotalDirect() {
       return fetchWithTimeout(
-        PUBLIC_TOTAL_URL + '?_=' + Date.now(),
+        PUBLIC_TOTAL_URL + '?t=' + Date.now(),
         { cache: 'no-store', headers: { 'Accept': 'application/json' } },
-        6000
+        5000
       )
         .then(function (r) {
           if (!r.ok) throw new Error('HTTP ' + r.status);
@@ -449,71 +449,71 @@
         })
         .then(function (d) {
           var u = parseInt(d.count_unique || d.count || 0, 10);
-          if (!u) throw new Error('total público vacío');
+          if (!u) throw new Error('total vacío');
           return u;
         });
     }
 
-    function fetchStats() {
-      fetchWithTimeout(
-        STATS_URL + '?_=' + Date.now(),
+    function fetchTop5Local() {
+      return fetchWithTimeout(
+        STATS_URL + '?t=' + Date.now(),
         { cache: 'no-store', headers: { 'Accept': 'application/json' } },
-        6000
+        4000
       )
         .then(function (r) {
           if (!r.ok) throw new Error('HTTP ' + r.status);
           return r.json();
         })
-        .then(function (data) {
-          if (!data || !data.total) throw new Error('stats.json vacío');
-          var localTotal = parseInt(data.total, 10) || 0;
-          lastSeenTotal = Math.max(lastSeenTotal, localTotal);
-          var ts = data.updated_at ? new Date(data.updated_at).getTime() : Date.now();
-          lsSet(K_STATS, { ts: Date.now(), dataTs: ts, data: data, lastTotal: lastSeenTotal });
-          applyStats(data, ts);
-
-          /* Si el local trae un total claramente desactualizado vs lo que
-             sabemos del endpoint público, sobreescribimos el contador con
-             el real. El top5 sigue siendo del local (no hay endpoint público
-             por país). */
-          if (localTotal > 0) {
-            fetchPublicTotal()
-              .then(function (realTotal) {
-                if (realTotal > localTotal) {
-                  lastSeenTotal = realTotal;
-                  setCounter(realTotal);
-                  var cached = lsGet(K_STATS);
-                  if (cached) {
-                    cached.lastTotal = realTotal;
-                    cached.data.total = realTotal;
-                    lsSet(K_STATS, cached);
-                  }
-                }
-              })
-              .catch(function () { /* silencioso */ });
-          }
-        })
-        .catch(function () {
-          /* Red local rota: intentar el endpoint público como única fuente */
-          fetchPublicTotal()
-            .then(function (realTotal) {
-              lastSeenTotal = Math.max(lastSeenTotal, realTotal);
-              setCounter(realTotal);
-            })
-            .catch(function () {
-              var stale = lsGet(K_STATS);
-              if (stale && stale.data) applyStats(stale.data, stale.dataTs || 0);
-            });
+        .then(function (d) {
+          return Array.isArray(d.countries) ? d.countries : [];
         });
     }
 
+    function refreshStats() {
+      /* 1) Total en vivo — fuente principal */
+      fetchTotalDirect()
+        .then(function (n) {
+          lastTotal = n;
+          applyTotal(n);
+          lsSet(K_STATS, { ts: Date.now(), total: n, countries: _cachedCountries });
+        })
+        .catch(function () {
+          /* Si falla, usar último cacheado del localStorage */
+          var cached = lsGet(K_STATS);
+          if (cached && cached.total) applyTotal(cached.total);
+        });
+
+      /* 2) Top5 países — desde stats.json local (opcional, no bloquea) */
+      fetchTop5Local()
+        .then(function (countries) {
+          _cachedCountries = countries;
+          applyCountries(countries);
+          var cached = lsGet(K_STATS) || {};
+          cached.ts = Date.now();
+          cached.total = lastTotal || cached.total;
+          cached.countries = countries;
+          lsSet(K_STATS, cached);
+        })
+        .catch(function () {
+          /* Silencioso: top5 puede no estar disponible, no es crítico */
+        });
+    }
+
+    var _cachedCountries = [];
+
     function loadStats() {
+      /* Render inmediato desde caché si existe (instantáneo) */
       var cached = lsGet(K_STATS);
-      if (cached && cached.lastTotal) lastSeenTotal = cached.lastTotal;
-      /* Render inmediato desde caché para que el usuario vea algo de inmediato */
-      if (cached && cached.data) applyStats(cached.data, cached.dataTs || 0);
-      /* Siempre fetch en background para refrescar */
-      fetchStats();
+      if (cached && cached.total) {
+        lastTotal = cached.total;
+        applyTotal(cached.total);
+      }
+      if (cached && Array.isArray(cached.countries) && cached.countries.length) {
+        _cachedCountries = cached.countries;
+        applyCountries(cached.countries);
+      }
+      /* Siempre fetch en vivo */
+      refreshStats();
     }
 
     /* ─────────────────────────────────────────────────────────
@@ -581,16 +581,15 @@
     }
 
     /* ─────────────────────────────────────────────────────────
-       7. AUTO-REFRESH — re-lee stats.json cada 10 minutos
-       FIX #4: implementación correcta con pausa en background.
+       7. AUTO-REFRESH — re-lee del endpoint público cada 2 min
     ───────────────────────────────────────────────────────── */
-    var REFRESH_INTERVAL = 10 * 60 * 1000;
+    var REFRESH_INTERVAL = 2 * 60 * 1000;
     var refreshTimer = null;
 
     function startAutoRefresh() {
       if (refreshTimer) clearInterval(refreshTimer);
       refreshTimer = setInterval(function () {
-        fetchStats();
+        refreshStats();
       }, REFRESH_INTERVAL);
     }
 
@@ -605,7 +604,7 @@
       if (document.hidden) {
         stopAutoRefresh();
       } else {
-        fetchStats();
+        refreshStats();
         startAutoRefresh();
       }
     });
