@@ -1,8 +1,15 @@
 (function () {
   'use strict';
 
-  var CFG = window.LGC_CONFIG;
-  if (!CFG) return;
+  var CFG = window.LGC_CONFIG || {
+    counterLabel: 'Visitas',
+    tagline: 'Derecho · Catastro · Geomática · Tecnología',
+    siteName: 'LexGeoCat',
+    rnt: '970285',
+    blogUrl: '#',
+    social: { facebook: '#', youtube: '#', linkedin: '#', whatsapp: '#' },
+    nav: []
+  };
 
   var depth = parseInt(document.body.getAttribute('data-depth') || '0', 10);
 
@@ -83,7 +90,7 @@
       '</span>' +
       '<span class="hdr-stat-sep" aria-hidden="true"></span>' +
       '<span class="hdr-stat hdr-stat-country" id="visitor-country-info" hidden data-tip="">' +
-      '<img alt="" class="hdr-stat-flag" loading="lazy">' +
+      '<img alt="" class="hdr-stat-flag" loading="eager" decoding="async">' +
       '</span>' +
       '</div>' +
       '<button aria-label="Buscar en el blog" class="srch-wrap srch-open-btn" id="srch-open-btn" type="button"><i class="fa-solid fa-magnifying-glass" style="color:var(--text3);font-size:12px"></i><span style="font-family:var(--font-b);font-size:.83rem;color:var(--text3);background:transparent;border:none;outline:none;width:160px;text-align:left;cursor:pointer">Buscar artículos...</span><kbd style="font-size:.65rem;color:var(--text3);background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:2px 6px;font-family:var(--font-m)">⌘K</kbd></button>' +

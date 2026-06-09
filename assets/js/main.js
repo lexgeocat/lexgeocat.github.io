@@ -554,7 +554,10 @@
     if (document.readyState === 'loading') {
       document.addEventListener('DOMContentLoaded', init, { once: true });
     } else {
-      init();
+      /* Red de seguridad: diferir al siguiente frame para garantizar que
+         cualquier IIFE síncrono pendiente (layout.js) haya terminado de
+         inyectar el header antes de que init() busque elementos en el DOM. */
+      requestAnimationFrame(function () { init(); });
     }
 
   })(); /* fin bloque stats */

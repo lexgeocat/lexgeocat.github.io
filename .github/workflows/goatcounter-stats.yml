@@ -76,6 +76,7 @@ jobs:
           if git diff --staged --quiet; then
             echo "No changes to commit"
           else
+            BRANCH="${GITHUB_REF#refs/heads/}"
             git commit -m "chore: update GoatCounter stats [skip ci]"
-            git push
+            git push "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git" "HEAD:$BRANCH"
           fi
