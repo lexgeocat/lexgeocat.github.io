@@ -1,10 +1,10 @@
 {
-  "total": 38,
+  "total": 39,
   "countries": [
     {
       "id": "BO",
       "name": "Bolivia",
-      "count": 13
+      "count": 14
     },
     {
       "id": "FR",
@@ -37,5 +37,5 @@
       "count": 2
     }
   ],
-  "updated_at": "2026-06-09T06:42:04Z"
+  "updated_at": "2026-06-09T08:28:04Z"
 }
