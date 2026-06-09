@@ -1,10 +1,11 @@
 {
-  "total": 39,
+  "total": 44,
+  "hits": 44,
   "countries": [
     {
       "id": "BO",
       "name": "Bolivia",
-      "count": 14
+      "count": 16
     },
     {
       "id": "FR",
@@ -22,6 +23,11 @@
       "count": 5
     },
     {
+      "id": "SG",
+      "name": "Singapore",
+      "count": 5
+    },
+    {
       "id": "RU",
       "name": "Russia",
       "count": 3
@@ -30,12 +36,7 @@
       "id": "US",
       "name": "United States",
       "count": 3
-    },
-    {
-      "id": "SG",
-      "name": "Singapore",
-      "count": 2
     }
   ],
-  "updated_at": "2026-06-09T14:37:34Z"
+  "updated_at": "2026-06-09T17:10:25Z"
 }
