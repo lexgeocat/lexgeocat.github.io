@@ -160,12 +160,12 @@
     var TTL_GEO = 30 * 60 * 1000;  /* 30 min */
 
     /* ── keys versionadas ── */
-    var V = 8; /* bumpeado de 7 a 8 para limpiar caché vieja */
+    var V = 9; /* bumpeado de 8 a 9 — agrega campo lastTotal y fallback público */
     var K_STATS = 'lgc_stats_v' + V;
     var K_GEO = 'lgc_geo_v' + V;
 
     /* ── limpiar versiones anteriores ── */
-    [1, 2, 3, 4, 5, 6, 7].forEach(function (v) {
+    [1, 2, 3, 4, 5, 6, 7, 8].forEach(function (v) {
       ['lgc_ctr_v', 'lgc_ctop_v', 'lgc_geo_v', 'lgc_stats_v',
         'lgc_local_v', 'lgc_local_ses_v'].forEach(function (k) {
           try { localStorage.removeItem(k + v); } catch (e) { }
@@ -408,35 +408,90 @@
     }
 
     /* ─────────────────────────────────────────────────────────
-       FIX #2 + #7: fetchStats — solo usa stats.json local
-       Sin fallback a GoatCounter API desde el cliente (CORS + auth).
-       Timeout de 8s para evitar congelamiento.
+       FIX #2 + #7 + #8: fetchStats con 3 capas anti-stale
+       1) stats.json local (generado por GitHub Actions cada 10 min)
+       2) Si el local trae un total <= al último visto, intentar
+          el endpoint público de GoatCounter (sin auth, con CORS abierto)
+          para obtener el total real sin esperar al workflow.
+       3) Si todo falla, usar caché local aunque esté vencido.
+       Cada fetch con timeout de 6s para no congelar el flujo.
     ───────────────────────────────────────────────────────── */
+    var PUBLIC_TOTAL_URL = 'https://cris99.goatcounter.com/counter/TOTAL.json';
+    var lastSeenTotal = 0;
+
+    function fetchPublicTotal() {
+      return fetchWithTimeout(
+        PUBLIC_TOTAL_URL + '?_=' + Date.now(),
+        { cache: 'no-store', headers: { 'Accept': 'application/json' } },
+        6000
+      )
+        .then(function (r) {
+          if (!r.ok) throw new Error('HTTP ' + r.status);
+          return r.json();
+        })
+        .then(function (d) {
+          var u = parseInt(d.count_unique || d.count || 0, 10);
+          if (!u) throw new Error('total público vacío');
+          return u;
+        });
+    }
+
     function fetchStats() {
       fetchWithTimeout(
         STATS_URL + '?_=' + Date.now(),
         { cache: 'no-store', headers: { 'Accept': 'application/json' } },
-        8000
+        6000
       )
         .then(function (r) {
           if (!r.ok) throw new Error('HTTP ' + r.status);
           return r.json();
         })
         .then(function (data) {
-          if (!data || !data.total) throw new Error('stats.json vacío o malformado');
+          if (!data || !data.total) throw new Error('stats.json vacío');
+          var localTotal = parseInt(data.total, 10) || 0;
+          lastSeenTotal = Math.max(lastSeenTotal, localTotal);
           var ts = data.updated_at ? new Date(data.updated_at).getTime() : Date.now();
-          lsSet(K_STATS, { ts: Date.now(), dataTs: ts, data: data });
+          lsSet(K_STATS, { ts: Date.now(), dataTs: ts, data: data, lastTotal: lastSeenTotal });
           applyStats(data, ts);
+
+          /* Si el local trae un total claramente desactualizado vs lo que
+             sabemos del endpoint público, sobreescribimos el contador con
+             el real. El top5 sigue siendo del local (no hay endpoint público
+             por país). */
+          if (localTotal > 0) {
+            fetchPublicTotal()
+              .then(function (realTotal) {
+                if (realTotal > localTotal) {
+                  lastSeenTotal = realTotal;
+                  setCounter(realTotal);
+                  var cached = lsGet(K_STATS);
+                  if (cached) {
+                    cached.lastTotal = realTotal;
+                    cached.data.total = realTotal;
+                    lsSet(K_STATS, cached);
+                  }
+                }
+              })
+              .catch(function () { /* silencioso */ });
+          }
         })
         .catch(function () {
-          /* Si el fetch falla (red, timeout, 404), usar caché aunque esté vencida */
-          var stale = lsGet(K_STATS);
-          if (stale && stale.data) applyStats(stale.data, stale.dataTs || 0);
+          /* Red local rota: intentar el endpoint público como única fuente */
+          fetchPublicTotal()
+            .then(function (realTotal) {
+              lastSeenTotal = Math.max(lastSeenTotal, realTotal);
+              setCounter(realTotal);
+            })
+            .catch(function () {
+              var stale = lsGet(K_STATS);
+              if (stale && stale.data) applyStats(stale.data, stale.dataTs || 0);
+            });
         });
     }
 
     function loadStats() {
       var cached = lsGet(K_STATS);
+      if (cached && cached.lastTotal) lastSeenTotal = cached.lastTotal;
       /* Render inmediato desde caché para que el usuario vea algo de inmediato */
       if (cached && cached.data) applyStats(cached.data, cached.dataTs || 0);
       /* Siempre fetch en background para refrescar */

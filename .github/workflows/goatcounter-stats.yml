@@ -2,8 +2,11 @@ name: Fetch GoatCounter Stats
 
 on:
   schedule:
-    - cron: '0 * * * *'
+    - cron: '*/10 * * * *'   # cada 10 min
   workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/goatcounter-stats.yml'
 
 permissions:
   contents: write
@@ -11,72 +14,97 @@ permissions:
 jobs:
   fetch:
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     steps:
       - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
 
-      - name: Fetch stats from GoatCounter API
+      - name: Fetch stats from GoatCounter
         env:
-          GOAT_TOKEN: ${{ secrets.GOAT_TOKEN }}
+          GOAT_SUBDOMAIN: cris99
         run: |
+          set -euo pipefail
+
           mkdir -p assets/data
+          BASE="https://${GOAT_SUBDOMAIN}.goatcounter.com"
 
-          # Fechas: desde el inicio hasta ahora — formato requerido por la API
-          START="2000-01-01T00:00:00Z"
-          END=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+          # ── TOTAL desde endpoint público (sin auth, sin rate-limit) ───────
+          # /counter/TOTAL.json → { count_unique, count }
+          # count_unique = visitantes únicos (lo que muestra el dashboard)
+          # count = page views totales
+          echo "→ GET $BASE/counter/TOTAL.json"
+          TOTAL_RESP=$(curl -fsS --max-time 15 "$BASE/counter/TOTAL.json") || {
+            echo "::error::No se pudo obtener TOTAL"
+            exit 1
+          }
+          echo "TOTAL: $TOTAL_RESP"
 
-          BASE="https://cris99.goatcounter.com/api/v0"
-          AUTH="Authorization: Bearer $GOAT_TOKEN"
+          TOTAL_UNIQUE=$(echo "$TOTAL_RESP" | jq -r '.count_unique // 0')
+          TOTAL_HITS=$(echo "$TOTAL_RESP" | jq -r '.count // 0')
+          echo "unique=$TOTAL_UNIQUE hits=$TOTAL_HITS"
 
-          # ── TOTAL de visitas ───────────────────────────────────────────────
-          # Endpoint: GET /api/v0/stats/total
-          # Respuesta: { "total": N, "total_events": N, "total_utc": N, "stats": [...] }
-          TOTAL_JSON=$(curl -s \
-            -H "Content-Type: application/json" \
-            -H "$AUTH" \
-            "$BASE/stats/total?start=$START&end=$END")
-
-          echo "Total response: $TOTAL_JSON"
-
-          TOTAL=$(echo "$TOTAL_JSON" | jq '.total // 0')
-
-          # ── TOP PAÍSES ────────────────────────────────────────────────────
-          # Endpoint: GET /api/v0/stats/locations
-          # Respuesta: { "stats": [ { "id": "BO", "name": "Bolivia", "count": N } ], "more": false }
-          LOC_JSON=$(curl -s \
-            -H "Content-Type: application/json" \
-            -H "$AUTH" \
-            "$BASE/stats/locations?start=$START&end=$END&limit=10")
-
-          echo "Locations response: $LOC_JSON"
-
-          COUNTRIES=$(echo "$LOC_JSON" | jq '[.stats[]? | {id: .id, name: .name, count: .count}] | sort_by(-.count) // []')
-
-          if [ "$COUNTRIES" = "null" ] || [ -z "$COUNTRIES" ]; then
-            COUNTRIES="[]"
+          # ── TOP PAÍSES desde API autenticada ──────────────────────────────
+          # El endpoint público por país no existe; usamos la API con token.
+          # Si falla (token expirado, rate-limit), seguimos con países vacíos
+          # y solo publicamos el total, que es lo crítico.
+          COUNTRIES="[]"
+          if [ -n "${{ secrets.GOAT_TOKEN }}" ]; then
+            echo "→ GET /api/v0/stats/locations"
+            AUTH="Authorization: Bearer ${{ secrets.GOAT_TOKEN }}"
+            START="2000-01-01T00:00:00Z"
+            END=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+            LOC_RESP=$(curl -fsS \
+              -H "Content-Type: application/json" \
+              -H "$AUTH" \
+              --max-time 20 \
+              "$BASE/api/v0/stats/locations?start=$START&end=$END&limit=10" 2>/dev/null) || {
+                echo "::warning::API de ubicaciones falló (token?), continuando con []"
+              }
+            if [ -n "${LOC_RESP:-}" ]; then
+              COUNTRIES=$(echo "$LOC_RESP" | jq '[.stats[]? | {id: .id, name: .name, count: .count}] | sort_by(-.count) | .[0:10]')
+            fi
+          else
+            echo "::notice::GOAT_TOKEN no configurado, saltando ubicaciones"
           fi
+          echo "Países: $(echo "$COUNTRIES" | jq 'length')"
 
-          echo "Total: $TOTAL | Countries: $(echo "$COUNTRIES" | jq length)"
-
-          # ── Escribir stats.json ────────────────────────────────────────────
+          # ── Construir stats.json ───────────────────────────────────────────
+          UPDATED_AT=$(date -u +%Y-%m-%dT%H:%M:%SZ)
           jq -n \
-            --argjson total "$TOTAL" \
+            --argjson total "$TOTAL_UNIQUE" \
+            --argjson hits "$TOTAL_HITS" \
             --argjson countries "$COUNTRIES" \
-            --arg updated_at "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
-            '{total: $total, countries: $countries, updated_at: $updated_at}' \
-            > assets/data/stats.json
+            --arg updated_at "$UPDATED_AT" \
+            '{
+              total: $total,
+              hits: $hits,
+              countries: $countries,
+              updated_at: $updated_at
+            }' > assets/data/stats.json
 
           echo "=== stats.json generado ==="
           cat assets/data/stats.json
 
-      - name: Commit and push if changed
+      - name: Commit and push
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add assets/data/stats.json
           if git diff --staged --quiet; then
-            echo "No changes to commit"
-          else
-            BRANCH="${GITHUB_REF#refs/heads/}"
-            git commit -m "chore: update GoatCounter stats [skip ci]"
-            git push "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git" "HEAD:$BRANCH"
+            echo "Sin cambios"
+            exit 0
+          fi
+          BRANCH="${GITHUB_REF#refs/heads/}"
+          echo "→ Push a $BRANCH"
+          git commit -m "chore(stats): refresh total=$(jq -r .total assets/data/stats.json) [skip ci]"
+          git push "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git" "HEAD:$BRANCH"
+
+      - name: Verify
+        run: |
+          sleep 3
+          LIVE=$(curl -s "https://lexgeocat.github.io/assets/data/stats.json" || echo "")
+          if [ -n "$LIVE" ]; then
+            echo "✓ Live: total=$(echo "$LIVE" | jq -r .total) updated=$(echo "$LIVE" | jq -r .updated_at)"
           fi
