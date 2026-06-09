@@ -2,7 +2,6 @@
   'use strict';
 
   var CFG = window.LGC_CONFIG || {
-    counterLabel: 'Visitas',
     tagline: 'Derecho · Catastro · Geomática · Tecnología',
     siteName: 'LexGeoCat',
     rnt: '970285',
@@ -82,16 +81,6 @@
       '<a aria-label="YouTube" class="hdr-social-btn yt" href="' + CFG.social.youtube + '" rel="noopener" target="_blank"><i class="fa-brands fa-youtube"></i></a>' +
       '<a aria-label="LinkedIn" class="hdr-social-btn lk" href="' + CFG.social.linkedin + '" rel="noopener" target="_blank"><i class="fa-brands fa-linkedin-in"></i></a>' +
       '<a aria-label="WhatsApp" class="hdr-social-btn wa" href="' + CFG.social.whatsapp + '" rel="noopener" target="_blank"><i class="fa-brands fa-whatsapp"></i></a>' +
-      '</div>' +
-      '<div class="hdr-stats" id="hdr-stats" aria-label="Estadísticas de visitas">' +
-      '<span class="hdr-stat" id="counter-dev-placeholder" role="status" aria-live="polite" data-tip="' + (CFG.counterLabel || 'Visitas') + '">' +
-      '<i class="fa-solid fa-eye"></i>' +
-      '<span class="hdr-stat-value">0</span>' +
-      '</span>' +
-      '<span class="hdr-stat-sep" aria-hidden="true"></span>' +
-      '<span class="hdr-stat hdr-stat-country" id="visitor-country-info" hidden data-tip="">' +
-      '<img alt="" class="hdr-stat-flag" loading="eager" decoding="async">' +
-      '</span>' +
       '</div>' +
       '<button aria-label="Buscar en el blog" class="srch-wrap srch-open-btn" id="srch-open-btn" type="button"><i class="fa-solid fa-magnifying-glass" style="color:var(--text3);font-size:12px"></i><span style="font-family:var(--font-b);font-size:.83rem;color:var(--text3);background:transparent;border:none;outline:none;width:160px;text-align:left;cursor:pointer">Buscar artículos...</span><kbd style="font-size:.65rem;color:var(--text3);background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:2px 6px;font-family:var(--font-m)">⌘K</kbd></button>' +
       '<button aria-label="Cambiar tema" class="icon-btn th-btn" id="th-btn" type="button"><i class="fa-solid fa-moon"></i><i class="fa-solid fa-sun"></i></button>' +
