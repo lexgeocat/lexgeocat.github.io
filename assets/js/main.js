@@ -104,179 +104,290 @@
     }
   });
 
-/* --- COUNTER AND VISITOR INFO --- */
-(function () {
-  if (window.__lgcCounterInit) return;
-  window.__lgcCounterInit = true;
+  /* --- COUNTER AND VISITOR INFO --- */
+  (function () {
+    if (window.__lgcCounterInit) return;
+    window.__lgcCounterInit = true;
 
-  var cfg = CFG || {};
-  var counterId = cfg.counterWebsiteId;
-  var counterLabel = cfg.counterLabel || 'Visitas';
-  var goatCode = cfg.goatCounterCode;
-  var goatTz = cfg.goatCounterTz || 'UTC';
-  var goatCache = Number(cfg.goatCounterCacheSeconds) || 600;
-  var geoUrl = cfg.geoProvider || 'https://ipapi.co/json/';
-  var cacheHours = Number(cfg.geoCacheHours) || 24;
+    var cfg = CFG || {};
+    var counterId = cfg.counterWebsiteId;
+    var goatCode = cfg.goatCounterCode;
+    var geoUrl = cfg.geoProvider || 'https://ipapi.co/json/';
 
-  var counterEl = document.getElementById('counter-dev-placeholder');
-  var countryEl = document.getElementById('visitor-country-info');
+    // ── Caché corto para geo: 30 min (no 24h) para que VPN sea detectable
+    var GEO_CACHE_MS = 30 * 60 * 1000;
+    // ── Caché de contador: 10 min
+    var COUNTER_CACHE_MS = 10 * 60 * 1000;
+    // ── Clave IP anterior para detectar cambios de red/VPN
+    var GEO_KEY = 'lgc_geo_v2';
+    var COUNTRY_LOG_KEY = 'lgc_countries_v1'; // historial acumulado por país
+    var LOCAL_CTR_KEY = 'lgc_local_v2';
+    var LOCAL_SES_KEY = 'lgc_local_session_v2';
 
-  function setCounterText(n, opts) {
-    if (!counterEl) return;
-    var valueEl = counterEl.querySelector('.hdr-stat-value');
-    if (valueEl) valueEl.textContent = n.toLocaleString('es');
-    var label = (cfg.counterLabel || 'Visitas');
-    if (opts && opts.tooltip) {
-      counterEl.setAttribute('data-tip', label + ': ' + n.toLocaleString('es') + (opts.suffix ? ' ' + opts.suffix : ''));
+    var counterEl = document.getElementById('counter-dev-placeholder');
+    var countryEl = document.getElementById('visitor-country-info');
+
+    /* ── Helpers ─────────────────────────────────── */
+    function lsGet(k) { try { return JSON.parse(localStorage.getItem(k) || 'null'); } catch (e) { return null; } }
+    function lsSet(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { } }
+    function ssGet(k) { try { return sessionStorage.getItem(k); } catch (e) { return null; } }
+    function ssSet(k, v) { try { sessionStorage.setItem(k, v); } catch (e) { } }
+
+    /* ── 1. CONTADOR DE VISTAS ──────────────────── */
+
+    function setCounterText(n) {
+      if (!counterEl) return;
+      var valueEl = counterEl.querySelector('.hdr-stat-value');
+      if (valueEl) valueEl.textContent = n.toLocaleString('es');
+      var label = cfg.counterLabel || 'Visitas';
+      counterEl.setAttribute('data-tip', label + ': ' + n.toLocaleString('es'));
       counterEl.setAttribute('aria-label', label + ': ' + n.toLocaleString('es'));
     }
-  }
 
-  function setCountryTooltip(name) {
-    if (!countryEl) return;
-    countryEl.setAttribute('data-tip', 'Visitando desde ' + name);
-    countryEl.setAttribute('aria-label', 'Visitando desde ' + name);
-  }
-
-  function injectCounterDevHit() {
-    if (!counterId || document.getElementById('lgc-counter-hit')) return;
-    var s = document.createElement('script');
-    s.id = 'lgc-counter-hit';
-    s.src = 'https://cdn.counter.dev/script.js';
-    s.setAttribute('data-id', counterId);
-    if (cfg.counterUtcOffset !== undefined && cfg.counterUtcOffset !== null) {
-      s.setAttribute('data-utcoffset', String(cfg.counterUtcOffset));
+    // Contador local acumulativo (cross-session via localStorage, una cuenta por sesión)
+    function bumpLocalCounter() {
+      var n = parseInt(lsGet(LOCAL_CTR_KEY) || 0, 10) || 0;
+      if (!ssGet(LOCAL_SES_KEY)) {
+        n += 1;
+        lsSet(LOCAL_CTR_KEY, n);
+        ssSet(LOCAL_SES_KEY, '1');
+      }
+      return n;
     }
-    s.async = true;
-    document.body.appendChild(s);
-  }
 
-  function injectGoatCounter() {
-    if (!goatCode || document.getElementById('lgc-goat-counter')) return;
-    var s = document.createElement('script');
-    s.id = 'lgc-goat-counter';
-    s.async = true;
-    s.src = 'https://gc.zgo.at/count.js?p=/&t=' + goatCode;
-    s.dataset.goatcounter = 'https://' + goatCode + '.goatcounter.com/count';
-    document.body.appendChild(s);
-  }
-
-  function readGoatCounter() {
-    if (!goatCode) return Promise.reject(new Error('no goat code'));
-    var key = 'lgc_goat_v1';
-    try {
-      var c = JSON.parse(localStorage.getItem(key) || 'null');
-      if (c && (Date.now() - c.ts) < goatCache * 1000) return Promise.resolve(c.n);
-    } catch (e) {}
-
-    var start = encodeURIComponent('2000-01-01');
-    var end = encodeURIComponent('2099-12-31');
-    var url = 'https://' + goatCode + '.goatcounter.com/api/v0/stats/total?start=' + start + '&end=' + end;
-
-    return fetch(url, { headers: { 'Accept': 'application/json' } })
-      .then(function (r) {
-        if (!r.ok) throw new Error('goat http ' + r.status);
-        return r.json();
-      })
-      .then(function (data) {
-        var n = 0;
-        if (data && typeof data === 'object') {
-          n = data.total ?? data.count ?? data.visits ?? data.hits ?? 0;
-          if (typeof n === 'object' && n) n = n.count ?? n.total ?? 0;
-        }
-        n = parseInt(n, 10) || 0;
-        if (n) {
-          try { localStorage.setItem(key, JSON.stringify({ ts: Date.now(), n: n })); } catch (e) {}
-        }
-        return n;
-      });
-  }
-
-  function fallbackLocalCounter() {
-    var key = 'lgc_local_v1';
-    var n = 0;
-    try { n = parseInt(localStorage.getItem(key) || '0', 10) || 0; } catch (e) { n = 0; }
-    var sessionKey = 'lgc_local_session';
-    var already = false;
-    try { already = !!sessionStorage.getItem(sessionKey); } catch (e) {}
-    if (!already) {
-      n += 1;
-      try {
-        localStorage.setItem(key, String(n));
-        sessionStorage.setItem(sessionKey, '1');
-      } catch (e) {}
+    // Inyecta el script de counter.dev (solo para tracking, no para leer total)
+    function injectCounterDevHit() {
+      if (!counterId || document.getElementById('lgc-counter-hit')) return;
+      var s = document.createElement('script');
+      s.id = 'lgc-counter-hit';
+      s.src = 'https://cdn.counter.dev/script.js';
+      s.setAttribute('data-id', counterId);
+      if (cfg.counterUtcOffset !== undefined && cfg.counterUtcOffset !== null) {
+        s.setAttribute('data-utcoffset', String(cfg.counterUtcOffset));
+      }
+      s.async = true;
+      document.body.appendChild(s);
     }
-    return n;
-  }
 
-  function loadCounter() {
-    if (goatCode) {
-      readGoatCounter()
-        .then(function (n) {
-          if (n > 0) setCounterText(n, { tooltip: true });
-          else setCounterText(fallbackLocalCounter(), { tooltip: true, suffix: '(local)' });
-        })
-        .catch(function () {
-          setCounterText(fallbackLocalCounter(), { tooltip: true, suffix: '(local)' });
-        });
-    } else {
-      setCounterText(fallbackLocalCounter(), { tooltip: true, suffix: '(local)' });
+    // Inyecta GoatCounter (tracking, no API — evita el error CORS)
+    function injectGoatCounter() {
+      if (!goatCode || document.getElementById('lgc-goat-counter')) return;
+      var s = document.createElement('script');
+      s.id = 'lgc-goat-counter';
+      s.async = true;
+      // El script oficial de GoatCounter solo necesita data-goatcounter
+      s.setAttribute('data-goatcounter', 'https://' + goatCode + '.goatcounter.com/count');
+      s.src = 'https://gc.zgo.at/count.js';
+      document.body.appendChild(s);
     }
-  }
 
-  function loadCountry() {
-    if (!countryEl) return;
-    var cacheKey = 'lgc_geo_v1';
-    var cached = null;
-    try { cached = JSON.parse(localStorage.getItem(cacheKey) || 'null'); } catch (e) {}
-    var fresh = cached && (Date.now() - cached.ts) < cacheHours * 3600 * 1000;
+    function loadCounter() {
+      // Intentamos leer el widget embed de GoatCounter (no la API privada)
+      // El widget público expone window.goatcounter.count pero no el total global.
+      // Solución correcta: usar counter.dev read-url que sí es pública.
+      var readUrl = cfg.counterReadUrl;
+      var cacheKey = 'lgc_ctr_cache_v1';
+      var cached = lsGet(cacheKey);
 
-    function apply(data) {
-      if (!data) return;
-      var code = (data.country_code || data.country || '').toString().toLowerCase();
-      var name = data.country_name || data.country || '';
-      if (!code || !name) return;
+      if (cached && (Date.now() - cached.ts) < COUNTER_CACHE_MS && cached.n > 0) {
+        setCounterText(cached.n);
+        return;
+      }
+
+      if (readUrl) {
+        fetch(readUrl, { headers: { 'Accept': 'application/json' } })
+          .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+          .then(function (data) {
+            // counter.dev devuelve { "YYYY-MM-DD": n, ... } — sumamos todos los valores
+            var total = 0;
+            if (data && typeof data === 'object') {
+              Object.keys(data).forEach(function (k) {
+                var v = data[k];
+                if (typeof v === 'number') total += v;
+                else if (v && typeof v === 'object') {
+                  // a veces viene { "total": n }
+                  total += parseInt(v.total || v.count || 0, 10);
+                }
+              });
+            }
+            if (total > 0) {
+              lsSet(cacheKey, { ts: Date.now(), n: total });
+              setCounterText(total);
+            } else {
+              setCounterText(bumpLocalCounter());
+            }
+          })
+          .catch(function () { setCounterText(bumpLocalCounter()); });
+      } else {
+        setCounterText(bumpLocalCounter());
+      }
+    }
+
+    /* ── 2. GEO + BANDERAS ACUMULATIVAS ─────────── */
+
+    /*
+     * Historial de países:
+     * lgc_countries_v1 = { "bo": { name:"Bolivia", code:"bo", hits:6 }, "fr": { ... }, ... }
+     * Se suma 1 al país actual cada sesión nueva.
+     */
+
+    function getCountryLog() {
+      return lsGet(COUNTRY_LOG_KEY) || {};
+    }
+
+    function recordCountryHit(code, name) {
+      var log = getCountryLog();
+      if (!log[code]) log[code] = { name: name, code: code, hits: 0 };
+      // Solo contamos una vez por sesión de navegador
+      if (!ssGet('lgc_geo_counted')) {
+        log[code].hits += 1;
+        ssSet('lgc_geo_counted', '1');
+      }
+      lsSet(COUNTRY_LOG_KEY, log);
+      return log;
+    }
+
+    function renderCountryFlag(code, name) {
+      if (!countryEl) return;
       var img = countryEl.querySelector('.hdr-stat-flag');
       if (img) {
         img.src = 'https://flagcdn.com/w40/' + code + '.png';
         img.srcset = 'https://flagcdn.com/w40/' + code + '.png 1x, https://flagcdn.com/w80/' + code + '.png 2x';
         img.alt = name;
       }
-      setCountryTooltip(name);
+      countryEl.setAttribute('data-tip', 'Visitando desde ' + name);
+      countryEl.setAttribute('aria-label', 'Visitando desde ' + name);
       countryEl.hidden = false;
     }
 
-    if (fresh) { apply(cached.data); return; }
+    function renderTop5(log) {
+      // Ordena países por hits descendente, toma top 5
+      var sorted = Object.values(log).sort(function (a, b) { return b.hits - a.hits; }).slice(0, 5);
+      var statsEl = document.getElementById('hdr-stats');
+      if (!statsEl || sorted.length < 2) return; // si solo hay 1 país, no vale la pena el widget
 
-    fetch(geoUrl, { headers: { 'Accept': 'application/json' } })
-      .then(function (r) {
-        if (!r.ok) throw new Error('geo http ' + r.status);
-        return r.json();
-      })
-      .then(function (data) {
-        if (data && data.error) throw new Error(data.reason || 'geo error');
-        try { localStorage.setItem(cacheKey, JSON.stringify({ ts: Date.now(), data: data })); } catch (e) {}
-        apply(data);
-      })
-      .catch(function () { /* silent */ });
-  }
+      // Elimina el top5 previo si existe (para re-render)
+      var old = document.getElementById('lgc-top5');
+      if (old) old.remove();
 
-  function init() {
-    injectCounterDevHit();
-    injectGoatCounter();
-    loadCounter();
-    loadCountry();
-  }
+      var wrap = document.createElement('div');
+      wrap.id = 'lgc-top5';
+      wrap.setAttribute('aria-label', 'Top países visitantes');
+      wrap.style.cssText = [
+        'display:flex',
+        'align-items:center',
+        'gap:6px',
+        'margin-left:8px',
+        'padding-left:8px',
+        'border-left:1px solid var(--border)',
+        'flex-wrap:nowrap'
+      ].join(';');
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init, { once: true });
-  } else {
-    init();
-  }
-})(); // Cierre de la IIFE para el contador y la info del visitante
+      sorted.forEach(function (c) {
+        var item = document.createElement('span');
+        item.style.cssText = 'display:flex;align-items:center;gap:3px;font-size:.72rem;color:var(--text3);white-space:nowrap;cursor:default';
+        item.setAttribute('data-tip', c.name + ': ' + c.hits + (c.hits === 1 ? ' visita' : ' visitas'));
+        item.setAttribute('aria-label', c.name + ': ' + c.hits + ' visitas');
 
-/* --- SCROLL REVEAL --- */
-var rIO;
+        var flag = document.createElement('img');
+        flag.src = 'https://flagcdn.com/w20/' + c.code + '.png';
+        flag.srcset = 'https://flagcdn.com/w20/' + c.code + '.png 1x, https://flagcdn.com/w40/' + c.code + '.png 2x';
+        flag.alt = c.name;
+        flag.width = 18;
+        flag.height = 12;
+        flag.style.cssText = 'border-radius:2px;object-fit:cover;flex-shrink:0';
+        flag.loading = 'lazy';
+
+        var count = document.createElement('span');
+        count.style.cssText = 'font-family:var(--font-m,monospace);font-size:.7rem;font-weight:600;color:var(--text2)';
+        count.textContent = c.hits;
+
+        item.appendChild(flag);
+        item.appendChild(count);
+        wrap.appendChild(item);
+      });
+
+      // Insertar el top5 después del separador existente en hdr-stats
+      var sep = statsEl.querySelector('.hdr-stat-sep');
+      if (sep) {
+        sep.insertAdjacentElement('afterend', wrap);
+      } else {
+        statsEl.appendChild(wrap);
+      }
+    }
+
+    function loadCountry() {
+      var cached = lsGet(GEO_KEY);
+      var now = Date.now();
+
+      function applyGeo(data) {
+        if (!data) return;
+        var code = (data.country_code || data.country || '').toString().toLowerCase().trim();
+        var name = (data.country_name || data.country || '').trim();
+        if (!code || !name || code === 'undefined') return;
+
+        // Detectar si cambió la IP (VPN) comparando con el dato anterior
+        var prevIp = cached && cached.ip;
+        var currentIp = data.ip || data.IPv4 || '';
+        var ipChanged = prevIp && currentIp && prevIp !== currentIp;
+
+        // Si la IP cambió, borramos la sesión de conteo para registrar el nuevo país
+        if (ipChanged) {
+          try { sessionStorage.removeItem('lgc_geo_counted'); } catch (e) { }
+        }
+
+        // Guardamos en caché con la IP actual
+        lsSet(GEO_KEY, { ts: now, data: data, ip: currentIp });
+
+        var log = recordCountryHit(code, name);
+        renderCountryFlag(code, name);
+        renderTop5(log);
+      }
+
+      // Usar caché solo si: existe, no caducó, Y la IP no cambió (no podemos saber si cambió sin preguntar)
+      // Por eso reducimos el caché a 30 min y siempre verificamos si el fetch falla
+      var isFresh = cached && (now - cached.ts) < GEO_CACHE_MS;
+      if (isFresh) {
+        applyGeo(cached.data);
+        // Igual renderizamos top5 aunque no hagamos fetch
+        var log = getCountryLog();
+        if (Object.keys(log).length > 1) renderTop5(log);
+        return;
+      }
+
+      fetch(geoUrl, { headers: { 'Accept': 'application/json' } })
+        .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+        .then(function (data) {
+          if (data && data.error) throw new Error(data.reason || 'geo error');
+          applyGeo(data);
+        })
+        .catch(function () {
+          // Si falla la API, al menos mostramos el top5 acumulado del log
+          if (cached && cached.data) applyGeo(cached.data);
+          else {
+            var log = getCountryLog();
+            if (Object.keys(log).length > 0) renderTop5(log);
+          }
+        });
+    }
+
+    /* ── 3. INIT ─────────────────────────────────── */
+    function init() {
+      injectCounterDevHit();
+      injectGoatCounter();
+      loadCounter();
+      loadCountry();
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', init, { once: true });
+    } else {
+      init();
+    }
+  })(); // Fin: contador y banderas
+
+  /* --- SCROLL REVEAL --- */
+  var rIO;
   if (typeof IntersectionObserver !== 'undefined') {
     rIO = new IntersectionObserver(function (entries) {
       entries.forEach(function (e, i) {
@@ -328,7 +439,7 @@ var rIO;
       };
       var s = document.createElement('script');
       s.src = feedBase + path + (path.indexOf('?') >= 0 ? '&' : '?') + 'alt=json-in-script&callback=' + id;
-      s.onerror = function () { try { delete window[id]; } catch (e) {} };
+      s.onerror = function () { try { delete window[id]; } catch (e) { } };
       document.body.appendChild(s);
     }
     function setStat(id, n) {
@@ -337,7 +448,7 @@ var rIO;
       el.setAttribute('data-count', n);
       el.textContent = n;
       if (typeof cIO !== 'undefined' && cIO) {
-        try { cIO.observe(el); } catch (e) {}
+        try { cIO.observe(el); } catch (e) { }
       }
     }
     loadFeed('?max-results=0', function (d) {
