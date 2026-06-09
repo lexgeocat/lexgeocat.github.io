@@ -111,25 +111,25 @@
 
   var cfg = CFG || {};
   var counterId = cfg.counterWebsiteId;
-  var readUrl = cfg.counterReadUrl;
-  var cacheSeconds = Number(cfg.counterReadCacheSeconds) || 300;
+  var counterLabel = cfg.counterLabel || 'Visitas';
+  var goatCode = cfg.goatCounterCode;
+  var goatTz = cfg.goatCounterTz || 'UTC';
+  var goatCache = Number(cfg.goatCounterCacheSeconds) || 600;
   var geoUrl = cfg.geoProvider || 'https://ipapi.co/json/';
   var cacheHours = Number(cfg.geoCacheHours) || 24;
 
   var counterEl = document.getElementById('counter-dev-placeholder');
   var countryEl = document.getElementById('visitor-country-info');
 
-  function setCounter(n) {
+  function setCounterText(n, opts) {
     if (!counterEl) return;
     var valueEl = counterEl.querySelector('.hdr-stat-value');
     if (valueEl) valueEl.textContent = n.toLocaleString('es');
-  }
-
-  function setCounterTooltip(n) {
-    if (!counterEl) return;
     var label = (cfg.counterLabel || 'Visitas');
-    counterEl.setAttribute('data-tip', label + ': ' + n.toLocaleString('es'));
-    counterEl.setAttribute('aria-label', label + ': ' + n.toLocaleString('es'));
+    if (opts && opts.tooltip) {
+      counterEl.setAttribute('data-tip', label + ': ' + n.toLocaleString('es') + (opts.suffix ? ' ' + opts.suffix : ''));
+      counterEl.setAttribute('aria-label', label + ': ' + n.toLocaleString('es'));
+    }
   }
 
   function setCountryTooltip(name) {
@@ -138,24 +138,7 @@
     countryEl.setAttribute('aria-label', 'Visitando desde ' + name);
   }
 
-  function sumVisits(payload) {
-    if (!payload) return 0;
-    if (typeof payload === 'number') return payload;
-    if (Array.isArray(payload)) {
-      return payload.reduce(function (acc, row) {
-        var v = row && (row.visits ?? row.count ?? row.hits ?? row.visitors ?? 0);
-        return acc + (parseInt(v, 10) || 0);
-      }, 0);
-    }
-    if (typeof payload === 'object') {
-      var v = payload.visits ?? payload.count ?? payload.hits ?? payload.visitors ?? payload.data?.visits;
-      if (typeof v === 'number') return v;
-      if (v && typeof v === 'object') return sumVisits(v);
-    }
-    return 0;
-  }
-
-  function injectHitScript() {
+  function injectCounterDevHit() {
     if (!counterId || document.getElementById('lgc-counter-hit')) return;
     var s = document.createElement('script');
     s.id = 'lgc-counter-hit';
@@ -168,29 +151,77 @@
     document.body.appendChild(s);
   }
 
-  function readCounter() {
-    if (!readUrl) return Promise.reject(new Error('no url'));
-    var key = 'lgc_counter_v1';
+  function injectGoatCounter() {
+    if (!goatCode || document.getElementById('lgc-goat-counter')) return;
+    var s = document.createElement('script');
+    s.id = 'lgc-goat-counter';
+    s.async = true;
+    s.src = 'https://gc.zgo.at/count.js?p=/&t=' + goatCode;
+    s.dataset.goatcounter = 'https://' + goatCode + '.goatcounter.com/count';
+    document.body.appendChild(s);
+  }
+
+  function readGoatCounter() {
+    if (!goatCode) return Promise.reject(new Error('no goat code'));
+    var key = 'lgc_goat_v1';
     try {
       var c = JSON.parse(localStorage.getItem(key) || 'null');
-      if (c && (Date.now() - c.ts) < cacheSeconds * 1000) return Promise.resolve(c.n);
+      if (c && (Date.now() - c.ts) < goatCache * 1000) return Promise.resolve(c.n);
     } catch (e) {}
 
-    return fetch(readUrl, { headers: { 'Accept': 'application/json' } })
+    var start = encodeURIComponent('2000-01-01');
+    var end = encodeURIComponent('2099-12-31');
+    var url = 'https://' + goatCode + '.goatcounter.com/api/v0/stats/total?start=' + start + '&end=' + end;
+
+    return fetch(url, { headers: { 'Accept': 'application/json' } })
       .then(function (r) {
-        if (!r.ok) throw new Error('http ' + r.status);
-        return r.text();
+        if (!r.ok) throw new Error('goat http ' + r.status);
+        return r.json();
       })
-      .then(function (txt) {
+      .then(function (data) {
         var n = 0;
-        try { n = sumVisits(JSON.parse(txt)); } catch (e) { n = sumVisits(txt); }
-        if (!n) {
-          var m = String(txt).match(/(\d{1,9})\s*visits?/i);
-          if (m) n = parseInt(m[1], 10) || 0;
+        if (data && typeof data === 'object') {
+          n = data.total ?? data.count ?? data.visits ?? data.hits ?? 0;
+          if (typeof n === 'object' && n) n = n.count ?? n.total ?? 0;
         }
-        try { localStorage.setItem(key, JSON.stringify({ ts: Date.now(), n: n })); } catch (e) {}
+        n = parseInt(n, 10) || 0;
+        if (n) {
+          try { localStorage.setItem(key, JSON.stringify({ ts: Date.now(), n: n })); } catch (e) {}
+        }
         return n;
       });
+  }
+
+  function fallbackLocalCounter() {
+    var key = 'lgc_local_v1';
+    var n = 0;
+    try { n = parseInt(localStorage.getItem(key) || '0', 10) || 0; } catch (e) { n = 0; }
+    var sessionKey = 'lgc_local_session';
+    var already = false;
+    try { already = !!sessionStorage.getItem(sessionKey); } catch (e) {}
+    if (!already) {
+      n += 1;
+      try {
+        localStorage.setItem(key, String(n));
+        sessionStorage.setItem(sessionKey, '1');
+      } catch (e) {}
+    }
+    return n;
+  }
+
+  function loadCounter() {
+    if (goatCode) {
+      readGoatCounter()
+        .then(function (n) {
+          if (n > 0) setCounterText(n, { tooltip: true });
+          else setCounterText(fallbackLocalCounter(), { tooltip: true, suffix: '(local)' });
+        })
+        .catch(function () {
+          setCounterText(fallbackLocalCounter(), { tooltip: true, suffix: '(local)' });
+        });
+    } else {
+      setCounterText(fallbackLocalCounter(), { tooltip: true, suffix: '(local)' });
+    }
   }
 
   function loadCountry() {
@@ -231,18 +262,9 @@
   }
 
   function init() {
-    injectHitScript();
-    readCounter()
-      .then(function (n) {
-        setCounter(n);
-        setCounterTooltip(n);
-      })
-      .catch(function () {
-        if (counterEl) {
-          var v = counterEl.querySelector('.hdr-stat-value');
-          if (v) v.textContent = '—';
-        }
-      });
+    injectCounterDevHit();
+    injectGoatCounter();
+    loadCounter();
     loadCountry();
   }
 
