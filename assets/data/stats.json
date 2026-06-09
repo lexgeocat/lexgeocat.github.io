@@ -1,5 +1,5 @@
 {
-  "total": 37,
+  "total": 38,
   "countries": [
     {
       "id": "BO",
@@ -34,8 +34,8 @@
     {
       "id": "SG",
       "name": "Singapore",
-      "count": 1
+      "count": 2
     }
   ],
-  "updated_at": "2026-06-09T15:00:00Z"
+  "updated_at": "2026-06-09T06:42:04Z"
 }
