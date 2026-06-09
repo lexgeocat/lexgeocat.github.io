@@ -8,7 +8,7 @@ window.LGC_CONFIG = {
   counterLabel: 'Visitas',
   counterReadUrl: 'https://api.counter.dev/api/v1/lexgeocat.github.io?start=2000-01-01&end=2099-12-31',
   counterReadCacheSeconds: 300,
-  goatCounterCode: '',
+  goatCounterCode: 'cris99',
   goatCounterTz: 'America/La_Paz',
   goatCounterCacheSeconds: 600,
   geoProvider: 'https://ipapi.co/json/',
