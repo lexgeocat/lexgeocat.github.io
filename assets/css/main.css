@@ -4371,24 +4371,35 @@ svg.fd-bg-map {
 .gc-locs {
   display: inline-flex;
   align-items: center;
-  gap: 3px;
+  gap: 4px;
   flex-wrap: nowrap
 }
 
 .gc-flag-item {
   cursor: default;
-  font-size: .95rem;
-  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   transition: transform .18s;
-  display: inline-block
+  border-radius: 2px;
+  overflow: hidden
 }
 
 .gc-flag-item:hover {
-  transform: scale(1.3)
+  transform: scale(1.35)
+}
+
+.gc-flag-img {
+  display: block;
+  width: 16px;
+  height: 12px;
+  object-fit: cover;
+  /* sombra sutil para banderas con fondo blanco */
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, .12)
 }
 
 .gc-tooltip {
-  position: absolute;
+  position: fixed;
   z-index: 99999;
   background: var(--ink);
   color: var(--gold2);
@@ -4396,13 +4407,14 @@ svg.fd-bg-map {
   font-size: .7rem;
   padding: 5px 10px;
   border-radius: var(--rs);
-  border: 1px solid rgba(200, 150, 12, .25);
+  border: 1px solid rgba(200, 150, 12, .3);
   pointer-events: none;
   white-space: nowrap;
-  box-shadow: var(--sh2)
+  box-shadow: var(--sh2);
+  /* flecha abajo por defecto (tooltip arriba del item) */
 }
 
-/* Ocultar en móvil (ya hay poco espacio) */
+/* Ocultar en móvil */
 @media (max-width: 900px) {
   .gc-stats-bar {
     display: none
