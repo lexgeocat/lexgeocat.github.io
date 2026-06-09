@@ -20,45 +20,44 @@ jobs:
         run: |
           mkdir -p assets/data
 
-          # ── TOTAL DE VISITAS ──────────────────────────────────────────────────
-          # Endpoint correcto: /api/v0/stats/hits devuelve { hits: [...] }
-          # Sumamos el campo "count" de cada entrada para obtener el total real.
-          TOTAL_RESPONSE=$(curl -s \
-            -H "Authorization: Bearer $GOAT_TOKEN" \
-            -H "Accept: application/json" \
-            "https://cris99.goatcounter.com/api/v0/stats/hits?start=2000-01-01&end=2099-12-31&daily=false")
+          # Fechas: desde el inicio hasta ahora — formato requerido por la API
+          START="2000-01-01T00:00:00Z"
+          END=$(date -u +%Y-%m-%dT%H:%M:%SZ)
 
-          # La respuesta tiene { hits: [ {day, count} ] }
-          # Sumamos todos los count
-          TOTAL=$(echo "$TOTAL_RESPONSE" | jq '[.hits[]?.count // 0] | add // 0')
+          BASE="https://cris99.goatcounter.com/api/v0"
+          AUTH="Authorization: Bearer $GOAT_TOKEN"
 
-          # Fallback: si hits no funciona, intentamos endpoint /count público
-          if [ "$TOTAL" = "0" ] || [ -z "$TOTAL" ]; then
-            TOTAL_PUBLIC=$(curl -s "https://cris99.goatcounter.com/counter/TOTAL.json" 2>/dev/null || echo '{"count":"0"}')
-            TOTAL=$(echo "$TOTAL_PUBLIC" | jq -r '.count // "0"' | tr -d ',.' | grep -oE '[0-9]+' | head -1 || echo 0)
-            TOTAL=${TOTAL:-0}
-          fi
+          # ── TOTAL de visitas ───────────────────────────────────────────────
+          # Endpoint: GET /api/v0/stats/total
+          # Respuesta: { "total": N, "total_events": N, "total_utc": N, "stats": [...] }
+          TOTAL_JSON=$(curl -s \
+            -H "Content-Type: application/json" \
+            -H "$AUTH" \
+            "$BASE/stats/total?start=$START&end=$END")
 
-          echo "Total visits: $TOTAL"
+          echo "Total response: $TOTAL_JSON"
 
-          # ── TOP PAÍSES ────────────────────────────────────────────────────────
-          # Endpoint correcto: /api/v0/stats/countries (NO "browsers?stat=country")
-          COUNTRIES_RESPONSE=$(curl -s \
-            -H "Authorization: Bearer $GOAT_TOKEN" \
-            -H "Accept: application/json" \
-            "https://cris99.goatcounter.com/api/v0/stats/countries?start=2000-01-01&end=2099-12-31&limit=10")
+          TOTAL=$(echo "$TOTAL_JSON" | jq '.total // 0')
 
-          # La respuesta tiene { stats: [ {id, name, count, count_unique} ] }
-          COUNTRIES=$(echo "$COUNTRIES_RESPONSE" | jq '[.stats[]? | {id: .id, name: .name, count: (.count // 0)}] | sort_by(-.count) // []')
+          # ── TOP PAÍSES ────────────────────────────────────────────────────
+          # Endpoint: GET /api/v0/stats/locations
+          # Respuesta: { "stats": [ { "id": "BO", "name": "Bolivia", "count": N } ], "more": false }
+          LOC_JSON=$(curl -s \
+            -H "Content-Type: application/json" \
+            -H "$AUTH" \
+            "$BASE/stats/locations?start=$START&end=$END&limit=10")
 
-          # Fallback a array vacío si falla
+          echo "Locations response: $LOC_JSON"
+
+          COUNTRIES=$(echo "$LOC_JSON" | jq '[.stats[]? | {id: .id, name: .name, count: .count}] | sort_by(-.count) // []')
+
           if [ "$COUNTRIES" = "null" ] || [ -z "$COUNTRIES" ]; then
             COUNTRIES="[]"
           fi
 
-          echo "Countries fetched: $(echo "$COUNTRIES" | jq length)"
+          echo "Total: $TOTAL | Countries: $(echo "$COUNTRIES" | jq length)"
 
-          # ── ESCRIBIR stats.json ───────────────────────────────────────────────
+          # ── Escribir stats.json ────────────────────────────────────────────
           jq -n \
             --argjson total "$TOTAL" \
             --argjson countries "$COUNTRIES" \
@@ -66,7 +65,7 @@ jobs:
             '{total: $total, countries: $countries, updated_at: $updated_at}' \
             > assets/data/stats.json
 
-          echo "Written stats.json — Total: $TOTAL"
+          echo "=== stats.json generado ==="
           cat assets/data/stats.json
 
       - name: Commit and push if changed
