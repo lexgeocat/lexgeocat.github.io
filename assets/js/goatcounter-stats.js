@@ -30,52 +30,28 @@
         return r.toISOString().replace('.000Z', 'Z');
     }
 
-    // token en query param -> simple CORS request, sin preflight OPTIONS
-    // Authorization header fuerza preflight -> falla silencioso en móvil
+    function dateRange() {
+        return 'start=' + encodeURIComponent('2024-01-01T00:00:00Z') +
+            '&end=' + encodeURIComponent(toHour(new Date()));
+    }
+
     function apiFetch(path, cb) {
         var sep = path.indexOf('?') >= 0 ? '&' : '?';
-        var url = GC_BASE + '/api/v0' + path + sep +
-            'access_token=' + GC_TOKEN +
-            '&start=' + encodeURIComponent('2024-01-01T00:00:00Z') +
-            '&end=' + encodeURIComponent(toHour(new Date()));
-
-        fetch(url, { method: 'GET', cache: 'no-store' })
+        var url = GC_BASE + '/api/v0' + path + sep + dateRange();
+        fetch(url, {
+            method: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + GC_TOKEN,
+                'Content-Type': 'application/json'
+            },
+            cache: 'no-store'
+        })
             .then(function (r) {
-                if (!r.ok) throw new Error('HTTP ' + r.status);
+                if (!r.ok) throw new Error('HTTP ' + r.status + ' en ' + path);
                 return r.json();
             })
             .then(cb)
-            .catch(function (e) {
-                console.warn('[GC]', e.message);
-                // fallback JSONP si fetch falla (red restrictiva, etc.)
-                apiFetchJSONP(path, cb);
-            });
-    }
-
-    // JSONP fallback — sin restricciones CORS en absoluto
-    function apiFetchJSONP(path, cb) {
-        var cbName = '_gc_' + Math.random().toString(36).substr(2, 9);
-        var sep = path.indexOf('?') >= 0 ? '&' : '?';
-        var url = GC_BASE + '/api/v0' + path + sep +
-            'access_token=' + GC_TOKEN +
-            '&start=' + encodeURIComponent('2024-01-01T00:00:00Z') +
-            '&end=' + encodeURIComponent(toHour(new Date())) +
-            '&jsonp=' + cbName;
-
-        window[cbName] = function (data) {
-            try { cb(data); } catch (e) { }
-            try { delete window[cbName]; } catch (e2) { }
-            var s = document.getElementById(cbName);
-            if (s) s.parentNode.removeChild(s);
-        };
-
-        var s = document.createElement('script');
-        s.id = cbName;
-        s.src = url;
-        s.onerror = function () {
-            try { delete window[cbName]; } catch (e) { }
-        };
-        document.body.appendChild(s);
+            .catch(function (e) { console.warn('[GC]', e.message); });
     }
 
     var _tip = null;
@@ -109,16 +85,13 @@
     document.addEventListener('click', hideTip);
     document.addEventListener('scroll', hideTip, { passive: true });
 
+    // attachTips: bind hover/tap tooltip a cada .gc-flag-item[data-tip] del container
     function attachTips(container) {
         if (!container) return;
         container.querySelectorAll('.gc-flag-item[data-tip]').forEach(function (item) {
             item.addEventListener('mouseenter', function () { showTip(item); });
             item.addEventListener('mouseleave', hideTip);
             // tap en móvil
-            item.addEventListener('touchend', function (e) {
-                e.preventDefault();
-                item._tip ? hideTip() : showTip(item);
-            });
             item.addEventListener('click', function (e) {
                 if (item.tagName === 'A') return;
                 e.stopPropagation();
@@ -179,6 +152,9 @@
         });
     }
 
+    // buildWidget: solo construye el skeleton del widget desktop e inicia los fetches.
+    // Los fetches actualizan TANTO desktop como móvil independientemente de si
+    // gc-stats-widget existe (móvil lo oculta con CSS pero los IDs mob-* siempre están).
     function buildWidget() {
         var el = document.getElementById('gc-stats-widget');
         if (el) {
@@ -192,6 +168,7 @@
                 '<span class="gc-stat-item gc-locs" id="gc-flags-wrap"></span>';
         }
 
+        // siempre corre los fetches — actualiza desktop si existe y móvil siempre
         updateViews();
         updateFlags();
 
