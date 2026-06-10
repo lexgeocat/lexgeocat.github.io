@@ -103,21 +103,21 @@
     }
 
     // ── Banderas de países ────────────────────────────────────────────────────
-    // /stats/locations devuelve { stats: [{ id: "BO", name: "Bolivia", count: N }] }
     function updateFlags() {
-        apiFetch('/stats/locations?limit=8', function (data) {
+        apiFetch('/stats/locations?limit=6', function (data) {
             var wrap = document.getElementById('gc-flags-wrap');
             if (!wrap) return;
             var stats = (data && Array.isArray(data.stats)) ? data.stats : [];
             if (!stats.length) return;
 
             var html = '';
-            stats.forEach(function (loc) {
-                // id es el código ISO-2 del país ("BO", "AR"...)
-                // Si viniera con región tipo "BO-L", slice(0,2) da "BO"
+            var shown = 0;
+
+            for (var i = 0; i < stats.length && shown < 5; i++) {
+                var loc = stats[i];
                 var raw = (loc.id || '').toUpperCase();
                 var code = raw.slice(0, 2);
-                if (!/^[A-Z]{2}$/.test(code)) return;
+                if (!/^[A-Z]{2}$/.test(code)) continue;
                 var views = (loc.count || 0).toLocaleString('es-BO');
                 var label = countryName(code) + ': ' + views + ' vistas';
                 html +=
@@ -127,14 +127,24 @@
                     ' alt="' + countryName(code) + '"' +
                     ' width="16" height="12" loading="lazy">' +
                     '</span>';
-            });
+                shown++;
+            }
 
-            if (!html) return;
+            html +=
+                '<a class="gc-flag-item gc-more-stats"' +
+                ' href="https://lexgeocat.goatcounter.com/"' +
+                ' target="_blank" rel="noopener"' +
+                ' data-tip="Ver más estadísticas">' +
+                '<i class="fa-solid fa-chart-simple"></i>' +
+                '</a>';
+
             wrap.innerHTML = html;
-            wrap.querySelectorAll('.gc-flag-item').forEach(function (item) {
+
+            wrap.querySelectorAll('.gc-flag-item[data-tip]').forEach(function (item) {
                 item.addEventListener('mouseenter', function () { showTip(item); });
                 item.addEventListener('mouseleave', hideTip);
                 item.addEventListener('click', function (e) {
+                    if (item.tagName === 'A') return;
                     e.stopPropagation();
                     item._tip ? hideTip() : showTip(item);
                 });
