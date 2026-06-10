@@ -20,7 +20,7 @@ window.LGC_CONFIG = {
   rnt: '970285',
 
   social: {
-    facebook: 'https://www.facebook.com/lexgeocat',
+    facebook: 'https://www.facebook.com/CrisCat17',
     youtube: 'https://www.youtube.com/@lexgeocat',
     linkedin: 'https://www.linkedin.com/in/lexgeocat',
     whatsapp: 'https://wa.me/59176711790'
