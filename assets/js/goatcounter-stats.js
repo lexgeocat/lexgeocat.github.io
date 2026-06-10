@@ -5,6 +5,7 @@
     var GC_TOKEN = '12ho0qypjqrv516mxxmvjjuj9b1v35tklso1s9j1dyckggebqn1';
     var REFRESH_MS = 5 * 60 * 1000;
     var FLAG_CDN = 'https://flagcdn.com/16x12/';
+    var FETCH_TIMEOUT_MS = 8000;
 
     var COUNTRY_ES = {
         BO: 'Bolivia', AR: 'Argentina', CL: 'Chile', PE: 'Perú', CO: 'Colombia',
@@ -30,28 +31,95 @@
         return r.toISOString().replace('.000Z', 'Z');
     }
 
-    function dateRange() {
-        return 'start=' + encodeURIComponent('2024-01-01T00:00:00Z') +
+    function buildUrl(path) {
+        var sep = path.indexOf('?') >= 0 ? '&' : '?';
+        return GC_BASE + '/api/v0' + path + sep +
+            'access_token=' + GC_TOKEN +
+            '&start=' + encodeURIComponent('2024-01-01T00:00:00Z') +
             '&end=' + encodeURIComponent(toHour(new Date()));
     }
 
-    function apiFetch(path, cb) {
-        var sep = path.indexOf('?') >= 0 ? '&' : '?';
-        var url = GC_BASE + '/api/v0' + path + sep + dateRange();
-        fetch(url, {
-            method: 'GET',
-            headers: {
-                'Authorization': 'Bearer ' + GC_TOKEN,
-                'Content-Type': 'application/json'
-            },
-            cache: 'no-store'
-        })
+    // fetch con timeout explícito via AbortController o fallback por race
+    function fetchWithTimeout(url, ms) {
+        if (typeof AbortController !== 'undefined') {
+            var ctrl = new AbortController();
+            var tid = setTimeout(function () { ctrl.abort(); }, ms);
+            return fetch(url, { method: 'GET', cache: 'no-store', signal: ctrl.signal })
+                .then(function (r) { clearTimeout(tid); return r; })
+                .catch(function (e) { clearTimeout(tid); throw e; });
+        }
+        // fallback sin AbortController (Android < 66)
+        var timeout = new Promise(function (_, rej) {
+            setTimeout(function () { rej(new Error('timeout')); }, ms);
+        });
+        return Promise.race([
+            fetch(url, { method: 'GET', cache: 'no-store' }),
+            timeout
+        ]);
+    }
+
+    function apiFetchJSON(path, cb) {
+        var url = buildUrl(path);
+        fetchWithTimeout(url, FETCH_TIMEOUT_MS)
             .then(function (r) {
-                if (!r.ok) throw new Error('HTTP ' + r.status + ' en ' + path);
+                if (!r.ok) throw new Error('HTTP ' + r.status);
                 return r.json();
             })
-            .then(cb)
-            .catch(function (e) { console.warn('[GC]', e.message); });
+            .then(function (data) { cb(null, data); })
+            .catch(function (e) { cb(e, null); });
+    }
+
+    function apiFetchJSONP(path, cb) {
+        var cbName = '_gc_' + Math.random().toString(36).substr(2, 9);
+        var url = buildUrl(path) + '&jsonp=' + cbName;
+        var done = false;
+
+        // timeout para el JSONP — crítico en móvil
+        var tid = setTimeout(function () {
+            if (done) return;
+            done = true;
+            cleanup();
+            cb(new Error('jsonp timeout'), null);
+        }, FETCH_TIMEOUT_MS);
+
+        function cleanup() {
+            clearTimeout(tid);
+            try { delete window[cbName]; } catch (e) { }
+            var s = document.getElementById(cbName);
+            if (s && s.parentNode) s.parentNode.removeChild(s);
+        }
+
+        window[cbName] = function (data) {
+            if (done) return;
+            done = true;
+            cleanup();
+            cb(null, data);
+        };
+
+        var s = document.createElement('script');
+        s.id = cbName;
+        s.src = url;
+        s.onerror = function () {
+            if (done) return;
+            done = true;
+            cleanup();
+            cb(new Error('jsonp script error'), null);
+        };
+        // usar head si body no está listo todavía (caso móvil con DOMContentLoaded tardío)
+        (document.body || document.head || document.documentElement).appendChild(s);
+    }
+
+    // intenta fetch primero, si falla va a JSONP, si falla también llama cb con null
+    function apiFetch(path, cb) {
+        apiFetchJSON(path, function (err, data) {
+            if (!err && data) { cb(data); return; }
+            apiFetchJSONP(path, function (err2, data2) {
+                if (!err2 && data2) { cb(data2); return; }
+                // ambos métodos fallaron — cb con objeto vacío para no romper renders
+                console.warn('[GC] ambos métodos fallaron:', path, err && err.message, err2 && err2.message);
+                cb(null);
+            });
+        });
     }
 
     var _tip = null;
@@ -85,13 +153,15 @@
     document.addEventListener('click', hideTip);
     document.addEventListener('scroll', hideTip, { passive: true });
 
-    // attachTips: bind hover/tap tooltip a cada .gc-flag-item[data-tip] del container
     function attachTips(container) {
         if (!container) return;
         container.querySelectorAll('.gc-flag-item[data-tip]').forEach(function (item) {
             item.addEventListener('mouseenter', function () { showTip(item); });
             item.addEventListener('mouseleave', hideTip);
-            // tap en móvil
+            item.addEventListener('touchend', function (e) {
+                e.preventDefault();
+                item._tip ? hideTip() : showTip(item);
+            });
             item.addEventListener('click', function (e) {
                 if (item.tagName === 'A') return;
                 e.stopPropagation();
@@ -100,14 +170,34 @@
         });
     }
 
+    // escribe en un elemento esperando a que exista en el DOM (retry por polling)
+    function setWhenReady(id, setter, retries) {
+        var el = document.getElementById(id);
+        if (el) { setter(el); return; }
+        if ((retries || 0) >= 20) return; // máx ~2s de espera
+        setTimeout(function () { setWhenReady(id, setter, (retries || 0) + 1); }, 100);
+    }
+
+    function renderViews(fmt) {
+        setWhenReady('gc-total-views', function (el) { el.textContent = fmt; });
+        setWhenReady('mob-gc-views', function (el) { el.textContent = fmt; });
+    }
+
+    function renderFlags(html) {
+        function inject(id) {
+            setWhenReady(id, function (el) {
+                el.innerHTML = html;
+                attachTips(el);
+            });
+        }
+        inject('gc-flags-wrap');
+        inject('mob-gc-flags');
+    }
+
     function updateViews() {
         apiFetch('/stats/total', function (data) {
             var n = (data && typeof data.total === 'number') ? data.total : 0;
-            var fmt = n.toLocaleString('es-BO');
-            var el = document.getElementById('gc-total-views');
-            if (el) el.textContent = fmt;
-            var elMob = document.getElementById('mob-gc-views');
-            if (elMob) elMob.textContent = fmt;
+            renderViews(n.toLocaleString('es-BO'));
         });
     }
 
@@ -144,17 +234,10 @@
                 '<i class="fa-solid fa-chart-simple"></i>' +
                 '</a>';
 
-            var wrap = document.getElementById('gc-flags-wrap');
-            if (wrap) { wrap.innerHTML = html; attachTips(wrap); }
-
-            var wrapMob = document.getElementById('mob-gc-flags');
-            if (wrapMob) { wrapMob.innerHTML = html; attachTips(wrapMob); }
+            renderFlags(html);
         });
     }
 
-    // buildWidget: solo construye el skeleton del widget desktop e inicia los fetches.
-    // Los fetches actualizan TANTO desktop como móvil independientemente de si
-    // gc-stats-widget existe (móvil lo oculta con CSS pero los IDs mob-* siempre están).
     function buildWidget() {
         var el = document.getElementById('gc-stats-widget');
         if (el) {
@@ -168,7 +251,6 @@
                 '<span class="gc-stat-item gc-locs" id="gc-flags-wrap"></span>';
         }
 
-        // siempre corre los fetches — actualiza desktop si existe y móvil siempre
         updateViews();
         updateFlags();
 
