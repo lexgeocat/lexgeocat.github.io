@@ -1,13 +1,10 @@
 (function () {
     'use strict';
 
-    var GC_SITE = 'lexgeocat';
-    // TOKEN: regeneralo en https://lexgeocat.goatcounter.com/user/api  
-    // Settings → API tokens → crear nuevo con permisos de lectura
-    var GC_TOKEN = 'REEMPLAZA_CON_TOKEN_NUEVO';
+    var GC_BASE = 'https://lexgeocat.goatcounter.com';
+    var GC_TOKEN = '12ho0qypjqrv516mxxmvjjuj9b1v35tklso1s9j1dyckggebqn1';
     var REFRESH_MS = 5 * 60 * 1000;
     var FLAG_CDN = 'https://flagcdn.com/16x12/';
-    var TIMEOUT_MS = 10000;
 
     var COUNTRY_ES = {
         BO: 'Bolivia', AR: 'Argentina', CL: 'Chile', PE: 'Perú', CO: 'Colombia',
@@ -33,50 +30,28 @@
         return r.toISOString().replace('.000Z', 'Z');
     }
 
-    // TOKEN en Authorization header (no en query param) — fix CORS en móvil
-    // GoatCounter con token en query param NO envía headers CORS correctamente
-    function apiFetch(path, cb) {
-        var base = 'https://' + GC_SITE + '.goatcounter.com/api/v0';
-        var sep = path.indexOf('?') >= 0 ? '&' : '?';
-        var url = base + path + sep +
-            'start=' + encodeURIComponent('2024-01-01T00:00:00Z') +
+    function dateRange() {
+        return 'start=' + encodeURIComponent('2024-01-01T00:00:00Z') +
             '&end=' + encodeURIComponent(toHour(new Date()));
+    }
 
-        var ctrl = typeof AbortController !== 'undefined' ? new AbortController() : null;
-        var tid = setTimeout(function () {
-            if (ctrl) ctrl.abort();
-            cb(null);
-        }, TIMEOUT_MS);
-
-        var opts = {
+    function apiFetch(path, cb) {
+        var sep = path.indexOf('?') >= 0 ? '&' : '?';
+        var url = GC_BASE + '/api/v0' + path + sep + dateRange();
+        fetch(url, {
             method: 'GET',
-            // Authorization header en vez de query param = CORS funciona en móvil
-            headers: { 'Authorization': 'Bearer ' + GC_TOKEN },
+            headers: {
+                'Authorization': 'Bearer ' + GC_TOKEN,
+                'Content-Type': 'application/json'
+            },
             cache: 'no-store'
-        };
-        if (ctrl) opts.signal = ctrl.signal;
-
-        fetch(url, opts)
+        })
             .then(function (r) {
-                clearTimeout(tid);
-                if (!r.ok) {
-                    console.warn('[GC] HTTP ' + r.status + ' en ' + path);
-                    cb(null);
-                    return null;
-                }
+                if (!r.ok) throw new Error('HTTP ' + r.status + ' en ' + path);
                 return r.json();
             })
-            .then(function (data) {
-                if (data) cb(data);
-            })
-            .catch(function (e) {
-                clearTimeout(tid);
-                // solo loguear si no es abort intencional
-                if (!ctrl || e.name !== 'AbortError') {
-                    console.warn('[GC] fetch falló:', e.message);
-                }
-                cb(null);
-            });
+            .then(cb)
+            .catch(function (e) { console.warn('[GC]', e.message); });
     }
 
     var _tip = null;
@@ -110,15 +85,13 @@
     document.addEventListener('click', hideTip);
     document.addEventListener('scroll', hideTip, { passive: true });
 
+    // attachTips: bind hover/tap tooltip a cada .gc-flag-item[data-tip] del container
     function attachTips(container) {
         if (!container) return;
         container.querySelectorAll('.gc-flag-item[data-tip]').forEach(function (item) {
             item.addEventListener('mouseenter', function () { showTip(item); });
             item.addEventListener('mouseleave', hideTip);
-            item.addEventListener('touchend', function (e) {
-                e.preventDefault();
-                item._tip ? hideTip() : showTip(item);
-            });
+            // tap en móvil
             item.addEventListener('click', function (e) {
                 if (item.tagName === 'A') return;
                 e.stopPropagation();
@@ -127,28 +100,14 @@
         });
     }
 
-    // retry con polling hasta que el elemento exista en el DOM
-    function setWhenReady(id, setter, retries) {
-        var el = document.getElementById(id);
-        if (el) { setter(el); return; }
-        if ((retries || 0) >= 30) return;
-        setTimeout(function () { setWhenReady(id, setter, (retries || 0) + 1); }, 100);
-    }
-
-    function renderViews(fmt) {
-        setWhenReady('gc-total-views', function (el) { el.textContent = fmt; });
-        setWhenReady('mob-gc-views', function (el) { el.textContent = fmt; });
-    }
-
-    function renderFlags(html) {
-        setWhenReady('gc-flags-wrap', function (el) { el.innerHTML = html; attachTips(el); });
-        setWhenReady('mob-gc-flags', function (el) { el.innerHTML = html; attachTips(el); });
-    }
-
     function updateViews() {
         apiFetch('/stats/total', function (data) {
             var n = (data && typeof data.total === 'number') ? data.total : 0;
-            renderViews(n > 0 ? n.toLocaleString('es-BO') : '—');
+            var fmt = n.toLocaleString('es-BO');
+            var el = document.getElementById('gc-total-views');
+            if (el) el.textContent = fmt;
+            var elMob = document.getElementById('mob-gc-views');
+            if (elMob) elMob.textContent = fmt;
         });
     }
 
@@ -179,16 +138,23 @@
 
             html +=
                 '<a class="gc-flag-item gc-more-stats"' +
-                ' href="https://' + GC_SITE + '.goatcounter.com/"' +
+                ' href="https://lexgeocat.goatcounter.com/"' +
                 ' target="_blank" rel="noopener"' +
                 ' data-tip="Ver más estadísticas">' +
                 '<i class="fa-solid fa-chart-simple"></i>' +
                 '</a>';
 
-            renderFlags(html);
+            var wrap = document.getElementById('gc-flags-wrap');
+            if (wrap) { wrap.innerHTML = html; attachTips(wrap); }
+
+            var wrapMob = document.getElementById('mob-gc-flags');
+            if (wrapMob) { wrapMob.innerHTML = html; attachTips(wrapMob); }
         });
     }
 
+    // buildWidget: solo construye el skeleton del widget desktop e inicia los fetches.
+    // Los fetches actualizan TANTO desktop como móvil independientemente de si
+    // gc-stats-widget existe (móvil lo oculta con CSS pero los IDs mob-* siempre están).
     function buildWidget() {
         var el = document.getElementById('gc-stats-widget');
         if (el) {
@@ -202,6 +168,7 @@
                 '<span class="gc-stat-item gc-locs" id="gc-flags-wrap"></span>';
         }
 
+        // siempre corre los fetches — actualiza desktop si existe y móvil siempre
         updateViews();
         updateFlags();
 
