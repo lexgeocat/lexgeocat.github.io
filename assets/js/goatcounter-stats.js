@@ -24,22 +24,18 @@
         return COUNTRY_ES[code] || code;
     }
 
-    // Redondea a la hora en punto, formato exacto que requiere la API de GC
     function toHour(d) {
         var r = new Date(d);
         r.setUTCMinutes(0, 0, 0);
         return r.toISOString().replace('.000Z', 'Z');
     }
 
-    // Construye los query params de rango temporal
     function dateRange() {
         return 'start=' + encodeURIComponent('2024-01-01T00:00:00Z') +
             '&end=' + encodeURIComponent(toHour(new Date()));
     }
 
-    // Fetch genérico contra la API REST de GoatCounter con Bearer token
     function apiFetch(path, cb) {
-        // Construye la URL evitando doble '?' cuando path ya trae query params
         var sep = path.indexOf('?') >= 0 ? '&' : '?';
         var url = GC_BASE + '/api/v0' + path + sep + dateRange();
 
@@ -59,7 +55,6 @@
             .catch(function (e) { console.warn('[GC]', e.message); });
     }
 
-    // ── Tooltip ───────────────────────────────────────────────────────────────
     var _tip = null;
 
     function showTip(item) {
@@ -91,22 +86,21 @@
     document.addEventListener('click', hideTip);
     document.addEventListener('scroll', hideTip, { passive: true });
 
-    // ── Total de vistas ───────────────────────────────────────────────────────
-    // /stats/total devuelve { total: N, total_utc: N }
     function updateViews() {
         apiFetch('/stats/total', function (data) {
-            var el = document.getElementById('gc-total-views');
-            if (!el) return;
             var n = (data && typeof data.total === 'number') ? data.total : 0;
-            el.textContent = n.toLocaleString('es-BO');
+            var fmt = n.toLocaleString('es-BO');
+            // desktop
+            var el = document.getElementById('gc-total-views');
+            if (el) el.textContent = fmt;
+            // móvil (dentro del mob-menu)
+            var elMob = document.getElementById('mob-gc-views');
+            if (elMob) elMob.textContent = fmt;
         });
     }
 
-    // ── Banderas de países ────────────────────────────────────────────────────
     function updateFlags() {
         apiFetch('/stats/locations?limit=6', function (data) {
-            var wrap = document.getElementById('gc-flags-wrap');
-            if (!wrap) return;
             var stats = (data && Array.isArray(data.stats)) ? data.stats : [];
             if (!stats.length) return;
 
@@ -138,21 +132,26 @@
                 '<i class="fa-solid fa-chart-simple"></i>' +
                 '</a>';
 
-            wrap.innerHTML = html;
-
-            wrap.querySelectorAll('.gc-flag-item[data-tip]').forEach(function (item) {
-                item.addEventListener('mouseenter', function () { showTip(item); });
-                item.addEventListener('mouseleave', hideTip);
-                item.addEventListener('click', function (e) {
-                    if (item.tagName === 'A') return;
-                    e.stopPropagation();
-                    item._tip ? hideTip() : showTip(item);
+            // reutilizable para desktop y móvil
+            function attachTips(container) {
+                if (!container) return;
+                container.innerHTML = html;
+                container.querySelectorAll('.gc-flag-item[data-tip]').forEach(function (item) {
+                    item.addEventListener('mouseenter', function () { showTip(item); });
+                    item.addEventListener('mouseleave', hideTip);
+                    item.addEventListener('click', function (e) {
+                        if (item.tagName === 'A') return;
+                        e.stopPropagation();
+                        item._tip ? hideTip() : showTip(item);
+                    });
                 });
-            });
+            }
+
+            attachTips(document.getElementById('gc-flags-wrap'));
+            attachTips(document.getElementById('mob-gc-flags'));
         });
     }
 
-    // ── Init ──────────────────────────────────────────────────────────────────
     function buildWidget() {
         var el = document.getElementById('gc-stats-widget');
         if (!el) return;

@@ -82,15 +82,39 @@
       '<a aria-label="LinkedIn" class="hdr-social-btn lk" href="' + CFG.social.linkedin + '" rel="noopener" target="_blank"><i class="fa-brands fa-linkedin-in"></i></a>' +
       '<a aria-label="WhatsApp" class="hdr-social-btn wa" href="' + CFG.social.whatsapp + '" rel="noopener" target="_blank"><i class="fa-brands fa-whatsapp"></i></a>' +
       '</div>' +
-      // ── WIDGET GOATCOUNTER ──
       '<div class="gc-stats-bar" id="gc-stats-widget"></div>' +
-      // ─────────────────────
       '<button aria-label="Buscar en el blog" class="srch-wrap srch-open-btn" id="srch-open-btn" type="button"><i class="fa-solid fa-magnifying-glass" style="color:var(--text3);font-size:12px"></i><span style="font-family:var(--font-b);font-size:.83rem;color:var(--text3);background:transparent;border:none;outline:none;width:160px;text-align:left;cursor:pointer">Buscar artículos...</span><kbd style="font-size:.65rem;color:var(--text3);background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:2px 6px;font-family:var(--font-m)">⌘K</kbd></button>' +
       '<button aria-label="Cambiar tema" class="icon-btn th-btn" id="th-btn" type="button"><i class="fa-solid fa-moon"></i><i class="fa-solid fa-sun"></i></button>' +
       '<button aria-label="Menú" class="icon-btn ham" id="ham" type="button"><i class="fa-solid fa-bars"></i></button>' +
       '</div></div></div>' +
       '<nav aria-label="Navegación principal" class="nav-bar" id="nav-bar" role="navigation"><div class="nav-inner">' + buildNav(true) + '</div></nav>' +
-      '<div class="mob-menu" id="mob-menu"><div class="mob-menu-hd"><div style="display:flex;align-items:center;gap:10px"><div class="logo-icon" style="width:34px;height:34px"><i class="fa-solid fa-map-location-dot" style="color:var(--gold2);font-size:14px"></i></div><span style="font-family:var(--font-h);font-size:1.15rem;font-weight:700;color:#fff">Lex<span style="color:var(--gold2)">Geo</span>Cat</span></div><button class="mob-close" id="mob-close" type="button"><i class="fa-solid fa-xmark"></i></button></div><ul class="mob-nav">' + buildNav(false) + '</ul></div>'
+      // mob-menu: strip de stats + buscador + nav
+      '<div class="mob-menu" id="mob-menu">' +
+      '<div class="mob-menu-hd">' +
+      '<div style="display:flex;align-items:center;gap:10px">' +
+      '<div class="logo-icon" style="width:34px;height:34px"><i class="fa-solid fa-map-location-dot" style="color:var(--gold2);font-size:14px"></i></div>' +
+      '<span style="font-family:var(--font-h);font-size:1.15rem;font-weight:700;color:#fff">Lex<span style="color:var(--gold2)">Geo</span>Cat</span>' +
+      '</div>' +
+      '<button class="mob-close" id="mob-close" type="button"><i class="fa-solid fa-xmark"></i></button>' +
+      '</div>' +
+      // stats strip
+      '<div class="mob-gc-strip">' +
+      '<span class="gc-stat-item">' +
+      '<i class="fa-solid fa-eye"></i>' +
+      '<span class="gc-val" id="mob-gc-views">—</span>' +
+      '<span style="font-size:.66rem;color:rgba(255,255,255,.4);margin-left:2px">vistas</span>' +
+      '</span>' +
+      '<span class="gc-sep">|</span>' +
+      '<span class="gc-locs" id="mob-gc-flags"></span>' +
+      '</div>' +
+      // buscador
+      '<button class="mob-srch-wrap" id="mob-srch-btn" type="button" aria-label="Buscar en el blog">' +
+      '<i class="fa-solid fa-magnifying-glass"></i>' +
+      '<span>Buscar artículos...</span>' +
+      '<kbd>⌘K</kbd>' +
+      '</button>' +
+      '<ul class="mob-nav">' + buildNav(false) + '</ul>' +
+      '</div>'
     );
   }
 
