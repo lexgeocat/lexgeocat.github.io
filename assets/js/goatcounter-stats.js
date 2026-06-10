@@ -1,11 +1,13 @@
 (function () {
     'use strict';
 
-    var GC_BASE = 'https://lexgeocat.goatcounter.com';
-    var GC_TOKEN = '12ho0qypjqrv516mxxmvjjuj9b1v35tklso1s9j1dyckggebqn1';
+    var GC_SITE = 'lexgeocat';
+    // TOKEN: regeneralo en https://lexgeocat.goatcounter.com/user/api  
+    // Settings → API tokens → crear nuevo con permisos de lectura
+    var GC_TOKEN = 'REEMPLAZA_CON_TOKEN_NUEVO';
     var REFRESH_MS = 5 * 60 * 1000;
     var FLAG_CDN = 'https://flagcdn.com/16x12/';
-    var FETCH_TIMEOUT_MS = 8000;
+    var TIMEOUT_MS = 10000;
 
     var COUNTRY_ES = {
         BO: 'Bolivia', AR: 'Argentina', CL: 'Chile', PE: 'Perú', CO: 'Colombia',
@@ -31,95 +33,50 @@
         return r.toISOString().replace('.000Z', 'Z');
     }
 
-    function buildUrl(path) {
+    // TOKEN en Authorization header (no en query param) — fix CORS en móvil
+    // GoatCounter con token en query param NO envía headers CORS correctamente
+    function apiFetch(path, cb) {
+        var base = 'https://' + GC_SITE + '.goatcounter.com/api/v0';
         var sep = path.indexOf('?') >= 0 ? '&' : '?';
-        return GC_BASE + '/api/v0' + path + sep +
-            'access_token=' + GC_TOKEN +
-            '&start=' + encodeURIComponent('2024-01-01T00:00:00Z') +
+        var url = base + path + sep +
+            'start=' + encodeURIComponent('2024-01-01T00:00:00Z') +
             '&end=' + encodeURIComponent(toHour(new Date()));
-    }
 
-    // fetch con timeout explícito via AbortController o fallback por race
-    function fetchWithTimeout(url, ms) {
-        if (typeof AbortController !== 'undefined') {
-            var ctrl = new AbortController();
-            var tid = setTimeout(function () { ctrl.abort(); }, ms);
-            return fetch(url, { method: 'GET', cache: 'no-store', signal: ctrl.signal })
-                .then(function (r) { clearTimeout(tid); return r; })
-                .catch(function (e) { clearTimeout(tid); throw e; });
-        }
-        // fallback sin AbortController (Android < 66)
-        var timeout = new Promise(function (_, rej) {
-            setTimeout(function () { rej(new Error('timeout')); }, ms);
-        });
-        return Promise.race([
-            fetch(url, { method: 'GET', cache: 'no-store' }),
-            timeout
-        ]);
-    }
+        var ctrl = typeof AbortController !== 'undefined' ? new AbortController() : null;
+        var tid = setTimeout(function () {
+            if (ctrl) ctrl.abort();
+            cb(null);
+        }, TIMEOUT_MS);
 
-    function apiFetchJSON(path, cb) {
-        var url = buildUrl(path);
-        fetchWithTimeout(url, FETCH_TIMEOUT_MS)
+        var opts = {
+            method: 'GET',
+            // Authorization header en vez de query param = CORS funciona en móvil
+            headers: { 'Authorization': 'Bearer ' + GC_TOKEN },
+            cache: 'no-store'
+        };
+        if (ctrl) opts.signal = ctrl.signal;
+
+        fetch(url, opts)
             .then(function (r) {
-                if (!r.ok) throw new Error('HTTP ' + r.status);
+                clearTimeout(tid);
+                if (!r.ok) {
+                    console.warn('[GC] HTTP ' + r.status + ' en ' + path);
+                    cb(null);
+                    return null;
+                }
                 return r.json();
             })
-            .then(function (data) { cb(null, data); })
-            .catch(function (e) { cb(e, null); });
-    }
-
-    function apiFetchJSONP(path, cb) {
-        var cbName = '_gc_' + Math.random().toString(36).substr(2, 9);
-        var url = buildUrl(path) + '&jsonp=' + cbName;
-        var done = false;
-
-        // timeout para el JSONP — crítico en móvil
-        var tid = setTimeout(function () {
-            if (done) return;
-            done = true;
-            cleanup();
-            cb(new Error('jsonp timeout'), null);
-        }, FETCH_TIMEOUT_MS);
-
-        function cleanup() {
-            clearTimeout(tid);
-            try { delete window[cbName]; } catch (e) { }
-            var s = document.getElementById(cbName);
-            if (s && s.parentNode) s.parentNode.removeChild(s);
-        }
-
-        window[cbName] = function (data) {
-            if (done) return;
-            done = true;
-            cleanup();
-            cb(null, data);
-        };
-
-        var s = document.createElement('script');
-        s.id = cbName;
-        s.src = url;
-        s.onerror = function () {
-            if (done) return;
-            done = true;
-            cleanup();
-            cb(new Error('jsonp script error'), null);
-        };
-        // usar head si body no está listo todavía (caso móvil con DOMContentLoaded tardío)
-        (document.body || document.head || document.documentElement).appendChild(s);
-    }
-
-    // intenta fetch primero, si falla va a JSONP, si falla también llama cb con null
-    function apiFetch(path, cb) {
-        apiFetchJSON(path, function (err, data) {
-            if (!err && data) { cb(data); return; }
-            apiFetchJSONP(path, function (err2, data2) {
-                if (!err2 && data2) { cb(data2); return; }
-                // ambos métodos fallaron — cb con objeto vacío para no romper renders
-                console.warn('[GC] ambos métodos fallaron:', path, err && err.message, err2 && err2.message);
+            .then(function (data) {
+                if (data) cb(data);
+            })
+            .catch(function (e) {
+                clearTimeout(tid);
+                // solo loguear si no es abort intencional
+                if (!ctrl || e.name !== 'AbortError') {
+                    console.warn('[GC] fetch falló:', e.message);
+                }
                 cb(null);
             });
-        });
     }
 
     var _tip = null;
@@ -170,11 +127,11 @@
         });
     }
 
-    // escribe en un elemento esperando a que exista en el DOM (retry por polling)
+    // retry con polling hasta que el elemento exista en el DOM
     function setWhenReady(id, setter, retries) {
         var el = document.getElementById(id);
         if (el) { setter(el); return; }
-        if ((retries || 0) >= 20) return; // máx ~2s de espera
+        if ((retries || 0) >= 30) return;
         setTimeout(function () { setWhenReady(id, setter, (retries || 0) + 1); }, 100);
     }
 
@@ -184,20 +141,14 @@
     }
 
     function renderFlags(html) {
-        function inject(id) {
-            setWhenReady(id, function (el) {
-                el.innerHTML = html;
-                attachTips(el);
-            });
-        }
-        inject('gc-flags-wrap');
-        inject('mob-gc-flags');
+        setWhenReady('gc-flags-wrap', function (el) { el.innerHTML = html; attachTips(el); });
+        setWhenReady('mob-gc-flags', function (el) { el.innerHTML = html; attachTips(el); });
     }
 
     function updateViews() {
         apiFetch('/stats/total', function (data) {
             var n = (data && typeof data.total === 'number') ? data.total : 0;
-            renderViews(n.toLocaleString('es-BO'));
+            renderViews(n > 0 ? n.toLocaleString('es-BO') : '—');
         });
     }
 
@@ -228,7 +179,7 @@
 
             html +=
                 '<a class="gc-flag-item gc-more-stats"' +
-                ' href="https://lexgeocat.goatcounter.com/"' +
+                ' href="https://' + GC_SITE + '.goatcounter.com/"' +
                 ' target="_blank" rel="noopener"' +
                 ' data-tip="Ver más estadísticas">' +
                 '<i class="fa-solid fa-chart-simple"></i>' +
