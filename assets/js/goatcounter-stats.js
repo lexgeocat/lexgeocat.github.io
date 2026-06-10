@@ -38,7 +38,6 @@
     function apiFetch(path, cb) {
         var sep = path.indexOf('?') >= 0 ? '&' : '?';
         var url = GC_BASE + '/api/v0' + path + sep + dateRange();
-
         fetch(url, {
             method: 'GET',
             headers: {
@@ -86,14 +85,27 @@
     document.addEventListener('click', hideTip);
     document.addEventListener('scroll', hideTip, { passive: true });
 
+    // attachTips: bind hover/tap tooltip a cada .gc-flag-item[data-tip] del container
+    function attachTips(container) {
+        if (!container) return;
+        container.querySelectorAll('.gc-flag-item[data-tip]').forEach(function (item) {
+            item.addEventListener('mouseenter', function () { showTip(item); });
+            item.addEventListener('mouseleave', hideTip);
+            // tap en móvil
+            item.addEventListener('click', function (e) {
+                if (item.tagName === 'A') return;
+                e.stopPropagation();
+                item._tip ? hideTip() : showTip(item);
+            });
+        });
+    }
+
     function updateViews() {
         apiFetch('/stats/total', function (data) {
             var n = (data && typeof data.total === 'number') ? data.total : 0;
             var fmt = n.toLocaleString('es-BO');
-            // desktop
             var el = document.getElementById('gc-total-views');
             if (el) el.textContent = fmt;
-            // móvil (dentro del mob-menu)
             var elMob = document.getElementById('mob-gc-views');
             if (elMob) elMob.textContent = fmt;
         });
@@ -132,39 +144,31 @@
                 '<i class="fa-solid fa-chart-simple"></i>' +
                 '</a>';
 
-            // reutilizable para desktop y móvil
-            function attachTips(container) {
-                if (!container) return;
-                container.innerHTML = html;
-                container.querySelectorAll('.gc-flag-item[data-tip]').forEach(function (item) {
-                    item.addEventListener('mouseenter', function () { showTip(item); });
-                    item.addEventListener('mouseleave', hideTip);
-                    item.addEventListener('click', function (e) {
-                        if (item.tagName === 'A') return;
-                        e.stopPropagation();
-                        item._tip ? hideTip() : showTip(item);
-                    });
-                });
-            }
+            var wrap = document.getElementById('gc-flags-wrap');
+            if (wrap) { wrap.innerHTML = html; attachTips(wrap); }
 
-            attachTips(document.getElementById('gc-flags-wrap'));
-            attachTips(document.getElementById('mob-gc-flags'));
+            var wrapMob = document.getElementById('mob-gc-flags');
+            if (wrapMob) { wrapMob.innerHTML = html; attachTips(wrapMob); }
         });
     }
 
+    // buildWidget: solo construye el skeleton del widget desktop e inicia los fetches.
+    // Los fetches actualizan TANTO desktop como móvil independientemente de si
+    // gc-stats-widget existe (móvil lo oculta con CSS pero los IDs mob-* siempre están).
     function buildWidget() {
         var el = document.getElementById('gc-stats-widget');
-        if (!el) return;
+        if (el) {
+            el.innerHTML =
+                '<span class="gc-stat-item gc-views">' +
+                '<i class="fa-solid fa-eye"></i>' +
+                '<span class="gc-val" id="gc-total-views">—</span>' +
+                '<span class="gc-lbl">vistas</span>' +
+                '</span>' +
+                '<span class="gc-sep">|</span>' +
+                '<span class="gc-stat-item gc-locs" id="gc-flags-wrap"></span>';
+        }
 
-        el.innerHTML =
-            '<span class="gc-stat-item gc-views">' +
-            '<i class="fa-solid fa-eye"></i>' +
-            '<span class="gc-val" id="gc-total-views">—</span>' +
-            '<span class="gc-lbl">vistas</span>' +
-            '</span>' +
-            '<span class="gc-sep">|</span>' +
-            '<span class="gc-stat-item gc-locs" id="gc-flags-wrap"></span>';
-
+        // siempre corre los fetches — actualiza desktop si existe y móvil siempre
         updateViews();
         updateFlags();
 
