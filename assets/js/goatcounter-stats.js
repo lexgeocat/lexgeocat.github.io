@@ -1,8 +1,8 @@
 (function () {
     'use strict';
 
-    var GC_BASE = 'https://lexgeocatblog.goatcounter.com';
-    var GC_TOKEN = '12ho0qypjqrv516mxxmvjjuj9b1v35tklso1s9j1dyckggebqn1';
+    var GC_BASE = 'https://lexgeocat.goatcounter.com';
+    var GC_TOKEN = 'vs95tjn43y0tsl1gxep3xfchw8bjt7xu1bwyzqmupsrxgr27';
     var FLAG_CDN = 'https://flagcdn.com/16x12/';
 
     var COUNTRY_ES = {
