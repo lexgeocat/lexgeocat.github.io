@@ -2,17 +2,9 @@
     'use strict';
 
     var GC_BASE = 'https://lexgeocat.goatcounter.com';
+    var GC_TOKEN = '12ho0qypjqrv516mxxmvjjuj9b1v35tklso1s9j1dyckggebqn1';
     var FLAG_CDN = 'https://flagcdn.com/16x12/';
     var REFRESH_MS = 15 * 60 * 1000;
-
-    // países reales de tu audiencia — actualiza este array desde tu dashboard de GoatCounter
-    var KNOWN_COUNTRIES = [
-        { id: 'BO', count: null },
-        { id: 'AR', count: null },
-        { id: 'PE', count: null },
-        { id: 'MX', count: null },
-        { id: 'ES', count: null }
-    ];
 
     var COUNTRY_ES = {
         BO: 'Bolivia', AR: 'Argentina', CL: 'Chile', PE: 'Perú', CO: 'Colombia',
@@ -25,7 +17,7 @@
         CA: 'Canadá', ZA: 'Sudáfrica', NG: 'Nigeria', EG: 'Egipto', SG: 'Singapur'
     };
 
-    var CACHE_KEY = 'gc_data_v2';
+    var CACHE_KEY = 'gc_v3';
     var CACHE_TTL = 12 * 60 * 1000;
 
     function cacheGet() {
@@ -40,16 +32,29 @@
 
     function cacheSet(views, flagsHtml) {
         try {
-            sessionStorage.setItem(CACHE_KEY, JSON.stringify({
-                ts: Date.now(),
-                views: views,
-                flags: flagsHtml
-            }));
+            sessionStorage.setItem(CACHE_KEY, JSON.stringify({ ts: Date.now(), views: views, flags: flagsHtml }));
         } catch (e) { }
     }
 
-    function countryName(code) {
-        return COUNTRY_ES[code] || code;
+    // ── vistas: endpoint público sin auth, funciona en todos los navegadores ──
+    function fetchViewsPublic(cb) {
+        fetch(GC_BASE + '/counter//.json', { method: 'GET', mode: 'cors', credentials: 'omit' })
+            .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+            .then(function (d) { cb(d && typeof d.count === 'number' ? d.count : null); })
+            .catch(function () { cb(null); });
+    }
+
+    // ── locations: solo desktop lo necesita, usa API autenticada ──
+    function fetchLocationsAuth(cb) {
+        var end = encodeURIComponent(new Date().toISOString());
+        fetch(GC_BASE + '/api/v0/stats/locations?limit=6&start=2024-01-01T00%3A00%3A00Z&end=' + end, {
+            method: 'GET',
+            headers: { 'Authorization': 'Bearer ' + GC_TOKEN },
+            credentials: 'omit'
+        })
+            .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+            .then(function (d) { cb((d && Array.isArray(d.stats)) ? d.stats : []); })
+            .catch(function () { cb([]); });
     }
 
     function setViewsText(val) {
@@ -68,81 +73,25 @@
         });
     }
 
-    function buildFlagsHtml(countries) {
+    function buildFlagsHtml(stats) {
         var html = '';
-        countries.slice(0, 5).forEach(function (c) {
-            var code = c.id.toUpperCase();
-            var label = countryName(code) + (c.count ? ': ' + Number(c.count).toLocaleString('es-BO') + ' vistas' : '');
+        var shown = 0;
+        for (var i = 0; i < stats.length && shown < 5; i++) {
+            var code = (stats[i].id || '').toUpperCase().slice(0, 2);
+            if (!/^[A-Z]{2}$/.test(code)) continue;
+            var label = (COUNTRY_ES[code] || code) + ': ' + (stats[i].count || 0).toLocaleString('es-BO') + ' vistas';
             html +=
                 '<span class="gc-flag-item" data-tip="' + label + '">' +
                 '<img class="gc-flag-img" src="' + FLAG_CDN + code.toLowerCase() + '.png"' +
-                ' alt="' + countryName(code) + '" width="16" height="12" loading="lazy">' +
+                ' alt="' + (COUNTRY_ES[code] || code) + '" width="16" height="12" loading="lazy">' +
                 '</span>';
-        });
+            shown++;
+        }
         html +=
             '<a class="gc-flag-item gc-more-stats" href="' + GC_BASE + '/"' +
             ' target="_blank" rel="noopener" data-tip="Ver estadísticas">' +
             '<i class="fa-solid fa-chart-simple"></i></a>';
         return html;
-    }
-
-    // endpoint público — sin auth, sin preflight, funciona en todos los navegadores
-    function fetchPublicViews(cb) {
-        fetch(GC_BASE + '/counter//.json', {
-            method: 'GET',
-            mode: 'cors',
-            credentials: 'omit'
-        })
-            .then(function (r) {
-                if (!r.ok) throw new Error('HTTP ' + r.status);
-                return r.json();
-            })
-            .then(function (data) {
-                cb((data && typeof data.count === 'number') ? data.count : null);
-            })
-            .catch(function () { cb(null); });
-    }
-
-    // intenta fetch autenticado (funciona en desktop); si falla cae al público
-    function fetchViews(cb) {
-        fetch(GC_BASE + '/api/v0/stats/total?start=2024-01-01T00%3A00%3A00Z&end=' + encodeURIComponent(new Date().toISOString()), {
-            method: 'GET',
-            headers: { 'Authorization': 'Bearer 12ho0qypjqrv516mxxmvjjuj9b1v35tklso1s9j1dyckggebqn1' },
-            credentials: 'omit'
-        })
-            .then(function (r) {
-                if (!r.ok) throw new Error('HTTP ' + r.status);
-                return r.json();
-            })
-            .then(function (data) {
-                cb((data && typeof data.total === 'number') ? data.total : null);
-            })
-            .catch(function () {
-                // desktop falló (429 / CORS) — usar público
-                fetchPublicViews(cb);
-            });
-    }
-
-    // intenta fetch autenticado para locations; si falla, devuelve array hardcodeado
-    function fetchLocations(cb) {
-        var end = encodeURIComponent(new Date().toISOString());
-        fetch(GC_BASE + '/api/v0/stats/locations?limit=6&start=2024-01-01T00%3A00%3A00Z&end=' + end, {
-            method: 'GET',
-            headers: { 'Authorization': 'Bearer 12ho0qypjqrv516mxxmvjjuj9b1v35tklso1s9j1dyckggebqn1' },
-            credentials: 'omit'
-        })
-            .then(function (r) {
-                if (!r.ok) throw new Error('HTTP ' + r.status);
-                return r.json();
-            })
-            .then(function (data) {
-                var stats = (data && Array.isArray(data.stats)) ? data.stats : [];
-                cb(stats.length ? stats : KNOWN_COUNTRIES);
-            })
-            .catch(function () {
-                // sin API — usar países hardcodeados para que las banderas aparezcan siempre
-                cb(KNOWN_COUNTRIES);
-            });
     }
 
     var _tip = null;
@@ -165,9 +114,7 @@
         _tip = t;
     }
 
-    function hideTip() {
-        if (_tip) { _tip.remove(); _tip = null; }
-    }
+    function hideTip() { if (_tip) { _tip.remove(); _tip = null; } }
 
     document.addEventListener('click', hideTip);
     document.addEventListener('scroll', hideTip, { passive: true });
@@ -197,6 +144,18 @@
             '<span class="gc-stat-item" id="gc-flags-wrap"></span>';
     }
 
+    // móvil: solo inyecta el número, sin banderas ni separador
+    function buildMobileSkeleton() {
+        var mob = document.getElementById('mob-gc-strip');
+        if (!mob) return;
+        mob.innerHTML =
+            '<span class="gc-stat-item">' +
+            '<i class="fa-solid fa-eye"></i>' +
+            '<span class="gc-val" id="mob-gc-views">—</span>' +
+            '<span style="font-size:.66rem;color:rgba(255,255,255,.4);margin-left:2px">vistas totales</span>' +
+            '</span>';
+    }
+
     function waitForElement(id, cb, maxMs) {
         if (document.getElementById(id)) { cb(); return; }
         var elapsed = 0;
@@ -207,35 +166,60 @@
         }, 60);
     }
 
-    function loadData() {
+    function loadDesktop() {
         var cached = cacheGet();
-        if (cached) {
+
+        // vistas — usar endpoint público (no depende de auth ni CORS problemático)
+        if (cached && cached.views) {
             setViewsText(cached.views);
-            setFlagsHtml(cached.flags);
-            return;
+        } else {
+            fetchViewsPublic(function (n) {
+                var fmt = n !== null ? Number(n).toLocaleString('es-BO') : '—';
+                setViewsText(fmt);
+                // guardar en cache junto con flags cuando lleguen
+                var flagsHtml = (cacheGet() || {}).flags || '';
+                cacheSet(fmt, flagsHtml);
+            });
         }
 
-        // primero banderas (hardcoded inmediato si API falla) — visible sin esperar red
-        fetchLocations(function (countries) {
-            var html = buildFlagsHtml(countries);
-            setFlagsHtml(html);
-            // vistas después — no solapar requests
+        // banderas — solo desktop, API autenticada
+        if (cached && cached.flags) {
+            setFlagsHtml(cached.flags);
+        } else {
             setTimeout(function () {
-                fetchViews(function (n) {
-                    var fmt = (n !== null) ? Number(n).toLocaleString('es-BO') : '—';
-                    setViewsText(fmt);
-                    cacheSet(fmt, html);
+                fetchLocationsAuth(function (stats) {
+                    if (!stats.length) return;
+                    var html = buildFlagsHtml(stats);
+                    setFlagsHtml(html);
+                    var viewsFmt = (cacheGet() || {}).views || '—';
+                    cacheSet(viewsFmt, html);
                 });
             }, 400);
+        }
+    }
+
+    function loadMobile() {
+        // endpoint público — sin auth, sin preflight, funciona en Chrome Android
+        fetchViewsPublic(function (n) {
+            var el = document.getElementById('mob-gc-views');
+            if (el) el.textContent = n !== null ? Number(n).toLocaleString('es-BO') : '—';
         });
     }
 
     function init() {
         buildDesktopSkeleton();
-        waitForElement('mob-gc-views', loadData, 4000);
+
+        waitForElement('mob-gc-strip', function () {
+            buildMobileSkeleton();
+            loadMobile();
+        }, 4000);
+
+        loadDesktop();
+
         setInterval(function () {
             sessionStorage.removeItem(CACHE_KEY);
-            loadData();
+            loadDesktop();
+            loadMobile();
         }, REFRESH_MS);
     }
 
