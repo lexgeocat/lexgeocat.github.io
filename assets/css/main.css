@@ -4362,58 +4362,6 @@ svg.fd-bg-map {
   letter-spacing: .05em
 }
 
-.gc-sep {
-  color: var(--border2);
-  font-size: .7rem;
-  padding: 0 2px
-}
-
-.gc-locs {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  flex-wrap: nowrap
-}
-
-.gc-flag-item {
-  cursor: default;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  transition: transform .18s;
-  border-radius: 2px;
-  overflow: hidden
-}
-
-.gc-flag-item:hover {
-  transform: scale(1.35)
-}
-
-.gc-flag-img {
-  display: block;
-  width: 16px;
-  height: 12px;
-  object-fit: cover;
-  /* sombra sutil para banderas con fondo blanco */
-  box-shadow: 0 0 0 1px rgba(0, 0, 0, .12)
-}
-
-.gc-tooltip {
-  position: fixed;
-  z-index: 99999;
-  background: var(--ink);
-  color: var(--gold2);
-  font-family: var(--font-m);
-  font-size: .7rem;
-  padding: 5px 10px;
-  border-radius: var(--rs);
-  border: 1px solid rgba(200, 150, 12, .3);
-  pointer-events: none;
-  white-space: nowrap;
-  box-shadow: var(--sh2);
-  /* flecha abajo por defecto (tooltip arriba del item) */
-}
-
 /* Ocultar en móvil */
 @media (max-width: 900px) {
   .gc-stats-bar {
