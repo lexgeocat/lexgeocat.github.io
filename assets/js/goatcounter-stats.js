@@ -2,7 +2,7 @@
     'use strict';
 
     var GC_BASE = 'https://lexgeocat.goatcounter.com';
-    var GC_TOKEN = '12ho0qypjqrv516mxxmvjjuj9b1v35tklso1s9j1dyckggebqn1';
+    var GC_TOKEN = '6uv0hwk6ov2t1oaq51dj3jdng1uzl2hxzqmc3a1igzkcjtxt6aq';
     var REFRESH_MS = 5 * 60 * 1000;
     var FLAG_CDN = 'https://flagcdn.com/16x12/';
 
