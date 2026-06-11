@@ -24,20 +24,25 @@
         return COUNTRY_ES[code] || code;
     }
 
+    // Redondea a la hora en punto, formato exacto que requiere la API de GC
     function toHour(d) {
         var r = new Date(d);
         r.setUTCMinutes(0, 0, 0);
         return r.toISOString().replace('.000Z', 'Z');
     }
 
+    // Construye los query params de rango temporal
     function dateRange() {
         return 'start=' + encodeURIComponent('2024-01-01T00:00:00Z') +
             '&end=' + encodeURIComponent(toHour(new Date()));
     }
 
+    // Fetch genérico contra la API REST de GoatCounter con Bearer token
     function apiFetch(path, cb) {
+        // Construye la URL evitando doble '?' cuando path ya trae query params
         var sep = path.indexOf('?') >= 0 ? '&' : '?';
         var url = GC_BASE + '/api/v0' + path + sep + dateRange();
+
         fetch(url, {
             method: 'GET',
             headers: {
@@ -47,13 +52,14 @@
             cache: 'no-store'
         })
             .then(function (r) {
-                if (!r.ok) throw new Error('HTTP ' + r.status);
+                if (!r.ok) throw new Error('HTTP ' + r.status + ' en ' + path);
                 return r.json();
             })
             .then(cb)
             .catch(function (e) { console.warn('[GC]', e.message); });
     }
 
+    // ── Tooltip ───────────────────────────────────────────────────────────────
     var _tip = null;
 
     function showTip(item) {
@@ -85,30 +91,19 @@
     document.addEventListener('click', hideTip);
     document.addEventListener('scroll', hideTip, { passive: true });
 
-    function attachTips(container) {
-        if (!container) return;
-        container.querySelectorAll('.gc-flag-item[data-tip]').forEach(function (item) {
-            item.addEventListener('mouseenter', function () { showTip(item); });
-            item.addEventListener('mouseleave', hideTip);
-            item.addEventListener('click', function (e) {
-                if (item.tagName === 'A') return;
-                e.stopPropagation();
-                item._tip ? hideTip() : showTip(item);
-            });
-        });
-    }
-
+    // ── Total de vistas ───────────────────────────────────────────────────────
+    // /stats/total devuelve { total: N, total_utc: N }
     function updateViews() {
         apiFetch('/stats/total', function (data) {
-            var n = (data && typeof data.total === 'number') ? data.total : 0;
-            var fmt = n.toLocaleString('es-BO');
             var el = document.getElementById('gc-total-views');
-            if (el) el.textContent = fmt;
-            var elMob = document.getElementById('mob-gc-views');
-            if (elMob) elMob.textContent = fmt;
+            if (!el) return;
+            var n = (data && typeof data.total === 'number') ? data.total : 0;
+            el.textContent = n.toLocaleString('es-BO');
         });
     }
 
+    // ── Banderas de países ────────────────────────────────────────────────────
+    // /stats/locations devuelve { stats: [{ id: "BO", name: "Bolivia", count: N }] }
     function updateFlags() {
         apiFetch('/stats/locations?limit=8', function (data) {
             var wrap = document.getElementById('gc-flags-wrap');
@@ -147,18 +142,19 @@
         });
     }
 
+    // ── Init ──────────────────────────────────────────────────────────────────
     function buildWidget() {
         var el = document.getElementById('gc-stats-widget');
-        if (el) {
-            el.innerHTML =
-                '<span class="gc-stat-item gc-views">' +
-                '<i class="fa-solid fa-eye"></i>' +
-                '<span class="gc-val" id="gc-total-views">—</span>' +
-                '<span class="gc-lbl">vistas</span>' +
-                '</span>' +
-                '<span class="gc-sep">|</span>' +
-                '<span class="gc-stat-item gc-locs" id="gc-flags-wrap"></span>';
-        }
+        if (!el) return;
+
+        el.innerHTML =
+            '<span class="gc-stat-item gc-views">' +
+            '<i class="fa-solid fa-eye"></i>' +
+            '<span class="gc-val" id="gc-total-views">—</span>' +
+            '<span class="gc-lbl">vistas</span>' +
+            '</span>' +
+            '<span class="gc-sep">|</span>' +
+            '<span class="gc-stat-item gc-locs" id="gc-flags-wrap"></span>';
 
         updateViews();
         updateFlags();
@@ -175,9 +171,3 @@
         buildWidget();
     }
 })();
-
-
-
-
-
-
