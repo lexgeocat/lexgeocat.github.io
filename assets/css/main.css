@@ -761,10 +761,6 @@ h5 {
   .hdr-socials {
     display: none
   }
-
-  .nav-bar {
-    display: none
-  }
 }
 
 /* ===== HERO BASE ===== */
@@ -4418,97 +4414,9 @@ svg.fd-bg-map {
   /* flecha abajo por defecto (tooltip arriba del item) */
 }
 
-
-
 /* Ocultar en móvil */
 @media (max-width: 900px) {
   .gc-stats-bar {
     display: none
   }
-}
-
-/* strip de estadísticas dentro del mob-menu */
-/*.mob-gc-strip {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 10px 18px;
-  background: rgba(255, 255, 255, .04);
-  border: 1px solid rgba(255, 255, 255, .08);
-  border-radius: var(--r);
-  margin: 0 0 16px;
-}
-
-.mob-gc-strip .gc-stat-item {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  font-family: var(--font-m);
-  font-size: .72rem;
-  color: rgba(255, 255, 255, .6);
-}
-
-.mob-gc-strip .gc-stat-item i {
-  color: var(--gold);
-  font-size: 11px;
-}
-
-.mob-gc-strip .gc-val {
-  font-weight: 600;
-  color: rgba(255, 255, 255, .85);
-}
-
-.mob-gc-strip .gc-sep {
-  color: rgba(255, 255, 255, .2);
-  font-size: .7rem;
-}
-
-.mob-gc-strip .gc-locs {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-}
-
-/* buscador dentro del mob-menu */
-/*.mob-srch-wrap {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  background: rgba(255, 255, 255, .06);
-  border: 1px solid rgba(255, 255, 255, .12);
-  border-radius: 50px;
-  padding: 11px 18px;
-  margin: 0 0 8px;
-  cursor: pointer;
-  transition: border-color .2s;
-  width: 100%;
-}
-
-.mob-srch-wrap:hover,
-.mob-srch-wrap:focus {
-  border-color: var(--gold);
-  outline: none;
-}
-
-.mob-srch-wrap i {
-  color: var(--gold);
-  font-size: 13px;
-  flex-shrink: 0;
-}
-
-.mob-srch-wrap span {
-  font-family: var(--font-b);
-  font-size: .9rem;
-  color: rgba(255, 255, 255, .5);
-  flex: 1;
-}
-
-.mob-srch-wrap kbd {
-  font-size: .65rem;
-  color: rgba(255, 255, 255, .35);
-  background: rgba(255, 255, 255, .06);
-  border: 1px solid rgba(255, 255, 255, .1);
-  border-radius: 4px;
-  padding: 2px 6px;
-  font-family: var(--font-m);
 }

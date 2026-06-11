@@ -90,10 +90,7 @@
       '<button aria-label="Menú" class="icon-btn ham" id="ham" type="button"><i class="fa-solid fa-bars"></i></button>' +
       '</div></div></div>' +
       '<nav aria-label="Navegación principal" class="nav-bar" id="nav-bar" role="navigation"><div class="nav-inner">' + buildNav(true) + '</div></nav>' +
-      '<div class="mob-menu" id="mob-menu"><div class="mob-menu-hd"><div style="display:flex;align-items:center;gap:10px"><div class="logo-icon" style="width:34px;height:34px"><i class="fa-solid fa-map-location-dot" style="color:var(--gold2);font-size:14px"></i></div><span style="font-family:var(--font-h);font-size:1.15rem;font-weight:700;color:#fff">Lex<span style="color:var(--gold2)">Geo</span>Cat</span></div><button class="mob-close" id="mob-close" type="button"><i class="fa-solid fa-xmark"></i></button></div>' +
-      '<div class="mob-gc-strip"><span class="gc-stat-item"><i class="fa-solid fa-eye"></i><span class="gc-val" id="mob-gc-views">—</span><span style="font-size:.66rem;color:rgba(255,255,255,.4);margin-left:2px">vistas</span></span><span class="gc-sep">|</span><span class="gc-locs" id="mob-gc-flags"></span></div>' +
-      '<button class="mob-srch-wrap" id="mob-srch-btn" type="button" aria-label="Buscar en el blog"><i class="fa-solid fa-magnifying-glass"></i><span>Buscar artículos...</span><kbd>⌘K</kbd></button>' +
-      '<ul class="mob-nav">' + buildNav(false) + '</ul></div>'
+      '<div class="mob-menu" id="mob-menu"><div class="mob-menu-hd"><div style="display:flex;align-items:center;gap:10px"><div class="logo-icon" style="width:34px;height:34px"><i class="fa-solid fa-map-location-dot" style="color:var(--gold2);font-size:14px"></i></div><span style="font-family:var(--font-h);font-size:1.15rem;font-weight:700;color:#fff">Lex<span style="color:var(--gold2)">Geo</span>Cat</span></div><button class="mob-close" id="mob-close" type="button"><i class="fa-solid fa-xmark"></i></button></div><ul class="mob-nav">' + buildNav(false) + '</ul></div>'
     );
   }
 
