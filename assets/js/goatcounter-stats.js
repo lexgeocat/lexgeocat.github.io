@@ -110,23 +110,21 @@
     }
 
     function updateFlags() {
-        // sin limit — que GoatCounter mande lo que quiera
-        apiFetch('/stats/locations', function (data) {
+        apiFetch('/stats/locations?limit=8', function (data) {
+            var wrap = document.getElementById('gc-flags-wrap');
+            if (!wrap) return;
             var stats = (data && Array.isArray(data.stats)) ? data.stats : [];
             if (!stats.length) return;
 
             var html = '';
-
-            for (var i = 0; i < stats.length; i++) {
-                var loc = stats[i];
-                var raw = (typeof loc.id === 'string') ? loc.id.toUpperCase().trim() : '';
+            stats.forEach(function (loc) {
+                // id es el código ISO-2 del país ("BO", "AR"...)
+                // Si viniera con región tipo "BO-L", slice(0,2) da "BO"
+                var raw = (loc.id || '').toUpperCase();
                 var code = raw.slice(0, 2);
-                // solo entradas con código de país de 2 letras
-                if (code.length !== 2 || !/^[A-Z]{2}$/.test(code)) continue;
-
-                var views = (typeof loc.count === 'number' ? loc.count : 0).toLocaleString('es-BO');
+                if (!/^[A-Z]{2}$/.test(code)) return;
+                var views = (loc.count || 0).toLocaleString('es-BO');
                 var label = countryName(code) + ': ' + views + ' vistas';
-
                 html +=
                     '<span class="gc-flag-item" data-tip="' + label + '">' +
                     '<img class="gc-flag-img"' +
@@ -134,21 +132,18 @@
                     ' alt="' + countryName(code) + '"' +
                     ' width="16" height="12" loading="lazy">' +
                     '</span>';
-            }
+            });
 
-            html +=
-                '<a class="gc-flag-item gc-more-stats"' +
-                ' href="https://lexgeocat.goatcounter.com/"' +
-                ' target="_blank" rel="noopener"' +
-                ' data-tip="Ver más estadísticas">' +
-                '<i class="fa-solid fa-chart-simple"></i>' +
-                '</a>';
-
-            var wrap = document.getElementById('gc-flags-wrap');
-            if (wrap) { wrap.innerHTML = html; attachTips(wrap); }
-
-            var wrapMob = document.getElementById('mob-gc-flags');
-            if (wrapMob) { wrapMob.innerHTML = html; attachTips(wrapMob); }
+            if (!html) return;
+            wrap.innerHTML = html;
+            wrap.querySelectorAll('.gc-flag-item').forEach(function (item) {
+                item.addEventListener('mouseenter', function () { showTip(item); });
+                item.addEventListener('mouseleave', hideTip);
+                item.addEventListener('click', function (e) {
+                    e.stopPropagation();
+                    item._tip ? hideTip() : showTip(item);
+                });
+            });
         });
     }
 
@@ -180,3 +175,9 @@
         buildWidget();
     }
 })();
+
+
+
+
+
+
