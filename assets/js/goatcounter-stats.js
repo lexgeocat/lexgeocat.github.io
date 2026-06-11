@@ -51,7 +51,7 @@
                 return r.json();
             })
             .then(cb)
-            .catch(function (e) { console.warn('[GC flags]', e.message); });
+            .catch(function (e) { console.warn('[GC]', e.message); });
     }
 
     var _tip = null;
@@ -109,36 +109,22 @@
         });
     }
 
-    function renderFlags(html, wrap, wrapMob) {
-        if (wrap) { wrap.innerHTML = html; attachTips(wrap); }
-        if (wrapMob) { wrapMob.innerHTML = html; attachTips(wrapMob); }
-    }
-
     function updateFlags() {
-        var wrap = document.getElementById('gc-flags-wrap');
-        var wrapMob = document.getElementById('mob-gc-flags');
-
-        // pide más entradas para tener margen si algunas no son países válidos
-        apiFetch('/stats/locations?limit=20', function (data) {
+        // sin limit — que GoatCounter mande lo que quiera
+        apiFetch('/stats/locations', function (data) {
             var stats = (data && Array.isArray(data.stats)) ? data.stats : [];
+            if (!stats.length) return;
 
             var html = '';
-            var shown = 0;
 
             for (var i = 0; i < stats.length; i++) {
-                if (shown >= 5) break;
-
                 var loc = stats[i];
-                // id puede ser "US", "US-CA", "", "(unknown)", etc.
                 var raw = (typeof loc.id === 'string') ? loc.id.toUpperCase().trim() : '';
-                // tomar solo los 2 primeros chars y verificar que sean letras
                 var code = raw.slice(0, 2);
+                // solo entradas con código de país de 2 letras
                 if (code.length !== 2 || !/^[A-Z]{2}$/.test(code)) continue;
-                // descartar entradas sin conteo real
-                var count = typeof loc.count === 'number' ? loc.count : 0;
-                if (count <= 0) continue;
 
-                var views = count.toLocaleString('es-BO');
+                var views = (typeof loc.count === 'number' ? loc.count : 0).toLocaleString('es-BO');
                 var label = countryName(code) + ': ' + views + ' vistas';
 
                 html +=
@@ -148,10 +134,8 @@
                     ' alt="' + countryName(code) + '"' +
                     ' width="16" height="12" loading="lazy">' +
                     '</span>';
-                shown++;
             }
 
-            // botón "ver más" siempre al final
             html +=
                 '<a class="gc-flag-item gc-more-stats"' +
                 ' href="https://lexgeocat.goatcounter.com/"' +
@@ -160,7 +144,11 @@
                 '<i class="fa-solid fa-chart-simple"></i>' +
                 '</a>';
 
-            renderFlags(html, wrap, wrapMob);
+            var wrap = document.getElementById('gc-flags-wrap');
+            if (wrap) { wrap.innerHTML = html; attachTips(wrap); }
+
+            var wrapMob = document.getElementById('mob-gc-flags');
+            if (wrapMob) { wrapMob.innerHTML = html; attachTips(wrapMob); }
         });
     }
 
