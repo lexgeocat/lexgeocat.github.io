@@ -47,11 +47,11 @@
             cache: 'no-store'
         })
             .then(function (r) {
-                if (!r.ok) throw new Error('HTTP ' + r.status + ' en ' + path);
+                if (!r.ok) throw new Error('HTTP ' + r.status);
                 return r.json();
             })
             .then(cb)
-            .catch(function (e) { console.warn('[GC]', e.message); });
+            .catch(function (e) { console.warn('[GC flags]', e.message); });
     }
 
     var _tip = null;
@@ -85,13 +85,11 @@
     document.addEventListener('click', hideTip);
     document.addEventListener('scroll', hideTip, { passive: true });
 
-    // attachTips: bind hover/tap tooltip a cada .gc-flag-item[data-tip] del container
     function attachTips(container) {
         if (!container) return;
         container.querySelectorAll('.gc-flag-item[data-tip]').forEach(function (item) {
             item.addEventListener('mouseenter', function () { showTip(item); });
             item.addEventListener('mouseleave', hideTip);
-            // tap en móvil
             item.addEventListener('click', function (e) {
                 if (item.tagName === 'A') return;
                 e.stopPropagation();
@@ -111,21 +109,38 @@
         });
     }
 
+    function renderFlags(html, wrap, wrapMob) {
+        if (wrap) { wrap.innerHTML = html; attachTips(wrap); }
+        if (wrapMob) { wrapMob.innerHTML = html; attachTips(wrapMob); }
+    }
+
     function updateFlags() {
-        apiFetch('/stats/locations?limit=6', function (data) {
+        var wrap = document.getElementById('gc-flags-wrap');
+        var wrapMob = document.getElementById('mob-gc-flags');
+
+        // pide más entradas para tener margen si algunas no son países válidos
+        apiFetch('/stats/locations?limit=20', function (data) {
             var stats = (data && Array.isArray(data.stats)) ? data.stats : [];
-            if (!stats.length) return;
 
             var html = '';
             var shown = 0;
 
-            for (var i = 0; i < stats.length && shown < 5; i++) {
+            for (var i = 0; i < stats.length; i++) {
+                if (shown >= 5) break;
+
                 var loc = stats[i];
-                var raw = (loc.id || '').toUpperCase();
+                // id puede ser "US", "US-CA", "", "(unknown)", etc.
+                var raw = (typeof loc.id === 'string') ? loc.id.toUpperCase().trim() : '';
+                // tomar solo los 2 primeros chars y verificar que sean letras
                 var code = raw.slice(0, 2);
-                if (!/^[A-Z]{2}$/.test(code)) continue;
-                var views = (loc.count || 0).toLocaleString('es-BO');
+                if (code.length !== 2 || !/^[A-Z]{2}$/.test(code)) continue;
+                // descartar entradas sin conteo real
+                var count = typeof loc.count === 'number' ? loc.count : 0;
+                if (count <= 0) continue;
+
+                var views = count.toLocaleString('es-BO');
                 var label = countryName(code) + ': ' + views + ' vistas';
+
                 html +=
                     '<span class="gc-flag-item" data-tip="' + label + '">' +
                     '<img class="gc-flag-img"' +
@@ -136,6 +151,7 @@
                 shown++;
             }
 
+            // botón "ver más" siempre al final
             html +=
                 '<a class="gc-flag-item gc-more-stats"' +
                 ' href="https://lexgeocat.goatcounter.com/"' +
@@ -144,17 +160,10 @@
                 '<i class="fa-solid fa-chart-simple"></i>' +
                 '</a>';
 
-            var wrap = document.getElementById('gc-flags-wrap');
-            if (wrap) { wrap.innerHTML = html; attachTips(wrap); }
-
-            var wrapMob = document.getElementById('mob-gc-flags');
-            if (wrapMob) { wrapMob.innerHTML = html; attachTips(wrapMob); }
+            renderFlags(html, wrap, wrapMob);
         });
     }
 
-    // buildWidget: solo construye el skeleton del widget desktop e inicia los fetches.
-    // Los fetches actualizan TANTO desktop como móvil independientemente de si
-    // gc-stats-widget existe (móvil lo oculta con CSS pero los IDs mob-* siempre están).
     function buildWidget() {
         var el = document.getElementById('gc-stats-widget');
         if (el) {
@@ -168,7 +177,6 @@
                 '<span class="gc-stat-item gc-locs" id="gc-flags-wrap"></span>';
         }
 
-        // siempre corre los fetches — actualiza desktop si existe y móvil siempre
         updateViews();
         updateFlags();
 
