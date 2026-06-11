@@ -18,43 +18,38 @@
         PL: 'Polonia', CZ: 'Rep. Checa', AT: 'Austria', BE: 'Bélgica',
         TR: 'Turquía', IL: 'Israel', UA: 'Ucrania', TH: 'Tailandia', ID: 'Indonesia'
     };
+
     function countryName(code) {
         return COUNTRY_ES[code] || code;
     }
 
-    function fmtDate(d) {
-        return d.toISOString().replace(/\.\d{3}Z$/, 'Z');
-    }
-
-    function buildRange() {
+    function dateRange() {
         var end = new Date();
         end.setSeconds(0, 0);
-        return 'start=2024-01-01T00%3A00%3A00Z&end=' + encodeURIComponent(fmtDate(end));
+        return 'start=2024-01-01T00%3A00%3A00Z&end=' + encodeURIComponent(end.toISOString().replace(/\.\d{3}Z$/, 'Z'));
     }
 
     function apiFetch(path, cb) {
         var sep = path.indexOf('?') >= 0 ? '&' : '?';
-        var url = GC_BASE + '/api/v0' + path + sep + buildRange();
+        var url = GC_BASE + '/api/v0' + path + sep + dateRange();
 
         fetch(url, {
+            method: 'GET',
             headers: {
                 'Authorization': 'Bearer ' + GC_TOKEN,
                 'Content-Type': 'application/json'
-            }
+            },
+            cache: 'no-store'
         })
             .then(function (r) {
-                if (!r.ok) {
-                    console.warn('[GC] HTTP ' + r.status + ' ' + path);
-                    return;
-                }
-                return r.json().then(cb);
+                if (!r.ok) throw new Error('HTTP ' + r.status + ' en ' + path);
+                return r.json();
             })
-            .catch(function (e) {
-                console.warn('[GC] ' + e.message);
-            });
+            .then(cb)
+            .catch(function (e) { console.warn('[GC]', e.message); });
     }
 
-    // ── Tooltip ───────────────────────────────────────────────────────────────
+    // ── Tooltip ──
     var _tip = null;
 
     function showTip(item) {
@@ -76,7 +71,6 @@
         t.style.top = top + 'px';
         t.style.visibility = 'visible';
         _tip = t;
-        item._tip = t;
     }
 
     function hideTip() {
@@ -86,6 +80,7 @@
     document.addEventListener('click', hideTip);
     document.addEventListener('scroll', hideTip, { passive: true });
 
+    // ── Vistas totales ──
     function updateViews() {
         apiFetch('/stats/total', function (data) {
             var el = document.getElementById('gc-total-views');
@@ -95,28 +90,7 @@
         });
     }
 
-    function apiFetch(path, cb) {
-        // Construye la URL evitando doble '?' cuando path ya trae query params
-        var sep = path.indexOf('?') >= 0 ? '&' : '?';
-        var url = GC_BASE + '/api/v0' + path + sep + dateRange();
-
-        fetch(url, {
-            method: 'GET',
-            headers: {
-                'Authorization': 'Bearer ' + GC_TOKEN,
-                'Content-Type': 'application/json'
-            },
-            cache: 'no-store'
-        })
-            .then(function (r) {
-                if (!r.ok) throw new Error('HTTP ' + r.status + ' en ' + path);
-                return r.json();
-            })
-            .then(cb)
-            .catch(function (e) { console.warn('[GC]', e.message); });
-    }
-
-    // ── Banderas de países ────────────────────────────────────────────────────
+    // ── Banderas ──
     function updateFlags() {
         apiFetch('/stats/locations', function (data) {
             var wrap = document.getElementById('gc-flags-wrap');
@@ -125,9 +99,10 @@
             if (!stats.length) return;
 
             var html = '';
-
+            var shown = 0;
 
             for (var i = 0; i < stats.length; i++) {
+                if (shown >= 6) break;
                 var loc = stats[i];
                 var raw = (loc.id || '').toUpperCase();
                 var code = raw.slice(0, 2);
@@ -146,7 +121,7 @@
 
             html +=
                 '<a class="gc-flag-item gc-more-stats"' +
-                ' href="https://lexgeocatblog.goatcounter.com/"' +
+                ' href="https://lexgeocat.goatcounter.com/"' +
                 ' target="_blank" rel="noopener"' +
                 ' data-tip="Ver más estadísticas">' +
                 '<i class="fa-solid fa-chart-simple"></i>' +
@@ -160,13 +135,13 @@
                 item.addEventListener('click', function (e) {
                     if (item.tagName === 'A') return;
                     e.stopPropagation();
-                    item._tip ? hideTip() : showTip(item);
+                    _tip ? hideTip() : showTip(item);
                 });
             });
         });
     }
 
-    // ── Init ──────────────────────────────────────────────────────────────────
+    // ── Init ──
     function buildWidget() {
         var el = document.getElementById('gc-stats-widget');
         if (!el) return;
@@ -182,11 +157,6 @@
 
         updateViews();
         updateFlags();
-
-        setInterval(function () {
-            updateViews();
-            updateFlags();
-        });
     }
 
     if (document.readyState === 'loading') {
@@ -195,23 +165,3 @@
         buildWidget();
     }
 })();
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
