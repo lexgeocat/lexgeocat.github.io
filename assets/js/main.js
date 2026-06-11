@@ -3,15 +3,7 @@
 
   var CFG = window.LGC_CONFIG || {};
 
-  /* ═══════════════════════════════════════════════════════════════
-     PRELOADER — siempre se oculta, sin depender del evento `load`
-     ─────────────────────────────────────────────────────────────
-     El `load` event puede tardar 20+ segundos si Google Fonts o
-     FontAwesome fallan (firewall, DNS lento, etc). El loader se
-     queda visible todo ese tiempo, dando sensación de página colgada.
-     FIX: ocultar el loader de forma AGRESIVA con rAF + timeout duro
-     de 1.2s, sin esperar a recursos externos.
-  ═══════════════════════════════════════════════════════════════ */
+  /* PRELOADER */
   function hideLoader() {
     var l = document.getElementById('ld');
     if (l && !l.classList.contains('hide')) l.classList.add('hide');
@@ -20,16 +12,13 @@
     var l = document.getElementById('ld');
     if (l) l.classList.remove('hide');
   }
-  /* Ocultar lo antes posible — siguiente frame, no esperamos al load */
   requestAnimationFrame(function () {
     requestAnimationFrame(function () { hideLoader(); });
   });
-  /* Red de seguridad: nunca más de 1.2s visibles */
   setTimeout(hideLoader, 1200);
-  /* Si por alguna razón queremos mostrarlo de nuevo (raro), exponer */
   window.__lgcLoader = { show: showLoader, hide: hideLoader };
 
-  /* ─── HERO PARALLAX ─── */
+  /* HERO PARALLAX */
   document.addEventListener('DOMContentLoaded', function () {
     var bgMap = document.querySelector('.hero-bg-map');
     if (!bgMap) return;
@@ -40,7 +29,7 @@
     });
   });
 
-  /* ─── THEME ─── */
+  /* THEME */
   var THEME_KEY = 'lgc-theme';
   function applyTheme(t) {
     document.documentElement.setAttribute('data-theme', t === 'dark' ? 'dark' : 'light');
@@ -60,15 +49,13 @@
     });
   });
 
-  /* ─── HEADER SCROLL ─── */
+  /* HEADER SCROLL */
   var lastY = 0;
   function onScroll() {
     var y = window.scrollY;
     var hdr = document.getElementById('hdr');
-    var nav = document.getElementById('nav-bar');
     var top = document.getElementById('top');
     if (hdr) { if (y > 30) hdr.classList.add('scrolled'); else hdr.classList.remove('scrolled'); }
-    if (nav) { if (y > lastY && y > 200) nav.classList.add('hidden'); else nav.classList.remove('hidden'); }
     if (top) { if (y > 600) top.classList.add('show'); else top.classList.remove('show'); }
     lastY = y;
   }
@@ -78,19 +65,38 @@
     if (t) t.addEventListener('click', function () { window.scrollTo({ top: 0, behavior: 'smooth' }); });
   });
 
-  /* ─── MOBILE MENU ─── */
+  /* MOBILE MENU */
   document.addEventListener('DOMContentLoaded', function () {
     var ham = document.getElementById('ham');
     var menu = document.getElementById('mob-menu');
     var close = document.getElementById('mob-close');
     if (!ham || !menu) return;
+
     function openMenu() { menu.classList.add('open'); document.body.style.overflow = 'hidden'; }
     function closeMenu() { menu.classList.remove('open'); document.body.style.overflow = ''; }
+
     ham.addEventListener('click', openMenu);
     if (close) close.addEventListener('click', closeMenu);
     menu.addEventListener('click', function (e) { if (e.target === menu) closeMenu(); });
     menu.querySelectorAll('a').forEach(function (a) { a.addEventListener('click', closeMenu); });
 
+    /* Buscador móvil */
+    var mobInput = document.getElementById('mob-srch-input');
+    var mobBtn = document.getElementById('mob-srch-btn');
+    if (mobInput && mobBtn) {
+      function doMobSearch() {
+        var q = mobInput.value.trim();
+        if (!q) return;
+        window.open(CFG.bloggerSearch + encodeURIComponent(q), '_blank', 'noopener');
+        closeMenu();
+      }
+      mobBtn.addEventListener('click', doMobSearch);
+      mobInput.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter') doMobSearch();
+      });
+    }
+
+    /* Submenús móvil */
     menu.querySelectorAll('.mob-dropdown').forEach(function (drop) {
       var btn = drop.querySelector('.mob-dropbtn');
       if (!btn) return;
@@ -105,7 +111,7 @@
     });
   });
 
-  /* ─── SCROLL REVEAL ─── */
+  /* SCROLL REVEAL */
   var rIO;
   if (typeof IntersectionObserver !== 'undefined') {
     rIO = new IntersectionObserver(function (entries) {
@@ -117,20 +123,15 @@
         }
       });
     }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
-    var revealEls = document.querySelectorAll('.reveal');
-    /* Diferir la observacion al primer momento idle para no bloquear
-       el render inicial del header */
+
     var observeReveals = function () {
-      revealEls.forEach(function (el) { rIO.observe(el); });
+      document.querySelectorAll('.reveal').forEach(function (el) { rIO.observe(el); });
     };
-    if (window.requestIdleCallback) {
-      requestIdleCallback(observeReveals, { timeout: 1000 });
-    } else {
-      setTimeout(observeReveals, 100);
-    }
+    if (window.requestIdleCallback) requestIdleCallback(observeReveals, { timeout: 1000 });
+    else setTimeout(observeReveals, 100);
   }
 
-  /* ─── COUNTER ANIMATION (hero stats) ─── */
+  /* COUNTER ANIMATION */
   if (typeof IntersectionObserver !== 'undefined') {
     var cIO = new IntersectionObserver(function (entries) {
       entries.forEach(function (entry) {
@@ -153,17 +154,15 @@
         cIO.unobserve(el);
       });
     }, { threshold: 0.5 });
+
     var observeCounters = function () {
       document.querySelectorAll('.hstat-n[data-count]').forEach(function (el) { cIO.observe(el); });
     };
-    if (window.requestIdleCallback) {
-      requestIdleCallback(observeCounters, { timeout: 1000 });
-    } else {
-      setTimeout(observeCounters, 100);
-    }
+    if (window.requestIdleCallback) requestIdleCallback(observeCounters, { timeout: 1000 });
+    else setTimeout(observeCounters, 100);
   }
 
-  /* ─── STATS DESDE BLOGGER FEED ─── */
+  /* STATS DESDE BLOGGER FEED */
   (function () {
     if (!CFG.bloggerFeed) return;
     var feedBase = CFG.bloggerFeed;
@@ -216,7 +215,7 @@
     });
   })();
 
-  /* ─── LOAD FEED GRID ─── */
+  /* LOAD FEED GRID */
   function loadFeedGrid(label, containerId, badgeCls, limit) {
     if (!CFG.bloggerFeed) return;
     var box = document.getElementById(containerId);
@@ -278,7 +277,7 @@
     if (lbl) loadFeedGrid(lbl, 'topic-posts-grid', 'def', 6);
   });
 
-  /* ─── SEARCH MODAL ─── */
+  /* SEARCH MODAL */
   document.addEventListener('DOMContentLoaded', function () {
     var overlay = document.getElementById('srch-overlay');
     var input = document.getElementById('srch-modal-input');
@@ -307,7 +306,7 @@
     });
   });
 
-  /* ─── CONTACT FORM ─── */
+  /* CONTACT FORM */
   document.addEventListener('DOMContentLoaded', function () {
     var form = document.getElementById('contact-form');
     if (!form) return;
