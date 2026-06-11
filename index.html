@@ -208,7 +208,7 @@
       <div class="hero-bg-glow1"></div>
       <div class="hero-bg-glow2"></div>
 
-      <!-- ══ PLANO TOPOGRÁFICO HUD — fondo hero ══ -->
+      <!-- SVG atmosférico — visible en desktop Y mobile como fondo -->
       <svg class="hero-bg-map" viewBox="0 0 1400 900" preserveAspectRatio="xMidYMid slice"
         xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
         <defs>
@@ -229,56 +229,71 @@
         </defs>
         <g mask="url(#hero-mask)" class="hero-contour-group">
           <circle cx="425" cy="300" r="32" fill="none" stroke="#C8960C" stroke-width="0.7" class="lpaz-pulse-outer" />
-          <!-- Anillo de pulso medio -->
           <circle cx="425" cy="300" r="20" fill="none" stroke="#C8960C" stroke-width="1" class="lpaz-pulse-mid" />
-          <!-- Anillo fijo interior -->
           <circle cx="425" cy="300" r="10" fill="none" stroke="#C8960C" stroke-width="1.2" />
-          <!-- Punto central -->
           <circle cx="425" cy="300" r="4.5" fill="#C8960C" filter="url(#loc-glow)" class="lpaz-dot" />
           <circle cx="425" cy="300" r="2" fill="#fff" />
-
-          <!-- Línea callout diagonal al cuadro -->
           <line x1="425" y1="300" x2="740" y2="390" stroke="#C8960C" stroke-width="0.9" stroke-dasharray="4,3"
             opacity="0.7" />
-
-          <!-- Cuadro de coordenadas HUD -->
           <rect x="738" y="340" width="150" height="72" rx="3" fill="rgba(13,27,42,0.92)" stroke="#C8960C"
             stroke-width="0.9" />
           <line x1="738" y1="357" x2="938" y2="357" stroke="#C8960C" stroke-width="0.4" opacity="0.55" />
           <text x="744" y="353" font-family="DM Mono,monospace" font-size="8" fill="#C8960C" opacity="0.65"
             letter-spacing="0.08em">PUNTO DE UBICACIÓN</text>
           <text x="744" y="372" font-family="DM Mono,monospace" font-size="11" fill="#C8960C" font-weight="bold"
-            letter-spacing="0.04em">Lat: 17°02'20.20"S</text>
+            letter-spacing="0.04em">Lat: 17°02\'20.20"S</text>
           <text x="744" y="388" font-family="DM Mono,monospace" font-size="11" fill="#C8960C"
-            letter-spacing="0.04em">Long: 68°17'45.88"W</text>
+            letter-spacing="0.04em">Long: 68°17\'45.88"W</text>
           <text x="744" y="404" font-family="DM Mono,monospace" font-size="7.5" fill="#C8960C" opacity="0.5"
             letter-spacing="0.05em">alt. 3827m · WGS84 · UTM 19S</text>
-
-          <!-- ════ LÍNEAS CRUCE / REFERENCIAS HUD ════ -->
           <line x1="700" y1="0" x2="700" y2="900" stroke="#C8960C" stroke-width="0.4" opacity="0.08"
             stroke-dasharray="8,6" />
           <line x1="0" y1="450" x2="1400" y2="450" stroke="#C8960C" stroke-width="0.4" opacity="0.08"
             stroke-dasharray="8,6" />
-
         </g>
       </svg>
     </div>
 
-    <div class="c">
+    <div class="c hero-container">
       <div class="hero-grid">
 
-        <!-- ══ HERO CONTENT (izquierda — sin cambios) ══ -->
+        <!-- CONTENIDO -->
         <div class="hero-content">
-          <h1 class="hero-title">Lex<span>Geo</span>Cat<span class="line-sub"
-              style="display:block;margin-top:10px;font-size:2rem;font-weight:400;font-style:italic;">Derecho, Catastro
-              y Ordenamiento Territorial, Geografía y Geomática</span></h1>
-          <p class="hero-desc">Plataforma especializada en consultoría, recursos y formación técnica en materia legal,
-            catastral y sistemas de información geográfica adaptados al contexto boliviano.</p>
-          <div class="hero-btns">
-            <a class="btn btn-gold" href="#servicios-detalle"><i class="fa-solid fa-briefcase"></i>Ver Servicios</a>
-            <a class="btn btn-ghost" href="https://lexgeocat.blogspot.com/"><i
-                class="fa-solid fa-newspaper"></i>Explorar Blog</a>
+
+          <div class="hero-eyebrow">
+            <span class="hero-eyebrow-dot"></span>
+            <span class="hero-eyebrow-label">Viacha · La Paz · Bolivia</span>
+            <span class="hero-eyebrow-sep">—</span>
+            <span class="hero-eyebrow-rnt">R.N.T. Nº 970285</span>
           </div>
+
+          <h1 class="hero-title">
+            <span class="hero-title-lex">Lex</span><span class="hero-title-geo">Geo</span><span
+              class="hero-title-cat">Cat</span>
+            <span class="hero-title-sub">Derecho · Catastro · Geomática</span>
+          </h1>
+
+          <p class="hero-desc">
+            Plataforma especializada en consultoría, recursos y formación técnica en materia legal,
+            catastral y sistemas de información geográfica adaptados al contexto boliviano.
+          </p>
+
+          <div class="hero-pills">
+            <span class="hero-pill"><i class="fa-solid fa-scale-balanced"></i>Derecho Civil</span>
+            <span class="hero-pill"><i class="fa-solid fa-map-location-dot"></i>Catastro</span>
+            <span class="hero-pill"><i class="fa-solid fa-layer-group"></i>SIG / GIS</span>
+            <span class="hero-pill"><i class="fa-solid fa-compass-drafting"></i>Ord. Territorial</span>
+          </div>
+
+          <div class="hero-btns">
+            <a class="btn btn-gold" href="#servicios-detalle">
+              <i class="fa-solid fa-briefcase"></i>Ver Servicios
+            </a>
+            <a class="btn btn-ghost" href="https://lexgeocat.blogspot.com/">
+              <i class="fa-solid fa-newspaper"></i>Explorar Blog
+            </a>
+          </div>
+
           <div class="hero-stats">
             <div class="hstat">
               <div class="hstat-n" id="stat-articulos" data-count="0">0</div>
@@ -299,7 +314,7 @@
           </div>
         </div>
 
-        <!-- ══ HERO VISUAL (derecha — rediseñado) ══ -->
+        <!-- VISUAL DERECHA -->
         <div class="hero-visual">
           <div class="floating-dashboard">
             <svg class="fd-bg-map" viewBox="0 0 420 420" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -311,7 +326,6 @@
                 <mask id="fd-mask">
                   <rect width="420" height="420" fill="url(#fd-fade)" />
                 </mask>
-                <!-- Filtro glow sutil para el marcador La Paz -->
                 <filter id="lpaz-glow" x="-80%" y="-80%" width="260%" height="260%">
                   <feGaussianBlur stdDeviation="4" result="blur" />
                   <feMerge>
@@ -319,7 +333,6 @@
                     <feMergeNode in="SourceGraphic" />
                   </feMerge>
                 </filter>
-                <!-- Filtro glow para el contorno Bolivia -->
                 <filter id="bol-glow" x="-10%" y="-10%" width="120%" height="120%">
                   <feGaussianBlur stdDeviation="2.5" result="blur" />
                   <feMerge>
@@ -335,43 +348,25 @@
                     fill="rgba(200,150,12,0.08)" stroke="#C8960C" stroke-width="5" />
                 </g>
               </g>
-
-              <!-- ── LABEL BOLIVIA ── -->
               <text x="195" y="170" font-family="DM Mono,monospace" font-size="8" fill="#C8960C" text-anchor="middle"
                 letter-spacing="0.12em">BOLIVIA</text>
               <circle cx="155" cy="158" r="16" fill="none" stroke="#C8960C" stroke-width="0.8" opacity="0.35"
                 class="lpaz-pulse-outer" />
-              <!-- Anillo de pulso medio -->
               <circle cx="155" cy="158" r="10" fill="none" stroke="#C8960C" stroke-width="1" opacity="0.55"
                 class="lpaz-pulse-mid" />
-              <!-- Punto central -->
               <circle cx="155" cy="158" r="4" fill="rgba(200,150,12,0.9)" stroke="#C8960C" stroke-width="1.2"
                 filter="url(#lpaz-glow)" class="lpaz-dot" />
-              <!-- Punto interior brillante -->
               <circle cx="155" cy="158" r="1.8" fill="#fff" opacity="0.9" />
-
-              <!-- ══ NORTE GEOGRÁFICO — integrado junto a Bolivia ══ -->
               <g transform="translate(330,130)">
                 <circle cx="0" cy="0" r="36" fill="rgba(13,27,42,0.82)" stroke="#C8960C" stroke-width="0.9" />
                 <circle cx="0" cy="0" r="28" fill="none" stroke="#C8960C" stroke-width="0.35" opacity="0.4" />
-                <circle cx="0" cy="0" r="32" fill="none" stroke="#C8960C" stroke-width="0.2" opacity="0.25" />
-
                 <line x1="0" y1="-28" x2="0" y2="-36" stroke="#C8960C" stroke-width="1.4" />
                 <line x1="0" y1="28" x2="0" y2="36" stroke="#C8960C" stroke-width="0.9" />
                 <line x1="-28" y1="0" x2="-36" y2="0" stroke="#C8960C" stroke-width="0.9" />
                 <line x1="28" y1="0" x2="36" y2="0" stroke="#C8960C" stroke-width="0.9" />
-
-                <line x1="19.8" y1="-19.8" x2="22.6" y2="-22.6" stroke="#C8960C" stroke-width="0.5" opacity="0.5" />
-                <line x1="19.8" y1="19.8" x2="22.6" y2="22.6" stroke="#C8960C" stroke-width="0.5" opacity="0.5" />
-                <line x1="-19.8" y1="19.8" x2="-22.6" y2="22.6" stroke="#C8960C" stroke-width="0.5" opacity="0.5" />
-                <line x1="-19.8" y1="-19.8" x2="-22.6" y2="-22.6" stroke="#C8960C" stroke-width="0.5" opacity="0.5" />
-
                 <polygon points="0,-24 7,5 0,0" fill="#C8960C" />
                 <polygon points="0,-24 -7,5 0,0" fill="rgba(200,150,12,0.22)" />
-                <polygon points="0,24 5,5 0,0" fill="rgba(200,150,12,0.18)" />
-                <polygon points="0,24 -5,5 0,0" fill="rgba(200,150,12,0.08)" />
                 <circle cx="0" cy="0" r="3" fill="rgba(13,27,42,0.95)" stroke="#C8960C" stroke-width="0.9" />
-
                 <text x="0" y="-40" font-family="DM Mono,monospace" font-size="13" fill="#C8960C" text-anchor="middle"
                   font-weight="bold" letter-spacing="0.08em">N</text>
                 <text x="0" y="48" font-family="DM Mono,monospace" font-size="7" fill="#C8960C"
@@ -381,7 +376,6 @@
                 <text x="-46" y="3" font-family="DM Mono,monospace" font-size="7" fill="#C8960C"
                   text-anchor="middle">W</text>
               </g>
-              <!-- ── GRILLA GEODÉSICA DE FONDO ── -->
               <g fill="none" stroke="#C8960C" stroke-width="0.3">
                 <line x1="0" y1="70" x2="420" y2="70" />
                 <line x1="0" y1="140" x2="420" y2="140" />
@@ -394,8 +388,6 @@
                 <line x1="280" y1="0" x2="280" y2="420" />
                 <line x1="350" y1="0" x2="350" y2="420" />
               </g>
-
-              <!-- ════ ESCALA GRÁFICA ════ -->
               <g transform="translate(100,300)">
                 <line x1="0" y1="0" x2="140" y2="0" stroke="#C8960C" stroke-width="1.2" />
                 <line x1="0" y1="-6" x2="0" y2="6" stroke="#C8960C" stroke-width="1.2" />
@@ -410,37 +402,31 @@
               </g>
             </svg>
 
-            <!-- ── FD CARDS (sin cambios) ── -->
-            <div class="fd-card fdc-1 reveal">
-              <i class="fa-solid fa-scale-balanced"></i>
+            <div class="fd-card fdc-1 reveal"><i class="fa-solid fa-scale-balanced"></i>
               <div>
                 <h4>Derecho</h4>
                 <p>Asesoría legal y territorial</p>
               </div>
             </div>
-            <div class="fd-card fdc-2 reveal">
-              <i class="fa-solid fa-map-location-dot"></i>
+            <div class="fd-card fdc-2 reveal"><i class="fa-solid fa-map-location-dot"></i>
               <div>
                 <h4>Catastro</h4>
                 <p>Registro y valuación predial</p>
               </div>
             </div>
-            <div class="fd-card fdc-3 reveal">
-              <i class="fa-solid fa-globe"></i>
+            <div class="fd-card fdc-3 reveal"><i class="fa-solid fa-globe"></i>
               <div>
                 <h4>Geografía y Geomática</h4>
                 <p>Cartografía y análisis espacial</p>
               </div>
             </div>
-            <div class="fd-card fdc-4 reveal">
-              <i class="fa-solid fa-compass"></i>
+            <div class="fd-card fdc-4 reveal"><i class="fa-solid fa-compass"></i>
               <div>
                 <h4>Ordenamiento Territorial</h4>
                 <p>Planificación y uso de suelo</p>
               </div>
             </div>
-            <div class="fd-card fdc-5 reveal">
-              <i class="fa-solid fa-mountain"></i>
+            <div class="fd-card fdc-5 reveal"><i class="fa-solid fa-mountain"></i>
               <div>
                 <h4>Geodesia y Topografía</h4>
                 <p>Medición y precisión técnica</p>
@@ -448,7 +434,13 @@
             </div>
           </div>
         </div>
+
       </div>
+    </div>
+
+    <!-- Scroll cue -->
+    <div class="hero-scroll-cue" aria-hidden="true">
+      <span></span>
     </div>
   </section>
 
