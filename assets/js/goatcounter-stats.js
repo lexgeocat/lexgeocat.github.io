@@ -112,18 +112,17 @@
     }
 
     function updateFlags() {
-        apiFetch('/stats/locations?limit=100', function (data) {
+        apiFetch('/stats/locations', function (data) {
             var stats = (data && Array.isArray(data.stats)) ? data.stats : [];
             if (!stats.length) return;
 
             var html = '';
 
-            for (var i = 0; i < stats.length; i++) {
-                var loc = stats[i];
+            stats.forEach(function (loc) {
                 var raw = (loc.id || '').toUpperCase();
                 var code = raw.slice(0, 2);
 
-                if (!/^[A-Z]{2}$/.test(code)) continue;
+                if (!/^[A-Z]{2}$/.test(code)) return;
 
                 var views = (loc.count || 0).toLocaleString('es-BO');
                 var label = countryName(code) + ': ' + views + ' vistas';
@@ -135,7 +134,7 @@
                     ' alt="' + countryName(code) + '"' +
                     ' width="16" height="12" loading="lazy">' +
                     '</span>';
-            }
+            });
 
             html +=
                 '<a class="gc-flag-item gc-more-stats"' +
