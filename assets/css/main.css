@@ -4418,22 +4418,7 @@ svg.fd-bg-map {
   /* flecha abajo por defecto (tooltip arriba del item) */
 }
 
-.gc-more-stats {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 16px;
-  height: 12px;
-  text-decoration: none;
-  color: var(--gold);
-  font-size: 10px;
-  transition: color .2s, transform .18s;
-}
 
-.gc-more-stats:hover {
-  color: var(--gold2);
-  transform: scale(1.3);
-}
 
 /* Ocultar en móvil */
 @media (max-width: 900px) {
@@ -4443,7 +4428,7 @@ svg.fd-bg-map {
 }
 
 /* strip de estadísticas dentro del mob-menu */
-.mob-gc-strip {
+/*.mob-gc-strip {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -4485,7 +4470,7 @@ svg.fd-bg-map {
 }
 
 /* buscador dentro del mob-menu */
-.mob-srch-wrap {
+/*.mob-srch-wrap {
   display: flex;
   align-items: center;
   gap: 10px;
