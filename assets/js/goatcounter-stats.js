@@ -112,21 +112,20 @@
     }
 
     function updateFlags() {
-        apiFetch('/stats/locations', function (data) {
+        apiFetch('/stats/locations?limit=6', function (data) {
             var stats = (data && Array.isArray(data.stats)) ? data.stats : [];
             if (!stats.length) return;
 
             var html = '';
+            var shown = 0;
 
-            stats.forEach(function (loc) {
+            for (var i = 0; i < stats.length && shown < 5; i++) {
+                var loc = stats[i];
                 var raw = (loc.id || '').toUpperCase();
                 var code = raw.slice(0, 2);
-
-                if (!/^[A-Z]{2}$/.test(code)) return;
-
+                if (!/^[A-Z]{2}$/.test(code)) continue;
                 var views = (loc.count || 0).toLocaleString('es-BO');
                 var label = countryName(code) + ': ' + views + ' vistas';
-
                 html +=
                     '<span class="gc-flag-item" data-tip="' + label + '">' +
                     '<img class="gc-flag-img"' +
@@ -134,7 +133,8 @@
                     ' alt="' + countryName(code) + '"' +
                     ' width="16" height="12" loading="lazy">' +
                     '</span>';
-            });
+                shown++;
+            }
 
             html +=
                 '<a class="gc-flag-item gc-more-stats"' +
@@ -145,16 +145,10 @@
                 '</a>';
 
             var wrap = document.getElementById('gc-flags-wrap');
-            if (wrap) {
-                wrap.innerHTML = html;
-                attachTips(wrap);
-            }
+            if (wrap) { wrap.innerHTML = html; attachTips(wrap); }
 
             var wrapMob = document.getElementById('mob-gc-flags');
-            if (wrapMob) {
-                wrapMob.innerHTML = html;
-                attachTips(wrapMob);
-            }
+            if (wrapMob) { wrapMob.innerHTML = html; attachTips(wrapMob); }
         });
     }
 
