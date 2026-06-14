@@ -4,7 +4,7 @@
     /*var GC_BASE = 'https://lexgeocat.goatcounter.com';
     var GC_TOKEN = 'vs95tjn43y0tsl1gxep3xfchw8bjt7xu1bwyzqmupsrxgr27';*/
     var WORKER_BASE =
-        'https://calma-escarcha-0457.cristianruiz-10-cr40.workers.dev';
+        'https://stats.lexgeocat.workers.dev';
     var FLAG_CDN = 'https://flagcdn.com/16x12/';
 
     var COUNTRY_ES = {
