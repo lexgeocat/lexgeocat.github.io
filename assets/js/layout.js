@@ -145,5 +145,34 @@
   if (headerEl) headerEl.innerHTML = headerHtml();
   if (footerEl) footerEl.innerHTML = footerHtml();
 
+  /* ===== AUTO-OCULTAR NAV ===== */
+  var hdr = document.getElementById('hdr');
+  var navBar = document.getElementById('nav-bar');
+  var lastY = 0;
+
+  function onScroll() {
+    var y = window.scrollY || window.pageYOffset;
+
+    if (hdr) {
+      if (y > 30) {
+        hdr.classList.add('scrolled');
+      } else {
+        hdr.classList.remove('scrolled');
+      }
+    }
+
+    if (navBar) {
+      if (y > lastY && y > 200) {
+        navBar.classList.add('hidden');
+      } else {
+        navBar.classList.remove('hidden');
+      }
+    }
+
+    lastY = y;
+  }
+
+  window.addEventListener('scroll', onScroll, { passive: true });
+
   document.documentElement.lang = 'es';
 })();
