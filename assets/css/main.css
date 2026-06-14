@@ -1,26 +1,5 @@
 /* ═══════════════════════════════════════════════════════════════════════
    LEX GEO CAT — STYLE INDEX
-   ------------------------------------------------------------------------
-   Este archivo es el "punto de entrada" único. El HTML solo carga
-   `assets/css/main.css`, y este importa los módulos temáticos en el
-   orden correcto de cascada.
-
-   Estructura:
-     1. tokens        — variables CSS y tema oscuro
-     2. base          — reset, base tipográfica, utilidades globales
-     3. preloader     — loader inicial
-     4. header        — cabecera fija, navbar, search pill, dropdowns
-     5. mobile-menu   — menú lateral móvil
-     6. hero          — sección hero con animaciones y dashboard flotante
-     7. sections      — secciones generales, grids, page-hero
-     8. buttons       — botones globales
-     9. cards         — cat, post, service, resource, feature, about
-    10. contact       — bloque de contacto y formulario
-    11. article       — cuerpo del artículo, callouts, share, author, comments, paginación
-    12. search-modal  — modal global de búsqueda
-    13. stats         — goatcounter y ticker
-    14. footer        — pie de página
-    15. utilities     — back-to-top, animaciones globales, responsive misc
    ═══════════════════════════════════════════════════════════════════════ */
 
 @import url("modules/tokens.css");

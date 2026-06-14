@@ -28,16 +28,6 @@
       <stop offset="100%" stop-color="rgba(200,150,12,0.06)" />
     </linearGradient>
 
-    <linearGradient id="grad-valles" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="rgba(15,110,110,0.20)" />
-      <stop offset="100%" stop-color="rgba(15,110,110,0.05)" />
-    </linearGradient>
-
-    <linearGradient id="grad-oriente" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="rgba(58,94,58,0.22)" />
-      <stop offset="100%" stop-color="rgba(58,94,58,0.05)" />
-    </linearGradient>
-
     <!-- La Paz capital marker glow -->
     <radialGradient id="grad-lpaz-halo" cx="50%" cy="50%" r="50%">
       <stop offset="0%" stop-color="rgba(200,150,12,0.65)" />
@@ -45,25 +35,10 @@
       <stop offset="100%" stop-color="rgba(200,150,12,0)" />
     </radialGradient>
 
-    <!-- Scan-line travelling gradient -->
-    <linearGradient id="grad-scanline" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" stop-color="rgba(255,255,255,0)" />
-      <stop offset="30%" stop-color="rgba(200,150,12,0.45)" />
-      <stop offset="70%" stop-color="rgba(200,150,12,0.45)" />
-      <stop offset="100%" stop-color="rgba(255,255,255,0)" />
-    </linearGradient>
-
     <!-- ── 1b. FILTERS ────────────────────────────────────────────────── -->
 
     <!-- Subtle glow used on La Paz dot and north arrow -->
-    <filter id="filter-glow-gold" x="-80%" y="-80%" width="260%" height="260%"
-      color-interpolation-filters="linearRGB">
-      <feGaussianBlur stdDeviation="2" result="blur" />
-      <feMerge>
-        <feMergeNode in="blur" />
-        <feMergeNode in="SourceGraphic" />
-      </feMerge>
-    </filter>
+ 
 
     <!-- Panel drop-shadow: soft, low offset — premium feel -->
     <filter id="filter-panel-shadow" x="-12%" y="-12%" width="124%" height="124%"
@@ -80,21 +55,11 @@
 
     <!-- ── 1c. MASKS ──────────────────────────────────────────────────── -->
 
-    <!-- Vignette: softens map edges so it blends with the hero background -->
-    <mask id="mask-map-vignette">
-      <rect width="420" height="420" fill="url(#grad-vignette-mask)" />
-    </mask>
+ 
 
     <!-- ── 1d. PATTERNS ──────────────────────────────────────────────── -->
 
     <!-- Diagonal hatch: texture layer on the territory fill -->
-    <pattern id="pattern-hatch-territory"
-      patternUnits="userSpaceOnUse"
-      width="4" height="4"
-      patternTransform="rotate(45)">
-      <line x1="0" y1="0" x2="0" y2="4"
-        stroke="rgba(200,150,12,0.20)" stroke-width="0.5" />
-    </pattern>
 
     <!-- ── 1e. STYLES: animations + component classes ─────────────────── -->
     <style type="text/css"><![CDATA[
@@ -265,19 +230,6 @@
     <path d="M380,380 v-6 M380,380 h-6" />
   </g>
   <!-- END LAYER: GRID -->
-
-
-  <!-- ═══════════════════════════════════════════════════════════════════
-       4. HUD SCAN-LINE FX
-       ═══════════════════════════════════════════════════════════════════ -->
-  <g id="layer-scanfx">
-    <rect class="hud-scanline"
-      x="40" y="38" width="200" height="1.5"
-      fill="url(#grad-scanline)"
-      opacity="0.55" />
-  </g>
-  <!-- END LAYER: SCAN FX -->
-
 
   <!-- ═══════════════════════════════════════════════════════════════════
        5. MARKER LAYER

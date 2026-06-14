@@ -60,132 +60,6 @@
   }
 }
 
-/* Scan line HUD */
-.hero-bg::after {
-  content: '';
-  position: absolute;
-  left: 0;
-  right: 0;
-  height: 1px;
-  top: 0;
-  background: linear-gradient(90deg, transparent 5%, rgba(200, 150, 12, .25) 40%, rgba(200, 150, 12, .25) 60%, transparent 95%);
-  animation: lgc-scan 10s linear infinite;
-  pointer-events: none;
-  z-index: 1;
-}
-
-@keyframes lgc-scan {
-  0% {
-    transform: translateY(0vh);
-    opacity: .8
-  }
-
-  100% {
-    transform: translateY(100vh);
-    opacity: 0
-  }
-}
-
-/* Hero map SVG */
-.hero-bg-map {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 0;
-  overflow: visible;
-  pointer-events: none;
-}
-
-.hero-bg-map svg {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%
-}
-
-.hero-contour-group {
-  animation: lgc-contour-drift 25s ease-in-out infinite;
-  transform-origin: center center;
-}
-
-@keyframes lgc-contour-drift {
-  0% {
-    transform: translateX(0) translateY(0)
-  }
-
-  50% {
-    transform: translateX(-8px) translateY(-6px)
-  }
-
-  100% {
-    transform: translateX(0) translateY(0)
-  }
-}
-
-/* La Paz marker animations */
-@keyframes lgc-lpaz-pulse-outer {
-  0% {
-    transform: scale(1);
-    opacity: .35
-  }
-
-  70% {
-    transform: scale(1.8);
-    opacity: 0
-  }
-
-  100% {
-    transform: scale(1);
-    opacity: 0
-  }
-}
-
-@keyframes lgc-lpaz-pulse-mid {
-
-  0% {
-    transform: scale(1);
-    opacity: .55
-  }
-
-  60% {
-    transform: scale(1.7);
-    opacity: 0
-  }
-
-  100% {
-    transform: scale(1);
-    opacity: 0
-  }
-}
-
-@keyframes lgc-lpaz-dot-glow {
-
-  0%,
-  100% {
-    opacity: .9
-  }
-
-  50% {
-    opacity: .6
-  }
-}
-
-.lpaz-pulse-outer {
-  animation: lgc-lpaz-pulse-outer 3s ease-out infinite;
-  transform-box: fill-box;
-  transform-origin: center
-}
-
-.lpaz-pulse-mid {
-  animation: lgc-lpaz-pulse-mid 3s ease-out infinite .6s;
-  transform-box: fill-box;
-  transform-origin: center
-}
-
-.lpaz-dot {
-  animation: lgc-lpaz-dot-glow 3s ease-in-out infinite 1s
-}
 
 /* Hero layout */
 .hero-grid {
@@ -200,26 +74,6 @@
   position: relative;
   z-index: 5;
   max-width: 780px
-}
-
-.hero-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  background: rgba(200, 150, 12, .15);
-  color: var(--gold2);
-  padding: 6px 18px;
-  border-radius: 50px;
-  font-size: .73rem;
-  font-weight: 600;
-  margin-bottom: 24px;
-  border: 1px solid rgba(200, 150, 12, .25);
-  letter-spacing: .06em;
-  text-transform: uppercase;
-}
-
-.hero-badge i {
-  font-size: 11px
 }
 
 .hero-title {
@@ -325,24 +179,6 @@
   display: flex;
   justify-content: center;
   align-items: center;
-}
-
-svg.fd-bg-map {
-  position: absolute;
-  width: 420px;
-  height: 420px;
-  animation: lgc-float-pan 12s ease-in-out infinite alternate;
-  will-change: transform;
-}
-
-@keyframes lgc-float-pan {
-  from {
-    transform: scale(1) translate(0, 0)
-  }
-
-  to {
-    transform: scale(1.02) translate(2px, -2px)
-  }
 }
 
 /* Floating dashboard cards */
