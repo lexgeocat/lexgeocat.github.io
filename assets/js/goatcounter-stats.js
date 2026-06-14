@@ -80,7 +80,7 @@
 
     // ── Vistas totales ──
     function updateViews() {
-        apiFetch('/stats/total', function (data) {
+        apiFetch('/total', function (data) {
             var el = document.getElementById('gc-total-views');
             if (!el) return;
             var n = (data && typeof data.total === 'number') ? data.total : 0;
@@ -90,7 +90,7 @@
 
     // ── Banderas ──
     function updateFlags() {
-        apiFetch('/stats/locations', function (data) {
+        apiFetch('/locations', function (data) {
             var wrap = document.getElementById('gc-flags-wrap');
             if (!wrap) return;
             var stats = (data && Array.isArray(data.stats)) ? data.stats : [];
