@@ -1,0 +1,195 @@
+/* ═══════════════════════════════════════════════════════════
+   7. MENÚ MÓVIL
+   ═══════════════════════════════════════════════════════════ */
+.mob-menu {
+  position: fixed;
+  inset: 0;
+  background: var(--ink);
+  z-index: 2000;
+  transform: translateX(-100%);
+  transition: transform .35s var(--ease);
+  overflow-y: auto;
+  padding: 24px;
+}
+
+.mob-menu.open {
+  transform: translateX(0)
+}
+
+.mob-menu-hd {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 32px;
+}
+
+.mob-close {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, .08);
+  border: 1px solid rgba(255, 255, 255, .12);
+  color: #fff;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Search in mobile menu */
+.mob-search-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(255, 255, 255, .06);
+  border: 1px solid rgba(255, 255, 255, .12);
+  border-radius: 50px;
+  padding: 10px 18px;
+  margin-bottom: 16px;
+  transition: border-color .25s;
+}
+
+.mob-search-wrap:focus-within {
+  border-color: var(--gold)
+}
+
+.mob-search-wrap i {
+  color: var(--gold);
+  font-size: 13px;
+  flex-shrink: 0
+}
+
+.mob-search-wrap input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  font-family: var(--font-b);
+  font-size: .9rem;
+  color: #fff;
+  outline: none;
+}
+
+.mob-search-wrap input::placeholder {
+  color: rgba(255, 255, 255, .4)
+}
+
+.mob-search-btn {
+  background: var(--gold);
+  border: none;
+  border-radius: 50px;
+  color: #fff;
+  font-size: .75rem;
+  font-weight: 600;
+  padding: 5px 14px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background .2s;
+}
+
+.mob-search-btn:hover {
+  background: var(--gold2)
+}
+
+.mob-nav {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 4px
+}
+
+.mob-nav a {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: rgba(255, 255, 255, .8);
+  font-size: 1.05rem;
+  font-family: var(--font-h);
+  font-weight: 600;
+  padding: 14px 18px;
+  border-radius: var(--r);
+  transition: all .2s;
+  border: 1px solid transparent;
+}
+
+.mob-nav a:hover {
+  background: rgba(200, 150, 12, .12);
+  border-color: rgba(200, 150, 12, .2);
+  color: var(--gold2)
+}
+
+.mob-nav a i {
+  font-size: 14px;
+  width: 18px;
+  color: var(--gold)
+}
+
+/* Mobile dropdown */
+.mob-dropdown {
+  display: block;
+  width: 100%
+}
+
+.mob-dropbtn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  background: transparent;
+  border: 1px solid transparent;
+  color: rgba(255, 255, 255, .8);
+  font-size: 1.05rem;
+  font-family: var(--font-h);
+  font-weight: 600;
+  padding: 14px 18px;
+  border-radius: var(--r);
+  cursor: pointer;
+  text-align: left;
+  transition: all .2s;
+  outline: none;
+}
+
+.mob-dropbtn span {
+  display: flex;
+  align-items: center;
+  gap: 12px
+}
+
+.mob-dropbtn span i {
+  font-size: 14px;
+  width: 18px;
+  color: var(--gold)
+}
+
+.mob-dropbtn .arrow {
+  font-size: 12px;
+  transition: transform .3s
+}
+
+.mob-dropbtn:hover {
+  background: rgba(200, 150, 12, .12);
+  border-color: rgba(200, 150, 12, .2);
+  color: var(--gold2)
+}
+
+.mob-submenu {
+  list-style: none;
+  padding-left: 20px;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height .35s var(--ease);
+}
+
+.mob-dropdown.active .mob-submenu {
+  max-height: 350px
+}
+
+.mob-dropdown.active .mob-dropbtn .arrow {
+  transform: rotate(180deg)
+}
+
+.mob-submenu a {
+  font-size: .95rem !important;
+  padding: 10px 18px !important;
+  margin-top: 2px
+}

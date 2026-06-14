@@ -1,0 +1,70 @@
+/* ═══════════════════════════════════════════════════════════
+   1. DESIGN TOKENS
+   ═══════════════════════════════════════════════════════════ */
+:root {
+  /* Paleta */
+  --ink: #0D1B2A;
+  --ink2: #1B3148;
+  --ink3: #2C4A6E;
+  --gold: #C8960C;
+  --gold2: #E8AC14;
+  --gold-lt: #FDF3D8;
+  --teal: #0F6E6E;
+  --teal-lt: #E0F5F5;
+  --terra: #7C3B1E;
+  --sage: #3A5E3A;
+
+  /* Fondos y superficies */
+  --bg: #F7F4EF;
+  --bg2: #EDE9E2;
+  --bg3: #E2DDD5;
+  --card: #FFFFFF;
+  --card2: #FAFAF8;
+
+  /* Texto */
+  --text: #1A1814;
+  --text2: #4A4540;
+  --text3: #8A8480;
+
+  /* Bordes */
+  --border: #D8D4CD;
+  --border2: #C4BFB8;
+
+  /* Tipografía */
+  --font-h: 'Crimson Pro', Georgia, serif;
+  --font-b: 'DM Sans', system-ui, sans-serif;
+  --font-m: 'DM Mono', monospace;
+
+  /* Radios */
+  --r: 12px;
+  --rs: 6px;
+  --rl: 20px;
+
+  /* Sombras */
+  --sh: 0 1px 4px rgba(13, 27, 42, .06), 0 1px 2px rgba(13, 27, 42, .04);
+  --sh2: 0 6px 24px rgba(13, 27, 42, .10);
+  --sh3: 0 12px 48px rgba(13, 27, 42, .15);
+
+  /* Misc */
+  --ease: cubic-bezier(.4, 0, .2, 1);
+  --con: 1240px;
+  --h: 72px;
+}
+
+[data-theme="dark"] {
+  --bg: #0D1118;
+  --bg2: #121922;
+  --bg3: #1A2535;
+  --card: #1A2535;
+  --card2: #1E2C40;
+  --text: #EDE9E2;
+  --text2: #A8A49E;
+  --text3: #6A6660;
+  --border: #2A3A50;
+  --border2: #344860;
+  --sh: 0 1px 4px rgba(0, 0, 0, .3);
+  --sh2: 0 6px 24px rgba(0, 0, 0, .4);
+  --sh3: 0 12px 48px rgba(0, 0, 0, .5);
+  --gold-lt: #2A2010;
+  --teal-lt: #0A2020;
+}

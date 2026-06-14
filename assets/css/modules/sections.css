@@ -1,0 +1,196 @@
+/* ═══════════════════════════════════════════════════════════
+   9. SECCIONES GENERALES
+   ═══════════════════════════════════════════════════════════ */
+.sec {
+  padding: 80px 0
+}
+
+.sec-dark {
+  background: var(--ink);
+  padding: 80px 0
+}
+
+.sec-muted {
+  background: var(--bg2);
+  padding: 80px 0
+}
+
+.sec-stripe {
+  background: var(--bg3);
+  padding: 80px 0
+}
+
+/* Section header */
+.sh {
+  margin-bottom: 52px
+}
+
+.sh.center {
+  text-align: center
+}
+
+.sh.center .sd {
+  margin: 0 auto
+}
+
+.sl {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-b);
+  font-size: .7rem;
+  font-weight: 600;
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 12px;
+}
+
+.sl::before {
+  content: '';
+  display: inline-block;
+  width: 24px;
+  height: 2px;
+  background: var(--gold);
+  border-radius: 1px
+}
+
+.st {
+  font-size: 2.4rem;
+  font-weight: 700;
+  margin-bottom: 14px;
+  letter-spacing: -.02em
+}
+
+.sd {
+  color: var(--text2);
+  max-width: 600px;
+  font-size: 1.05rem;
+  line-height: 1.65
+}
+
+.sec-dark .st {
+  color: #fff
+}
+
+.sec-dark .sd {
+  color: rgba(255, 255, 255, .6)
+}
+
+.sec-dark .sl {
+  color: var(--gold2)
+}
+
+@media (max-width: 768px) {
+
+  .sec,
+  .sec-dark,
+  .sec-muted,
+  .sec-stripe {
+    padding: 52px 0
+  }
+
+  .st {
+    font-size: 1.75rem
+  }
+}
+
+@media (max-width: 480px) {
+  .st {
+    font-size: 1.5rem
+  }
+}
+
+/* Grids */
+.g {
+  display: grid;
+  gap: 20px
+}
+
+.g2 {
+  grid-template-columns: repeat(2, 1fr)
+}
+
+.g3 {
+  grid-template-columns: repeat(3, 1fr)
+}
+
+.g4 {
+  grid-template-columns: repeat(4, 1fr)
+}
+
+.g-auto {
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr))
+}
+
+@media (max-width: 900px) {
+  .g3 {
+    grid-template-columns: repeat(2, 1fr)
+  }
+}
+
+@media (max-width: 768px) {
+
+  .g2,
+  .g3,
+  .g4,
+  .g-auto {
+    grid-template-columns: 1fr
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   10. PÁGINAS INTERNAS (page-hero, page-wrap)
+   ═══════════════════════════════════════════════════════════ */
+.page-hero {
+  padding: calc(var(--h) + 48px + 48px) 0 48px;
+  background: var(--ink);
+  position: relative;
+  overflow: hidden;
+}
+
+.page-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(200, 150, 12, .06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(200, 150, 12, .06) 1px, transparent 1px);
+  background-size: 48px 48px;
+  opacity: .4;
+}
+
+.page-hero .c {
+  position: relative;
+  z-index: 1
+}
+
+.page-hero .st {
+  color: #fff;
+  margin-bottom: 10px
+}
+
+.page-hero .sd {
+  color: rgba(255, 255, 255, .65);
+  max-width: 640px
+}
+
+.page-hero .sl {
+  color: var(--gold2)
+}
+
+.page-hero-icon {
+  font-size: 2.5rem;
+  color: var(--gold2);
+  margin-bottom: 16px
+}
+
+.page-wrap {
+  max-width: var(--con);
+  margin: 0 auto;
+  padding: calc(var(--h) + 48px + 24px) 28px 60px
+}
+
+.page-content {
+  padding: 60px 0
+}

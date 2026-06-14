@@ -1,0 +1,188 @@
+/* ═══════════════════════════════════════════════════════════
+   22. GOATCOUNTER STATS WIDGET
+   ═══════════════════════════════════════════════════════════ */
+.gc-stats-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 12px;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 50px;
+  font-family: var(--font-m);
+  font-size: .72rem;
+  color: var(--text2);
+  white-space: nowrap;
+  min-width: 60px;
+  transition: border-color .25s;
+}
+
+.gc-stats-bar:hover {
+  border-color: var(--gold)
+}
+
+.gc-stat-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px
+}
+
+.gc-stat-item i {
+  color: var(--gold);
+  font-size: 11px
+}
+
+.gc-val {
+  font-weight: 600;
+  color: var(--text);
+  letter-spacing: .02em
+}
+
+.gc-lbl {
+  color: var(--text3);
+  font-size: .66rem;
+  letter-spacing: .05em
+}
+
+.gc-sep {
+  color: var(--border2);
+  font-size: .7rem;
+  padding: 0 2px
+}
+
+.gc-locs {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  flex-wrap: nowrap
+}
+
+.gc-flag-item {
+  cursor: default;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform .18s;
+  border-radius: 2px;
+  overflow: hidden
+}
+
+.gc-flag-item:hover {
+  transform: scale(1.35)
+}
+
+.gc-flag-img {
+  display: block;
+  width: 16px;
+  height: 12px;
+  object-fit: cover;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, .12)
+}
+
+.gc-tooltip {
+  position: fixed;
+  z-index: 99999;
+  background: var(--ink);
+  color: var(--gold2);
+  font-family: var(--font-m);
+  font-size: .7rem;
+  padding: 5px 10px;
+  border-radius: var(--rs);
+  border: 1px solid rgba(200, 150, 12, .3);
+  pointer-events: none;
+  white-space: nowrap;
+  box-shadow: var(--sh2);
+}
+
+.gc-more-stats {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 12px;
+  text-decoration: none;
+  color: var(--gold);
+  font-size: 10px;
+  transition: color .2s, transform .18s;
+}
+
+.gc-more-stats:hover {
+  color: var(--gold2);
+  transform: scale(1.3)
+}
+
+@media (max-width: 900px) {
+  .gc-stats-bar {
+    display: none
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   23. TICKER (barra de noticias — preparado para uso futuro)
+   ═══════════════════════════════════════════════════════════ */
+.ticker {
+  background: var(--gold);
+  overflow: hidden;
+  height: 36px;
+  display: flex;
+  align-items: center
+}
+
+.ticker-label {
+  background: var(--ink);
+  color: var(--gold2);
+  font-size: .68rem;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  padding: 0 18px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  white-space: nowrap
+}
+
+.ticker-track {
+  overflow: hidden;
+  flex: 1;
+  height: 100%;
+  position: relative
+}
+
+.ticker-inner {
+  display: flex;
+  gap: 56px;
+  align-items: center;
+  height: 100%;
+  animation: tick 30s linear infinite;
+  white-space: nowrap
+}
+
+.ticker-inner:hover {
+  animation-play-state: paused
+}
+
+.ticker-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: .78rem;
+  font-weight: 600;
+  color: var(--ink);
+  white-space: nowrap
+}
+
+.ticker-item i {
+  font-size: 10px
+}
+
+@keyframes tick {
+  0% {
+    transform: translateX(0)
+  }
+
+  100% {
+    transform: translateX(-50%)
+  }
+}

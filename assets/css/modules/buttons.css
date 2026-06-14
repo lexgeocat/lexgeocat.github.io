@@ -1,0 +1,58 @@
+/* ═══════════════════════════════════════════════════════════
+   11. BOTONES
+   ═══════════════════════════════════════════════════════════ */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 13px 28px;
+  border-radius: 50px;
+  font-family: var(--font-b);
+  font-weight: 600;
+  font-size: .88rem;
+  transition: all .3s;
+  cursor: pointer;
+  border: none;
+  text-decoration: none;
+  letter-spacing: .02em;
+}
+
+.btn-gold {
+  background: var(--gold);
+  color: #fff;
+  box-shadow: 0 4px 20px rgba(200, 150, 12, .35);
+}
+
+.btn-gold:hover {
+  background: var(--gold2);
+  color: #fff;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px rgba(200, 150, 12, .45)
+}
+
+.btn-ghost {
+  background: transparent;
+  color: #fff;
+  border: 1.5px solid rgba(255, 255, 255, .25);
+}
+
+.btn-ghost:hover {
+  border-color: var(--gold2);
+  color: var(--gold2);
+  transform: translateY(-2px);
+  background: rgba(200, 150, 12, .08)
+}
+
+.btn-whatsapp {
+  background: #25D366 !important;
+  color: #fff !important;
+  box-shadow: 0 4px 14px rgba(37, 211, 102, .3) !important;
+  border: none;
+}
+
+.btn-whatsapp:hover {
+  background: #20BA5A !important;
+  color: #fff !important;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(37, 211, 102, .4) !important
+}
