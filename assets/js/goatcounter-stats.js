@@ -1,8 +1,10 @@
 (function () {
     'use strict';
 
-    var GC_BASE = 'https://lexgeocat.goatcounter.com';
-    var GC_TOKEN = 'vs95tjn43y0tsl1gxep3xfchw8bjt7xu1bwyzqmupsrxgr27';
+    /*var GC_BASE = 'https://lexgeocat.goatcounter.com';
+    var GC_TOKEN = 'vs95tjn43y0tsl1gxep3xfchw8bjt7xu1bwyzqmupsrxgr27';*/
+    var WORKER_BASE =
+        'https://calma-escarcha-0457.cristianruiz-10-cr40.workers.dev';
     var FLAG_CDN = 'https://flagcdn.com/16x12/';
 
     var COUNTRY_ES = {
@@ -30,23 +32,19 @@
     }
 
     function apiFetch(path, cb) {
-        var sep = path.indexOf('?') >= 0 ? '&' : '?';
-        var url = GC_BASE + '/api/v0' + path + sep + dateRange();
 
-        fetch(url, {
-            method: 'GET',
-            headers: {
-                'Authorization': 'Bearer ' + GC_TOKEN,
-                'Content-Type': 'application/json'
-            },
+        fetch(WORKER_BASE + path, {
             cache: 'no-store'
         })
             .then(function (r) {
-                if (!r.ok) throw new Error('HTTP ' + r.status + ' en ' + path);
+                if (!r.ok) throw new Error('HTTP ' + r.status);
                 return r.json();
             })
             .then(cb)
-            .catch(function (e) { console.warn('[GC]', e.message); });
+            .catch(function (e) {
+                console.warn('[GC]', e.message);
+            });
+
     }
 
     // ── Tooltip ──
