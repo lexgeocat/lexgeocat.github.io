@@ -1876,6 +1876,7 @@ svg.fd-bg-map {
   flex: 1;
   display: -webkit-box;
   -webkit-line-clamp: 3;
+  line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
@@ -1956,7 +1957,8 @@ svg.fd-bg-map {
 }
 
 .pc-feat .pc-snip {
-  -webkit-line-clamp: 4
+  -webkit-line-clamp: 4;
+  line-clamp: 4;
 }
 
 @media (max-width: 768px) {
@@ -3188,6 +3190,7 @@ svg.fd-bg-map {
   margin-bottom: 5px;
   display: -webkit-box;
   -webkit-line-clamp: 2;
+  line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden
 }
@@ -3198,6 +3201,7 @@ svg.fd-bg-map {
   line-height: 1.5;
   display: -webkit-box;
   -webkit-line-clamp: 2;
+  line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden
 }
