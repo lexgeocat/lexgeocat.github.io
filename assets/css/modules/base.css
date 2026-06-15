@@ -1,116 +1,39 @@
-/* ═══════════════════════════════════════════════════════════
-   2. RESET & BASE
-   ═══════════════════════════════════════════════════════════ */
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0
-}
+*,*::before,*::after { box-sizing: border-box; margin: 0; padding: 0 }
 
-html {
-  font-size: 16px;
-  scroll-behavior: smooth
-}
+html { font-size: 16px; scroll-behavior: smooth }
 
 body {
-  font-family: var(--font-b);
-  font-size: 1rem;
-  line-height: 1.75;
+  font-family: var(--font-body);
+  font-size: var(--fs-body);
+  line-height: var(--lh-normal);
   color: var(--text);
   background: var(--bg);
   -webkit-font-smoothing: antialiased;
-  transition: background .35s, color .3s;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-img {
-  max-width: 100%;
-  height: auto;
-  display: block
-}
+img { max-width: 100%; height: auto; display: block }
 
-a {
-  color: var(--ink3);
-  text-decoration: none;
-  transition: color .2s
-}
+a { color: var(--gold); text-decoration: none; transition: color .2s }
+a:hover { color: var(--gold2) }
 
-a:hover {
-  color: var(--gold)
-}
+::selection { background: var(--gold); color: #fff }
 
-::selection {
-  background: var(--gold);
-  color: #fff
-}
+h1 { font-family: var(--font-display); font-weight: 800; line-height: var(--lh-tight); color: var(--text); letter-spacing: -.02em }
+h2 { font-family: var(--font-display); font-weight: 800; line-height: var(--lh-tight); color: var(--text); letter-spacing: -.02em }
+h3 { font-family: var(--font-heading); font-weight: 600; line-height: var(--lh-tight); color: var(--text) }
+h4, h5 { font-family: var(--font-heading); font-weight: 600; line-height: var(--lh-tight); color: var(--text) }
 
-h1,
-h2,
-h3,
-h4,
-h5 {
-  font-family: var(--font-h);
-  font-weight: 700;
-  line-height: 1.2;
-  color: var(--text);
-  letter-spacing: -.01em;
-}
+.navbar, .Attribution { display: none !important }
 
-/* Ocultar elementos de Blogger que se cuelan */
-.navbar,
-.Attribution {
-  display: none !important
-}
+.c { max-width: var(--con); margin: 0 auto; padding: 0 28px; width: 100% }
 
-/* ═══════════════════════════════════════════════════════════
-   4. UTILIDADES GLOBALES
-   ═══════════════════════════════════════════════════════════ */
-.c {
-  max-width: var(--con);
-  margin: 0 auto;
-  padding: 0 28px;
-  width: 100%;
-}
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0 }
 
-.sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border: 0;
-}
+.reveal { opacity: 0; transform: translateY(24px); transition: opacity .7s var(--ease-out), transform .7s var(--ease-out) }
+.reveal.visible { opacity: 1; transform: translateY(0) }
 
-/* Scroll reveal */
-.reveal {
-  opacity: 0;
-  transform: translateY(20px);
-  transition: opacity .6s var(--ease), transform .6s var(--ease);
-}
-
-.reveal.visible {
-  opacity: 1;
-  transform: translateY(0)
-}
-
-/* Scrollbar */
-::-webkit-scrollbar {
-  width: 7px
-}
-
-::-webkit-scrollbar-track {
-  background: var(--bg)
-}
-
-::-webkit-scrollbar-thumb {
-  background: var(--border2);
-  border-radius: 4px
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: var(--text3)
-}
+::-webkit-scrollbar { width: 6px }
+::-webkit-scrollbar-track { background: var(--bg) }
+::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px }
+::-webkit-scrollbar-thumb:hover { background: var(--text3) }

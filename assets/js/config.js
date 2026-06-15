@@ -1,15 +1,9 @@
-/**
- * LexGeoCat — Configuración del sitio estático (GitHub Pages)
- * Ajusta blogUrl y basePath antes de publicar.
- */
 window.LGC_CONFIG = {
   siteName: 'LexGeoCat',
-  tagline: 'Derecho · Catastro · Topografía · Geomática · Software',
+  tagline: 'Derecho · Catastro · Geomática · Software',
 
-  /** Ruta base si usas GitHub Pages en subcarpeta: '/nombre-repo/' — raíz: '' */
   basePath: '',
 
-  /** Blog alojado en Blogger (enlace externo desde este sitio) */
   blogUrl: 'https://lexgeocat.blogspot.com/',
   bloggerFeed: 'https://lexgeocat.blogspot.com/feeds/posts/default',
   bloggerSearch: 'https://lexgeocat.blogspot.com/search?q=',
@@ -26,7 +20,6 @@ window.LGC_CONFIG = {
     whatsapp: 'https://wa.me/59176711790'
   },
 
-  /** Especialidades (7 áreas) */
   profesiones: [
     { id: 'derecho',         label: 'Derecho',                              href: 'pages/derecho.html',     icon: 'fa-scale-balanced' },
     { id: 'catastro',        label: 'Catastro',                             href: 'pages/catastro.html',    icon: 'fa-map' },
@@ -39,7 +32,7 @@ window.LGC_CONFIG = {
 
   nav: [
     { id: 'inicio', label: 'Inicio', href: 'index.html', icon: 'fa-house' },
-    { id: 'servicios', label: 'Servicios', href: 'index.html#servicios-detalle', icon: 'fa-briefcase' },
+    { id: 'servicios', label: 'Servicios', href: 'pages/servicios.html', icon: 'fa-briefcase' },
     {
       id: 'temas',
       label: 'Especialidades',

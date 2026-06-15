@@ -1,70 +1,110 @@
-/* ═══════════════════════════════════════════════════════════
-   1. DESIGN TOKENS
-   ═══════════════════════════════════════════════════════════ */
 :root {
-  /* Paleta */
-  --ink: #0D1B2A;
-  --ink2: #1B3148;
-  --ink3: #2C4A6E;
-  --gold: #C8960C;
-  --gold2: #E8AC14;
-  --gold-lt: #FDF3D8;
-  --teal: #0F6E6E;
-  --teal-lt: #E0F5F5;
-  --terra: #7C3B1E;
-  --sage: #3A5E3A;
+  --color-bg-primary:       #0A0C10;
+  --color-bg-surface:       #0F1318;
+  --color-bg-card:          #141920;
+  --color-border:           #1E2530;
+  --color-accent-gold:      #C9A84C;
+  --color-accent-gold-glow: #E2B95A;
+  --color-accent-teal:      #00B4A6;
+  --color-accent-teal-glow: #00D4C4;
+  --color-text-primary:     #F0EDE6;
+  --color-text-secondary:   #8B9AAD;
+  --color-text-muted:       #4A5568;
+  --color-grid-line:        rgba(0,180,166,0.12);
+  --color-glow-gold:        rgba(201,168,76,0.2);
+  --color-glow-teal:        rgba(0,180,166,0.18);
 
-  /* Fondos y superficies */
-  --bg: #F7F4EF;
-  --bg2: #EDE9E2;
-  --bg3: #E2DDD5;
-  --card: #FFFFFF;
-  --card2: #FAFAF8;
+  --font-display: 'Playfair Display', Georgia, serif;
+  --font-heading: 'Space Grotesk', system-ui, sans-serif;
+  --font-body:    'Inter', system-ui, sans-serif;
+  --font-mono:    'JetBrains Mono', monospace;
 
-  /* Texto */
-  --text: #1A1814;
-  --text2: #4A4540;
-  --text3: #8A8480;
+  --fs-hero:  clamp(3.5rem, 8vw, 7rem);
+  --fs-h1:    clamp(2rem, 4vw, 3.5rem);
+  --fs-h2:    clamp(1.5rem, 2.5vw, 2.25rem);
+  --fs-h3:    1.25rem;
+  --fs-body:  1rem;
+  --fs-small: 0.875rem;
+  --fs-mono:  0.8125rem;
+  --lh-tight: 1.1;
+  --lh-normal: 1.6;
+  --ls-wide:  0.08em;
 
-  /* Bordes */
-  --border: #D8D4CD;
-  --border2: #C4BFB8;
-
-  /* Tipografía */
-  --font-h: 'Crimson Pro', Georgia, serif;
-  --font-b: 'DM Sans', system-ui, sans-serif;
-  --font-m: 'DM Mono', monospace;
-
-  /* Radios */
   --r: 12px;
   --rs: 6px;
   --rl: 20px;
 
-  /* Sombras */
-  --sh: 0 1px 4px rgba(13, 27, 42, .06), 0 1px 2px rgba(13, 27, 42, .04);
-  --sh2: 0 6px 24px rgba(13, 27, 42, .10);
-  --sh3: 0 12px 48px rgba(13, 27, 42, .15);
+  --sh: 0 1px 3px rgba(0,0,0,.3), 0 1px 2px rgba(0,0,0,.2);
+  --sh2: 0 8px 32px rgba(0,0,0,.4);
+  --sh3: 0 16px 48px rgba(0,0,0,.5);
+  --sh-gold: 0 4px 24px rgba(201,168,76,.15);
+  --sh-gold-h: 0 8px 32px rgba(201,168,76,.25);
+  --sh-teal: 0 4px 24px rgba(0,180,166,.12);
 
-  /* Misc */
-  --ease: cubic-bezier(.4, 0, .2, 1);
+  --ease: cubic-bezier(.4,0,.2,1);
+  --ease-out: cubic-bezier(0,0,.2,1);
   --con: 1240px;
   --h: 72px;
+
+  --bg: var(--color-bg-primary);
+  --bg2: var(--color-bg-surface);
+  --bg3: var(--color-bg-card);
+  --card: var(--color-bg-card);
+  --card2: var(--color-bg-surface);
+  --card3: #1A212C;
+  --gold: var(--color-accent-gold);
+  --gold2: var(--color-accent-gold-glow);
+  --gold-lt: rgba(201,168,76,0.08);
+  --teal: var(--color-accent-teal);
+  --teal-lt: rgba(0,180,166,0.08);
+  --text: var(--color-text-primary);
+  --text2: var(--color-text-secondary);
+  --text3: var(--color-text-muted);
+  --text4: #3A4558;
+  --border: var(--color-border);
+  --border2: #2A3442;
+  --border3: #3A4558;
 }
 
-[data-theme="dark"] {
-  --bg: #0D1118;
-  --bg2: #121922;
-  --bg3: #1A2535;
-  --card: #1A2535;
-  --card2: #1E2C40;
-  --text: #EDE9E2;
-  --text2: #A8A49E;
-  --text3: #6A6660;
-  --border: #2A3A50;
-  --border2: #344860;
-  --sh: 0 1px 4px rgba(0, 0, 0, .3);
-  --sh2: 0 6px 24px rgba(0, 0, 0, .4);
-  --sh3: 0 12px 48px rgba(0, 0, 0, .5);
-  --gold-lt: #2A2010;
-  --teal-lt: #0A2020;
+[data-theme="light"] {
+  --color-bg-primary:       #F4F2ED;
+  --color-bg-surface:       #FFFFFF;
+  --color-bg-card:          #FFFFFF;
+  --color-border:           #E2E0DB;
+  --color-accent-gold:      #B8932E;
+  --color-accent-gold-glow: #D4AA4A;
+  --color-accent-teal:      #009E92;
+  --color-accent-teal-glow: #00BFAF;
+  --color-text-primary:     #1A1C20;
+  --color-text-secondary:   #5A6675;
+  --color-text-muted:       #8E9AAB;
+  --color-grid-line:        rgba(0,158,146,0.06);
+  --color-glow-gold:        rgba(184,147,46,0.12);
+  --color-glow-teal:        rgba(0,158,146,0.1);
+
+  --bg: var(--color-bg-primary);
+  --bg2: var(--color-bg-surface);
+  --bg3: #EEECE8;
+  --card: var(--color-bg-card);
+  --card2: var(--color-bg-surface);
+  --card3: #E8E6E0;
+  --gold: var(--color-accent-gold);
+  --gold2: var(--color-accent-gold-glow);
+  --gold-lt: rgba(184,147,46,0.08);
+  --teal: var(--color-accent-teal);
+  --teal-lt: rgba(0,158,146,0.08);
+  --text: var(--color-text-primary);
+  --text2: var(--color-text-secondary);
+  --text3: var(--color-text-muted);
+  --text4: #B0BACB;
+  --border: var(--color-border);
+  --border2: #D0CCC4;
+  --border3: #A8A49C;
+
+  --sh: 0 1px 3px rgba(0,0,0,.06), 0 1px 2px rgba(0,0,0,.04);
+  --sh2: 0 8px 32px rgba(0,0,0,.08);
+  --sh3: 0 16px 48px rgba(0,0,0,.1);
+  --sh-gold: 0 4px 24px rgba(184,147,46,.1);
+  --sh-gold-h: 0 8px 32px rgba(184,147,46,.18);
+  --sh-teal: 0 4px 24px rgba(0,158,146,.08);
 }

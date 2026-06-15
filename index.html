@@ -255,9 +255,9 @@
             ]
         </script>
 
-        <!-- ═══ FONTS (preload crítico) ═══ -->
+        <!-- ═══ FONTS PREMIUM ═══ -->
         <link
-            href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap"
+            href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,800;0,900;1,700&family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap"
             rel="stylesheet"
         />
         <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet" />
@@ -291,8 +291,8 @@
                     <div class="hero-content">
                         <h1 class="hero-title">
                             Lex
-                            <span>Geo</span>
-                            Cat
+                            <span class="accent-teal">Geo</span>
+                            <span class="accent-gold">Cat</span>
                             <span
                                 class="line-sub"
                                 style="
@@ -311,7 +311,7 @@
                             catastral y sistemas de información geográfica adaptados al contexto boliviano.
                         </p>
                         <div class="hero-btns">
-                            <a class="btn btn-gold" href="#servicios-detalle">
+                            <a class="btn btn-gold" href="pages/servicios.html">
                                 <i class="fa-solid fa-briefcase"></i>
                                 Ver Servicios
                             </a>
@@ -407,11 +407,11 @@
                         class="cat-card reveal"
                         href="pages/derecho.html"
                         style="
-                            --c1: #4a1b0c;
-                            --c2: #8b3e1a;
-                            --cc: #c8960c;
-                            --ctag-bg: var(--gold-lt);
-                            --ctag-bd: rgba(200, 150, 12, 0.2);
+            --c1: #4a1b0c;
+            --c2: #8b3e1a;
+            --cc: var(--gold);
+            --ctag-bg: var(--gold-lt);
+            --ctag-bd: rgba(201, 168, 76, 0.2);
                         "
                     >
                         <i class="fa-solid fa-scale-balanced ci"></i>
@@ -460,9 +460,9 @@
                         style="
                             --c1: #0d1b2a;
                             --c2: #1b3148;
-                            --cc: #c8960c;
+                            --cc: #D4A843;
                             --ctag-bg: var(--gold-lt);
-                            --ctag-bd: rgba(200, 150, 12, 0.2);
+                            --ctag-bd: rgba(201, 168, 76, 0.2);
                         "
                     >
                         <i class="fa-solid fa-compass-drafting ci"></i>
@@ -580,152 +580,21 @@
             </div>
         </section>
 
-        <section class="sec" id="servicios-detalle">
+        <section class="sec-stripe" id="blog-section">
             <div class="c">
                 <div class="sh center">
-                    <span class="sl">Servicios</span>
-                    <h2 class="st">Servicios Profesionales</h2>
+                    <span class="sl">BLOG TÉCNICO</span>
+                    <h2 class="st">Últimos Artículos</h2>
                     <p class="sd">
-                        Soluciones integrales en derecho, catastro, ordenamiento territorial, geografía, topografía,
-                        geodesia, geomática y desarrollo de software aplicado al territorio.
+                        Análisis, guías y recursos desde la práctica profesional en derecho territorial, catastro, geomática y desarrollo de software en Bolivia.
                     </p>
                 </div>
-                <div class="g g-auto" id="servicios-grid">
-                    <div class="svc-card reveal" style="--sc1: #c8960c; --sc2: #e8b020">
-                        <div
-                            class="svc-icon"
-                            style="
-                                background: var(--gold-lt);
-                                color: var(--gold);
-                                border-color: rgba(200, 150, 12, 0.2);
-                            "
-                        >
-                            <i class="fa-solid fa-scale-balanced"></i>
-                        </div>
-                        <h3 class="svc-title">Asesoría Legal Territorial</h3>
-                        <p class="svc-desc">
-                            Consultoría jurídica en derecho civil, usucapión, derecho registral, notarial, saneamiento
-                            predial y normativa territorial boliviana.
-                        </p>
-                        <a class="svc-link" href="#contacto-servicios">
-                            <i class="fa-solid fa-arrow-right"></i>
-                            Consultar
-                        </a>
-                    </div>
-                    <div class="svc-card reveal" style="--sc1: #0f6e6e; --sc2: #1aa0a0">
-                        <div
-                            class="svc-icon"
-                            style="
-                                background: var(--teal-lt);
-                                color: var(--teal);
-                                border-color: rgba(15, 110, 110, 0.2);
-                            "
-                        >
-                            <i class="fa-solid fa-map-location-dot"></i>
-                        </div>
-                        <h3 class="svc-title">Gestión y Catastro Multifinalitario</h3>
-                        <p class="svc-desc">
-                            Levantamientos catastrales, fichas prediales, valuación fiscal, nomenclatura,
-                            geocodificación, actualización de información territorial y sistemas catastrales.
-                        </p>
-                        <a class="svc-link" href="#contacto-servicios">
-                            <i class="fa-solid fa-arrow-right"></i>
-                            Consultar
-                        </a>
-                    </div>
-                    <div class="svc-card reveal" style="--sc1: #c8960c; --sc2: #2a6fb0">
-                        <div
-                            class="svc-icon"
-                            style="
-                                background: linear-gradient(135deg, var(--gold-lt), #e8f0fa);
-                                color: #c8960c;
-                                border-color: rgba(200, 150, 12, 0.2);
-                            "
-                        >
-                            <i class="fa-solid fa-compass-drafting"></i>
-                        </div>
-                        <h3 class="svc-title">Ordenamiento Territorial</h3>
-                        <p class="svc-desc">
-                            Planes de ordenamiento urbano y rural (PLOT, PDM, POT), zonificación, uso de suelo,
-                            normativa territorial y asesoría a gobiernos autónomos municipales.
-                        </p>
-                        <a class="svc-link" href="#contacto-servicios">
-                            <i class="fa-solid fa-arrow-right"></i>
-                            Consultar
-                        </a>
-                    </div>
-                    <div class="svc-card reveal" style="--sc1: #1a7a9a; --sc2: #2aa0c8">
-                        <div
-                            class="svc-icon"
-                            style="background: #e8f4f8; color: #1a7a9a; border-color: rgba(26, 122, 154, 0.2)"
-                        >
-                            <i class="fa-solid fa-earth-americas"></i>
-                        </div>
-                        <h3 class="svc-title">Estudios y Análisis Geográficos</h3>
-                        <p class="svc-desc">
-                            Análisis territorial integral, estudios de localización, geografía humana y física,
-                            evaluación de riesgos, caracterización regional y diagnóstico geográfico.
-                        </p>
-                        <a class="svc-link" href="#contacto-servicios">
-                            <i class="fa-solid fa-arrow-right"></i>
-                            Consultar
-                        </a>
-                    </div>
-                    <div class="svc-card reveal" style="--sc1: #c8660c; --sc2: #2a6fb0">
-                        <div
-                            class="svc-icon"
-                            style="
-                                background: linear-gradient(135deg, #fef3e8, #e8f0fa);
-                                color: #c8660c;
-                                border-color: rgba(200, 102, 12, 0.2);
-                            "
-                        >
-                            <i class="fa-solid fa-mountain"></i>
-                        </div>
-                        <h3 class="svc-title">Topografía y Geodesia Aplicada</h3>
-                        <p class="svc-desc">
-                            Levantamientos topográficos, planimetría, altimetría, curvas de nivel, replanteo,
-                            cubicaciones, posicionamiento GNSS, redes geodésicas y georeferenciación con SIRGAS.
-                        </p>
-                        <a class="svc-link" href="#contacto-servicios">
-                            <i class="fa-solid fa-arrow-right"></i>
-                            Consultar
-                        </a>
-                    </div>
-                    <div class="svc-card reveal" style="--sc1: #3a5e3a; --sc2: #559055">
-                        <div
-                            class="svc-icon"
-                            style="background: #eef5ee; color: #3a5e3a; border-color: rgba(58, 94, 58, 0.2)"
-                        >
-                            <i class="fa-solid fa-layer-group"></i>
-                        </div>
-                        <h3 class="svc-title">Geomática y Sistemas de Información Geográfica</h3>
-                        <p class="svc-desc">
-                            Implementación de SIG con PostGIS/GeoServer, teledetección, cartografía temática, modelos
-                            digitales de terreno, análisis espacial y publicación de geoservicios OGC.
-                        </p>
-                        <a class="svc-link" href="#contacto-servicios">
-                            <i class="fa-solid fa-arrow-right"></i>
-                            Consultar
-                        </a>
-                    </div>
-                    <div class="svc-card reveal" style="--sc1: #7c6fc8; --sc2: #9d92e0">
-                        <div
-                            class="svc-icon"
-                            style="background: #f0eff9; color: #7c6fc8; border-color: rgba(124, 111, 200, 0.2)"
-                        >
-                            <i class="fa-solid fa-code"></i>
-                        </div>
-                        <h3 class="svc-title">Desarrollo de Software y Aplicaciones Web</h3>
-                        <p class="svc-desc">
-                            Aplicaciones web a medida, visores de mapas, portales institucionales, APIs geoespaciales,
-                            bases de datos, automatización de procesos y despliegue profesional.
-                        </p>
-                        <a class="svc-link" href="#contacto-servicios">
-                            <i class="fa-solid fa-arrow-right"></i>
-                            Consultar
-                        </a>
-                    </div>
+                <div class="blog-grid" id="blog-grid"></div>
+                <div style="text-align: center; margin-top: 44px">
+                    <a class="btn btn-gold" href="https://lexgeocat.blogspot.com/" target="_blank" rel="noopener">
+                        <i class="fa-solid fa-newspaper"></i>
+                        Ver todos en el Blog
+                    </a>
                 </div>
             </div>
         </section>
@@ -743,117 +612,6 @@
                         <i class="fa-solid fa-folder-open"></i>
                         Ver todos los recursos
                     </a>
-                </div>
-            </div>
-        </section>
-
-        <section class="sec-dark" id="nosotros-servicios">
-            <div class="c">
-                <div class="about-wrap">
-                    <div class="about-img-wrap">
-                        <div
-                            class="about-img"
-                            style="
-                                background: linear-gradient(135deg, var(--ink), var(--ink3));
-                                height: 440px;
-                                display: flex;
-                                align-items: center;
-                                justify-content: center;
-                                border-radius: var(--rl);
-                            "
-                        >
-                            <div style="text-align: center">
-                                <i
-                                    class="fa-solid fa-map-location-dot"
-                                    style="font-size: 4rem; color: var(--gold2); margin-bottom: 16px"
-                                ></i>
-                                <div
-                                    style="font-family: var(--font-h); font-size: 1.4rem; font-weight: 700; color: #fff"
-                                >
-                                    Cristian B. Ruiz Q.
-                                </div>
-                                <div style="font-size: 0.8rem; color: rgba(255, 255, 255, 0.5); margin-top: 4px">
-                                    R.N.T. 970285 · R.P.A. 13437938CBRQ
-                                </div>
-                            </div>
-                        </div>
-                        <div class="about-badge-wrap">
-                            <div class="about-badge-n">7</div>
-                            <div class="about-badge-l">Especialidades</div>
-                        </div>
-                    </div>
-                    <div class="about-content">
-                        <span class="sl">Sobre Mí</span>
-                        <h2 class="st" style="color: #fff">Cristian B. Ruiz Quiroga</h2>
-                        <p
-                            style="
-                                font-size: 1.1rem;
-                                color: var(--gold2);
-                                font-weight: 600;
-                                margin-bottom: 12px;
-                                line-height: 1.5;
-                            "
-                        >
-                            Tec. Univ. Sup. en Catastro y Ordenamiento Territorial (UMSA) · Lic. en Derecho (UPEA)
-                        </p>
-                        <p>
-                            Profesional con doble titulación. Técnico Catastral colegiado en la
-                            <strong>Sociedad de Ingenieros de Bolivia</strong>
-                            (R.N.T. Nº 970285) y Abogado inscrito en el
-                            <strong>Registro Público de la Abogacía</strong>
-                            (R.P.A. Nº 13437938CBRQ). Mi ejercicio integra el criterio jurídico con la precisión técnica
-                            del territorio y el desarrollo de soluciones tecnológicas aplicadas a la gestión pública y
-                            privada en Bolivia.
-                        </p>
-                        <p>
-                            Complemento mi formación con conocimientos autodidactas en topografía, geodesia, geografía,
-                            geomática y desarrollo de software, que aplico a proyectos reales de catastro, ordenamiento
-                            territorial, sistemas de información geográfica y aplicaciones web.
-                        </p>
-
-                        <div class="creds-grid" style="margin-top: 22px">
-                            <a class="cred-card" href="https://www.sib.org.bo/guia.html" target="_blank" rel="noopener">
-                                <div class="cred-logo">
-                                    <img alt="SIB" src="assets/img/logo-sib.jpg" loading="lazy" />
-                                </div>
-                                <div class="cred-info">
-                                    <div class="cred-rol">Téc. Catastral</div>
-                                    <div class="cred-org">S.I.B. Nacional</div>
-                                    <div class="cred-num">R.N.T. Nº 970285</div>
-                                    <div class="cred-cta">
-                                        Ver registro
-                                        <i class="fa-solid fa-arrow-up-right-from-square"></i>
-                                    </div>
-                                </div>
-                            </a>
-                            <a
-                                class="cred-card"
-                                href="https://rpa2.justicia.gob.bo/#/busqueda"
-                                target="_blank"
-                                rel="noopener"
-                            >
-                                <div class="cred-logo">
-                                    <img alt="RPA" src="assets/img/logo-rpa.jpg" loading="lazy" />
-                                </div>
-                                <div class="cred-info">
-                                    <div class="cred-rol">Abogado</div>
-                                    <div class="cred-org">R.P.A. · TSJ Bolivia</div>
-                                    <div class="cred-num">Nº 13437938CBRQ</div>
-                                    <div class="cred-cta">
-                                        Ver registro
-                                        <i class="fa-solid fa-arrow-up-right-from-square"></i>
-                                    </div>
-                                </div>
-                            </a>
-                        </div>
-
-                        <div style="margin-top: 28px">
-                            <a class="btn btn-gold" href="pages/acerca-de.html">
-                                <i class="fa-solid fa-user"></i>
-                                Conocer más sobre mí
-                            </a>
-                        </div>
-                    </div>
                 </div>
             </div>
         </section>

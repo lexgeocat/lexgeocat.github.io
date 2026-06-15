@@ -1,16 +1,13 @@
-/* ═══════════════════════════════════════════════════════════
-   25. BACK TO TOP
-   ═══════════════════════════════════════════════════════════ */
 #top {
   position: fixed;
   bottom: 28px;
   right: 28px;
-  width: 46px;
-  height: 46px;
-  background: var(--ink);
-  color: var(--gold2);
-  border: 1px solid rgba(200, 150, 12, .25);
-  border-radius: 50%;
+  width: 44px;
+  height: 44px;
+  background: var(--card2);
+  color: var(--gold);
+  border: 1px solid var(--border);
+  border-radius: 8px;
   cursor: pointer;
   font-size: 15px;
   display: flex;
@@ -34,18 +31,15 @@
   transform: translateY(-3px);
   background: var(--gold);
   border-color: var(--gold);
-  color: #fff
+  color: var(--bg);
+  box-shadow: var(--sh-gold-h)
 }
 
-/* ═══════════════════════════════════════════════════════════
-   26. ANIMACIONES GLOBALES
-   ═══════════════════════════════════════════════════════════ */
 @keyframes fadeUp {
   from {
     opacity: 0;
     transform: translateY(24px)
   }
-
   to {
     opacity: 1;
     transform: translateY(0)
@@ -53,18 +47,11 @@
 }
 
 @keyframes fadeIn {
-  from {
-    opacity: 0
-  }
-
-  to {
-    opacity: 1
-  }
+  from { opacity: 0 }
+  to { opacity: 1 }
 }
 
-/* Respeto a movimiento reducido */
 @media (prefers-reduced-motion: reduce) {
-
   *,
   *::before,
   *::after {
@@ -73,7 +60,6 @@
     transition-duration: .01ms !important;
     scroll-behavior: auto !important;
   }
-
   .lpaz-pulse-outer,
   .lpaz-pulse-mid,
   .lpaz-dot {
@@ -81,12 +67,7 @@
   }
 }
 
-
-/* ═══════════════════════════════════════════════════════════
-   27. GLOBAL RESPONSIVE MISC
-   ═══════════════════════════════════════════════════════════ */
 @media (max-width: 480px) {
-
   .c,
   .hi,
   .nav-inner {

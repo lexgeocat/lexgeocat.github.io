@@ -1,58 +1,43 @@
-/* ═══════════════════════════════════════════════════════════
-   11. BOTONES
-   ═══════════════════════════════════════════════════════════ */
 .btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 9px;
-  padding: 13px 28px;
-  border-radius: 50px;
-  font-family: var(--font-b);
-  font-weight: 600;
-  font-size: .88rem;
-  transition: all .3s;
-  cursor: pointer;
-  border: none;
-  text-decoration: none;
-  letter-spacing: .02em;
+  display: inline-flex; align-items: center; gap: 10px;
+  padding: 12px 28px; border-radius: 8px;
+  font-family: var(--font-body); font-weight: 600; font-size: .88rem;
+  transition: all .3s; cursor: pointer; border: none;
+  text-decoration: none; line-height: 1.4;
 }
 
 .btn-gold {
-  background: var(--gold);
-  color: #fff;
-  box-shadow: 0 4px 20px rgba(200, 150, 12, .35);
+  background: var(--gold); color: var(--color-bg-primary);
+  box-shadow: var(--sh-gold);
+}
+.btn-gold:hover {
+  background: var(--gold2); color: var(--color-bg-primary);
+  transform: translateY(-2px); box-shadow: var(--sh-gold-h);
 }
 
-.btn-gold:hover {
-  background: var(--gold2);
-  color: #fff;
-  transform: translateY(-2px);
-  box-shadow: 0 8px 32px rgba(200, 150, 12, .45)
+.btn-teal {
+  background: var(--teal); color: #fff;
+  box-shadow: var(--sh-teal);
+}
+.btn-teal:hover {
+  background: var(--color-accent-teal-glow); color: #fff;
+  transform: translateY(-2px); box-shadow: 0 8px 32px rgba(0,180,166,.25);
 }
 
 .btn-ghost {
-  background: transparent;
-  color: #fff;
-  border: 1.5px solid rgba(255, 255, 255, .25);
+  background: transparent; color: var(--text);
+  border: 1.5px solid var(--border2);
 }
-
 .btn-ghost:hover {
-  border-color: var(--gold2);
-  color: var(--gold2);
-  transform: translateY(-2px);
-  background: rgba(200, 150, 12, .08)
+  border-color: var(--gold); color: var(--gold);
+  transform: translateY(-2px); background: var(--gold-lt);
 }
 
 .btn-whatsapp {
-  background: #25D366 !important;
-  color: #fff !important;
-  box-shadow: 0 4px 14px rgba(37, 211, 102, .3) !important;
-  border: none;
+  background: #25D366 !important; color: #fff !important;
+  box-shadow: 0 4px 14px rgba(37,211,102,.2) !important;
 }
-
 .btn-whatsapp:hover {
-  background: #20BA5A !important;
-  color: #fff !important;
-  transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(37, 211, 102, .4) !important
+  background: #20BA5A !important; transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(37,211,102,.3) !important;
 }

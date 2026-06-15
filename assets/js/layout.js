@@ -109,7 +109,7 @@
 
     function headerHtml() {
         return (
-            '<div id="ld"><div class="logo-loader"><svg fill="none" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><circle cx="32" cy="32" opacity=".25" r="28" stroke="#E8D5A0" stroke-width="1"/><circle class="ring-anim" cx="32" cy="32" r="28" stroke="#C8960C" stroke-linecap="round" stroke-width="2.5"/><text fill="#C8960C" font-family="serif" font-size="16" font-weight="700" text-anchor="middle" x="32" y="37">L</text></svg></div><span>LexGeoCat</span></div>' +
+            '<div id="ld"><div class="logo-loader"><svg fill="none" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><circle cx="32" cy="32" opacity=".2" r="28" stroke="#D4A843" stroke-width="1"/><circle class="ring-anim" cx="32" cy="32" r="28" stroke="#D4A843" stroke-linecap="round" stroke-width="2"/><text fill="#D4A843" font-family="serif" font-size="16" font-weight="700" text-anchor="middle" x="32" y="37">L</text></svg></div><span>LexGeoCat</span></div>' +
             '<div id="hdr"><div class="hi">' +
             '<div class="logo-wrap"><a href="' +
             root('index.html') +
@@ -139,7 +139,7 @@
             '<nav aria-label="Navegación principal" class="nav-bar" id="nav-bar" role="navigation"><div class="nav-inner">' +
             buildNav(true) +
             '</div></nav>' +
-            '<div class="mob-menu" id="mob-menu"><div class="mob-menu-hd"><div style="display:flex;align-items:center;gap:10px"><div class="logo-icon" style="width:34px;height:34px"><i class="fa-solid fa-map-location-dot" style="color:var(--gold2);font-size:14px"></i></div><span style="font-family:var(--font-h);font-size:1.15rem;font-weight:700;color:#fff">Lex<span style="color:var(--gold2)">Geo</span>Cat</span></div><button class="mob-close" id="mob-close" type="button"><i class="fa-solid fa-xmark"></i></button></div>' +
+            '<div class="mob-menu" id="mob-menu"><div class="mob-menu-hd"><div style="display:flex;align-items:center;gap:10px"><div class="logo-icon" style="width:34px;height:34px"><i class="fa-solid fa-map-location-dot" style="color:var(--gold2);font-size:14px"></i></div><span style="font-family:var(--font-display);font-size:1.15rem;font-weight:800;color:#fff">Lex<span style="color:var(--gold2)">Geo</span>Cat</span></div><button class="mob-close" id="mob-close" type="button"><i class="fa-solid fa-xmark"></i></button></div>' +
             '<div class="mob-search-wrap"><i class="fa-solid fa-magnifying-glass"></i><input id="mob-srch-input" type="text" autocomplete="off" placeholder="Buscar en el blog..."><button class="mob-search-btn" id="mob-srch-btn" type="button">Buscar</button></div>' +
             '<ul class="mob-nav">' +
             buildNav(false) +
@@ -153,10 +153,12 @@
             '<div class="ft-brand"><h3>Lex<span>Geo</span>Cat</h3><div class="ft-tagline">' +
             CFG.tagline +
             '</div>' +
-            '<p>Plataforma especializada en la intersección entre el derecho, el catastro multifinalitario, los sistemas de información geográfica y la tecnología aplicada al territorio.</p>' +
-            '<div class="ft-brand-tags"><span class="ft-brand-tag">Viacha, La Paz</span><span class="ft-brand-tag">Bolivia</span><span class="ft-brand-tag">SIB R.N.T. ' +
-            CFG.rnt +
-            '</span></div>' +
+            '<p>Consultoría profesional en derecho territorial, catastro, geomática y tecnología aplicada al territorio boliviano.</p>' +
+            '<div class="ft-contact" style="margin-bottom:16px">' +
+            '<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;font-size:.82rem;color:var(--text2)"><i class="fa-solid fa-envelope" style="color:var(--gold);font-size:11px;width:16px;text-align:center"></i> lexgeocat@gmail.com</div>' +
+            '<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;font-size:.82rem;color:var(--text2)"><i class="fa-brands fa-whatsapp" style="color:var(--gold);font-size:11px;width:16px;text-align:center"></i> +591 76711790</div>' +
+            '<div style="display:flex;align-items:center;gap:8px;font-size:.82rem;color:var(--text2)"><i class="fa-solid fa-location-dot" style="color:var(--gold);font-size:11px;width:16px;text-align:center"></i> Viacha, La Paz — Bolivia</div>' +
+            '</div>' +
             '<div class="ft-social">' +
             '<a aria-label="Facebook" href="' +
             CFG.social.facebook +
@@ -185,20 +187,6 @@
             root('pages/geografia.html') +
             '"><i class="fa-solid fa-chevron-right"></i>Geografía</a></li>' +
             '<li><a href="' +
-            root('pages/topogeodesia.html') +
-            '"><i class="fa-solid fa-chevron-right"></i>Topografía y Geodesia</a></li>' +
-            '<li><a href="' +
-            root('pages/geomantica.html') +
-            '"><i class="fa-solid fa-chevron-right"></i>Geomática</a></li>' +
-            '<li><a href="' +
-            root('pages/desarrollo-software.html') +
-            '"><i class="fa-solid fa-chevron-right"></i>Software y Web</a></li>' +
-            '</ul></div>' +
-            '<div class="ft-col"><h4>Contenido</h4><ul>' +
-            '<li><a href="' +
-            root('pages/recursos.html') +
-            '"><i class="fa-solid fa-chevron-right"></i>Recursos</a></li>' +
-            '<li><a href="' +
             CFG.blogUrl +
             '"><i class="fa-solid fa-chevron-right"></i>Blog</a></li>' +
             '</ul></div>' +
@@ -207,17 +195,11 @@
             root('pages/acerca-de.html') +
             '"><i class="fa-solid fa-chevron-right"></i>Sobre Mí</a></li>' +
             '<li><a href="' +
-            root('index.html#servicios-detalle') +
-            '"><i class="fa-solid fa-chevron-right"></i>Servicios</a></li>' +
-            '<li><a href="' +
-            root('pages/contacto.html') +
+            root('index.html#contacto-servicios') +
             '"><i class="fa-solid fa-chevron-right"></i>Contacto</a></li>' +
             '<li><a href="' +
             root('pages/privacidad.html') +
             '"><i class="fa-solid fa-chevron-right"></i>Privacidad</a></li>' +
-            '<li><a href="' +
-            root('pages/terminos.html') +
-            '"><i class="fa-solid fa-chevron-right"></i>Términos</a></li>' +
             '</ul></div></div></div>' +
             '<div class="ft-sep"><hr></div>' +
             '<div class="ft-btm"><span class="ft-btm-left">© ' +

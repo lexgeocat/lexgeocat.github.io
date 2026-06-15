@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════════════════════════════════════
-   LEX GEO CAT — STYLE INDEX
+   LEX GEO CAT — STYLE INDEX (REDISEÑO PREMIUM)
    ═══════════════════════════════════════════════════════════════════════ */
 
 @import url("modules/tokens.css");
@@ -13,6 +13,7 @@
 @import url("modules/cards.css");
 @import url("modules/contact.css");
 @import url("modules/article.css");
+@import url("modules/blog.css");
 @import url("modules/search-modal.css");
 @import url("modules/stats.css");
 @import url("modules/footer.css");

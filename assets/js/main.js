@@ -80,7 +80,6 @@
     menu.addEventListener('click', function (e) { if (e.target === menu) closeMenu(); });
     menu.querySelectorAll('a').forEach(function (a) { a.addEventListener('click', closeMenu); });
 
-    /* Buscador móvil */
     var mobInput = document.getElementById('mob-srch-input');
     var mobBtn = document.getElementById('mob-srch-btn');
     if (mobInput && mobBtn) {
@@ -96,7 +95,6 @@
       });
     }
 
-    /* Submenús móvil */
     menu.querySelectorAll('.mob-dropdown').forEach(function (drop) {
       var btn = drop.querySelector('.mob-dropbtn');
       if (!btn) return;
@@ -162,40 +160,35 @@
     else setTimeout(observeCounters, 100);
   }
 
-  /* STATS DESDE BLOGGER FEED + CONFIG */
+  /* ─── LOADER DE FEED VÍA JSON-IN-SCRIPT ─── */
+  function loadFeedJSON(url, callback) {
+    var id = '_lgc_' + Math.random().toString(36).substr(2, 9);
+    window[id] = function (d) {
+      try {
+        callback(d);
+      } catch (e) {
+        console.warn('[LexGeoCat] Error en callback feed:', e);
+      }
+      try { delete window[id]; } catch (e2) { }
+    };
+    var s = document.createElement('script');
+    s.src = url + (url.indexOf('?') >= 0 ? '&' : '?') + 'alt=json-in-script&callback=' + id;
+    s.async = true;
+    s.onerror = function () {
+      console.warn('[LexGeoCat] Error al cargar feed:', url);
+      try { delete window[id]; } catch (e) { }
+    };
+    document.body.appendChild(s);
+  }
+
+  /* ─── ESTADÍSTICAS DESDE BLOGGER ─── */
   (function () {
-    /* Stat Especialidades: viene de LGC_CONFIG.profesiones (cantidad fija) */
     try {
       var prof = (CFG && CFG.profesiones) ? CFG.profesiones.length : 0;
       setStat('stat-especialidades', prof);
     } catch (e) { setStat('stat-especialidades', 7); }
 
-    /* Stat Servicios: cantidad de tarjetas dentro de #servicios-grid (generadas o escritas) */
-    try {
-      var grid = document.getElementById('servicios-grid');
-      if (grid) {
-        var n = grid.querySelectorAll('.svc-card').length;
-        if (n > 0) setStat('stat-servicios', n);
-        else setStat('stat-servicios', 7);
-      } else {
-        setStat('stat-servicios', 7);
-      }
-    } catch (e) { setStat('stat-servicios', 7); }
-
     if (!CFG.bloggerFeed) return;
-    var feedBase = CFG.bloggerFeed;
-
-    function loadFeed(path, cb) {
-      var id = '_lgc_' + Math.random().toString(36).substr(2, 9);
-      window[id] = function (d) {
-        try { cb(d); } catch (e) { }
-        try { delete window[id]; } catch (e2) { }
-      };
-      var s = document.createElement('script');
-      s.src = feedBase + path + (path.indexOf('?') >= 0 ? '&' : '?') + 'alt=json-in-script&callback=' + id;
-      s.onerror = function () { try { delete window[id]; } catch (e) { } };
-      document.body.appendChild(s);
-    }
 
     function setStat(id, n) {
       var el = document.getElementById(id);
@@ -207,28 +200,26 @@
       }
     }
 
-    loadFeed('?max-results=0', function (d) {
+    loadFeedJSON(CFG.bloggerFeed + '?max-results=0', function (d) {
       var n = d.feed && d.feed.openSearch$totalResults
         ? parseInt(d.feed.openSearch$totalResults.$t, 10) : 0;
       setStat('stat-articulos', n);
     });
 
-    loadFeed('/-/Recursos?max-results=0', function (d) {
+    loadFeedJSON(CFG.bloggerFeed + '/-/Recursos?max-results=0', function (d) {
       var n = d.feed && d.feed.openSearch$totalResults
         ? parseInt(d.feed.openSearch$totalResults.$t, 10) : 0;
       setStat('stat-recursos', n);
     });
   })();
 
-  /* LOAD FEED GRID */
+  /* ─── CARGA GRID DE POSTS (por label) ─── */
   function loadFeedGrid(label, containerId, badgeCls, limit) {
     if (!CFG.bloggerFeed) return;
     var box = document.getElementById(containerId);
     if (!box) return;
-    var cb = '__cb_' + containerId.replace(/-/g, '_');
-    var url = CFG.bloggerFeed + '/-/' + encodeURIComponent(label) +
-      '?alt=json-in-script&max-results=' + (limit || 6) + '&callback=' + cb;
-    window[cb] = function (data) {
+    var url = CFG.bloggerFeed + '/-/' + encodeURIComponent(label) + '?max-results=' + (limit || 6);
+    loadFeedJSON(url, function (data) {
       var entries = (data.feed && data.feed.entry) || [];
       if (!entries.length) {
         box.innerHTML = '<p style="color:var(--text3);text-align:center;padding:20px;grid-column:1/-1;font-size:.85rem">' +
@@ -250,34 +241,92 @@
         }
         var imgHtml = thumb
           ? '<img alt="' + title.replace(/"/g, '&quot;') + '" src="' + thumb.replace(/&amp;/g, '&') + '" loading="lazy">'
-          : '<div class="pc-noimg"><i class="fa-solid fa-book-open"></i></div>';
+          : '<div class="blog-card-thumb-noimg"><i class="fa-solid fa-newspaper"></i></div>';
         var dateStr = '';
         if (e.published && e.published.$t) {
           dateStr = new Date(e.published.$t).toLocaleDateString('es', {
             year: 'numeric', month: 'short', day: 'numeric'
           });
         }
-        return '<article class="pc reveal">' +
-          '<div class="pc-img">' + imgHtml +
-          '<span class="pc-badge ' + badgeCls + '">' + label + '</span></div>' +
-          '<div class="pc-body">' +
-          '<div class="pc-meta"><i class="fa-regular fa-calendar"></i> ' + dateStr + '</div>' +
-          '<h3 class="pc-title"><a href="' + postUrl + '" target="_blank" rel="noopener">' + title + '</a></h3>' +
-          '<p class="pc-snip">' + snip + '</p>' +
-          '<div class="pc-ft"><a class="pc-read" href="' + postUrl + '" target="_blank" rel="noopener">' +
-          'Leer en el blog <i class="fa-solid fa-arrow-right"></i></a></div>' +
-          '</div></article>';
+        var readTime = Math.max(1, Math.ceil(snip.length / 500)) + ' min lectura';
+        return '<a class="blog-card reveal" href="' + postUrl + '" target="_blank" rel="noopener">' +
+          '<div class="blog-card-thumb">' + imgHtml +
+          '<span class="blog-card-badge ' + badgeCls + '">' + label + '</span></div>' +
+          '<div class="blog-card-body">' +
+          '<h3 class="blog-card-title">' + title + '</h3>' +
+          '<p class="blog-card-excerpt">' + snip + '…</p>' +
+          '<div class="blog-card-meta">' +
+          '<span class="blog-card-date"><i class="fa-regular fa-calendar"></i> ' + dateStr + ' · ' + readTime + '</span>' +
+          '<span class="blog-card-cta">→ Leer en Blog</span>' +
+          '</div></div></a>';
       }).join('');
       if (rIO) box.querySelectorAll('.reveal').forEach(function (el) { rIO.observe(el); });
-    };
-    var sc = document.createElement('script');
-    sc.src = url;
-    sc.async = true;
-    document.body.appendChild(sc);
+    });
   }
 
+  /* ─── CARGA BLOG PRINCIPAL (últimos 3 artículos) ─── */
+  function loadBlogFeed() {
+    if (!CFG.bloggerFeed) return;
+    var box = document.getElementById('blog-grid');
+    if (!box) return;
+    var url = CFG.bloggerFeed + '?max-results=3';
+    loadFeedJSON(url, function (data) {
+      var entries = (data.feed && data.feed.entry) || [];
+      if (!entries.length) {
+        box.innerHTML = '<p style="color:var(--text3);text-align:center;padding:20px;grid-column:1/-1;font-size:.85rem">Próximamente artículos desde la trinchera catastral.</p>';
+        return;
+      }
+      function categoryColor(labels) {
+        if (!labels || !labels.length) return { cls: 'gold', label: 'Legal' };
+        var cats = labels.map(function(l){ return l.$t.toLowerCase() });
+        if (cats.some(function(c){ return c.indexOf('derecho')>=0 || c.indexOf('legal')>=0 })) return { cls: 'gold', label: 'Derecho' };
+        if (cats.some(function(c){ return c.indexOf('gis')>=0 || c.indexOf('geomática')>=0 || c.indexOf('sig')>=0 })) return { cls: 'teal', label: 'GIS' };
+        return { cls: 'white', label: 'Catastro' };
+      }
+      box.innerHTML = entries.map(function (e) {
+        var links = e.link || [];
+        var postUrl = CFG.blogUrl;
+        for (var j = 0; j < links.length; j++) {
+          if (links[j].rel === 'alternate') { postUrl = links[j].href; break; }
+        }
+        var title = (e.title && e.title.$t) ? e.title.$t : 'Sin título';
+        var html = (e.content && e.content.$t) || (e.summary && e.summary.$t) || '';
+        var snip = html.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 120);
+        var thumb = '';
+        if (e.media$thumbnail && e.media$thumbnail.url) {
+          thumb = e.media$thumbnail.url.replace('/s72-c/', '/s600-c/');
+        }
+        var labels = e.category || [];
+        var catInfo = categoryColor(labels);
+        var badgeCls = catInfo.cls;
+        var badgeLabel = catInfo.label;
+        var imgHtml = thumb
+          ? '<img alt="' + title.replace(/"/g, '&quot;') + '" src="' + thumb.replace(/&amp;/g, '&') + '" loading="lazy">'
+          : '<div class="blog-card-thumb-noimg"><i class="fa-solid fa-newspaper"></i></div>';
+        var dateStr = '';
+        if (e.published && e.published.$t) {
+          dateStr = new Date(e.published.$t).toLocaleDateString('es', { year: 'numeric', month: 'short', day: 'numeric' });
+        }
+        var readTime = Math.max(1, Math.ceil(snip.length / 500)) + ' min lectura';
+        return '<a class="blog-card reveal" href="' + postUrl + '" target="_blank" rel="noopener">' +
+          '<div class="blog-card-thumb">' + imgHtml +
+          '<span class="blog-card-badge ' + badgeCls + '">' + badgeLabel + '</span></div>' +
+          '<div class="blog-card-body">' +
+          '<h3 class="blog-card-title">' + title + '</h3>' +
+          '<p class="blog-card-excerpt">' + snip + '…</p>' +
+          '<div class="blog-card-meta">' +
+          '<span class="blog-card-date"><i class="fa-regular fa-calendar"></i> ' + dateStr + ' · ' + readTime + '</span>' +
+          '<span class="blog-card-cta">→ Leer en Blog</span>' +
+          '</div></div></a>';
+      }).join('');
+      if (rIO) box.querySelectorAll('.reveal').forEach(function (el) { rIO.observe(el); });
+    });
+  }
+
+  /* ─── INICIALIZACIÓN PRINCIPAL ─── */
   document.addEventListener('DOMContentLoaded', function () {
     loadFeedGrid('Recursos', 'recursos-grid', 'def', 6);
+    loadBlogFeed();
     var lbl = document.body.getAttribute('data-feed-label');
     if (lbl) loadFeedGrid(lbl, 'topic-posts-grid', 'def', 6);
   });
