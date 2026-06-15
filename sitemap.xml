@@ -5,64 +5,78 @@
   <!-- Página de inicio -->
   <url>
     <loc>https://lexgeocat.github.io/</loc>
-    <lastmod>2026-06-07</lastmod>
+    <lastmod>2026-06-14</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
 
-  <!-- Páginas principales -->
+  <!-- Especialidades -->
   <url>
     <loc>https://lexgeocat.github.io/pages/derecho.html</loc>
-    <lastmod>2026-06-07</lastmod>
+    <lastmod>2026-06-14</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
 
   <url>
     <loc>https://lexgeocat.github.io/pages/catastro.html</loc>
-    <lastmod>2026-06-07</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
-  </url>
-
-  <url>
-    <loc>https://lexgeocat.github.io/pages/gis.html</loc>
-    <lastmod>2026-06-07</lastmod>
+    <lastmod>2026-06-14</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
 
   <url>
     <loc>https://lexgeocat.github.io/pages/ordenamiento.html</loc>
-    <lastmod>2026-06-07</lastmod>
+    <lastmod>2026-06-14</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
-    <loc>https://lexgeocat.github.io/pages/tecnologia.html</loc>
-    <lastmod>2026-06-07</lastmod>
+    <loc>https://lexgeocat.github.io/pages/geografia.html</loc>
+    <lastmod>2026-06-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://lexgeocat.github.io/pages/topogeodesia.html</loc>
+    <lastmod>2026-06-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://lexgeocat.github.io/pages/geomantica.html</loc>
+    <lastmod>2026-06-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <url>
+    <loc>https://lexgeocat.github.io/pages/desarrollo-software.html</loc>
+    <lastmod>2026-06-14</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
     <loc>https://lexgeocat.github.io/pages/recursos.html</loc>
-    <lastmod>2026-06-07</lastmod>
+    <lastmod>2026-06-14</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
     <loc>https://lexgeocat.github.io/pages/acerca-de.html</loc>
-    <lastmod>2026-06-07</lastmod>
+    <lastmod>2026-06-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
 
   <url>
     <loc>https://lexgeocat.github.io/pages/contacto.html</loc>
-    <lastmod>2026-06-07</lastmod>
+    <lastmod>2026-06-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>

@@ -13,12 +13,24 @@
   transition: all .35s var(--ease);
 }
 
+[data-theme="light"] #hdr {
+  background: rgba(255, 255, 255, .96);
+  border-color: var(--border);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  box-shadow: var(--sh);
+}
+
 #hdr.scrolled {
   background: rgba(247, 244, 239, .92);
   border-color: var(--border);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   box-shadow: var(--sh);
+}
+
+[data-theme="light"] #hdr.scrolled {
+  background: rgba(255, 255, 255, .98);
 }
 
 [data-theme="dark"] #hdr.scrolled {

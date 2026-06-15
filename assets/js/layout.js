@@ -132,7 +132,7 @@
             '" rel="noopener" target="_blank"><i class="fa-brands fa-whatsapp"></i></a>' +
             '</div>' +
             '<div class="gc-stats-bar" id="gc-stats-widget"></div>' +
-            '<button aria-label="Buscar en el blog" class="srch-wrap srch-open-btn" id="srch-open-btn" type="button"><i class="fa-solid fa-magnifying-glass" style="color:var(--text3);font-size:12px"></i><span style="font-family:var(--font-b);font-size:.83rem;color:var(--text3);background:transparent;border:none;outline:none;width:160px;text-align:left;cursor:pointer">Buscar artículos...</span><kbd style="font-size:.65rem;color:var(--text3);background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:2px 6px;font-family:var(--font-m)">⌘K</kbd></button>' +
+            '<button aria-label="Buscar en el blog" class="icon-btn srch-open-btn" id="srch-open-btn" type="button"><i class="fa-solid fa-magnifying-glass"></i></button>' +
             '<button aria-label="Cambiar tema" class="icon-btn th-btn" id="th-btn" type="button"><i class="fa-solid fa-moon"></i><i class="fa-solid fa-sun"></i></button>' +
             '<button aria-label="Menú" class="icon-btn ham" id="ham" type="button"><i class="fa-solid fa-bars"></i></button>' +
             '</div></div></div>' +
@@ -171,7 +171,7 @@
             CFG.social.whatsapp +
             '" rel="noopener" target="_blank"><i class="fab fa-whatsapp"></i></a>' +
             '</div></div>' +
-            '<div class="ft-col"><h4>Temáticas</h4><ul>' +
+            '<div class="ft-col"><h4>Especialidades</h4><ul>' +
             '<li><a href="' +
             root('pages/derecho.html') +
             '"><i class="fa-solid fa-chevron-right"></i>Derecho</a></li>' +
@@ -179,14 +179,20 @@
             root('pages/catastro.html') +
             '"><i class="fa-solid fa-chevron-right"></i>Catastro</a></li>' +
             '<li><a href="' +
-            root('pages/gis.html') +
-            '"><i class="fa-solid fa-chevron-right"></i>SIG / GIS</a></li>' +
-            '<li><a href="' +
             root('pages/ordenamiento.html') +
             '"><i class="fa-solid fa-chevron-right"></i>Ord. Territorial</a></li>' +
             '<li><a href="' +
-            root('pages/tecnologia.html') +
-            '"><i class="fa-solid fa-chevron-right"></i>Tecnología</a></li>' +
+            root('pages/geografia.html') +
+            '"><i class="fa-solid fa-chevron-right"></i>Geografía</a></li>' +
+            '<li><a href="' +
+            root('pages/topogeodesia.html') +
+            '"><i class="fa-solid fa-chevron-right"></i>Topografía y Geodesia</a></li>' +
+            '<li><a href="' +
+            root('pages/geomantica.html') +
+            '"><i class="fa-solid fa-chevron-right"></i>Geomática</a></li>' +
+            '<li><a href="' +
+            root('pages/desarrollo-software.html') +
+            '"><i class="fa-solid fa-chevron-right"></i>Software y Web</a></li>' +
             '</ul></div>' +
             '<div class="ft-col"><h4>Contenido</h4><ul>' +
             '<li><a href="' +

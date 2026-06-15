@@ -162,8 +162,26 @@
     else setTimeout(observeCounters, 100);
   }
 
-  /* STATS DESDE BLOGGER FEED */
+  /* STATS DESDE BLOGGER FEED + CONFIG */
   (function () {
+    /* Stat Especialidades: viene de LGC_CONFIG.profesiones (cantidad fija) */
+    try {
+      var prof = (CFG && CFG.profesiones) ? CFG.profesiones.length : 0;
+      setStat('stat-especialidades', prof);
+    } catch (e) { setStat('stat-especialidades', 7); }
+
+    /* Stat Servicios: cantidad de tarjetas dentro de #servicios-grid (generadas o escritas) */
+    try {
+      var grid = document.getElementById('servicios-grid');
+      if (grid) {
+        var n = grid.querySelectorAll('.svc-card').length;
+        if (n > 0) setStat('stat-servicios', n);
+        else setStat('stat-servicios', 7);
+      } else {
+        setStat('stat-servicios', 7);
+      }
+    } catch (e) { setStat('stat-servicios', 7); }
+
     if (!CFG.bloggerFeed) return;
     var feedBase = CFG.bloggerFeed;
 
@@ -199,19 +217,6 @@
       var n = d.feed && d.feed.openSearch$totalResults
         ? parseInt(d.feed.openSearch$totalResults.$t, 10) : 0;
       setStat('stat-recursos', n);
-    });
-
-    loadFeed('?max-results=200', function (d) {
-      var entries = (d.feed && d.feed.entry) || [];
-      var labels = {};
-      entries.forEach(function (e) {
-        if (e.category) e.category.forEach(function (c) { labels[c.term] = 1; });
-      });
-      setStat('stat-categorias', Object.keys(labels).length);
-      var main = ['Derecho', 'Catastro', 'GIS', 'Geomática', 'Ordenamiento', 'Tecnología'];
-      var active = 0;
-      main.forEach(function (l) { if (labels[l]) active++; });
-      setStat('stat-especialidades', Math.max(active, 1));
     });
   })();
 

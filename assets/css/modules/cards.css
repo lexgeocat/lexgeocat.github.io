@@ -595,3 +595,122 @@
     max-width: 400px
   }
 }
+
+/* ═══════════════════════════════════════════════════════════
+   17B. CREDENTIAL CARDS (acerca de)
+   ═══════════════════════════════════════════════════════════ */
+.creds-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  margin-top: 8px;
+}
+
+.cred-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 18px;
+  background: rgba(255, 255, 255, .04);
+  border: 1px solid rgba(200, 150, 12, .25);
+  border-radius: var(--r);
+  text-decoration: none;
+  color: #fff;
+  transition: all .3s var(--ease);
+  position: relative;
+  overflow: hidden;
+}
+
+.cred-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(200, 150, 12, .08), transparent 60%);
+  opacity: 0;
+  transition: opacity .3s;
+}
+
+.cred-card:hover {
+  border-color: var(--gold);
+  transform: translateY(-3px);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, .35);
+}
+
+.cred-card:hover::before {
+  opacity: 1;
+}
+
+.cred-logo {
+  width: 64px;
+  height: 64px;
+  flex-shrink: 0;
+  border-radius: 10px;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  position: relative;
+  z-index: 1;
+}
+
+.cred-logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.cred-info {
+  position: relative;
+  z-index: 1;
+  min-width: 0;
+}
+
+.cred-rol {
+  font-family: var(--font-h);
+  font-size: 1rem;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 2px;
+}
+
+.cred-org {
+  font-size: .72rem;
+  color: rgba(255, 255, 255, .6);
+  margin-bottom: 4px;
+  line-height: 1.35;
+}
+
+.cred-num {
+  font-family: var(--font-m);
+  font-size: .78rem;
+  font-weight: 600;
+  color: var(--gold2);
+  letter-spacing: .04em;
+  margin-bottom: 6px;
+}
+
+.cred-cta {
+  font-size: .7rem;
+  color: var(--gold);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 600;
+  letter-spacing: .04em;
+  transition: gap .25s;
+}
+
+.cred-card:hover .cred-cta {
+  gap: 10px;
+}
+
+.cred-cta i {
+  font-size: 10px;
+}
+
+@media (max-width: 640px) {
+  .creds-grid {
+    grid-template-columns: 1fr
+  }
+}
