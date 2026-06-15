@@ -222,7 +222,9 @@
     });
   }
 
-  function extractTitleFromSlug(e) {
+  function getEntryTitle(e) {
+    var feedTitle = e.title && e.title.$t ? e.title.$t.trim() : '';
+    if (feedTitle) return feedTitle;
     var links = e.link || [];
     for (var j = 0; j < links.length; j++) {
       if (links[j].rel === 'alternate') {
@@ -240,7 +242,7 @@
       return;
     }
     box.innerHTML = entries.map(function (e) {
-      var title = (e.title && e.title.$t && e.title.$t.trim()) ? e.title.$t : extractTitleFromSlug(e) || 'Sin título';
+      var title = getEntryTitle(e) || 'Sin título';
       var html = (e.content && e.content.$t) || (e.summary && e.summary.$t) || '';
       var snip = htmlToText(html, excerptLen || 120);
       var thumbUrl = getThumbUrl(e);
@@ -348,8 +350,7 @@
       var entries = [];
       for (var i = 0; i < allEntries.length && entries.length < (limit || 6); i++) {
         var e = allEntries[i];
-        var t = e.title && e.title.$t ? e.title.$t.trim() : '';
-        if (t.length > 0) entries.push(e);
+        if (getEntryTitle(e)) entries.push(e);
       }
       if (!entries.length) {
         entries = allEntries.slice(0, limit || 6);
@@ -373,10 +374,7 @@
       var validEntries = [];
       for (var i = 0; i < allEntries.length && validEntries.length < 3; i++) {
         var e = allEntries[i];
-        var t = e.title && e.title.$t ? e.title.$t.trim() : '';
-        if (t.length > 0) {
-          validEntries.push(e);
-        }
+        if (getEntryTitle(e)) validEntries.push(e);
       }
       var entries = validEntries.length > 0 ? validEntries : allEntries.slice(0, 3);
       renderBlogCards(entries, box, 'def', '', 120,
