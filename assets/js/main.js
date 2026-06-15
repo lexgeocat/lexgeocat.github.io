@@ -160,23 +160,147 @@
     else setTimeout(observeCounters, 100);
   }
 
-  /* ─── LOADER DE FEED VÍA JSON-IN-SCRIPT ─── */
-  function loadFeedJSON(url, callback) {
+  /* ─── UTILIDADES DE FEED ─── */
+
+  function htmlToText(html, maxLen) {
+    return html.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim().slice(0, maxLen || 120);
+  }
+
+  function getThumbUrl(e) {
+    if (e.media$thumbnail && e.media$thumbnail.url) {
+      return e.media$thumbnail.url.replace('/s72-c/', '/s600-c/');
+    }
+    return '';
+  }
+
+  function getCategoryInfo(labels) {
+    if (!labels || !labels.length) return { cls: 'white', label: 'Catastro' };
+    var cats = [];
+    for (var i = 0; i < labels.length; i++) {
+      var c = labels[i].$t || '';
+      if (c.trim()) cats.push(c.toLowerCase());
+    }
+    if (!cats.length) return { cls: 'white', label: 'Catastro' };
+    if (cats.some(function(c){ return c.indexOf('derecho')>=0 || c.indexOf('legal')>=0; }))
+      return { cls: 'gold', label: 'Derecho' };
+    if (cats.some(function(c){ return c.indexOf('gis')>=0 || c.indexOf('geomática')>=0 || c.indexOf('sig')>=0 || c.indexOf('geoinformacion')>=0; }))
+      return { cls: 'teal', label: 'GIS' };
+    if (cats.some(function(c){ return c.indexOf('catastro')>=0; }))
+      return { cls: 'white', label: 'Catastro' };
+    var first = cats[0];
+    return { cls: 'white', label: first.charAt(0).toUpperCase() + first.slice(1) };
+  }
+
+  function getPlaceholderHtml(catLabel) {
+    var gradients = {
+      'Derecho': 'linear-gradient(135deg, #b8860b 0%, #daa520 100%)',
+      'GIS': 'linear-gradient(135deg, #006d6d 0%, #20b2aa 100%)',
+      'Catastro': 'linear-gradient(135deg, #1a3a5c 0%, #2c7be5 100%)'
+    };
+    var icons = {
+      'Derecho': 'fa-scale-balanced',
+      'GIS': 'fa-map-location-dot',
+      'Catastro': 'fa-draw-polygon'
+    };
+    var grad = gradients[catLabel] || 'linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)';
+    var icon = icons[catLabel] || 'fa-newspaper';
+    return '<div class="blog-card-thumb-plh" style="background:' + grad + '"><i class="fa-solid ' + icon + '"></i></div>';
+  }
+
+  function getPostUrl(e) {
+    var links = e.link || [];
+    for (var j = 0; j < links.length; j++) {
+      if (links[j].rel === 'alternate') return links[j].href;
+    }
+    return CFG.blogUrl;
+  }
+
+  function formatDate(published) {
+    if (!published || !published.$t) return '';
+    return new Date(published.$t).toLocaleDateString('es', {
+      year: 'numeric', month: 'short', day: 'numeric'
+    });
+  }
+
+  function extractTitleFromSlug(e) {
+    var links = e.link || [];
+    for (var j = 0; j < links.length; j++) {
+      if (links[j].rel === 'alternate') {
+        var slug = links[j].href.replace(/\/+$/, '').split('/').pop() || '';
+        slug = slug.replace(/-/g, ' ').replace(/\s+/g, ' ').trim();
+        if (slug.length > 5) return slug.charAt(0).toUpperCase() + slug.slice(1);
+      }
+    }
+    return '';
+  }
+
+  function renderBlogCards(entries, box, badgeCls, badgeLabel, excerptLen, emptyMsg, isHome) {
+    if (!entries.length) {
+      box.innerHTML = '<p style="color:var(--text3);text-align:center;padding:20px;grid-column:1/-1;font-size:.85rem">' + (emptyMsg || '') + '</p>';
+      return;
+    }
+    box.innerHTML = entries.map(function (e) {
+      var title = (e.title && e.title.$t && e.title.$t.trim()) ? e.title.$t : extractTitleFromSlug(e) || 'Sin título';
+      var html = (e.content && e.content.$t) || (e.summary && e.summary.$t) || '';
+      var snip = htmlToText(html, excerptLen || 120);
+      var thumbUrl = getThumbUrl(e);
+      var catInfo = isHome ? getCategoryInfo(e.category || []) : { cls: badgeCls, label: badgeLabel || '' };
+      var finalCls = catInfo.cls;
+      var finalLabel = catInfo.label;
+      var imgHtml = thumbUrl
+        ? '<img alt="' + title.replace(/"/g, '&quot;') + '" src="' + thumbUrl.replace(/&amp;/g, '&') + '" loading="lazy">'
+        : getPlaceholderHtml(finalLabel);
+      var dateStr = formatDate(e.published);
+      var readTime = Math.max(1, Math.ceil(snip.length / 500)) + ' min lectura';
+      var postUrl = getPostUrl(e);
+      return '<a class="blog-card reveal" href="' + postUrl + '" target="_blank" rel="noopener">' +
+        '<div class="blog-card-thumb">' + imgHtml +
+        '<span class="blog-card-badge ' + finalCls + '">' + finalLabel + '</span></div>' +
+        '<div class="blog-card-body">' +
+        '<h3 class="blog-card-title">' + title + '</h3>' +
+        '<p class="blog-card-excerpt">' + snip + '…</p>' +
+        '<div class="blog-card-meta">' +
+        '<span class="blog-card-date"><i class="fa-regular fa-calendar"></i> ' + dateStr + ' · ' + readTime + '</span>' +
+        '<span class="blog-card-cta">→ Leer en Blog</span>' +
+        '</div></div></a>';
+    }).join('');
+    if (rIO) box.querySelectorAll('.reveal').forEach(function (el) { rIO.observe(el); });
+  }
+
+  /* ─── LOADER DE FEED VÍA JSON-IN-SCRIPT (con timeout 10s) ─── */
+  function loadFeedJSON(url, callback, onError) {
     var id = '_lgc_' + Math.random().toString(36).substr(2, 9);
+    var timedOut = false;
+    var timer = setTimeout(function () {
+      timedOut = true;
+      console.warn('[LexGeoCat] Timeout feed:', url);
+      try { delete window[id]; } catch (e) {}
+      if (onError) onError('timeout');
+    }, 10000);
+
     window[id] = function (d) {
+      if (timedOut) return;
+      clearTimeout(timer);
       try {
         callback(d);
       } catch (e) {
         console.warn('[LexGeoCat] Error en callback feed:', e);
+        if (onError) onError('callback');
       }
       try { delete window[id]; } catch (e2) { }
     };
+
     var s = document.createElement('script');
     s.src = url + (url.indexOf('?') >= 0 ? '&' : '?') + 'alt=json-in-script&callback=' + id;
     s.async = true;
     s.onerror = function () {
-      console.warn('[LexGeoCat] Error al cargar feed:', url);
-      try { delete window[id]; } catch (e) { }
+      clearTimeout(timer);
+      if (!timedOut) {
+        timedOut = true;
+        console.warn('[LexGeoCat] Error de red feed:', url);
+        try { delete window[id]; } catch (e) {}
+        if (onError) onError('network');
+      }
     };
     document.body.appendChild(s);
   }
@@ -220,47 +344,21 @@
     if (!box) return;
     var url = CFG.bloggerFeed + '/-/' + encodeURIComponent(label) + '?max-results=' + (limit || 6);
     loadFeedJSON(url, function (data) {
-      var entries = (data.feed && data.feed.entry) || [];
-      if (!entries.length) {
-        box.innerHTML = '<p style="color:var(--text3);text-align:center;padding:20px;grid-column:1/-1;font-size:.85rem">' +
-          'Los recursos del blog aparecerán aquí cuando publiques entradas con la etiqueta "' + label + '".</p>';
-        return;
+      var allEntries = (data.feed && data.feed.entry) || [];
+      var entries = [];
+      for (var i = 0; i < allEntries.length && entries.length < (limit || 6); i++) {
+        var e = allEntries[i];
+        var t = e.title && e.title.$t ? e.title.$t.trim() : '';
+        if (t.length > 0) entries.push(e);
       }
-      box.innerHTML = entries.map(function (e) {
-        var links = e.link || [];
-        var postUrl = CFG.blogUrl;
-        for (var j = 0; j < links.length; j++) {
-          if (links[j].rel === 'alternate') { postUrl = links[j].href; break; }
-        }
-        var title = (e.title && e.title.$t) ? e.title.$t : 'Sin título';
-        var html = (e.content && e.content.$t) || (e.summary && e.summary.$t) || '';
-        var snip = html.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 130);
-        var thumb = '';
-        if (e.media$thumbnail && e.media$thumbnail.url) {
-          thumb = e.media$thumbnail.url.replace('/s72-c/', '/s600-c/');
-        }
-        var imgHtml = thumb
-          ? '<img alt="' + title.replace(/"/g, '&quot;') + '" src="' + thumb.replace(/&amp;/g, '&') + '" loading="lazy">'
-          : '<div class="blog-card-thumb-noimg"><i class="fa-solid fa-newspaper"></i></div>';
-        var dateStr = '';
-        if (e.published && e.published.$t) {
-          dateStr = new Date(e.published.$t).toLocaleDateString('es', {
-            year: 'numeric', month: 'short', day: 'numeric'
-          });
-        }
-        var readTime = Math.max(1, Math.ceil(snip.length / 500)) + ' min lectura';
-        return '<a class="blog-card reveal" href="' + postUrl + '" target="_blank" rel="noopener">' +
-          '<div class="blog-card-thumb">' + imgHtml +
-          '<span class="blog-card-badge ' + badgeCls + '">' + label + '</span></div>' +
-          '<div class="blog-card-body">' +
-          '<h3 class="blog-card-title">' + title + '</h3>' +
-          '<p class="blog-card-excerpt">' + snip + '…</p>' +
-          '<div class="blog-card-meta">' +
-          '<span class="blog-card-date"><i class="fa-regular fa-calendar"></i> ' + dateStr + ' · ' + readTime + '</span>' +
-          '<span class="blog-card-cta">→ Leer en Blog</span>' +
-          '</div></div></a>';
-      }).join('');
-      if (rIO) box.querySelectorAll('.reveal').forEach(function (el) { rIO.observe(el); });
+      if (!entries.length) {
+        entries = allEntries.slice(0, limit || 6);
+      }
+      var emptyMsg = 'Los recursos del blog aparecerán aquí cuando publiques entradas con la etiqueta "' + label + '".';
+      renderBlogCards(entries, box, badgeCls, label, 130, emptyMsg, false);
+    }, function () {
+      box.innerHTML = '<p style="color:var(--text3);text-align:center;padding:20px;grid-column:1/-1;font-size:.85rem">' +
+        'No se pudieron cargar los recursos en este momento. Visita nuestro <a href="' + CFG.blogUrl + '" style="color:var(--teal)">blog</a>.</p>';
     });
   }
 
@@ -269,57 +367,24 @@
     if (!CFG.bloggerFeed) return;
     var box = document.getElementById('blog-grid');
     if (!box) return;
-    var url = CFG.bloggerFeed + '?max-results=3';
+    var url = CFG.bloggerFeed + '?max-results=10';
     loadFeedJSON(url, function (data) {
-      var entries = (data.feed && data.feed.entry) || [];
-      if (!entries.length) {
-        box.innerHTML = '<p style="color:var(--text3);text-align:center;padding:20px;grid-column:1/-1;font-size:.85rem">Próximamente artículos desde la trinchera catastral.</p>';
-        return;
+      var allEntries = (data.feed && data.feed.entry) || [];
+      var validEntries = [];
+      for (var i = 0; i < allEntries.length && validEntries.length < 3; i++) {
+        var e = allEntries[i];
+        var t = e.title && e.title.$t ? e.title.$t.trim() : '';
+        if (t.length > 0) {
+          validEntries.push(e);
+        }
       }
-      function categoryColor(labels) {
-        if (!labels || !labels.length) return { cls: 'gold', label: 'Legal' };
-        var cats = labels.map(function(l){ return l.$t.toLowerCase() });
-        if (cats.some(function(c){ return c.indexOf('derecho')>=0 || c.indexOf('legal')>=0 })) return { cls: 'gold', label: 'Derecho' };
-        if (cats.some(function(c){ return c.indexOf('gis')>=0 || c.indexOf('geomática')>=0 || c.indexOf('sig')>=0 })) return { cls: 'teal', label: 'GIS' };
-        return { cls: 'white', label: 'Catastro' };
-      }
-      box.innerHTML = entries.map(function (e) {
-        var links = e.link || [];
-        var postUrl = CFG.blogUrl;
-        for (var j = 0; j < links.length; j++) {
-          if (links[j].rel === 'alternate') { postUrl = links[j].href; break; }
-        }
-        var title = (e.title && e.title.$t) ? e.title.$t : 'Sin título';
-        var html = (e.content && e.content.$t) || (e.summary && e.summary.$t) || '';
-        var snip = html.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 120);
-        var thumb = '';
-        if (e.media$thumbnail && e.media$thumbnail.url) {
-          thumb = e.media$thumbnail.url.replace('/s72-c/', '/s600-c/');
-        }
-        var labels = e.category || [];
-        var catInfo = categoryColor(labels);
-        var badgeCls = catInfo.cls;
-        var badgeLabel = catInfo.label;
-        var imgHtml = thumb
-          ? '<img alt="' + title.replace(/"/g, '&quot;') + '" src="' + thumb.replace(/&amp;/g, '&') + '" loading="lazy">'
-          : '<div class="blog-card-thumb-noimg"><i class="fa-solid fa-newspaper"></i></div>';
-        var dateStr = '';
-        if (e.published && e.published.$t) {
-          dateStr = new Date(e.published.$t).toLocaleDateString('es', { year: 'numeric', month: 'short', day: 'numeric' });
-        }
-        var readTime = Math.max(1, Math.ceil(snip.length / 500)) + ' min lectura';
-        return '<a class="blog-card reveal" href="' + postUrl + '" target="_blank" rel="noopener">' +
-          '<div class="blog-card-thumb">' + imgHtml +
-          '<span class="blog-card-badge ' + badgeCls + '">' + badgeLabel + '</span></div>' +
-          '<div class="blog-card-body">' +
-          '<h3 class="blog-card-title">' + title + '</h3>' +
-          '<p class="blog-card-excerpt">' + snip + '…</p>' +
-          '<div class="blog-card-meta">' +
-          '<span class="blog-card-date"><i class="fa-regular fa-calendar"></i> ' + dateStr + ' · ' + readTime + '</span>' +
-          '<span class="blog-card-cta">→ Leer en Blog</span>' +
-          '</div></div></a>';
-      }).join('');
-      if (rIO) box.querySelectorAll('.reveal').forEach(function (el) { rIO.observe(el); });
+      var entries = validEntries.length > 0 ? validEntries : allEntries.slice(0, 3);
+      renderBlogCards(entries, box, 'def', '', 120,
+        'Próximamente artículos desde la trinchera catastral.', true);
+    }, function () {
+      box.innerHTML = '<p style="color:var(--text3);text-align:center;padding:20px;grid-column:1/-1;font-size:.85rem">' +
+        'No se pudieron cargar los artículos del blog en este momento. ' +
+        '<a href="' + CFG.blogUrl + '" style="color:var(--teal)">Visita el blog directamente</a>.</p>';
     });
   }
 
