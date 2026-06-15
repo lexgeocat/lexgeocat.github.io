@@ -263,27 +263,27 @@
 }
 
 .fdc-1 {
-  top: 5%;
-  left: 50%;
+  top: -5%;
+  left: 68%;
   transform: translateX(-50%);
   animation: lgc-float1 6s ease-in-out infinite
 }
 
 .fdc-2 {
-  top: 0%;
-  right: 60%;
+  top: -1%;
+  right: 68%;
   animation: lgc-float2 7s ease-in-out infinite
 }
 
 .fdc-3 {
-  bottom: 30%;
-  left: 60%;
+  bottom: 50%;
+  left: 69%;
   animation: lgc-float3 8s ease-in-out infinite
 }
 
 .fdc-4 {
-  bottom: 35%;
-  right: 70%;
+  bottom: 55%;
+  right: 75%;
   transform: translateX(-50%);
   animation: lgc-float1 6.5s ease-in-out infinite
 }

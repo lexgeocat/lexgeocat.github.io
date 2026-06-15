@@ -157,7 +157,7 @@
   <g id="layer-map-body" mask="url(#mask-map-vignette)">
 
     <!-- Bolivia territory outline — scaled to fit 420×420 viewport -->
-    <g id="map-territory" transform="translate(82,28) scale(0.19)">
+    <g id="map-territory" transform="translate(79,28) scale(0.19)">
       <g transform="translate(200,200)">
 
         <!-- Base fill: Altiplano gradient (dominant region) -->
@@ -423,26 +423,15 @@
   <!-- ════════════════════════════════════════════════════════════════
      HUD PANEL · ELABORADO POR
      ════════════════════════════════════════════════════════════════ -->
-  <g id="panel-author" transform="translate(150,338)"
+  <g id="panel-author" transform="translate(100,35)"
     filter="url(#filter-panel-shadow)">
 
-    <!-- Main Panel -->
-    <rect x="0" y="0"
-      width="170"
-      height="45"
-      rx="3"
-      fill="rgba(13,27,42,0)"
-    />
-
-
-    <!-- Decorative HUD Lines -->
+      <!-- Decorative HUD Lines -->
     <g opacity="0.35"
       stroke="#C8960C"
       stroke-width="0.35">
-
-      <line x1="12" y1="15" x2="60" y2="15" />
+      <line x1="12" y1="15" x2="158" y2="15" />
       <line x1="110" y1="15" x2="158" y2="15" />
-
     </g>
 
     <!-- GIS / Cartography Icon -->
@@ -485,7 +474,5 @@
       letter-spacing="0.12em">
       LEXGEOCAT - 170220
     </text>
-
-
   </g>
 </svg>
