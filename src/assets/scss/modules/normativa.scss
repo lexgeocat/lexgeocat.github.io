@@ -1,0 +1,213 @@
+/* ── Toolbar ── */
+.norm-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 32px;
+  flex-wrap: wrap;
+}
+.norm-toolbar-left {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+  flex: 1;
+}
+.norm-toolbar-right { flex-shrink: 0 }
+
+.norm-search-wrap {
+  position: relative;
+  flex: 1;
+  min-width: 220px;
+}
+.norm-search {
+  width: 100%;
+  padding: 10px 14px 10px 40px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: .88rem;
+  outline: none;
+  transition: border-color 0.2s;
+  &:focus { border-color: var(--copper) }
+}
+.norm-search-icon {
+  position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
+  color: var(--text3); font-size: .9rem; pointer-events: none;
+}
+
+.norm-select {
+  padding: 10px 14px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: .82rem;
+  outline: none;
+  cursor: pointer;
+  transition: border-color 0.2s;
+  &:focus { border-color: var(--copper) }
+}
+
+.norm-count {
+  font-size: .82rem;
+  color: var(--text3);
+  white-space: nowrap;
+  padding: 8px 0;
+}
+
+/* ── Empty / loading ── */
+.norm-empty {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--text3);
+  i { font-size: 2.2rem; display: block; margin-bottom: 14px; color: var(--border2) }
+  p { font-size: .95rem }
+}
+
+/* ── Card grid ── */
+.norm-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 14px;
+}
+
+.norm-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 18px;
+  transition: all 0.2s;
+  &:hover {
+    border-color: var(--copper);
+    box-shadow: var(--sh2);
+    transform: translateY(-2px);
+  }
+}
+
+.norm-card-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: var(--copper-lt);
+  border: 1px solid var(--copper-2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--copper);
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+
+.norm-card-body { flex: 1; min-width: 0 }
+
+.norm-card-title {
+  font-family: var(--font-heading);
+  font-size: .9rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 6px;
+  line-height: 1.4;
+}
+
+.norm-card-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+  font-size: .7rem;
+}
+
+.norm-badge-cat {
+  font-size: .6rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  padding: 2px 8px;
+  border-radius: 5px;
+  background: var(--copper-lt);
+  color: var(--copper);
+  white-space: nowrap;
+}
+
+.norm-badge-estado {
+  font-size: .6rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  padding: 2px 8px;
+  border-radius: 5px;
+  white-space: nowrap;
+}
+.norm-badge-estado--vigente {
+  background: rgba(60, 160, 90, .12);
+  color: #3ca05a;
+}
+.norm-badge-estado--derogada {
+  background: rgba(200, 50, 50, .12);
+  color: #c83232;
+}
+.norm-badge-estado--modificada {
+  background: rgba(200, 160, 50, .12);
+  color: #c8a032;
+}
+
+.norm-card-num {
+  font-family: var(--font-mono);
+  color: var(--text2);
+}
+
+.norm-card-date {
+  color: var(--text3);
+}
+
+.norm-card-desc {
+  font-size: .8rem;
+  color: var(--text2);
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.norm-card-actions {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+}
+
+.norm-no-pdf {
+  font-size: .72rem;
+  color: var(--text3);
+  font-style: italic;
+}
+
+/* ── Pagination ── */
+.norm-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 32px;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 768px) {
+  .norm-toolbar { flex-direction: column; align-items: stretch }
+  .norm-toolbar-left { flex-direction: column }
+  .norm-search-wrap { min-width: unset }
+  .norm-search { width: 100% }
+  .norm-select { width: 100% }
+  .norm-grid { grid-template-columns: 1fr }
+  .norm-card { flex-wrap: wrap }
+  .norm-card-actions { width: 100%; justify-content: flex-end }
+}
