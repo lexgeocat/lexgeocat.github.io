@@ -1,0 +1,77 @@
+#top {
+  position: fixed;
+  bottom: 28px;
+  right: 28px;
+  width: 44px;
+  height: 44px;
+  background: var(--card2);
+  color: var(--gold);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--sh2);
+  transition: all .3s;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(20px);
+  z-index: 999;
+
+  &.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0)
+  }
+
+  &:hover {
+    transform: translateY(-3px);
+    background: var(--gold);
+    border-color: var(--gold);
+    color: var(--bg);
+    box-shadow: var(--sh-gold-h)
+  }
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(24px)
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0)
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0 }
+  to { opacity: 1 }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .lpaz-pulse-outer,
+  .lpaz-pulse-mid,
+  .lpaz-dot {
+    animation: none
+  }
+}
+
+@media (max-width: 480px) {
+  .c,
+  .hi,
+  .nav-inner {
+    padding-left: 18px;
+    padding-right: 18px
+  }
+}

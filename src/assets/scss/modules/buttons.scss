@@ -1,0 +1,87 @@
+/* ═══════════════════════════════════════
+   BUTTONS — sin valores hardcodeados
+   ═══════════════════════════════════════ */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: 11px var(--sp-7);
+  border-radius: 6px;
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: var(--fs-base);
+  letter-spacing: var(--ls-caps);
+  text-transform: uppercase;
+  transition: all 0.28s var(--ease);
+  cursor: pointer;
+  border: none;
+  text-decoration: none;
+  line-height: 1.4;
+
+  &[disabled],
+  &:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+    transform: none !important;
+    box-shadow: none !important;
+    pointer-events: none;
+  }
+
+  /* Botón primario — Cobre institucional */
+  &-gold {
+    background: var(--copper);
+    color: #fff;
+    box-shadow: var(--sh-copper);
+
+    &:hover {
+      background: var(--copper2);
+      color: #fff;
+      transform: translateY(-2px);
+      box-shadow: var(--sh-copper-h);
+    }
+  }
+
+  /* Botón secundario — Zafiro geodésico */
+  &-teal {
+    background: var(--sapphire);
+    color: #fff;
+    box-shadow: var(--sh-sapphire);
+
+    &:hover {
+      background: var(--sapphire2);
+      color: #fff;
+      transform: translateY(-2px);
+      box-shadow: 0 var(--sp-2) var(--sp-7) var(--color-glow-sapphire);
+    }
+  }
+
+  /* Botón outline */
+  &-ghost {
+    background: transparent;
+    color: var(--text);
+    border: 1px solid var(--border3);
+    box-shadow: var(--sh-inset);
+
+    &:hover {
+      border-color: var(--copper);
+      color: var(--copper);
+      transform: translateY(-2px);
+      background: var(--copper-lt);
+    }
+  }
+
+  /* WhatsApp */
+  &-whatsapp {
+    background: var(--color-success) !important;
+    color: #fff !important;
+    box-shadow: 0 var(--sp-1) var(--sp-4) var(--color-success) !important;
+
+    &:hover {
+      background: var(--color-success-dark) !important;
+      transform: translateY(-2px);
+      box-shadow: 0 var(--sp-2) var(--sp-6) var(--color-success-dark) !important;
+      color: #fff !important;
+    }
+  }
+}

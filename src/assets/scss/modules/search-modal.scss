@@ -1,0 +1,295 @@
+#srch-overlay {
+  position: fixed;
+  inset: 0;
+  background: var(--color-overlay);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  z-index: 99999;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity .3s, visibility .3s;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 80px;
+
+  &.open {
+    opacity: 1;
+    visibility: visible;
+
+    .srch-modal {
+      transform: translateY(0);
+    }
+  }
+
+  .srch-modal {
+    width: 100%;
+    max-width: 680px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--rl);
+    box-shadow: 0 24px 80px var(--color-shadow-overlay);
+    transform: translateY(-20px);
+    transition: transform .3s var(--ease);
+    overflow: hidden;
+
+    .srch-modal-header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 18px 20px;
+      border-bottom: 1px solid var(--border);
+
+      i {
+        color: var(--gold);
+        font-size: 16px;
+        flex-shrink: 0;
+      }
+
+      #srch-modal-input {
+        flex: 1;
+        border: none;
+        background: transparent;
+        font-family: var(--font-body);
+        font-size: 1.05rem;
+        color: var(--text);
+        outline: none;
+
+        &::placeholder {
+          color: var(--text3);
+        }
+      }
+
+      .srch-modal-close {
+        width: 32px;
+        height: 32px;
+        border-radius: 8px;
+        background: var(--bg2);
+        border: 1px solid var(--border);
+        color: var(--text3);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 13px;
+        transition: all .2s;
+        flex-shrink: 0;
+
+        &:hover {
+          background: var(--gold-lt);
+          color: var(--gold);
+          border-color: var(--color-badge-def);
+        }
+      }
+    }
+
+    .srch-modal-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      padding: 12px 20px;
+      border-bottom: 1px solid var(--border);
+      background: var(--bg2);
+
+      .srch-tag {
+        font-size: .72rem;
+        font-weight: 600;
+        background: var(--bg2);
+        color: var(--text3);
+        padding: 4px 12px;
+        border-radius: 6px;
+        border: 1px solid var(--border);
+        cursor: pointer;
+        transition: all .2s;
+        text-transform: uppercase;
+        letter-spacing: .04em;
+
+        &:hover,
+        &.active {
+          background: var(--gold-lt);
+          color: var(--gold);
+          border-color: var(--color-badge-def);
+        }
+      }
+    }
+
+    .srch-modal-body {
+      max-height: 480px;
+      overflow-y: auto;
+      padding: 8px 0;
+
+      &::-webkit-scrollbar {
+        width: 4px;
+      }
+
+      &::-webkit-scrollbar-track {
+        background: transparent;
+      }
+
+      &::-webkit-scrollbar-thumb {
+        background: var(--border2);
+        border-radius: 2px;
+      }
+
+      .srch-status {
+        padding: 32px 20px;
+        text-align: center;
+        color: var(--text3);
+        font-size: .88rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+
+        i {
+          font-size: 2rem;
+          color: var(--border2);
+        }
+      }
+
+      .srch-result-item {
+        display: flex;
+        gap: 14px;
+        padding: 14px 20px;
+        border-bottom: 1px solid var(--border);
+        transition: background .2s;
+        text-decoration: none;
+        cursor: pointer;
+
+        &:last-child {
+          border-bottom: none;
+        }
+
+        &:hover {
+          background: var(--bg2);
+        }
+
+        .srch-result-thumb {
+          width: 56px;
+          height: 56px;
+          border-radius: 8px;
+          background: linear-gradient(135deg, var(--bg2), var(--bg3));
+          flex-shrink: 0;
+          overflow: hidden;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          border: 1px solid var(--border);
+
+          img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+          }
+
+          i {
+            font-size: 18px;
+            color: var(--gold);
+          }
+        }
+
+        .srch-result-body {
+          flex: 1;
+          min-width: 0;
+
+          .srch-result-cat {
+            font-size: .65rem;
+            font-weight: 700;
+            color: var(--gold);
+            text-transform: uppercase;
+            letter-spacing: .08em;
+            margin-bottom: 4px;
+          }
+
+          .srch-result-title {
+            font-family: var(--font-heading);
+            font-size: .92rem;
+            font-weight: 600;
+            color: var(--text);
+            line-height: 1.3;
+            margin-bottom: 5px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+          }
+
+          .srch-result-snippet {
+            font-size: .78rem;
+            color: var(--text3);
+            line-height: 1.5;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+          }
+
+          .srch-result-date {
+            font-size: .68rem;
+            color: var(--text3);
+            margin-top: 5px;
+          }
+        }
+      }
+
+      .srch-spinner {
+        width: 20px;
+        height: 20px;
+        border: 2px solid var(--border);
+        border-top-color: var(--gold);
+        border-radius: 50%;
+        animation: spin .7s linear infinite;
+        margin: 0 auto;
+      }
+    }
+
+    .srch-highlight {
+      background: var(--gold-lt);
+      color: var(--gold);
+      border-radius: 2px;
+      padding: 0 2px;
+    }
+
+    .srch-modal-footer {
+      padding: 12px 20px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      .srch-count {
+        font-size: .75rem;
+        color: var(--text3);
+      }
+
+      .srch-view-all {
+        font-size: .78rem;
+        font-weight: 600;
+        color: var(--gold);
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        transition: color .2s;
+
+        &:hover {
+          color: var(--gold2);
+        }
+      }
+    }
+  }
+
+  @media (max-width: 680px) {
+    padding: 60px 12px 12px;
+
+    .srch-modal {
+      max-height: calc(100vh - 80px);
+    }
+  }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
