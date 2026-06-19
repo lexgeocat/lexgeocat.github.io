@@ -34,7 +34,7 @@ function hideTip() {
 }
 
 function flagTip(loc: { name: string; count: number }) {
-  return `${loc.name}: ${loc.count.toLocaleString("es-BO")} vistas`;
+  return `${loc.name}: ${loc.count.toLocaleString("es-BO")} visitas`;
 }
 
 const nav = [
@@ -257,7 +257,7 @@ onUnmounted(() => {
             <span class="gc-val">{{
               totalViews ? totalViews.toLocaleString("es-BO") : "—"
             }}</span>
-            <span class="gc-lbl">vistas</span>
+            <span class="gc-lbl">visitas</span>
           </span>
           <span class="gc-sep">|</span>
           <span class="gc-stat-item gc-locs">
@@ -421,7 +421,7 @@ onUnmounted(() => {
         <span class="gc-val">{{
           totalViews ? totalViews.toLocaleString("es-BO") : "—"
         }}</span>
-        <span class="gc-lbl">vistas</span>
+        <span class="gc-lbl">visitas</span>
       </span>
       <span class="gc-sep">|</span>
       <span class="gc-stat-item gc-locs">
