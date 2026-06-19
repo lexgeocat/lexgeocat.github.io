@@ -7,9 +7,14 @@ const cotOpen = ref(false)
 const cotStep = ref(1)
 let cotCurrentService: string | null = null
 
-const SUPABASE_URL = 'https://uhpgvwljcuovlwywlxat.supabase.co'
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVocGd2d2xqY3Vvdmx3eXdseGF0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE3MjAwMDgsImV4cCI6MjA5NzI5NjAwOH0.IvjGKtd3wE2HK2VViYjvAn_6fqn_PVA6zwjMQjilvMk'
+const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL as string
+const SUPABASE_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY as string
 
+let escHandler: ((e: KeyboardEvent) => void) | null = null
+let overlayClickHandler: ((e: MouseEvent) => void) | null = null
+let blogScriptEl: HTMLScriptElement | null = null
+let blogCbId: string | null = null
+let blogTimer: ReturnType<typeof setTimeout> | null = null
 function esc(s: unknown): string {
   if (s == null) return ''
   return String(s).replace(/&/g, '&').replace(/</g, '<').replace(/>/g, '>').replace(/"/g, '"')
@@ -281,19 +286,30 @@ function cotBack(from: number) {
 onMounted(() => {
   requestAnimationFrame(() => { requestAnimationFrame(() => { reveal.observe() }) })
 
-  const overlay = document.getElementById('cot-overlay')
-  if (overlay) {
-    overlay.addEventListener('click', (e) => {
-      if (e.target === overlay) closeCotizador()
-    })
+const overlay = document.getElementById('cot-overlay')
+  overlayClickHandler = (e: MouseEvent) => {
+    if (e.target === overlay) closeCotizador()
   }
-  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeCotizador() })
+  if (overlay) overlay.addEventListener('click', overlayClickHandler)
+
+  escHandler = (e: KeyboardEvent) => { if (e.key === 'Escape') closeCotizador() }
+  document.addEventListener('keydown', escHandler)
 
   // Blog feed
-  const blogCbId = '_lgc_svc_blog_' + Math.random().toString(36).substr(2, 9)
-  ;(window as any)[blogCbId] = (data: any) => {
+  blogCbId = '_lgc_svc_blog_' + Math.random().toString(36).substr(2, 9)
+  let blogTimedOut = false
+  const fallbackHtml = '<p style="color:var(--text3);text-align:center;padding:40px;grid-column:1/-1;font-size:.85rem">No se pudieron cargar los artículos. <a href="https://lexgeocat.blogspot.com/" style="color:var(--teal)">Visita el blog</a>.</p>'
+  blogTimer = setTimeout(() => {
+    blogTimedOut = true
+    try { delete (window as any)[blogCbId!] } catch {}
     const box = document.getElementById('svc-blog-grid')
-    if (!box) { try { delete (window as any)[blogCbId] } catch {}; return }
+    if (box) box.innerHTML = fallbackHtml
+  }, 10000)
+  ;(window as any)[blogCbId] = (data: any) => {
+    if (blogTimedOut) return
+    if (blogTimer) clearTimeout(blogTimer)
+    const box = document.getElementById('svc-blog-grid')
+    if (!box) { try { delete (window as any)[blogCbId!] } catch {}; return }
     const all = (data?.feed?.entry || []).filter((e: any) => e.title?.$t?.trim())
     if (!all.length) {
       box.innerHTML = '<p style="color:var(--text3);text-align:center;padding:40px;grid-column:1/-1;font-size:.85rem">Próximamente artículos desde el blog técnico.</p>'
@@ -310,12 +326,21 @@ onMounted(() => {
       }).join('')
     }
     setTimeout(() => reveal.observe(), 100)
-    try { delete (window as any)[blogCbId] } catch {}
+    try { delete (window as any)[blogCbId!] } catch {}
   }
-  const blogScript = document.createElement('script')
-  blogScript.src = `https://lexgeocat.blogspot.com/feeds/posts/default?max-results=3&alt=json-in-script&callback=${blogCbId}`
-  blogScript.async = true
-  document.body.appendChild(blogScript)
+  blogScriptEl = document.createElement('script')
+  blogScriptEl.src = `https://lexgeocat.blogspot.com/feeds/posts/default?max-results=3&alt=json-in-script&callback=${blogCbId}`
+  blogScriptEl.async = true
+  blogScriptEl.onerror = () => {
+    if (blogTimer) clearTimeout(blogTimer)
+    if (!blogTimedOut) {
+      blogTimedOut = true
+      try { delete (window as any)[blogCbId!] } catch {}
+      const box = document.getElementById('svc-blog-grid')
+      if (box) box.innerHTML = fallbackHtml
+    }
+  }
+  document.body.appendChild(blogScriptEl)
 
   // Load servicios + populate globals
   const AREA_KEYS = ['derecho', 'catastro', 'ordenamiento', 'geografia', 'topografia', 'geomatica', 'software']
@@ -430,7 +455,15 @@ onMounted(() => {
     .catch((err: Error) => console.warn('[LexGeoCat] Error cargando factores_precio:', err))
 })
 
-onUnmounted(() => { reveal.disconnect() })
+onUnmounted(() => {
+  reveal.disconnect()
+  if (escHandler) document.removeEventListener('keydown', escHandler)
+  const overlay = document.getElementById('cot-overlay')
+  if (overlay && overlayClickHandler) overlay.removeEventListener('click', overlayClickHandler)
+  if (blogTimer) clearTimeout(blogTimer)
+  if (blogCbId) { try { delete (window as any)[blogCbId] } catch {} }
+  if (blogScriptEl?.parentNode) blogScriptEl.parentNode.removeChild(blogScriptEl)
+})
 </script>
 
 <template>

@@ -58,8 +58,7 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
           <h4>Plataforma</h4>
           <ul>
             <li><router-link to="/pages/acerca-de.html"><i class="fa-solid fa-chevron-right"></i>Sobre Mí</router-link></li>
-            <li><router-link to="/" hash="#contacto-servicios"><i class="fa-solid fa-chevron-right"></i>Contacto</router-link></li>
-            <li><router-link to="/pages/privacidad.html"><i class="fa-solid fa-chevron-right"></i>Privacidad</router-link></li>
+<li><router-link to="/pages/contacto.html"><i class="fa-solid fa-chevron-right"></i>Contacto</router-link></li>            <li><router-link to="/pages/privacidad.html"><i class="fa-solid fa-chevron-right"></i>Privacidad</router-link></li>
           </ul>
         </div>
       </div>

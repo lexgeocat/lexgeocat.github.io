@@ -191,8 +191,8 @@ onUnmounted(() => {
   <div id="hdr" :class="{ scrolled }">
     <div class="hi">
       <div class="logo-wrap">
-        <a
-          href="/"
+        <router-link
+          to="/"
           style="
             display: flex;
             align-items: center;
@@ -213,7 +213,7 @@ onUnmounted(() => {
               Derecho · Catastro · Geomática · Software
             </div>
           </div>
-        </a>
+        </router-link>
       </div>
       <div class="hr">
         <div class="hdr-socials">

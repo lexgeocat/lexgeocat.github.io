@@ -6,6 +6,8 @@ import boliviaMap from '@/assets/img/fd-bolivia-map.svg?url'
 const reveal = useReveal()
 const counters = useCounters()
 
+let onMouseMove: ((e: MouseEvent) => void) | null = null
+
 onMounted(() => {
   requestAnimationFrame(() => {
     requestAnimationFrame(() => {
@@ -16,7 +18,7 @@ onMounted(() => {
 
   const bgMap = document.querySelector('.hero-bg-grid') as HTMLElement | null
   if (bgMap) {
-    const onMouseMove = (e: MouseEvent) => {
+    onMouseMove = (e: MouseEvent) => {
       const x = e.clientX / window.innerWidth - 0.5
       const y = e.clientY / window.innerHeight - 0.5
       bgMap.style.transform = `translate(${x * 30}px, ${y * 30}px)`
@@ -91,6 +93,7 @@ onMounted(() => {
 onUnmounted(() => {
   reveal.disconnect()
   counters.disconnect()
+  if (onMouseMove) window.removeEventListener('mousemove', onMouseMove)
 })
 
 // ─── Utility functions (ported from main.js) ───

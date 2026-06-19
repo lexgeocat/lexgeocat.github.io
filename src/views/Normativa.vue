@@ -2,9 +2,8 @@
 import { ref, computed, onMounted, onUnmounted, nextTick } from 'vue'
 import { useReveal } from '../composables/useReveal'
 
-const SUPABASE_URL = 'https://uhpgvwljcuovlwywlxat.supabase.co'
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVocGd2d2xqY3Vvdmx3eXdseGF0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE3MjAwMDgsImV4cCI6MjA5NzI5NjAwOH0.IvjGKtd3wE2HK2VViYjvAn_6fqn_PVA6zwjMQjilvMk'
-
+const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL as string
+const SUPABASE_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY as string
 const CATEGORIA_LABELS: Record<string, string> = {
   leyes: 'Leyes',
   codigos: 'Códigos',

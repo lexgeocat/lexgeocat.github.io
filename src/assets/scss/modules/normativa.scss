@@ -211,3 +211,34 @@
   .norm-card { flex-wrap: wrap }
   .norm-card-actions { width: 100%; justify-content: flex-end }
 }
+
+.page-btn {
+  font-family: var(--font-body);
+  font-size: .82rem;
+  font-weight: 600;
+  min-width: 36px;
+  height: 36px;
+  padding: 0 10px;
+  border-radius: var(--r);
+  border: 1px solid var(--border);
+  background: var(--card);
+  color: var(--text2);
+  cursor: pointer;
+  transition: all 0.2s;
+
+  &:hover:not(:disabled) {
+    border-color: var(--copper);
+    color: var(--copper);
+  }
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  &.active {
+    background: var(--copper);
+    border-color: var(--copper);
+    color: #fff;
+  }
+}

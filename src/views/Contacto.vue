@@ -35,7 +35,8 @@ onUnmounted(() => { reveal.disconnect() })
           </div>
           <a class="btn btn-whatsapp" href="https://wa.me/59176711790" target="_blank" rel="noopener" style="display:inline-flex;width:100%;justify-content:center;margin-top:16px"><i class="fa-brands fa-whatsapp"></i> WhatsApp</a>
         </div>
-        <form class="cf-form" action="https://formspree.io/f/xovqgdgn" method="POST">
+       <form class="cf-form" action="https://formspree.io/f/xovqgdgn" method="POST">
+          <input type="text" name="_gotcha" style="display:none" tabindex="-1" autocomplete="off">
           <div class="form-group"><label for="nombre">Nombre completo</label><input type="text" id="nombre" name="nombre" required placeholder="Tu nombre"></div>
           <div class="form-group"><label for="email">Correo electrónico</label><input type="email" id="email" name="email" required placeholder="tu@email.com"></div>
           <div class="form-group"><label for="asunto">Asunto</label>
