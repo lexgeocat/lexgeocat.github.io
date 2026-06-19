@@ -15,4 +15,5 @@
 @use "modules/utilities";
 @use "modules/especialidades";
 @use "modules/servicios";
-@import "modules/mobile-menu";
+@use "sass:meta";
+@include meta.load-css("modules/mobile-menu");
