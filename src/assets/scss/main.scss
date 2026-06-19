@@ -2,7 +2,6 @@
 @use "modules/base";
 @use "modules/preloader";
 @use "modules/header";
-@use "modules/mobile-menu";
 @use "modules/hero";
 @use "modules/sections";
 @use "modules/buttons";
@@ -16,3 +15,4 @@
 @use "modules/utilities";
 @use "modules/especialidades";
 @use "modules/servicios";
+@import "modules/mobile-menu";
