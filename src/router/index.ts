@@ -87,4 +87,10 @@ const router = createRouter({
   ],
 })
 
+router.afterEach((to) => {
+  if (typeof (window as any).goatcounter?.count === 'function') {
+    (window as any).goatcounter.count({ path: to.fullPath })
+  }
+})
+
 export default router

@@ -143,11 +143,6 @@ function toggleMobDropdown(e: Event) {
 onMounted(() => {
   window.addEventListener("scroll", onScroll, { passive: true });
   load();
-  const s = document.createElement("script");
-  s.dataset.goatcounter = "https://lexgeocat.goatcounter.com/count";
-  s.async = true;
-  s.src = "//gc.zgo.at/count.js";
-  document.head.appendChild(s);
 });
 onUnmounted(() => {
   window.removeEventListener("scroll", onScroll);
