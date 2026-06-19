@@ -1,17 +1,9 @@
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted, onErrorCaptured } from 'vue'
+import { ref, computed, onMounted, onUnmounted, nextTick } from 'vue'
 import { useReveal } from '../composables/useReveal'
 
 const SUPABASE_URL = 'https://uhpgvwljcuovlwywlxat.supabase.co'
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVocGd2d2xqY3Vvdmx3eXdseGF0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE3MjAwMDgsImV4cCI6MjA5NzI5NjAwOH0.IvjGKtd3wE2HK2VViYjvAn_6fqn_PVA6zwjMQjilvMk'
-
-const debug = ref('inicializando...')
-
-onErrorCaptured((err: any) => {
-  debug.value = 'ErrorCaptured: ' + (err?.message || err)
-  console.error('[Normativa]', err)
-  return false
-})
 
 const CATEGORIA_LABELS: Record<string, string> = {
   leyes: 'Leyes',
@@ -93,28 +85,21 @@ function formatDate(d: string | null) {
 const reveal = useReveal()
 
 onMounted(async () => {
-  debug.value = 'mounted'
-  console.log('[Normativa] mounted')
   requestAnimationFrame(() => { requestAnimationFrame(() => { reveal.observe() }) })
   try {
-    console.log('[Normativa] fetching...')
     const res = await fetch(
-      `${SUPABASE_URL}/rest/v1/normativa?select=*&order=created_at.desc`,
+      `${SUPABASE_URL}/rest/v1/normativa?select=*&activo=eq.true&order=fecha_publicacion.desc`,
       { headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` } }
     )
-    debug.value = 'response status: ' + res.status
-    console.log('[Normativa] response status:', res.status)
     if (!res.ok) throw new Error('Error HTTP ' + res.status)
-    const data = await res.json()
-    console.log('[Normativa] data count:', data?.length)
-    allNormas.value = data || []
-    debug.value = data?.length + ' registros cargados'
+    allNormas.value = await res.json()
   } catch (e: any) {
     error.value = e.message || 'Error al cargar la normativa'
-    debug.value = 'Error: ' + (e.message || 'desconocido')
-    console.error('[Normativa] fetch error:', e)
   } finally {
     loading.value = false
+    await nextTick()
+    reveal.disconnect()
+    reveal.observe()
   }
 })
 
@@ -193,8 +178,6 @@ onUnmounted(() => { reveal.disconnect() })
         <button v-for="p in totalPages" :key="p" :class="['page-btn', { active: p === currentPage }]" @click="goPage(p)">{{ p }}</button>
         <button class="page-btn" :disabled="currentPage >= totalPages" @click="goPage(currentPage + 1)"><i class="fa-solid fa-chevron-right"></i></button>
       </div>
-
-      <pre style="margin-top:40px;padding:16px;background:#1a1a2e;color:#e0e0e0;border-radius:8px;font-size:12px;overflow:auto;max-height:160px">{{ debug }}</pre>
     </div>
   </section>
 </template>
