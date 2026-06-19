@@ -181,8 +181,10 @@
   }
 }
 
-[data-theme="dark"] .th-btn .fa-moon { display: none }
-[data-theme="dark"] .th-btn .fa-sun { display: inline-block; color: var(--amber) }
+[data-theme="dark"] #hdr .hi .th-btn .fa-moon { display: none }
+[data-theme="dark"] #hdr .hi .th-btn .fa-sun { display: inline-block; color: var(--amber) }
+[data-theme="dark"] #hdr .hi .th-btn-mob .fa-moon { display: none }
+[data-theme="dark"] #hdr .hi .th-btn-mob .fa-sun { display: inline-block; color: var(--amber) }
 
 /* Nav bar secundaria */
 .nav-bar {
