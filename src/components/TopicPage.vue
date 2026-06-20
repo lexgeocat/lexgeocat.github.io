@@ -78,6 +78,8 @@ onUnmounted(() => { reveal.disconnect() })
         <a
           class="btn btn-gold"
           :href="topic.blogCtaHref || `${SITE.blog.url}search/label/${encodeURIComponent(topic.blogLabel)}`"
+          target="_blank"
+          rel="noopener"
         >
           <i class="fa-solid fa-newspaper"></i> Ver más en el blog
         </a>
