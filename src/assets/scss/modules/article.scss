@@ -31,7 +31,7 @@
     font-size: var(--fs-xl);
     font-weight: 600;
     margin: var(--sp-6) 0 var(--sp-3);
-    color: var(--gold);
+    color: var(--copper);
   }
 
   p {
@@ -51,8 +51,8 @@
   blockquote {
     margin: var(--sp-8) 0;
     padding: var(--sp-5) var(--sp-7);
-    background: var(--gold-lt);
-    border-left: 3px solid var(--gold);
+    background: var(--copper-lt);
+    border-left: 3px solid var(--copper);
     border-radius: 0 var(--rs) var(--rs) 0;
     color: var(--text2);
     font-family: var(--font-display);
@@ -74,7 +74,7 @@
     font-family: var(--font-mono);
     font-size: 0.86em;
     background: var(--bg2);
-    color: var(--gold);
+    color: var(--copper);
     padding: 2px var(--sp-2);
     border-radius: 6px;
     border: 1px solid var(--border);
@@ -119,7 +119,7 @@
 
   th {
     background: var(--bg2);
-    color: var(--gold);
+    color: var(--copper);
     padding: var(--sp-3) var(--sp-4);
     text-align: left;
     font-weight: 600;
@@ -144,13 +144,13 @@
   }
 
   a {
-    color: var(--gold);
+    color: var(--copper);
     text-decoration: underline;
     text-decoration-color: var(--color-badge-def);
     transition: all 0.2s;
 
     &:hover {
-      color: var(--gold2);
+      color: var(--copper2);
       text-decoration-color: var(--color-badge-def);
     }
   }
@@ -165,7 +165,7 @@
   margin-bottom: var(--sp-5);
 }
 
-@media (max-width: 480px) {
+@media (width <= 480px) {
   .at-t {
     font-size: var(--fs-2xl-4);
   }
@@ -182,7 +182,7 @@
   gap: var(--sp-4);
 
   i {
-    color: var(--gold);
+    color: var(--copper);
     font-size: 18px;
     margin-top: 2px;
     flex-shrink: 0;
@@ -210,7 +210,7 @@
   flex-wrap: wrap;
 
   &:hover {
-    border-color: var(--gold);
+    border-color: var(--copper);
   }
 }
 
@@ -235,7 +235,7 @@
   }
 
   i {
-    color: var(--gold);
+    color: var(--copper);
   }
 }
 
@@ -243,7 +243,7 @@
   font-size: var(--fs-sm);
   font-weight: 700;
   color: var(--bg);
-  background: var(--gold);
+  background: var(--copper);
   padding: var(--sp-3) var(--sp-6);
   border-radius: var(--sp-2);
   display: inline-flex;
@@ -253,9 +253,9 @@
   white-space: nowrap;
 
   &:hover {
-    background: var(--gold2);
+    background: var(--copper2);
     transform: translateY(-2px);
-    box-shadow: var(--sh-gold-h);
+    box-shadow: var(--sh-copper-h);
   }
 }
 
@@ -350,12 +350,12 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--gold);
+  color: var(--copper);
   font-family: var(--font-display);
   font-size: var(--fs-3xl-2);
   font-weight: 800;
   flex-shrink: 0;
-  border: 2px solid var(--gold-lt);
+  border: 2px solid var(--copper-lt);
 }
 
 .author-info {
@@ -392,14 +392,14 @@
     transition: all 0.22s;
 
     &:hover {
-      background: var(--gold);
+      background: var(--copper);
       color: var(--bg);
-      border-color: var(--gold);
+      border-color: var(--copper);
     }
   }
 }
 
-@media (max-width: 600px) {
+@media (width <= 600px) {
   .author-box {
     flex-direction: column;
   }
@@ -433,7 +433,7 @@
   gap: var(--sp-4);
 }
 
-@media (max-width: 600px) {
+@media (width <= 600px) {
   .related-grid {
     grid-template-columns: 1fr;
   }
@@ -497,7 +497,7 @@
     gap: var(--sp-3);
 
     i {
-      color: var(--gold);
+      color: var(--copper);
     }
   }
 }
@@ -525,7 +525,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--gold);
+  color: var(--copper);
   font-size: 13px;
   font-weight: 700;
 }
@@ -570,16 +570,16 @@
   }
 
   a:hover {
-    border-color: var(--gold);
-    color: var(--gold);
+    border-color: var(--copper);
+    color: var(--copper);
     transform: translateY(-1px);
   }
 
   .cur {
-    background: var(--gold);
+    background: var(--copper);
     color: var(--bg);
-    border-color: var(--gold);
-    box-shadow: var(--sh-gold);
+    border-color: var(--copper);
+    box-shadow: var(--sh-copper);
   }
 
   .ds {

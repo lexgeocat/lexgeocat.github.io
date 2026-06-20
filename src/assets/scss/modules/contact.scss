@@ -1,78 +1,130 @@
 .contact-wrap {
-  display: grid; grid-template-columns: 1fr 1.2fr; gap: 48px;
+  display: grid; grid-template-columns: 1fr 1.2fr; gap: var(--sp-12);
 
-  @media (max-width: 768px) { grid-template-columns: 1fr }
+  @media (width <= 768px) { grid-template-columns: 1fr }
 }
 
 .contact-info {
   h3 {
     font-family: var(--font-display);
-    font-size: 1.5rem; font-weight: 700;
+    font-size: var(--fs-2xl-2); font-weight: 700;
     margin-bottom: 14px;
   }
 
   p {
-    font-size: .9rem; color: var(--text2);
-    line-height: var(--lh-normal); margin-bottom: 24px;
+    font-size: var(--fs-md-3); color: var(--text2);
+    line-height: var(--lh-normal); margin-bottom: var(--sp-6);
   }
 }
 
-.contact-item { display: flex; gap: 14px; margin-bottom: 20px; align-items: flex-start }
+.contact-item {
+  display: flex;
+  gap: 14px;
+  margin-bottom: var(--sp-5);
+  align-items: flex-start;
+}
 
 .contact-icon {
   width: 42px; height: 42px; border-radius: 8px;
-  background: var(--gold-lt);
+  background: var(--copper-lt);
   display: flex; align-items: center; justify-content: center;
-  font-size: 16px; color: var(--gold); flex-shrink: 0;
+  font-size: var(--fs-body); color: var(--copper); flex-shrink: 0;
   border: 1px solid var(--color-badge-def);
 }
 
 .contact-text {
-  h4 { font-size: .85rem; font-weight: 600; margin-bottom: 2px; font-family: var(--font-heading) }
-  p { font-size: .82rem; color: var(--text2); margin: 0 }
+  h4 {
+    font-size: .85rem;
+    font-weight: 600;
+    margin-bottom: 2px;
+    font-family: var(--font-heading);
+  }
+
+  p {
+    font-size: var(--fs-base);
+    color: var(--text2);
+    margin: 0;
+  }
 }
 
 .cf-form {
-  background: var(--card); border: 1px solid var(--border); border-radius: var(--r); padding: 32px;
+  background: var(--card); border: 1px solid var(--border); border-radius: var(--r); padding: var(--sp-8);
 
   .form-group { margin-bottom: 18px }
 
   label {
     display: block;
     font-family: var(--font-heading);
-    font-size: .78rem; font-weight: 600;
+    font-size: var(--fs-sm-3); font-weight: 600;
     color: var(--text2); margin-bottom: 7px;
     text-transform: uppercase; letter-spacing: .06em;
   }
 
   input, textarea, select {
-    width: 100%; padding: 12px 16px;
+    width: 100%; padding: var(--sp-3) var(--sp-4);
     background: var(--bg2); border: 1px solid var(--border);
     border-radius: 8px; color: var(--text);
-    font-family: var(--font-body); font-size: .9rem;
+    font-family: var(--font-body); font-size: var(--fs-md-3);
     transition: all .25s; outline: none;
 
     &:focus {
-      border-color: var(--gold); box-shadow: var(--sh-gold);
+      border-color: var(--copper); box-shadow: var(--sh-copper);
       background: var(--card);
     }
   }
 
-  textarea { min-height: 120px; resize: vertical }
+  textarea {
+    min-height: 120px;
+    resize: vertical;
+  }
 
   .btn-submit {
-    background: var(--gold); color: var(--bg);
-    border: none; padding: 13px 32px; border-radius: 8px;
-    font-family: var(--font-body); font-weight: 600; font-size: .9rem;
+    background: var(--copper); color: var(--bg);
+    border: none; padding: 13px var(--sp-8); border-radius: 8px;
+    font-family: var(--font-body); font-weight: 600; font-size: var(--fs-md-3);
     cursor: pointer; transition: all .25s;
-    display: inline-flex; align-items: center; gap: 8px;
+    display: inline-flex; align-items: center; gap: var(--sp-2);
     width: 100%; justify-content: center;
 
     &:hover {
-      background: var(--gold2); transform: translateY(-2px);
-      box-shadow: var(--sh-gold-h);
+      background: var(--copper2); transform: translateY(-2px);
+      box-shadow: var(--sh-copper-h);
     }
 
     i { font-size: 14px }
+  }
+}
+
+/* ── Quick-contact CTA box (Home) ── */
+.cf-form-cta {
+  padding: var(--sp-8);
+  text-align: center;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+
+  .cta-lead {
+    font-size: var(--fs-lg);
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: var(--sp-3);
+  }
+
+  .cta-email {
+    font-size: .85rem;
+    color: var(--text2);
+    margin-bottom: var(--sp-5);
+
+    i { color: var(--copper); }
+  }
+}
+
+.contact-wa-wrap {
+  margin-top: var(--sp-8);
+
+  .btn-whatsapp {
+    display: inline-flex;
+    width: 100%;
+    justify-content: center;
   }
 }

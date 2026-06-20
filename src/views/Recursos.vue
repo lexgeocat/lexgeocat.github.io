@@ -9,12 +9,12 @@ const topic = getTopic('recursos')!
     <template #before-features>
       <div class="g g-auto" style="margin-bottom:48px">
         <div class="res-card reveal">
-          <div class="res-icon" style="background:var(--gold-lt);color:var(--gold)"><i class="fa-solid fa-file-pdf"></i></div>
-          <div class="res-body"><h4>Formatos legales</h4><p>Modelos de escritos, solicitudes y documentos de apoyo para trámites territoriales.</p><span class="res-tag" style="background:var(--gold-lt);color:var(--gold);border-color:var(--color-esp-derecho-2)">Derecho</span></div>
+          <div class="res-icon" style="background:var(--copper-lt);color:var(--copper)"><i class="fa-solid fa-file-pdf"></i></div>
+          <div class="res-body"><h4>Formatos legales</h4><p>Modelos de escritos, solicitudes y documentos de apoyo para trámites territoriales.</p><span class="res-tag" style="background:var(--copper-lt);color:var(--copper);border-color:var(--color-esp-derecho-2)">Derecho</span></div>
         </div>
         <div class="res-card reveal">
-          <div class="res-icon" style="background:var(--teal-lt);color:var(--teal)"><i class="fa-solid fa-map"></i></div>
-          <div class="res-body"><h4>Guías catastrales</h4><p>Manuales técnicos para levantamientos, fichas prediales y nomenclatura catastral.</p><span class="res-tag" style="background:var(--teal-lt);color:var(--teal);border-color:var(--color-esp-catastro-2)">Catastro</span></div>
+          <div class="res-icon" style="background:var(--sapphire-lt);color:var(--sapphire)"><i class="fa-solid fa-map"></i></div>
+          <div class="res-body"><h4>Guías catastrales</h4><p>Manuales técnicos para levantamientos, fichas prediales y nomenclatura catastral.</p><span class="res-tag" style="background:var(--sapphire-lt);color:var(--sapphire);border-color:var(--color-esp-catastro-2)">Catastro</span></div>
         </div>
         <div class="res-card reveal">
           <div class="res-icon" style="background:var(--sapphire-lt);color:var(--color-esp-geomatica)"><i class="fa-solid fa-layer-group"></i></div>

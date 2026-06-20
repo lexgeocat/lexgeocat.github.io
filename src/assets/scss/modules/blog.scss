@@ -7,10 +7,11 @@
   grid-template-columns: repeat(3, 1fr);
   gap: var(--sp-6);
 
-  @media (max-width: 900px) {
+  @media (width <= 900px) {
     grid-template-columns: repeat(2, 1fr);
   }
-  @media (max-width: 768px) {
+
+  @media (width <= 768px) {
     grid-template-columns: 1fr;
   }
 }
@@ -40,10 +41,10 @@
       var(--sapphire),
       transparent 65%
     );
-    -webkit-mask:
+    mask:
       linear-gradient(#fff 0 0) content-box,
       linear-gradient(#fff 0 0);
-    -webkit-mask-composite: xor;
+    mask-composite: xor;
     mask-composite: exclude;
     opacity: 0;
     transition: opacity 0.4s;
@@ -129,19 +130,21 @@
     border-radius: 6px;
     color: #fff;
     backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid rgb(255 255 255 / 10%);
 
     &.gold {
       background: var(--color-badge-gold);
     }
+
     &.teal {
       background: var(--color-badge-teal);
     }
+
     &.white {
       background: var(--color-badge-white);
       color: var(--color-badge-white-text);
     }
+
     &.def {
       background: var(--color-badge-bluedark);
     }

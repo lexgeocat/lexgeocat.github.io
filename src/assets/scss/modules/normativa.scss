@@ -7,6 +7,7 @@
   margin-bottom: 32px;
   flex-wrap: wrap;
 }
+
 .norm-toolbar-left {
   display: flex;
   gap: 10px;
@@ -21,6 +22,7 @@
   flex: 1;
   min-width: 220px;
 }
+
 .norm-search {
   width: 100%;
   padding: 10px 14px 10px 40px;
@@ -34,6 +36,7 @@
   transition: border-color 0.2s;
   &:focus { border-color: var(--copper) }
 }
+
 .norm-search-icon {
   position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
   color: var(--text3); font-size: .9rem; pointer-events: none;
@@ -65,7 +68,13 @@
   text-align: center;
   padding: 60px 20px;
   color: var(--text3);
-  i { font-size: 2.2rem; display: block; margin-bottom: 14px; color: var(--border2) }
+
+  i {
+    font-size: 2.2rem;
+    display: block;
+    margin-bottom: 14px;
+    color: var(--border2);
+  }
   p { font-size: .95rem }
 }
 
@@ -85,6 +94,7 @@
   border-radius: var(--r);
   padding: 18px;
   transition: all 0.2s;
+
   &:hover {
     border-color: var(--copper);
     box-shadow: var(--sh2);
@@ -106,7 +116,10 @@
   flex-shrink: 0;
 }
 
-.norm-card-body { flex: 1; min-width: 0 }
+.norm-card-body {
+  flex: 1;
+  min-width: 0;
+}
 
 .norm-card-title {
   font-family: var(--font-heading);
@@ -147,17 +160,20 @@
   border-radius: 5px;
   white-space: nowrap;
 }
+
 .norm-badge-estado--vigente {
-  background: rgba(60, 160, 90, .12);
-  color: #3ca05a;
+  background: rgb(60 160 90 / 12%);
+  color: var(--color-badge-vigente);
 }
+
 .norm-badge-estado--derogada {
-  background: rgba(200, 50, 50, .12);
-  color: #c83232;
+  background: rgb(200 50 50 / 12%);
+  color: var(--color-badge-derogada);
 }
+
 .norm-badge-estado--modificada {
-  background: rgba(200, 160, 50, .12);
-  color: #c8a032;
+  background: rgb(200 160 50 / 12%);
+  color: var(--color-badge-modificada);
 }
 
 .norm-card-num {
@@ -201,15 +217,22 @@
   flex-wrap: wrap;
 }
 
-@media (max-width: 768px) {
-  .norm-toolbar { flex-direction: column; align-items: stretch }
+@media (width <= 768px) {
+  .norm-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
   .norm-toolbar-left { flex-direction: column }
   .norm-search-wrap { min-width: unset }
   .norm-search { width: 100% }
   .norm-select { width: 100% }
   .norm-grid { grid-template-columns: 1fr }
   .norm-card { flex-wrap: wrap }
-  .norm-card-actions { width: 100%; justify-content: flex-end }
+
+  .norm-card-actions {
+    width: 100%;
+    justify-content: flex-end;
+  }
 }
 
 .page-btn {

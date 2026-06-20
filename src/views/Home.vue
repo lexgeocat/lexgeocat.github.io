@@ -257,13 +257,13 @@ onUnmounted(() => {
              <p style="margin-top:4px">R.P.A. — Nº {{ SITE.rpa }}</p>
             </div>
           </div>
-          <div style="margin-top:32px">
-            <a class="btn btn-whatsapp" :href="SITE.social.whatsapp" target="_blank" rel="noopener" style="display:inline-flex;width:100%;justify-content:center"><i class="fa-brands fa-whatsapp"></i> Escríbeme por WhatsApp</a>
+          <div class="contact-wa-wrap">
+            <a class="btn btn-whatsapp" :href="SITE.social.whatsapp" target="_blank" rel="noopener"><i class="fa-brands fa-whatsapp"></i> Escríbeme por WhatsApp</a>
           </div>
         </div>
-        <div class="cf-form" style="padding:32px;text-align:center;background:var(--card);border:1px solid var(--border);border-radius:var(--r)">
-          <p style="font-size:1.05rem;font-weight:600;color:var(--text);margin-bottom:12px">¿Quieres contactarme directamente?</p>
-          <p style="font-size:.85rem;color:var(--text2);margin-bottom:20px"><i class="fa-solid fa-envelope" style="color:var(--gold)"></i> <strong>lexgeocat@gmail.com</strong></p>
+        <div class="cf-form-cta">
+          <p class="cta-lead">¿Quieres contactarme directamente?</p>
+          <p class="cta-email"><i class="fa-solid fa-envelope"></i> <strong>lexgeocat@gmail.com</strong></p>
           <router-link class="btn btn-gold" to="/pages/contacto.html"><i class="fa-solid fa-envelope"></i> Ir al formulario de contacto</router-link>
         </div>
       </div>

@@ -145,43 +145,6 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <!-- Preloader -->
-  <div id="ld" :class="{ hide: true }">
-    <div class="logo-loader">
-      <svg fill="none" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
-        <circle
-          cx="32"
-          cy="32"
-          opacity=".2"
-          r="28"
-          stroke="#D4A843"
-          stroke-width="1"
-        />
-        <circle
-          class="ring-anim"
-          cx="32"
-          cy="32"
-          r="28"
-          stroke="#D4A843"
-          stroke-linecap="round"
-          stroke-width="2"
-        />
-        <text
-          fill="#D4A843"
-          font-family="serif"
-          font-size="16"
-          font-weight="700"
-          text-anchor="middle"
-          x="32"
-          y="37"
-        >
-          L
-        </text>
-      </svg>
-      <span>LexGeoCat</span>
-    </div>
-  </div>
-
   <!-- Header -->
   <div id="hdr" :class="{ scrolled }">
     <div class="hi">
@@ -367,7 +330,7 @@ onUnmounted(() => {
         <div class="logo-icon" style="width: 34px; height: 34px">
           <i
             class="fa-solid fa-map-location-dot"
-            style="color: var(--gold2); font-size: 14px"
+            style="color: var(--copper2); font-size: 14px"
           ></i>
         </div>
         <span
@@ -375,10 +338,10 @@ onUnmounted(() => {
             font-family: var(--font-display);
             font-size: 1.15rem;
             font-weight: 800;
-            color: #fff;
+            color: var(--text);
           "
-          >{{ SITE.name.slice(0,3) }}<span style="color: var(--teal)">Geo</span
-+          ><span style="color: var(--gold)">Cat</span></span
+          >{{ SITE.name.slice(0,3) }}<span style="color: var(--sapphire)">Geo</span
+          ><span style="color: var(--copper)">Cat</span></span
         >
       </div>
       <div style="display: flex; align-items: center; gap: 8px">

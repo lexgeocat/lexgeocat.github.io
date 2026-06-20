@@ -27,16 +27,10 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
           <h3>Lex<span class="geo">Geo</span><span class="cat">Cat</span></h3>
           <div class="ft-tagline">{{ SITE.tagline }}</div>
           <p>Consultoría profesional en derecho territorial, catastro, geomática y tecnología aplicada al territorio boliviano.</p>
-          <div class="ft-contact" style="margin-bottom:16px">
-            <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;font-size:.82rem;color:var(--text2)">
-              <i class="fa-solid fa-envelope" style="color:var(--gold);font-size:11px;width:16px;text-align:center"></i> {{ SITE.email }}
-            </div>
-            <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;font-size:.82rem;color:var(--text2)">
-              <i class="fa-brands fa-whatsapp" style="color:var(--gold);font-size:11px;width:16px;text-align:center"></i> {{ SITE.whatsapp }}
-            </div>
-            <div style="display:flex;align-items:center;gap:8px;font-size:.82rem;color:var(--text2)">
-              <i class="fa-solid fa-location-dot" style="color:var(--gold);font-size:11px;width:16px;text-align:center"></i> {{ SITE.location }}
-            </div>
+          <div class="ft-contact-list">
+            <div class="ft-contact-row"><i class="fa-solid fa-envelope"></i> {{ SITE.email }}</div>
+            <div class="ft-contact-row"><i class="fa-brands fa-whatsapp"></i> {{ SITE.whatsapp }}</div>
+            <div class="ft-contact-row"><i class="fa-solid fa-location-dot"></i> {{ SITE.location }}</div>
           </div>
           <div class="ft-social">
             <a aria-label="Facebook" :href="SITE.social.facebook" rel="noopener" target="_blank"><i class="fab fa-facebook-f"></i></a>

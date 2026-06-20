@@ -62,11 +62,11 @@
      ══════════════════════════════════════ */
 
   --color-social-facebook: #1877f2;
-  --color-social-twitter: #000000;
+  --color-social-twitter: #000;
   --color-social-whatsapp: #25d366;
   --color-social-linkedin: #0a66c2;
-  --color-social-telegram: #0088cc;
-  --color-social-youtube: #ff0000;
+  --color-social-telegram: #08c;
+  --color-social-youtube: #f00;
 
   /* ══════════════════════════════════════
      5. TEXTO
@@ -80,37 +80,40 @@
      6. EFECTOS — líneas, glow, grid
      ══════════════════════════════════════ */
 
-  --color-grid-line: rgba(42, 100, 150, 0.1);
-  --color-glow-copper: rgba(184, 115, 51, 0.18);
-  --color-glow-sapphire: rgba(42, 100, 150, 0.2);
-  --color-glow-amber: rgba(240, 165, 0, 0.15);
+  --color-grid-line: rgb(42 100 150 / 10%);
+  --color-glow-copper: rgb(184 115 51 / 18%);
+  --color-glow-sapphire: rgb(42 100 150 / 20%);
+  --color-glow-amber: rgb(240 165 0 / 15%);
 
   /* Superposiciones (overlays) */
-  --color-overlay: rgba(10, 12, 16, 0.92);
-  --color-overlay-card: rgba(0, 0, 0, 0.7);
+  --color-overlay: rgb(10 12 16 / 92%);
+  --color-overlay-card: rgb(0 0 0 / 70%);
 
   /* Fondos de badge */
-  --color-badge-law: rgba(124, 59, 30, 0.85);
-  --color-badge-cat: rgba(0, 180, 166, 0.85);
-  --color-badge-gis: rgba(58, 94, 58, 0.85);
-  --color-badge-topo: rgba(200, 102, 12, 0.85);
-  --color-badge-orden: rgba(212, 168, 67, 0.85);
-  --color-badge-geo: rgba(26, 122, 154, 0.85);
-  --color-badge-software: rgba(124, 111, 200, 0.85);
-  --color-badge-tec: rgba(10, 12, 16, 0.85);
-  --color-badge-def: rgba(201, 168, 76, 0.85);
-  --color-badge-gold: rgba(201, 168, 76, 0.8);
-  --color-badge-teal: rgba(0, 180, 166, 0.8);
-  --color-badge-white: rgba(240, 237, 230, 0.8);
+  --color-badge-law: rgb(124 59 30 / 85%);
+  --color-badge-cat: rgb(0 180 166 / 85%);
+  --color-badge-gis: rgb(58 94 58 / 85%);
+  --color-badge-topo: rgb(200 102 12 / 85%);
+  --color-badge-orden: rgb(212 168 67 / 85%);
+  --color-badge-geo: rgb(26 122 154 / 85%);
+  --color-badge-software: rgb(124 111 200 / 85%);
+  --color-badge-tec: rgb(10 12 16 / 85%);
+  --color-badge-def: rgb(201 168 76 / 85%);
+  --color-badge-gold: rgb(201 168 76 / 80%);
+  --color-badge-vigente: #3ca05a;
+  --color-badge-derogada: #c83232;
+  --color-badge-modificada: #c8a032;
+  --color-badge-teal: rgb(0 180 166 / 80%);
+  --color-badge-white: rgb(240 237 230 / 80%);
   --color-badge-white-text: #0a0c10;
-  --color-badge-bluedark: rgba(44, 62, 80, 0.8);
+  --color-badge-bluedark: rgb(44 62 80 / 80%);
 
   /* Sombras de overlay */
-  --color-shadow-overlay: rgba(0, 0, 0, 0.6);
+  --color-shadow-overlay: rgb(0 0 0 / 60%);
 
   /* Header backgrounds */
-  --hdr-bg: rgba(12, 18, 32, 0.65);
-  --hdr-bg-scrolled: rgba(12, 18, 32, 0.92);
+  --hdr-bg: rgb(12 18 32 / 65%);
+  --hdr-bg-scrolled: rgb(12 18 32 / 92%);
 
   /* Gradiente hero light */
   --color-hero-light-1: #F5F2E8;
@@ -122,7 +125,7 @@
      7. TIPOGRAFÍA — familias
      ══════════════════════════════════════ */
 
-  --font-display: "DM Serif Display", Georgia, serif;
+  --font-display: "DM Serif Display", georgia, serif;
   --font-heading: "Syne", system-ui, sans-serif;
   --font-body: "Inter", system-ui, sans-serif;
   --font-mono: "JetBrains Mono", monospace;
@@ -213,15 +216,15 @@
     12. SOMBRAS
      ══════════════════════════════════════ */
 
-  --sh: 0 1px 3px rgba(0, 0, 0, 0.4), 0 1px 2px rgba(0, 0, 0, 0.3);
-  --sh2: 0 8px 28px rgba(0, 0, 0, 0.5), 0 2px 8px rgba(0, 0, 0, 0.3);
-  --sh3: 0 20px 56px rgba(0, 0, 0, 0.6), 0 4px 12px rgba(0, 0, 0, 0.4);
+  --sh: 0 1px 3px rgb(0 0 0 / 40%), 0 1px 2px rgb(0 0 0 / 30%);
+  --sh2: 0 8px 28px rgb(0 0 0 / 50%), 0 2px 8px rgb(0 0 0 / 30%);
+  --sh3: 0 20px 56px rgb(0 0 0 / 60%), 0 4px 12px rgb(0 0 0 / 40%);
   --sh-copper:
-    0 4px 20px rgba(184, 115, 51, 0.2), 0 1px 4px rgba(184, 115, 51, 0.12);
+    0 4px 20px rgb(184 115 51 / 20%), 0 1px 4px rgb(184 115 51 / 12%);
   --sh-copper-h:
-    0 8px 32px rgba(184, 115, 51, 0.32), 0 2px 8px rgba(184, 115, 51, 0.18);
-  --sh-sapphire: 0 4px 20px rgba(42, 100, 150, 0.18);
-  --sh-inset: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+    0 8px 32px rgb(184 115 51 / 32%), 0 2px 8px rgb(184 115 51 / 18%);
+  --sh-sapphire: 0 4px 20px rgb(42 100 150 / 18%);
+  --sh-inset: inset 0 1px 0 rgb(255 255 255 / 4%);
 
   /* ══════════════════════════════════════
     13. EASING
@@ -249,33 +252,18 @@
   --card: var(--color-bg-card);
   --card2: var(--color-bg-surface);
   --card3: #1e2d45;
-
   --copper: var(--color-copper);
   --copper2: var(--color-copper-glow);
-  --copper-lt: rgba(184, 115, 51, 0.07);
+  --copper-lt: rgb(184 115 51 / 7%);
   --sapphire: var(--color-sapphire);
   --sapphire2: var(--color-sapphire-glow);
-  --sapphire-lt: rgba(42, 100, 150, 0.07);
+  --sapphire-lt: rgb(42 100 150 / 7%);
   --amber: var(--color-amber);
-  --amber-lt: rgba(240, 165, 0, 0.07);
-
-  /* Aliases de compatibilidad — no romper módulos existentes */
-  --gold: var(--color-copper);
-  --gold2: var(--color-copper-glow);
-  --gold-lt: var(--copper-lt);
-  --teal: var(--color-sapphire);
-  --teal-lt: var(--sapphire-lt);
-
-  /* Alias de sombra retrocompatible */
-  --sh-gold: var(--sh-copper);
-  --sh-gold-h: var(--sh-copper-h);
-  --sh-teal: var(--sh-sapphire);
-
+  --amber-lt: rgb(240 165 0 / 7%);
   --text: var(--color-text-primary);
   --text2: var(--color-text-secondary);
   --text3: var(--color-text-muted);
   --text4: #3a4558;
-
   --border: var(--color-border);
   --border2: #28384f;
   --border3: #38506a;
@@ -288,9 +276,8 @@
 [data-theme="light"] {
   --color-bg-primary: #f2efe8; /* Pergamino cálido                  */
   --color-bg-surface: #fafaf8; /* Papel marfil                      */
-  --color-bg-card: #ffffff;
+  --color-bg-card: #fff;
   --color-border: #ddd8ce;
-
   --color-copper: #9a5f22; /* Cobre oscuro — mejor contraste    */
   --color-copper-glow: #b8732e;
   --color-sapphire: #1e5280; /* Zafiro oscuro                     */
@@ -304,85 +291,63 @@
   --color-esp-geomatica: #2e4a2e;
   --color-esp-software: #5a4fa8;
   --color-esp-geografia: #145e7a;
-
   --color-text-primary: #141c2a;
   --color-text-secondary: #4a5568;
   --color-text-muted: #8a97aa;
-
-  --color-grid-line: rgba(30, 82, 128, 0.06);
-  --color-glow-copper: rgba(154, 95, 34, 0.1);
-  --color-glow-sapphire: rgba(30, 82, 128, 0.1);
-
-  --color-overlay: rgba(242, 239, 232, 0.92);
-  --color-overlay-card: rgba(0, 0, 0, 0.12);
-
-  --color-badge-law: rgba(124, 59, 30, 0.85);
-  --color-badge-cat: rgba(0, 120, 110, 0.8);
-  --color-badge-gis: rgba(58, 94, 58, 0.8);
-  --color-badge-topo: rgba(200, 102, 12, 0.85);
-  --color-badge-orden: rgba(212, 168, 67, 0.85);
-  --color-badge-geo: rgba(26, 122, 154, 0.85);
-  --color-badge-software: rgba(124, 111, 200, 0.85);
-  --color-badge-tec: rgba(10, 12, 16, 0.8);
-  --color-badge-def: rgba(201, 168, 76, 0.85);
-  --color-badge-gold: rgba(201, 168, 76, 0.75);
-  --color-badge-teal: rgba(0, 160, 146, 0.75);
-  --color-badge-white: rgba(240, 237, 230, 0.85);
+  --color-grid-line: rgb(30 82 128 / 6%);
+  --color-glow-copper: rgb(154 95 34 / 10%);
+  --color-glow-sapphire: rgb(30 82 128 / 10%);
+  --color-overlay: rgb(242 239 232 / 92%);
+  --color-overlay-card: rgb(0 0 0 / 12%);
+  --color-badge-law: rgb(124 59 30 / 85%);
+  --color-badge-cat: rgb(0 120 110 / 80%);
+  --color-badge-gis: rgb(58 94 58 / 80%);
+  --color-badge-topo: rgb(200 102 12 / 85%);
+  --color-badge-orden: rgb(212 168 67 / 85%);
+  --color-badge-geo: rgb(26 122 154 / 85%);
+  --color-badge-software: rgb(124 111 200 / 85%);
+  --color-badge-tec: rgb(10 12 16 / 80%);
+  --color-badge-def: rgb(201 168 76 / 85%);
+  --color-badge-gold: rgb(201 168 76 / 75%);
+  --color-badge-teal: rgb(0 160 146 / 75%);
+  --color-badge-white: rgb(240 237 230 / 85%);
   --color-badge-white-text: #0a0c10;
-  --color-badge-bluedark: rgba(44, 62, 80, 0.8);
-
-  --color-shadow-overlay: rgba(0, 0, 0, 0.3);
-
-  --hdr-bg: rgba(242, 239, 232, 0.65);
-  --hdr-bg-scrolled: rgba(242, 239, 232, 0.94);
-
+  --color-badge-bluedark: rgb(44 62 80 / 80%);
+  --color-shadow-overlay: rgb(0 0 0 / 30%);
+  --hdr-bg: rgb(242 239 232 / 65%);
+  --hdr-bg-scrolled: rgb(242 239 232 / 94%);
   --color-hero-light-1: #F5F2E8;
   --color-hero-light-2: #EEEAD8;
   --color-hero-light-3: #E5E0D0;
   --color-hero-light-fade: #E8E4D4;
-
   --bg: var(--color-bg-primary);
   --bg2: var(--color-bg-surface);
   --bg3: #eeead8;
   --card: var(--color-bg-card);
   --card2: var(--color-bg-surface);
   --card3: #e8e4da;
-
   --copper: var(--color-copper);
   --copper2: var(--color-copper-glow);
-  --copper-lt: rgba(154, 95, 34, 0.07);
+  --copper-lt: rgb(154 95 34 / 7%);
   --sapphire: var(--color-sapphire);
   --sapphire2: var(--color-sapphire-glow);
-  --sapphire-lt: rgba(30, 82, 128, 0.07);
+  --sapphire-lt: rgb(30 82 128 / 7%);
   --amber: var(--color-amber);
-  --amber-lt: rgba(200, 120, 0, 0.07);
-
-  --gold: var(--color-copper);
-  --gold2: var(--color-copper-glow);
-  --gold-lt: var(--copper-lt);
-  --teal: var(--color-sapphire);
-  --teal-lt: var(--sapphire-lt);
-
+  --amber-lt: rgb(200 120 0 / 7%);
   --text: var(--color-text-primary);
   --text2: var(--color-text-secondary);
   --text3: var(--color-text-muted);
   --text4: #b0bacb;
-
   --border: var(--color-border);
   --border2: #ccc8bc;
   --border3: #a8a49c;
-
-  --sh: 0 1px 3px rgba(0, 0, 0, 0.07), 0 1px 2px rgba(0, 0, 0, 0.05);
-  --sh2: 0 8px 28px rgba(0, 0, 0, 0.09), 0 2px 8px rgba(0, 0, 0, 0.06);
-  --sh3: 0 20px 56px rgba(0, 0, 0, 0.12), 0 4px 12px rgba(0, 0, 0, 0.08);
+  --sh: 0 1px 3px rgb(0 0 0 / 7%), 0 1px 2px rgb(0 0 0 / 5%);
+  --sh2: 0 8px 28px rgb(0 0 0 / 9%), 0 2px 8px rgb(0 0 0 / 6%);
+  --sh3: 0 20px 56px rgb(0 0 0 / 12%), 0 4px 12px rgb(0 0 0 / 8%);
   --sh-copper:
-    0 4px 20px rgba(154, 95, 34, 0.15), 0 1px 4px rgba(154, 95, 34, 0.08);
+    0 4px 20px rgb(154 95 34 / 15%), 0 1px 4px rgb(154 95 34 / 8%);
   --sh-copper-h:
-    0 8px 32px rgba(154, 95, 34, 0.25), 0 2px 8px rgba(154, 95, 34, 0.12);
-  --sh-sapphire: 0 4px 20px rgba(30, 82, 128, 0.12);
-  --sh-inset: inset 0 1px 0 rgba(255, 255, 255, 0.8);
-
-  --sh-gold: var(--sh-copper);
-  --sh-gold-h: var(--sh-copper-h);
-  --sh-teal: var(--sh-sapphire);
+    0 8px 32px rgb(154 95 34 / 25%), 0 2px 8px rgb(154 95 34 / 12%);
+  --sh-sapphire: 0 4px 20px rgb(30 82 128 / 12%);
+  --sh-inset: inset 0 1px 0 rgb(255 255 255 / 80%);
 }

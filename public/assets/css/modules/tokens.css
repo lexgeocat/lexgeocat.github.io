@@ -113,10 +113,10 @@
   --hdr-bg-scrolled: rgba(12, 18, 32, 0.92);
 
   /* Gradiente hero light */
-  --color-hero-light-1: #F5F2E8;
-  --color-hero-light-2: #EEEAD8;
-  --color-hero-light-3: #E5E0D0;
-  --color-hero-light-fade: #E8E4D4;
+  --color-hero-light-1: #f5f2e8;
+  --color-hero-light-2: #eeead8;
+  --color-hero-light-3: #e5e0d0;
+  --color-hero-light-fade: #e8e4d4;
 
   /* ══════════════════════════════════════
      7. TIPOGRAFÍA — familias
@@ -259,18 +259,6 @@
   --amber: var(--color-amber);
   --amber-lt: rgba(240, 165, 0, 0.07);
 
-  /* Aliases de compatibilidad — no romper módulos existentes */
-  --gold: var(--color-copper);
-  --gold2: var(--color-copper-glow);
-  --gold-lt: var(--copper-lt);
-  --teal: var(--color-sapphire);
-  --teal-lt: var(--sapphire-lt);
-
-  /* Alias de sombra retrocompatible */
-  --sh-gold: var(--sh-copper);
-  --sh-gold-h: var(--sh-copper-h);
-  --sh-teal: var(--sh-sapphire);
-
   --text: var(--color-text-primary);
   --text2: var(--color-text-secondary);
   --text3: var(--color-text-muted);
@@ -336,10 +324,10 @@
   --hdr-bg: rgba(242, 239, 232, 0.65);
   --hdr-bg-scrolled: rgba(242, 239, 232, 0.94);
 
-  --color-hero-light-1: #F5F2E8;
-  --color-hero-light-2: #EEEAD8;
-  --color-hero-light-3: #E5E0D0;
-  --color-hero-light-fade: #E8E4D4;
+  --color-hero-light-1: #f5f2e8;
+  --color-hero-light-2: #eeead8;
+  --color-hero-light-3: #e5e0d0;
+  --color-hero-light-fade: #e8e4d4;
 
   --bg: var(--color-bg-primary);
   --bg2: var(--color-bg-surface);
@@ -356,12 +344,6 @@
   --sapphire-lt: rgba(30, 82, 128, 0.07);
   --amber: var(--color-amber);
   --amber-lt: rgba(200, 120, 0, 0.07);
-
-  --gold: var(--color-copper);
-  --gold2: var(--color-copper-glow);
-  --gold-lt: var(--copper-lt);
-  --teal: var(--color-sapphire);
-  --teal-lt: var(--sapphire-lt);
 
   --text: var(--color-text-primary);
   --text2: var(--color-text-secondary);
@@ -381,8 +363,4 @@
     0 8px 32px rgba(154, 95, 34, 0.25), 0 2px 8px rgba(154, 95, 34, 0.12);
   --sh-sapphire: 0 4px 20px rgba(30, 82, 128, 0.12);
   --sh-inset: inset 0 1px 0 rgba(255, 255, 255, 0.8);
-
-  --sh-gold: var(--sh-copper);
-  --sh-gold-h: var(--sh-copper-h);
-  --sh-teal: var(--sh-sapphire);
 }

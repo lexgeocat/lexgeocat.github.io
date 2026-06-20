@@ -17,17 +17,24 @@
   &-title {
     animation: hero-slide-up 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.15s both;
   }
+
   &-desc {
     animation: hero-slide-up 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.30s both;
   }
+
   &-btns {
     animation: hero-slide-up 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.45s both;
   }
+
   &-stats {
     animation: hero-slide-up 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.60s both;
   }
 
-  &-bg { position: absolute; inset: 0; pointer-events: none }
+  &-bg {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
 
   /* ═══════════════════════════════════════════
      CAPAS DEL FONDO HERO — Topografía acentuada
@@ -38,6 +45,7 @@
     inset: 0;
 
     /* Layer 1: Grid de referencia CSS — ELIMINADO (la topografía es suficiente) */
+
     /* hero-bg-grid::before removido para limpiar el fondo */
 
     /* Layer 2: SVG Topografía → máscara + color de acento */
@@ -47,10 +55,6 @@
       inset: 0;
 
       /* Máscara: el SVG define la forma, el color sale del fondo */
-      -webkit-mask-image: url('../../img/topografia.svg');
-      -webkit-mask-repeat: repeat;
-      -webkit-mask-size: 600px 600px;
-      -webkit-mask-position: center top;
       mask-image: url('../../img/topografia.svg');
       mask-repeat: repeat;
       mask-size: 600px 600px;
@@ -86,6 +90,7 @@
     background: radial-gradient(circle, var(--color-glow-copper), transparent 65%);
     animation: lgc-glow-move 22s ease-in-out infinite alternate;
   }
+
   &-bg-glow2 {
     position: absolute; bottom: -30%; left: -10%; width: 600px; height: 600px;
     border-radius: 50%;
@@ -93,8 +98,19 @@
     animation: lgc-glow-move 28s ease-in-out infinite alternate-reverse;
   }
 
-  &-grid { display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 48px; align-items: center; width: 100% }
-  &-content { position: relative; z-index: 5; max-width: 720px }
+  &-grid {
+    display: grid;
+    grid-template-columns: 1.15fr 0.85fr;
+    gap: 48px;
+    align-items: center;
+    width: 100%;
+  }
+
+  &-content {
+    position: relative;
+    z-index: 5;
+    max-width: 720px;
+  }
 
   &-title {
     font-family: var(--font-display);
@@ -105,8 +121,16 @@
     margin-bottom: 22px;
     letter-spacing: -.015em;
 
-    .accent-teal { color: var(--sapphire); text-shadow: 0 0 40px var(--color-glow-sapphire) }
-    .accent-gold { color: var(--copper); text-shadow: 0 0 40px var(--color-glow-copper) }
+    .accent-teal {
+      color: var(--sapphire);
+      text-shadow: 0 0 40px var(--color-glow-sapphire);
+    }
+
+    .accent-gold {
+      color: var(--copper);
+      text-shadow: 0 0 40px var(--color-glow-copper);
+    }
+
     .line-sub {
       font-family: var(--font-heading);
       font-style: italic;
@@ -127,7 +151,11 @@
     margin-bottom: 36px;
   }
 
-  &-btns { display: flex; flex-wrap: wrap; gap: 12px }
+  &-btns {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
 
   /* Stats — estilo registro institucional */
   &-stats {
@@ -156,6 +184,7 @@
       color: var(--copper); line-height: 1;
       letter-spacing: -.02em;
     }
+
     .hstat-l {
       font-size: .64rem; font-weight: 600;
       color: var(--text3); text-transform: uppercase;
@@ -165,7 +194,12 @@
   }
 
   /* Floating cards */
-  &-visual { position: relative; display: flex; justify-content: center; align-items: center }
+  &-visual {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
 
   .floating-dashboard {
     position: relative; width: 100%; max-width: 480px; height: 480px;
@@ -174,10 +208,9 @@
 
   .fd-card {
     position: absolute;
-    background: var(--card);
-    backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+    background: var(--card); backdrop-filter: blur(16px);
     border: 1px solid var(--border);
-    padding: 8px 8px; border-radius: var(--r);
+    padding: 8px; border-radius: var(--r);
     display: flex; align-items: center; gap: 12px;
     box-shadow: var(--sh2); transition: all .35s ease-out;
     width: 197px; z-index: 2;
@@ -189,34 +222,86 @@
       box-shadow: var(--sh3), 0 0 24px var(--color-glow-copper);
       border-left-color: var(--sapphire);
     }
-    i { font-size: 1.3rem; color: var(--copper); width: 26px; text-align: center }
+
+    i {
+      font-size: 1.3rem;
+      color: var(--copper);
+      width: 26px;
+      text-align: center;
+    }
     &:hover i { color: var(--sapphire) }
+
     h4 {
       font-family: var(--font-heading);
-      font-size: .8rem; font-weight: 700;
-      color: var(--text); margin-bottom: 2px; letter-spacing: .01em;
+      font-size: .8rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 2px;
+      letter-spacing: .01em;
     }
-    p { font-size: .68rem; color: var(--text3); margin: 0 }
+
+    p {
+      font-size: .68rem;
+      color: var(--text3);
+      margin: 0;
+    }
   }
 
-  .fdc-1 { top: 35%; left: 68%; transform: translateX(-50%); animation: lgc-float1 6s ease-in-out infinite }
-  .fdc-2 { top: 20%; right: 85%; animation: lgc-float2 7s ease-in-out infinite }
-  .fdc-3 { bottom: -10%; left: 15%; animation: lgc-float3 8s ease-in-out infinite }
-  .fdc-4 { bottom: 30%; right: 85%; transform: translateX(-50%); animation: lgc-float1 6.5s ease-in-out infinite }
-  .fdc-5 { top: 75%; left: 65%; animation: lgc-float2 7.5s ease-in-out infinite }
+  .fdc-1 {
+    top: 35%;
+    left: 68%;
+    transform: translateX(-50%);
+    animation: lgc-float1 6s ease-in-out infinite;
+  }
 
-  @media (max-width: 900px) { &-grid { grid-template-columns: 1fr } .hero-visual { display: none } }
-  @media (max-width: 768px) {
-    & { padding-top: calc(var(--h) + 44px + 40px); min-height: auto }
+  .fdc-2 {
+    top: 20%;
+    right: 85%;
+    animation: lgc-float2 7s ease-in-out infinite;
+  }
+
+  .fdc-3 {
+    bottom: -10%;
+    left: 15%;
+    animation: lgc-float3 8s ease-in-out infinite;
+  }
+
+  .fdc-4 {
+    bottom: 30%;
+    right: 85%;
+    transform: translateX(-50%);
+    animation: lgc-float1 6.5s ease-in-out infinite;
+  }
+
+  .fdc-5 {
+    top: 75%;
+    left: 65%;
+    animation: lgc-float2 7.5s ease-in-out infinite;
+  }
+
+  @media (width <= 900px) { &-grid { grid-template-columns: 1fr } .hero-visual { display: none } }
+
+  @media (width <= 768px) {
+    padding-top: calc(var(--h) + 44px + 40px);
+    min-height: auto;
     &-title { font-size: clamp(2rem, 9vw, 3rem) }
     &-title .line-sub { font-size: clamp(.9rem, 3.5vw, 1.2rem) }
     &-desc { font-size: .95rem }
     &-btns { justify-content: center }
     &-stats { flex-wrap: wrap }
-    &-stats .hstat { flex: 50%; border-right: none; border-bottom: 1px solid var(--border) }
-    &-stats .hstat:nth-child(odd) { border-right: 1px solid var(--border) !important }
+
+    &-stats .hstat {
+      flex: 50%;
+      border-right: none;
+      border-bottom: 1px solid var(--border);
+    }
+
+    &-stats .hstat:nth-child(odd) {
+      border-right: 1px solid var(--border) !important;
+    }
   }
-  @media (max-width: 480px) { &-title { font-size: 1.9rem } }
+
+  @media (width <= 480px) { &-title { font-size: 1.9rem } }
 }
 
 @keyframes hero-slide-up {
@@ -224,6 +309,7 @@
     opacity: 0;
     transform: translateY(24px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -233,5 +319,7 @@
 @keyframes lgc-glow-move { from { transform: translate(0,0) scale(1) } to { transform: translate(-2%,2%) scale(1.04) } }
 
 @keyframes lgc-float1 { 0%,100% { transform: translateY(0) } 50% { transform: translateY(-9px) } }
+
 @keyframes lgc-float2 { 0%,100% { transform: translateY(0) } 50% { transform: translateY(-11px) } }
+
 @keyframes lgc-float3 { 0%,100% { transform: translateY(0) } 50% { transform: translateY(-7px) } }

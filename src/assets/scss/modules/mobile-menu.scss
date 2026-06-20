@@ -27,19 +27,27 @@
   display: flex; align-items: center; justify-content: center;
   font-size: 13px; transition: all .22s; flex-shrink: 0;
 
-  &:hover { border-color: var(--copper); color: var(--copper); background: var(--copper-lt) }
+  &:hover {
+    border-color: var(--copper);
+    color: var(--copper);
+    background: var(--copper-lt);
+  }
 }
 
 .mob-menu .th-btn-mob {
   .fa-sun { display: none }
 
-  @media (max-width: 900px) {
+  @media (width <= 900px) {
     display: inline-flex;
   }
 }
 
 [data-theme="dark"] .mob-menu .th-btn-mob .fa-moon { display: none }
-[data-theme="dark"] .mob-menu .th-btn-mob .fa-sun { display: inline-block; color: var(--amber) }
+
+[data-theme="dark"] .mob-menu .th-btn-mob .fa-sun {
+  display: inline-block;
+  color: var(--amber);
+}
 
 .mob-close {
   width: 38px;
@@ -56,8 +64,8 @@
   transition: all .2s;
 
   &:hover {
-    border-color: var(--gold);
-    color: var(--gold)
+    border-color: var(--copper);
+    color: var(--copper)
   }
 }
 
@@ -73,12 +81,12 @@
   transition: border-color .25s;
 
   &:focus-within {
-    border-color: var(--gold);
-    box-shadow: var(--sh-gold)
+    border-color: var(--copper);
+    box-shadow: var(--sh-copper)
   }
 
   i {
-    color: var(--gold);
+    color: var(--copper);
     font-size: 13px;
     flex-shrink: 0
   }
@@ -99,7 +107,7 @@
 }
 
 .mob-search-btn {
-  background: var(--gold);
+  background: var(--copper);
   border: none;
   border-radius: 6px;
   color: var(--bg);
@@ -111,7 +119,7 @@
   transition: background .2s;
 
   &:hover {
-    background: var(--gold2)
+    background: var(--copper2)
   }
 }
 
@@ -135,15 +143,15 @@
     border: 1px solid transparent;
 
     &:hover {
-      background: var(--gold-lt);
+      background: var(--copper-lt);
       border-color: var(--color-badge-def);
-      color: var(--gold)
+      color: var(--copper)
     }
 
     i {
       font-size: 14px;
       width: 18px;
-      color: var(--gold)
+      color: var(--copper)
     }
   }
 }
@@ -179,7 +187,7 @@
     i {
       font-size: 14px;
       width: 18px;
-      color: var(--gold)
+      color: var(--copper)
     }
   }
 
@@ -189,9 +197,9 @@
   }
 
   &:hover {
-    background: var(--gold-lt);
+    background: var(--copper-lt);
     border-color: var(--color-badge-def);
-    color: var(--gold)
+    color: var(--copper)
   }
 }
 

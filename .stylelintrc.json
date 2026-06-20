@@ -1,0 +1,22 @@
+{
+  "extends": "stylelint-config-standard-scss",
+  "plugins": ["stylelint-declaration-strict-value"],
+  "rules": {
+    "scss/at-rule-no-unknown": null,
+    "selector-class-pattern": null,
+    "scale-unlimited/declaration-strict-value": [
+      ["/color$/", "background-color", "border-color", "fill", "stroke"],
+      {
+        "ignoreValues": [
+          "transparent",
+          "inherit",
+          "currentColor",
+          "none",
+          "#fff",
+          "#000"
+        ],
+        "disableFix": true
+      }
+    ]
+  }
+}

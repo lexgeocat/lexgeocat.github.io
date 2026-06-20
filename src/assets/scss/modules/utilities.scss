@@ -5,7 +5,7 @@
   width: 44px;
   height: 44px;
   background: var(--card2);
-  color: var(--gold);
+  color: var(--copper);
   border: 1px solid var(--border);
   border-radius: 8px;
   cursor: pointer;
@@ -28,25 +28,26 @@
 
   &:hover {
     transform: translateY(-3px);
-    background: var(--gold);
-    border-color: var(--gold);
+    background: var(--copper);
+    border-color: var(--copper);
     color: var(--bg);
-    box-shadow: var(--sh-gold-h)
+    box-shadow: var(--sh-copper-h)
   }
 }
 
-@keyframes fadeUp {
+@keyframes fade-up {
   from {
     opacity: 0;
     transform: translateY(24px)
   }
+
   to {
     opacity: 1;
     transform: translateY(0)
   }
 }
 
-@keyframes fadeIn {
+@keyframes fade-in {
   from { opacity: 0 }
   to { opacity: 1 }
 }
@@ -60,6 +61,7 @@
     transition-duration: .01ms !important;
     scroll-behavior: auto !important;
   }
+
   .lpaz-pulse-outer,
   .lpaz-pulse-mid,
   .lpaz-dot {
@@ -67,7 +69,7 @@
   }
 }
 
-@media (max-width: 480px) {
+@media (width <= 480px) {
   .c,
   .hi,
   .nav-inner {

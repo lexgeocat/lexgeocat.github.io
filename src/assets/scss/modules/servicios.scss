@@ -140,7 +140,7 @@
     color: var(--border2);
 }
 
-@media (max-width: 900px) {
+@media (width <= 900px) {
     .svc-hero-inner {
         grid-template-columns: 1fr;
     }
@@ -150,7 +150,7 @@
     }
 }
 
-@media (max-width: 600px) {
+@media (width <= 600px) {
     .svc-hero-stats {
         grid-template-columns: repeat(2, 1fr);
     }
@@ -584,7 +584,6 @@
 }
 
 .cot-step-n {
-    display: block;
     width: 24px;
     height: 24px;
     border-radius: 50%;
@@ -684,12 +683,12 @@
         background: var(--copper);
         color: #fff;
         border-color: var(--copper);
-        box-shadow: 0 4px 12px rgba(184, 115, 51, 0.25);
+        box-shadow: 0 4px 12px rgb(184 115 51 / 25%);
 
         &.sapphire-chip {
             background: var(--sapphire);
             border-color: var(--sapphire);
-            box-shadow: 0 4px 12px rgba(42, 100, 150, 0.25);
+            box-shadow: 0 4px 12px rgb(42 100 150 / 25%);
         }
     }
 }
@@ -889,7 +888,7 @@
         background: var(--copper);
         color: #fff;
         border-color: var(--copper);
-        box-shadow: 0 0 0 6px rgba(184, 115, 51, 0.12);
+        box-shadow: 0 0 0 6px rgb(184 115 51 / 12%);
     }
 
     h4 {
@@ -925,7 +924,7 @@
     transition: all 0.3s;
 }
 
-@media (max-width: 768px) {
+@media (width <= 768px) {
     .process-grid {
         grid-template-columns: repeat(2, 1fr);
         gap: 28px;
@@ -936,7 +935,7 @@
     }
 }
 
-@media (max-width: 480px) {
+@media (width <= 480px) {
     .process-grid {
         grid-template-columns: 1fr;
     }
@@ -978,7 +977,7 @@
     width: 52px;
     height: 52px;
     border-radius: 12px;
-    background: var(--gold-lt);
+    background: var(--copper-lt);
     border: 1px solid var(--copper-lt);
     display: flex;
     align-items: center;
@@ -1006,7 +1005,7 @@
         font-family: var(--font-mono);
         font-size: 0.7rem;
         color: var(--copper);
-        background: var(--gold-lt);
+        background: var(--copper-lt);
         padding: 1px 6px;
         border-radius: 4px;
     }
