@@ -14,6 +14,8 @@ const router = createRouter({
       meta: {
         title: 'LexGeoCat — Derecho, Catastro y Geomática en Bolivia',
         description: 'Servicios profesionales en Derecho, Catastro, Ordenamiento Territorial, Geografía, Topografía, Geodesia, Geomática y Desarrollo de Software en Bolivia.',
+        navLabel: 'Inicio',
+        navIcon: 'fa-house',
       },
     },
     {
@@ -23,6 +25,8 @@ const router = createRouter({
       meta: {
         title: 'Servicios Profesionales — Derecho, Catastro y Geomática | LexGeoCat',
         description: 'Consultoría integral en derecho territorial, catastro, ordenamiento, topografía, geomática y desarrollo de software en Bolivia. Cotización en línea.',
+        navLabel: 'Servicios',
+        navIcon: 'fa-briefcase',
       },
     },
     {
@@ -32,6 +36,9 @@ const router = createRouter({
       meta: {
         title: 'Derecho — Legislación Boliviana y Derecho Territorial | LexGeoCat',
         description: 'Asesoría legal en derecho civil, usucapión, derecho registral, notarial y normativa territorial boliviana.',
+        navLabel: 'Derecho',
+        navIcon: 'fa-scale-balanced',
+        navGroup: 'Especialidades',
       },
     },
     {
@@ -41,6 +48,9 @@ const router = createRouter({
       meta: {
         title: 'Catastro Multifinalitario en Bolivia | LexGeoCat',
         description: 'Registro predial, fichas catastrales, valuación fiscal y nomenclatura catastral en Bolivia.',
+        navLabel: 'Catastro',
+        navIcon: 'fa-map',
+        navGroup: 'Especialidades',
       },
     },
     {
@@ -50,6 +60,9 @@ const router = createRouter({
       meta: {
         title: 'Ordenamiento Territorial en Bolivia | LexGeoCat',
         description: 'Planificación urbana, zonificación, uso de suelo y gestión territorial municipal en Bolivia.',
+        navLabel: 'Ord. Territorial',
+        navIcon: 'fa-compass-drafting',
+        navGroup: 'Especialidades',
       },
     },
     {
@@ -59,6 +72,9 @@ const router = createRouter({
       meta: {
         title: 'Geografía — Estudios Territoriales en Bolivia | LexGeoCat',
         description: 'Análisis del territorio boliviano: geografía física, humana, regional, urbana y rural.',
+        navLabel: 'Geografía',
+        navIcon: 'fa-earth-americas',
+        navGroup: 'Especialidades',
       },
     },
     {
@@ -68,6 +84,9 @@ const router = createRouter({
       meta: {
         title: 'Topografía y Geodesia en Bolivia | LexGeoCat',
         description: 'Levantamientos topográficos, posicionamiento GNSS, redes geodésicas y georeferenciación profesional en Bolivia.',
+        navLabel: 'Topografía y Geodesia',
+        navIcon: 'fa-mountains',
+        navGroup: 'Especialidades',
       },
     },
     {
@@ -77,6 +96,9 @@ const router = createRouter({
       meta: {
         title: 'Geomática y SIG en Bolivia | LexGeoCat',
         description: 'Sistemas de información geográfica, teledetección, PostGIS/QGIS y análisis espacial avanzado en Bolivia.',
+        navLabel: 'Geomática',
+        navIcon: 'fa-layer-group',
+        navGroup: 'Especialidades',
       },
     },
     {
@@ -86,6 +108,9 @@ const router = createRouter({
       meta: {
         title: 'Desarrollo de Software y Aplicaciones Web GIS | LexGeoCat',
         description: 'Aplicaciones web geográficas, APIs geoespaciales y sistemas de gestión territorial a medida en Bolivia.',
+        navLabel: 'Software',
+        navIcon: 'fa-code',
+        navGroup: 'Especialidades',
       },
     },
     {
@@ -95,6 +120,8 @@ const router = createRouter({
       meta: {
         title: 'Sobre Mí — Cristian Ruiz Quiroga | LexGeoCat',
         description: 'Técnico en Catastro y Ordenamiento Territorial, Licenciado en Derecho. R.N.T. 970285 y R.P.A. 13437938CBRQ.',
+        navLabel: 'Sobre Mí',
+        navIcon: 'fa-user',
       },
     },
     {
@@ -104,6 +131,8 @@ const router = createRouter({
       meta: {
         title: 'Contacto | LexGeoCat',
         description: 'Consultas profesionales en derecho, catastro y geomática en Bolivia. Escríbenos por WhatsApp o correo.',
+        navLabel: 'Contacto',
+        navIcon: 'fa-envelope',
       },
     },
     {
@@ -113,6 +142,8 @@ const router = createRouter({
       meta: {
         title: 'Recursos y Herramientas | LexGeoCat',
         description: 'Formatos legales, guías catastrales, tutoriales SIG y recursos técnicos para profesionales del territorio.',
+        navLabel: 'Recursos',
+        navIcon: 'fa-folder-open',
       },
     },
     {
@@ -122,6 +153,8 @@ const router = createRouter({
       meta: {
         title: 'Biblioteca Jurídica — Normativa Legal Boliviana | LexGeoCat',
         description: 'Leyes, códigos, decretos reglamentarios, jurisprudencia y doctrina del ordenamiento jurídico boliviano.',
+        navLabel: 'Normativa',
+        navIcon: 'fa-gavel',
       },
     },
     {

@@ -1,59 +1,25 @@
 <script setup lang="ts">
-import { onMounted, onUnmounted } from 'vue'
-import { useReveal } from '../composables/useReveal'
-import { loadTopicFeed } from '../composables/useBlogFeed'
-const reveal = useReveal()
-onMounted(() => {
-  requestAnimationFrame(() => { requestAnimationFrame(() => { reveal.observe() }) })
-  loadTopicFeed({
-    bloggerFeed: 'https://lexgeocat.blogspot.com/feeds/posts/default',
-    blogUrl: 'https://lexgeocat.blogspot.com/',
-    label: 'Topografía y Geodesia',
-    badgeCls: 'topo',
-    badgeLabel: 'Topografía',
-    icon: 'fa-solid fa-mountain',
-    placeholderMsg: 'Próximamente artículos sobre Topografía y Geodesia.'
-  })
-})
-onUnmounted(() => { reveal.disconnect() })
+import TopicPage from '../components/TopicPage.vue'
+import { getTopic } from '../content/topics'
+const topic = getTopic('topogeodesia')!
 </script>
 
 <template>
-  <section class="page-hero">
-    <div class="c">
-      <div class="page-hero-icon"><i class="fa-solid fa-mountain"></i></div><span class="sl">Especialidad</span>
-      <h1 class="st">Topografía y Geodesia</h1>
-      <p class="sd">Levantamientos topográficos de precisión, posicionamiento GNSS, redes geodésicas, modelos geoidales y georeferenciación profesional para Bolivia.</p>
-    </div>
-  </section>
-  <section class="page-content">
-    <div class="c">
-      <div class="at-body">
-        <p>La topografía y la geodesia son la base técnica de toda obra civil, catastral y de ordenamiento territorial. En LexGeoCat integro ambas disciplinas para entregar mediciones confiables, planos precisos y georeferenciación alineada con los estándares del IGM Bolivia y SIRGAS.</p>
-        <h2>Topografía</h2>
-        <div class="feature-grid">
-          <div class="feature-item reveal"><i class="fa-solid fa-ruler-combined"></i><h3>Planimetría y altimetría</h3><p>Medición de distancias, ángulos, coordenadas y cotas con estación total y nivel de precisión.</p></div>
-          <div class="feature-item reveal"><i class="fa-solid fa-wave-square"></i><h3>Curvas de nivel</h3><p>Generación de curvas de nivel y modelos digitales de terreno para proyectos civiles y catastrales.</p></div>
-          <div class="feature-item reveal"><i class="fa-solid fa-bullseye"></i><h3>Replanteo y cubicaciones</h3><p>Materialización en campo de ejes, linderos, obras lineales y cálculo de volúmenes.</p></div>
-          <div class="feature-item reveal"><i class="fa-solid fa-helmet-untyled"></i><h3>Topografía de obras</h3><p>Control geométrico de cimentaciones, plataformas, vías y proyectos de infraestructura.</p></div>
-        </div>
-        <h2>Geodesia</h2>
-        <div class="feature-grid">
-          <div class="feature-item reveal"><i class="fa-solid fa-satellite"></i><h3>Posicionamiento GNSS</h3><p>Procesamiento GPS, GLONASS, Galileo y BeiDou con precisión centimétrica (estático, RTK, PPK).</p></div>
-          <div class="feature-item reveal"><i class="fa-solid fa-globe"></i><h3>Sistemas de referencia</h3><p>Trabajo con WGS84, SIRGAS, PSAD56, MAGNA-SIRGAS y datum oficiales del Estado Plurinacional de Bolivia.</p></div>
-          <div class="feature-item reveal"><i class="fa-solid fa-diagram-project"></i><h3>Redes geodésicas</h3><p>Diseño, monumentación, observación y ajuste de puntos de control geodésico.</p></div>
-          <div class="feature-item reveal"><i class="fa-solid fa-mountain"></i><h3>Modelos geoidales</h3><p>Cálculo de altitudes ortométricas con EGM96, EGM2008 y modelos locales (GEOIDEAR).</p></div>
-        </div>
-        <h2>Equipos y software</h2>
-        <p>Estación total, GNSS de doble frecuencia, drone para fotogrametría, y software <strong>AutoCAD Civil 3D</strong>, <strong>CivilCAD</strong>, <strong>Google Earth Pro</strong>, <strong>QGIS</strong> y <strong>PostGIS</strong>.</p>
+  <TopicPage :topic="topic">
+    <template #intro>
+      <p>La topografía y la geodesia son la base técnica de toda obra civil, catastral y de ordenamiento territorial. En LexGeoCat integro ambas disciplinas para entregar mediciones confiables, planos precisos y georeferenciación alineada con los estándares del IGM Bolivia y SIRGAS.</p>
+    </template>
+    <template #features-heading><h2>Topografía</h2></template>
+    <template #after-features>
+      <h2>Geodesia</h2>
+      <div class="feature-grid">
+        <div class="feature-item reveal"><i class="fa-solid fa-satellite"></i><h3>Posicionamiento GNSS</h3><p>GPS, GLONASS, Galileo y BeiDou con precisión centimétrica (estático, RTK, PPK).</p></div>
+        <div class="feature-item reveal"><i class="fa-solid fa-globe"></i><h3>Sistemas de referencia</h3><p>WGS84, SIRGAS, PSAD56 y datum oficiales del Estado Plurinacional de Bolivia.</p></div>
+        <div class="feature-item reveal"><i class="fa-solid fa-diagram-project"></i><h3>Redes geodésicas</h3><p>Diseño, monumentación, observación y ajuste de puntos de control.</p></div>
+        <div class="feature-item reveal"><i class="fa-solid fa-mountain"></i><h3>Modelos geoidales</h3><p>Altitudes ortométricas con EGM96, EGM2008 y modelos locales.</p></div>
       </div>
-      <div class="sh center" style="margin-top:48px"><span class="sl">Blog</span><h2 class="st">Artículos recientes</h2></div>
-      <div class="g g3" id="topic-posts-grid"></div>
-      <div class="blog-cta">
-        <h3>¿Necesitas un levantamiento o georeferenciación profesional?</h3>
-        <p>Entrego planos topográficos georeferenciados, listos para trámites catastrales, municipales o de obra.</p>
-        <router-link class="btn btn-gold" to="/contacto"><i class="fa-solid fa-envelope"></i> Solicitar cotización</router-link>
-      </div>
-    </div>
-  </section>
+      <h2>Equipos y software</h2>
+      <p>Estación total, GNSS de doble frecuencia, drone y software <strong>AutoCAD Civil 3D</strong>, <strong>CivilCAD</strong>, <strong>QGIS</strong> y <strong>PostGIS</strong>.</p>
+    </template>
+  </TopicPage>
 </template>

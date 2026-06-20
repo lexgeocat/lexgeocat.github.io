@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted } from 'vue'
 import { useReveal } from '../composables/useReveal'
+import { SITE } from '../config/site'
 const reveal = useReveal()
 onMounted(() => { requestAnimationFrame(() => { requestAnimationFrame(() => { reveal.observe() }) }) })
 onUnmounted(() => { reveal.disconnect() })
@@ -23,17 +24,17 @@ onUnmounted(() => { reveal.disconnect() })
           <p>Disponible para consultas en derecho, catastro, GIS y servicios relacionados con la gestión territorial en Bolivia.</p>
           <div class="contact-item">
             <div class="contact-icon"><i class="fa-solid fa-location-dot"></i></div>
-            <div class="contact-text"><h4>Ubicación</h4><p>Viacha, Departamento de La Paz, Bolivia</p></div>
+            <div class="contact-text"><h4>Ubicación</h4><p>{{ SITE.location }}</p></div>
           </div>
           <div class="contact-item">
             <div class="contact-icon"><i class="fa-solid fa-envelope"></i></div>
-            <div class="contact-text"><h4>Correo</h4><p>lexgeocat@gmail.com</p></div>
+            <div class="contact-text"><h4>Correo</h4><p>{{ SITE.email }}</p></div>
           </div>
           <div class="contact-item">
             <div class="contact-icon"><i class="fa-solid fa-id-card"></i></div>
-            <div class="contact-text"><h4>Registro</h4><p>SIB — R.N.T. Nº 970285</p></div>
+            <div class="contact-text"><h4>Registro</h4><p>SIB — R.N.T. Nº {{ SITE.rnt }}</p></div>
           </div>
-          <a class="btn btn-whatsapp" href="https://wa.me/59176711790" target="_blank" rel="noopener" style="display:inline-flex;width:100%;justify-content:center;margin-top:16px"><i class="fa-brands fa-whatsapp"></i> WhatsApp</a>
+          <a class="btn btn-whatsapp" :href="SITE.social.whatsapp" target="_blank" rel="noopener" style="display:inline-flex;width:100%;justify-content:center;margin-top:16px"><i class="fa-brands fa-whatsapp"></i> WhatsApp</a>
         </div>
        <form class="cf-form" action="https://formspree.io/f/xovqgdgn" method="POST">
           <input type="text" name="_gotcha" style="display:none" tabindex="-1" autocomplete="off">

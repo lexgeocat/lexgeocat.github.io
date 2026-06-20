@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from "vue";
+import { SITE } from "../config/site";
 import { useTheme } from "../composables/useTheme";
 import { useGoatCounter, FLAG_CDN } from "../composables/useGoatCounter";
-import { useRouter } from "vue-router";
 import logonoche from '@/assets/img/logo-noche.png'
 import logodia from '@/assets/img/logo-dia.png'
+import { useRouter } from 'vue-router';
 
 const { isDark, toggle } = useTheme();
 const router = useRouter();
@@ -36,70 +37,64 @@ function hideTip() {
 function flagTip(loc: { name: string; count: number }) {
   return `${loc.name}: ${loc.count.toLocaleString("es-BO")} visitas`;
 }
-
-const nav = [
-  { id: "inicio", label: "Inicio", icon: "fa-house" },
-  { id: "servicios", label: "Servicios", icon: "fa-briefcase" },
-  {
-    id: "temas",
-    label: "Especialidades",
-    icon: "fa-tags",
-    children: [
-      { id: "derecho", label: "Derecho", icon: "fa-scale-balanced" },
-      { id: "catastro", label: "Catastro", icon: "fa-map" },
-      {
-        id: "ordenamiento",
-        label: "Ordenamiento Territorial",
-        icon: "fa-compass-drafting",
-      },
-      { id: "geografia", label: "Geografía", icon: "fa-earth-americas" },
-      {
-        id: "topogeodesia",
-        label: "Topografía y Geodesia",
-        icon: "fa-mountain",
-      },
-      { id: "geomantica", label: "Geomática", icon: "fa-layer-group" },
-      {
-        id: "desarrollo",
-        label: "Software y Aplicaciones Web",
-        icon: "fa-code",
-      },
-    ],
-  },
-  { id: "normativa", label: "Biblioteca Jurídica", icon: "fa-scroll" },
-  { id: "recursos", label: "Recursos", icon: "fa-folder-open" },
-  { id: "blog", label: "Blog", icon: "fa-newspaper", external: true },
-  { id: "acerca", label: "Sobre Mí", icon: "fa-user" },
-  { id: "contacto", label: "Contacto", icon: "fa-envelope" },
-];
-
-const routeMap: Record<string, string> = {
-  inicio: "/",
-  servicios: "/pages/servicios.html",
-  derecho: "/pages/derecho.html",
-  catastro: "/pages/catastro.html",
-  ordenamiento: "/pages/ordenamiento.html",
-  geografia: "/pages/geografia.html",
-  topogeodesia: "/pages/topogeodesia.html",
-  geomantica: "/pages/geomantica.html",
-  desarrollo: "/pages/desarrollo-software.html",
-  normativa: "/pages/normativa.html",
-  recursos: "/pages/recursos.html",
-  blog: "https://lexgeocat.blogspot.com/",
-  acerca: "/pages/acerca-de.html",
-  contacto: "/pages/contacto.html",
-};
-
-function navigateTo(id: string) {
-  const href = routeMap[id]
-  if (!href) return
-  if (href.startsWith('http')) {
-    window.location.href = href
-  } else {
-    router.push(href)
-  }
-  mobileOpen.value = false
+interface NavItem {
+  id: string
+  label: string
+  icon: string
+  path: string
+  external?: boolean
+  children?: NavItem[]
 }
+const NAV_ORDER = ['home','servicios','temas','normativa','recursos','blog','acerca-de','contacto']
+
+function buildNav(): NavItem[] {
+  const routes = router.getRoutes()
+ const items: NavItem[] = []
+ const grouped: Record<string, NavItem[]> = {}
+
+  for (const r of routes) {
+   const m = r.meta as any
+    if (!m?.navLabel) continue
+   const item: NavItem = { id: r.name as string, label: m.navLabel, icon: m.navIcon || 'fa-circle', path: r.path }
+    if (m.navGroup) {
+     if (!grouped[m.navGroup]) grouped[m.navGroup] = []
+      grouped[m.navGroup].push(item)
+    } else {
+      items.push(item)
+   }
+  }
+
+  // Insertar blog (externo)
+  items.push({ id: 'blog', label: 'Blog', icon: 'fa-newspaper', path: SITE.blog.url, external: true })
+
+  // Insertar grupos como dropdown
+  for (const [groupLabel, children] of Object.entries(grouped)) {
+    items.push({ id: 'temas', label: groupLabel, icon: 'fa-tags', path: '', children })
+  }
+
+  // Ordenar según NAV_ORDER
+  return items.sort((a, b) => {
+    const ai = NAV_ORDER.indexOf(a.id)
+    const bi = NAV_ORDER.indexOf(b.id)
+    if (ai === -1 && bi === -1) return 0
+    if (ai === -1) return 1
+    if (bi === -1) return -1
+    return ai - bi
+  })
+}
+
+const nav = buildNav()
+
+ function navigateTo(id: string) {
+  const item = nav.find(n => n.id === id) || nav.flatMap(n => n.children || []).find(n => n.id === id)
+  if (!item) return
+  if (item.external || item.path.startsWith('http')) {
+    window.open(item.path, '_blank', 'noopener')
+  } else {
+    router.push(item.path)
+   }
+   mobileOpen.value = false
+ }
 
 function onScroll() {
   const y = window.scrollY;
@@ -117,7 +112,7 @@ function doSearch() {
     document.getElementById("srch-modal-input") as HTMLInputElement
   )?.value?.trim();
   if (!q) return;
-  window.location.href = `https://lexgeocat.blogspot.com/search?q=${encodeURIComponent(q)}`;
+  window.location.href = `${SITE.blog.url}search?q=${encodeURIComponent(q)}`;
   searchOpen.value = false;
 }
 
@@ -126,7 +121,7 @@ function doMobSearch() {
     document.getElementById("mob-srch-input") as HTMLInputElement
   )?.value?.trim();
   if (!q) return;
-  window.location.href = `https://lexgeocat.blogspot.com/search?q=${encodeURIComponent(q)}`;
+  window.location.href = `${SITE.blog.url}search?q=${encodeURIComponent(q)}`;
   mobileOpen.value = false;
 }
 
@@ -220,7 +215,7 @@ onUnmounted(() => {
           <a
             aria-label="Facebook"
             class="hdr-social-btn fb"
-            href="https://www.facebook.com/CrisCat17"
+            :href="SITE.social.facebook"
             rel="noopener"
             target="_blank"
             ><i class="fa-brands fa-facebook-f"></i
@@ -228,7 +223,7 @@ onUnmounted(() => {
           <a
             aria-label="YouTube"
             class="hdr-social-btn yt"
-            href="https://www.youtube.com/@lexgeocat"
+            :href="SITE.social.youtube"
             rel="noopener"
             target="_blank"
             ><i class="fa-brands fa-youtube"></i
@@ -236,7 +231,7 @@ onUnmounted(() => {
           <a
             aria-label="LinkedIn"
             class="hdr-social-btn lk"
-            href="https://www.linkedin.com/lexgeocat"
+            :href="SITE.social.linkedin"
             rel="noopener"
             target="_blank"
             ><i class="fa-brands fa-linkedin-in"></i
@@ -244,7 +239,7 @@ onUnmounted(() => {
           <a
             aria-label="WhatsApp"
             class="hdr-social-btn wa"
-            href="https://wa.me/59176711790"
+            :href="SITE.social.whatsapp"
             rel="noopener"
             target="_blank"
             ><i class="fa-brands fa-whatsapp"></i
@@ -280,7 +275,7 @@ onUnmounted(() => {
             </span>
             <a
               class="gc-flag-item gc-more-stats"
-              href="https://lexgeocat.goatcounter.com/"
+              :href="SITE.goatcounter + '/'"
               target="_blank"
               rel="noopener"
               @mouseenter="showTip('Ver más estadísticas', $event)"
@@ -356,7 +351,7 @@ onUnmounted(() => {
           v-else
           href="javascript:void(0)"
           class="nav-link"
-          :class="{ active: $route.path === routeMap[item.id] }"
+          :class="{ active: $route.path === item.path }"
           @click="navigateTo(item.id)"
         >
           <i :class="'fa-solid ' + item.icon"></i>{{ item.label }}
@@ -382,8 +377,8 @@ onUnmounted(() => {
             font-weight: 800;
             color: #fff;
           "
-          >Lex<span style="color: var(--teal)">Geo</span
-          ><span style="color: var(--gold)">Cat</span></span
+          >{{ SITE.name.slice(0,3) }}<span style="color: var(--teal)">Geo</span
++          ><span style="color: var(--gold)">Cat</span></span
         >
       </div>
       <div style="display: flex; align-items: center; gap: 8px">
@@ -443,7 +438,7 @@ onUnmounted(() => {
         </span>
         <a
           class="gc-flag-item gc-more-stats"
-          href="https://lexgeocat.goatcounter.com/"
+          :href="SITE.goatcounter + '/'"
           target="_blank"
           rel="noopener"
         >

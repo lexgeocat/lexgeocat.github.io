@@ -2,7 +2,12 @@
 import { onMounted, onUnmounted } from 'vue'
 import { useReveal, useCounters } from '../composables/useReveal'
 import boliviaMap from '@/assets/img/fd-bolivia-map.svg?url'
+import { SITE } from '../config/site'
+import { useBloggerFeed } from '../composables/useBloggerFeed'
+import BlogCard from '../components/BlogCard.vue'
 
+const { entries: blogEntries, load: loadBlog } = useBloggerFeed({ limit: 3 })
+const { entries: recursosEntries, load: loadRecursos } = useBloggerFeed({ label: 'Recursos', limit: 6, categoryCls: 'def', categoryLabel: 'Recurso' })
 const reveal = useReveal()
 const counters = useCounters()
 
@@ -28,8 +33,8 @@ onMounted(() => {
 
   // Blogger feed loader for stats and blog posts
   const CFG = {
-    bloggerFeed: 'https://lexgeocat.blogspot.com/feeds/posts/default',
-    blogUrl: 'https://lexgeocat.blogspot.com/',
+    bloggerFeed: SITE.blog.feed,
+    blogUrl: SITE.blog.url,
     profesiones: [
       { id: 'derecho', label: 'Derecho' },
       { id: 'catastro', label: 'Catastro' },
@@ -49,45 +54,13 @@ onMounted(() => {
     statEsp.textContent = String(prof)
     setTimeout(() => counters.observe(), 100)
   }
-
-  // Load stats from Blogger
-  if (CFG.bloggerFeed) {
-    loadFeedJSON(`${CFG.bloggerFeed}?max-results=0`, (d: any) => {
-      const n = d?.feed?.openSearch$totalResults?.$t
-      const el = document.getElementById('stat-articulos')
-      if (el && n) {
-        el.setAttribute('data-count', n)
-        el.textContent = n
-        setTimeout(() => counters.observe(), 100)
-      }
-    })
-    loadFeedJSON(`${CFG.bloggerFeed}/-/Recursos?max-results=0`, (d: any) => {
-      const n = d?.feed?.openSearch$totalResults?.$t
-      const el = document.getElementById('stat-recursos')
-      if (el && n) {
-        el.setAttribute('data-count', n)
-        el.textContent = n
-        setTimeout(() => counters.observe(), 100)
-      }
-    })
-  }
-
   // Load blog grid
   if (CFG.bloggerFeed) {
-    loadFeedJSON(`${CFG.bloggerFeed}?max-results=10`, (data: any) => {
-      const box = document.getElementById('blog-grid')
-      if (!box) return
-      const allEntries = (data?.feed?.entry || []).filter((e: any) => getEntryTitle(e))
-      const entries = allEntries.slice(0, 3)
-      renderBlogCards(entries, box, 'def', '', 120, 'Próximamente artículos desde la trinchera catastral.', true)
-    }, () => {
-      const box = document.getElementById('blog-grid')
-      if (box) box.innerHTML = `<p style="color:var(--text3);text-align:center;padding:20px;grid-column:1/-1;font-size:.85rem">No se pudieron cargar los artículos. <a href="${CFG.blogUrl}" style="color:var(--teal)">Visita el blog directamente</a>.</p>`
-    })
+    loadBlog()
   }
 
   // Load recursos grid
-  loadFeedGrid('Recursos', 'recursos-grid', 'def', 6, CFG.bloggerFeed, CFG.blogUrl)
+  loadRecursos()
 })
 
 onUnmounted(() => {
@@ -98,132 +71,7 @@ onUnmounted(() => {
 
 // ─── Utility functions (ported from main.js) ───
 
-function htmlToText(html: string, maxLen: number) {
-  return html.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim().slice(0, maxLen || 120)
-}
 
-function getThumbUrl(e: any) {
-  if (e.media$thumbnail?.url) return e.media$thumbnail.url.replace('/s72-c/', '/s600-c/')
-  return ''
-}
-
-function getCategoryInfo(labels: any[]) {
-  if (!labels?.length) return { cls: 'white', label: 'Catastro' }
-  const cats = labels.map((c: any) => (c.$t || '').toLowerCase()).filter(Boolean)
-  if (!cats.length) return { cls: 'white', label: 'Catastro' }
-  if (cats.some((c: string) => c.includes('derecho') || c.includes('legal'))) return { cls: 'gold', label: 'Derecho' }
-  if (cats.some((c: string) => c.includes('gis') || c.includes('geomática') || c.includes('sig') || c.includes('geoinformacion'))) return { cls: 'teal', label: 'GIS' }
-  if (cats.some((c: string) => c.includes('catastro'))) return { cls: 'white', label: 'Catastro' }
-  return { cls: 'white', label: cats[0].charAt(0).toUpperCase() + cats[0].slice(1) }
-}
-
-function getPostUrl(e: any) {
-  const links = e.link || []
-  for (const l of links) { if (l.rel === 'alternate') return l.href }
-  return 'https://lexgeocat.blogspot.com/'
-}
-
-function formatDate(published: any) {
-  if (!published?.$t) return ''
-  return new Date(published.$t).toLocaleDateString('es', { year: 'numeric', month: 'short', day: 'numeric' })
-}
-
-function getEntryTitle(e: any) {
-  const feedTitle = e.title?.$t?.trim()
-  if (feedTitle) return feedTitle
-  const links = e.link || []
-  for (const l of links) {
-    if (l.rel === 'alternate') {
-      const slug = l.href.replace(/\/+$/, '').split('/').pop() || ''
-      const s = slug.replace(/-/g, ' ').replace(/\s+/g, ' ').trim()
-      if (s.length > 5) return s.charAt(0).toUpperCase() + s.slice(1)
-    }
-  }
-  return ''
-}
-
-function getPlaceholderHtml(catLabel: string) {
-  const gradMap: Record<string, string> = {
-    Derecho: 'linear-gradient(135deg, var(--color-esp-derecho-bg-from), var(--color-esp-derecho-bg-to))',
-    GIS: 'linear-gradient(135deg, var(--color-esp-geomatica-bg-from), var(--color-esp-geomatica-bg-to))',
-    Catastro: 'linear-gradient(135deg, var(--color-esp-catastro-bg-from), var(--color-esp-catastro-bg-to))',
-  }
-  const iconMap: Record<string, string> = {
-    Derecho: 'fa-scale-balanced',
-    GIS: 'fa-map-location-dot',
-    Catastro: 'fa-draw-polygon',
-  }
-  const grad = gradMap[catLabel] || 'linear-gradient(135deg, var(--bg3), var(--bg2))'
-  const icon = iconMap[catLabel] || 'fa-newspaper'
-  return `<div class="blog-card-thumb-plh" style="background:${grad}"><i class="fa-solid ${icon}"></i></div>`
-}
-
-function renderBlogCards(entries: any[], box: HTMLElement, badgeCls: string, badgeLabel: string, excerptLen: number, emptyMsg: string, isHome: boolean) {
-  if (!entries.length) {
-    box.innerHTML = `<p style="color:var(--text3);text-align:center;padding:20px;grid-column:1/-1;font-size:.85rem">${emptyMsg || ''}</p>`
-    return
-  }
-  box.innerHTML = entries.map((e) => {
-    const title = getEntryTitle(e) || 'Sin título'
-    const html = e.content?.$t || e.summary?.$t || ''
-    const snip = htmlToText(html, excerptLen || 120)
-    const thumbUrl = getThumbUrl(e)
-    const catInfo = isHome ? getCategoryInfo(e.category || []) : { cls: badgeCls, label: badgeLabel || '' }
-    const imgHtml = thumbUrl
-      ? `<img alt="${title.replace(/"/g, '&quot;')}" src="${thumbUrl.replace(/&amp;/g, '&')}" loading="lazy">`
-      : getPlaceholderHtml(catInfo.label)
-    const dateStr = formatDate(e.published)
-    const readTime = `${Math.max(1, Math.ceil(snip.length / 500))} min lectura`
-    const postUrl = getPostUrl(e)
-    return `<a class="blog-card reveal" href="${postUrl}"><div class="blog-card-thumb">${imgHtml}<span class="blog-card-badge ${catInfo.cls}">${catInfo.label}</span></div><div class="blog-card-body"><h3 class="blog-card-title">${title}</h3><p class="blog-card-excerpt">${snip}…</p><div class="blog-card-meta"><span class="blog-card-date"><i class="fa-regular fa-calendar"></i> ${dateStr} · ${readTime}</span><span class="blog-card-cta">→ Leer en Blog</span></div></div></a>`
-  }).join('')
-  document.querySelectorAll('#blog-grid .reveal, #recursos-grid .reveal').forEach((el) => {
-    const rIO = (window as any).__lgcReveal
-    if (rIO) rIO.observe(el)
-  })
-}
-
-function loadFeedJSON(url: string, callback: (d: any) => void, onError?: (e: string) => void) {
-  const id = '_lgc_' + Math.random().toString(36).substr(2, 9)
-  let timedOut = false
-  const timer = setTimeout(() => {
-    timedOut = true
-    try { delete (window as any)[id] } catch {}
-    if (onError) onError('timeout')
-  }, 10000)
-  ;(window as any)[id] = (d: any) => {
-    if (timedOut) return
-    clearTimeout(timer)
-    try { callback(d) } catch { if (onError) onError('callback') }
-    try { delete (window as any)[id] } catch {}
-  }
-  const s = document.createElement('script')
-  s.src = `${url}${url.includes('?') ? '&' : '?'}alt=json-in-script&callback=${id}`
-  s.async = true
-  s.onerror = () => {
-    clearTimeout(timer)
-    if (!timedOut) {
-      timedOut = true
-      try { delete (window as any)[id] } catch {}
-      if (onError) onError('network')
-    }
-  }
-  document.body.appendChild(s)
-}
-
-function loadFeedGrid(label: string, containerId: string, badgeCls: string, limit: number, bloggerFeed: string, blogUrl: string) {
-  if (!bloggerFeed) return
-  const box = document.getElementById(containerId)
-  if (!box) return
-  const url = `${bloggerFeed}/-/${encodeURIComponent(label)}?max-results=${limit || 6}`
-  loadFeedJSON(url, (data) => {
-    const allEntries = (data?.feed?.entry || []).filter((e: any) => getEntryTitle(e))
-    const entries = allEntries.slice(0, limit || 6)
-    renderBlogCards(entries, box, badgeCls, label, 130, `Los recursos del blog aparecerán aquí cuando publiques entradas con la etiqueta "${label}".`, false)
-  }, () => {
-    box.innerHTML = `<p style="color:var(--text3);text-align:center;padding:20px;grid-column:1/-1;font-size:.85rem">No se pudieron cargar los recursos. Visita nuestro <a href="${blogUrl}" style="color:var(--teal)">blog</a>.</p>`
-  })
-}
 </script>
 
 <template>
@@ -245,7 +93,7 @@ function loadFeedGrid(label: string, containerId: string, badgeCls: string, limi
           <p class="hero-desc">Plataforma especializada en consultoría, recursos y formación técnica en materia legal, catastral y sistemas de información geográfica adaptados al contexto boliviano.</p>
           <div class="hero-btns">
             <router-link class="btn btn-gold" to="/pages/servicios.html"><i class="fa-solid fa-briefcase"></i> Ver Servicios</router-link>
-            <a class="btn btn-ghost" href="https://lexgeocat.blogspot.com/"><i class="fa-solid fa-newspaper"></i> Explorar Blog</a>
+            <a class="btn btn-ghost" href="${SITE.blog.url}"><i class="fa-solid fa-newspaper"></i> Explorar Blog</a>
           </div>
           <div class="hero-stats">
             <div class="hstat">
@@ -357,9 +205,11 @@ function loadFeedGrid(label: string, containerId: string, badgeCls: string, limi
         <h2 class="st">Últimos Artículos</h2>
         <p class="sd">Análisis, guías y recursos desde la práctica profesional en derecho territorial, catastro, geomática y desarrollo de software en Bolivia.</p>
       </div>
-      <div class="blog-grid" id="blog-grid"></div>
+      <div class="blog-grid">
+       <BlogCard v-for="e in blogEntries" :key="e.id" :entry="e" />
+      </div>
       <div style="text-align:center;margin-top:44px">
-        <a class="btn btn-gold" href="https://lexgeocat.blogspot.com/"><i class="fa-solid fa-newspaper"></i> Ver todos en el Blog</a>
+        <a class="btn btn-gold" href="${SITE.blog.url}"><i class="fa-solid fa-newspaper"></i> Ver todos en el Blog</a>
       </div>
     </div>
   </section>
@@ -371,7 +221,9 @@ function loadFeedGrid(label: string, containerId: string, badgeCls: string, limi
         <h2 class="st">Herramientas y Materiales</h2>
         <p class="sd">Recursos útiles para profesionales del derecho, catastro y geomática en Bolivia.</p>
       </div>
-      <div class="g g-auto" id="recursos-grid"></div>
+      <div class="g g-auto">
+       <BlogCard v-for="e in recursosEntries" :key="e.id" :entry="e" />
+    </div>
       <div style="text-align:center;margin-top:40px">
         <router-link class="btn btn-gold" to="/pages/recursos.html"><i class="fa-solid fa-folder-open"></i> Ver todos los recursos</router-link>
       </div>
@@ -401,12 +253,12 @@ function loadFeedGrid(label: string, containerId: string, badgeCls: string, limi
             <div class="contact-icon"><i class="fa-solid fa-id-card"></i></div>
             <div class="contact-text">
               <h4>Registros Profesionales</h4>
-              <p>S.I.B. — R.N.T. Nº 970285</p>
-              <p style="margin-top:4px">R.P.A. — Nº 13437938CBRQ</p>
+              <p>S.I.B. — R.N.T. Nº {{ SITE.rnt }}</p>
+             <p style="margin-top:4px">R.P.A. — Nº {{ SITE.rpa }}</p>
             </div>
           </div>
           <div style="margin-top:32px">
-            <a class="btn btn-whatsapp" href="https://wa.me/59176711790" target="_blank" rel="noopener" style="display:inline-flex;width:100%;justify-content:center"><i class="fa-brands fa-whatsapp"></i> Escríbeme por WhatsApp</a>
+            <a class="btn btn-whatsapp" :href="SITE.social.whatsapp" target="_blank" rel="noopener" style="display:inline-flex;width:100%;justify-content:center"><i class="fa-brands fa-whatsapp"></i> Escríbeme por WhatsApp</a>
           </div>
         </div>
         <div class="cf-form" style="padding:32px;text-align:center;background:var(--card);border:1px solid var(--border);border-radius:var(--r)">
