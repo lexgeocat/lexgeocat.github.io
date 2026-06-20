@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, watch } from 'vue'
-import { SITE } from '../config/site'
+import { SITE } from '../../config/site'
 import { useTheme } from '../composables/useTheme'
 import { useGoatCounter, FLAG_CDN } from '../composables/useGoatCounter'
 import { useFocusTrap } from '../composables/useFocusTrap'

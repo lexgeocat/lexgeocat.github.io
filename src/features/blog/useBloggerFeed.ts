@@ -1,7 +1,7 @@
 import { ref } from 'vue'
-import { SITE } from '../config/site'
-import { detectCategory } from '../lib/categories'
-import type { BloggerEntry, BloggerFeed } from '../types/blogger'
+import { SITE } from '../../config/site'
+import { detectCategory } from '../../shared/utils/categories'
+import type { BloggerEntry, BloggerFeed } from '../../types/blogger'
 
 export interface BlogEntry {
   id: string

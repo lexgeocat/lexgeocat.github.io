@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import TopicPage from '../components/TopicPage.vue'
+import TopicPage from '../shared/components/TopicPage.vue'
 import { getTopic } from '../content/topics'
 const topic = getTopic('catastro')!
 </script>

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted } from 'vue'
-import { useReveal } from '../composables/useReveal'
+import { useReveal } from '../shared/composables/useReveal'
 const reveal = useReveal()
 onMounted(() => {
   requestAnimationFrame(() => {

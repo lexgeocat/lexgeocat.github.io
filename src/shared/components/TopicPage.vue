@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted } from 'vue'
 import { useReveal } from '../composables/useReveal'
-import { useBloggerFeed } from '../composables/useBloggerFeed'
-import BlogCard from './BlogCard.vue'
-import type { TopicConfig } from '../content/topics'
-import { SITE } from '../config/site'
+import { useBloggerFeed } from '../../features/blog/useBloggerFeed'
+import BlogCard from '../../features/blog/BlogCard.vue'
+import type { TopicConfig } from '../../content/topics'
+import { SITE } from '../../config/site'
 
 const props = defineProps<{ topic: TopicConfig }>()
 

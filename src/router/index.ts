@@ -1,4 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import { getSupabase } from '../lib/supabase/client'
+import adminRoutes from '../admin/routes'
 
 const router = createRouter({
   history: createWebHistory(),
@@ -7,6 +9,11 @@ const router = createRouter({
     return { top: 0 }
   },
   routes: [
+    {
+      path: '/admin',
+      component: () => import('../admin/AdminApp.vue'),
+      children: adminRoutes,
+    },
     {
       path: '/',
       name: 'home',
@@ -206,6 +213,15 @@ interface GoatCounterWindow {
     count?: (opts: { path: string }) => void
   }
 }
+
+router.beforeEach(async (to) => {
+  if (to.path.startsWith('/admin')) {
+    if (to.matched.some((r) => r.meta?.public)) return true
+    const { data } = await getSupabase().auth.getSession()
+    if (!data.session) return { name: 'admin-login' }
+  }
+  return true
+})
 
 router.afterEach((to) => {
   const gc = (window as unknown as GoatCounterWindow).goatcounter

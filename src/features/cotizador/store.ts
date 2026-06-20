@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import { SITE } from '../config/site'
-import type { FactorPrecio, FactorParam } from '../types/supabase'
+import { SITE } from '../../config/site'
+import type { FactorPrecio, FactorParam } from '../../types/supabase'
 
 export type { FactorParam }
 export type Factor = FactorPrecio

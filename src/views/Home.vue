@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted } from 'vue'
-import { useReveal, useCounters } from '../composables/useReveal'
+import { useReveal, useCounters } from '../shared/composables/useReveal'
 import boliviaMap from '@/assets/img/fd-bolivia-map.svg?url'
 import { SITE } from '../config/site'
-import { useBloggerFeed } from '../composables/useBloggerFeed'
-import BlogCard from '../components/BlogCard.vue'
+import { useBloggerFeed } from '../features/blog/useBloggerFeed'
+import BlogCard from '../features/blog/BlogCard.vue'
 
 const { entries: blogEntries, load: loadBlog } = useBloggerFeed({ limit: 3 })
 const { entries: recursosEntries, load: loadRecursos } = useBloggerFeed({

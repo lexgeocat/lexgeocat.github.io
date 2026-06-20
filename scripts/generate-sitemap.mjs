@@ -10,10 +10,11 @@ const sitemapOut = join(root, 'public/sitemap.xml')
 function readRoutes() {
   const src = readFileSync(routesFile, 'utf8')
   const re =
-    /path:\s*'([^']+)',\s*changefreq:\s*'([^']+)',\s*priority:\s*([\d.]+)/g
+    /path:\s*'([^']+)',\s*changefreq:\s*'([^']+)',\s*priority:\s*([\d.]+)(?:,\s*noindex:\s*(true))?/g
   const routes = []
   let m
   while ((m = re.exec(src)) !== null) {
+    if (m[4] === 'true') continue
     routes.push({ path: m[1], changefreq: m[2], priority: Number.parseFloat(m[3]) })
   }
   if (!routes.length) {

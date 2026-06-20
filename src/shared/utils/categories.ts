@@ -1,4 +1,4 @@
-import type { BloggerEntry } from '../types/blogger'
+import type { BloggerEntry } from '../../types/blogger'
 
 export interface CategoryMeta {
   cls: string

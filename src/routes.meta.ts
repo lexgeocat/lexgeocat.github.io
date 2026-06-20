@@ -2,6 +2,7 @@ export interface RouteMeta {
   path: string
   changefreq: 'daily' | 'weekly' | 'monthly' | 'yearly'
   priority: number
+  noindex?: boolean
 }
 
 export const ROUTES: RouteMeta[] = [
@@ -20,4 +21,5 @@ export const ROUTES: RouteMeta[] = [
   { path: '/pages/normativa.html', changefreq: 'weekly', priority: 0.7 },
   { path: '/pages/privacidad.html', changefreq: 'yearly', priority: 0.3 },
   { path: '/pages/terminos.html', changefreq: 'yearly', priority: 0.3 },
+  { path: '/admin', changefreq: 'monthly', priority: 0.1, noindex: true },
 ]

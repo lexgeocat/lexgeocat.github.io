@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import type { BlogEntry } from '../composables/useBloggerFeed'
-import { getCategoryGrad, getCategoryIcon } from '../lib/categories'
+import type { BlogEntry } from './useBloggerFeed'
+import { getCategoryGrad, getCategoryIcon } from '../../shared/utils/categories'
 
 defineProps<{ entry: BlogEntry }>()
 </script>

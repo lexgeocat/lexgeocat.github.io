@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue'
-import { SITE } from '../config/site'
+import { SITE } from '../../config/site'
 
 const showTop = ref(false)
 

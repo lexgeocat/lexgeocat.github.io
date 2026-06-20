@@ -1,15 +1,16 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, watch } from 'vue'
-import { useCotizadorStore } from '../stores/cotizador'
-import { insertCotizacion } from '../lib/queries'
-import { toDirectImageUrl } from '../lib/image'
+import { useCotizadorStore } from './store'
+
+import { insertCotizacion } from '../../lib/queries/cotizaciones'
+import { toDirectImageUrl } from '../../shared/utils/image'
 import {
   checkSubmission,
   generateCaptcha,
   recordSubmission,
   type CaptchaChallenge,
-} from '../lib/anti-spam'
-import { useFocusTrap } from '../composables/useFocusTrap'
+} from './anti-spam'
+import { useFocusTrap } from '../../shared/composables/useFocusTrap'
 
 const cot = useCotizadorStore()
 

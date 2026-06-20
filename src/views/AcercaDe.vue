@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted } from 'vue'
-import { useReveal } from '../composables/useReveal'
+import { useReveal } from '../shared/composables/useReveal'
 import logoSib from '../assets/img/logo-sib.jpg'
 import logoRpa from '../assets/img/logo-rpa.jpg'
 const reveal = useReveal()

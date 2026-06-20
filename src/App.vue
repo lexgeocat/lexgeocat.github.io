@@ -2,10 +2,11 @@
 import { computed } from 'vue'
 import { useRoute } from 'vue-router'
 import { useHead } from '@unhead/vue'
-import DefaultLayout from './layouts/DefaultLayout.vue'
+import DefaultLayout from './shared/layouts/DefaultLayout.vue'
 
 const route = useRoute()
 const SITE_URL = 'https://lexgeocat.github.io'
+const isAdmin = computed(() => route.path.startsWith('/admin'))
 
 const title = computed(
   () => (route.meta.title as string) || 'LexGeoCat — Derecho, Catastro y Geomática en Bolivia',
@@ -38,5 +39,6 @@ useHead({
 </script>
 
 <template>
-  <DefaultLayout />
+  <router-view v-if="isAdmin" />
+  <DefaultLayout v-else />
 </template>

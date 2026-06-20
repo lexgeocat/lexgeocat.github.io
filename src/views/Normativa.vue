@@ -1,81 +1,34 @@
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted, nextTick } from 'vue'
-import { useReveal } from '../composables/useReveal'
-import { fetchNormativaActiva } from '../lib/queries'
-import type { Normativa } from '../types/supabase'
-
-const CATEGORIA_LABELS: Record<string, string> = {
-  leyes: 'Leyes',
-  codigos: 'Códigos',
-  decretos_reglamentarios: 'Decretos Reglamentarios',
-  jurisprudencia: 'Jurisprudencia',
-  doctrina: 'Doctrina',
-}
-const CATEGORIA_ICONS: Record<string, string> = {
-  leyes: 'fa-gavel',
-  codigos: 'fa-book',
-  decretos_reglamentarios: 'fa-stamp',
-  jurisprudencia: 'fa-scale-balanced',
-  doctrina: 'fa-feather-pointed',
-}
-const ESTADO_LABELS: Record<string, string> = {
-  vigente: 'Vigente',
-  derogada: 'Derogada',
-  modificada: 'Modificada',
-}
-
-const allNormas = ref<Normativa[]>([])
-const loading = ref(true)
-const error = ref('')
-
-const searchQuery = ref('')
-const filterCategoria = ref('')
-const filterEstado = ref('')
-const currentPage = ref(1)
-const pageSize = 12
-
-const filtered = computed(() => {
-  const q = searchQuery.value.toLowerCase().trim()
-  return allNormas.value.filter((n) => {
-    if (filterCategoria.value && n.categoria !== filterCategoria.value) return false
-    if (filterEstado.value && n.estado !== filterEstado.value) return false
-    if (q) {
-      const hay =
-        (n.titulo || '').toLowerCase().includes(q) ||
-        (n.numero_norma || '').toLowerCase().includes(q) ||
-        (n.palabras_clave || []).join(' ').toLowerCase().includes(q) ||
-        (n.resumen || '').toLowerCase().includes(q)
-      if (!hay) return false
-    }
-    return true
-  })
-})
-
-const totalPages = computed(() => Math.max(1, Math.ceil(filtered.value.length / pageSize)))
-
-const paged = computed(() => {
-  const start = (currentPage.value - 1) * pageSize
-  return filtered.value.slice(start, start + pageSize)
-})
-
-function goPage(n: number) {
-  currentPage.value = n
-  window.scrollTo({ top: 400, behavior: 'smooth' })
-}
-function onSearch() {
-  currentPage.value = 1
-}
-
-function formatDate(d: string | null) {
-  if (!d) return '—'
-  return new Date(d + 'T00:00:00').toLocaleDateString('es-BO', {
-    day: '2-digit',
-    month: 'short',
-    year: 'numeric',
-  })
-}
+import { onMounted, onUnmounted, nextTick } from 'vue'
+import { useReveal } from '../shared/composables/useReveal'
+import {
+  CATEGORIA_ICONS,
+  CATEGORIA_LABELS,
+  ESTADO_LABELS,
+  formatDate,
+  useNormativa,
+} from '../features/normativa/useNormativa'
 
 const reveal = useReveal()
+const {
+  loading,
+  error,
+  searchQuery,
+  filterCategoria,
+  filterEstado,
+  currentPage,
+  filtered,
+  totalPages,
+  paged,
+  goPage,
+  onSearch,
+  load,
+} = useNormativa(12)
+
+function goPageAndScroll(n: number) {
+  goPage(n)
+  window.scrollTo({ top: 400, behavior: 'smooth' })
+}
 
 onMounted(async () => {
   requestAnimationFrame(() => {
@@ -83,16 +36,10 @@ onMounted(async () => {
       reveal.observe()
     })
   })
-  try {
-    allNormas.value = await fetchNormativaActiva()
-  } catch (e: unknown) {
-    error.value = e instanceof Error ? e.message : 'Error al cargar la normativa'
-  } finally {
-    loading.value = false
-    await nextTick()
-    reveal.disconnect()
-    reveal.observe()
-  }
+  await load()
+  await nextTick()
+  reveal.disconnect()
+  reveal.observe()
 })
 
 onUnmounted(() => {
@@ -272,7 +219,7 @@ onUnmounted(() => {
         <button
           class="page-btn"
           :disabled="currentPage <= 1"
-          @click="goPage(currentPage - 1)"
+          @click="goPageAndScroll(currentPage - 1)"
         >
           <i
             aria-hidden="true"
@@ -283,14 +230,14 @@ onUnmounted(() => {
           v-for="p in totalPages"
           :key="p"
           :class="['page-btn', { active: p === currentPage }]"
-          @click="goPage(p)"
+          @click="goPageAndScroll(p)"
         >
           {{ p }}
         </button>
         <button
           class="page-btn"
           :disabled="currentPage >= totalPages"
-          @click="goPage(currentPage + 1)"
+          @click="goPageAndScroll(currentPage + 1)"
         >
           <i
             aria-hidden="true"
