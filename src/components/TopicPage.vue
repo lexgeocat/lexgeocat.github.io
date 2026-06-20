@@ -33,7 +33,10 @@ onUnmounted(() => {
   <section class="page-hero">
     <div class="c">
       <div class="page-hero-icon">
-        <i aria-hidden="true" :class="'fa-solid ' + topic.icon" />
+        <i
+          aria-hidden="true"
+          :class="'fa-solid ' + topic.icon"
+        />
       </div>
       <span class="sl">{{ topic.label }}</span>
       <h1 class="st">
@@ -49,14 +52,24 @@ onUnmounted(() => {
     <div class="c">
       <slot name="before-features" />
 
-      <div v-if="topic.features.length" class="at-body">
+      <div
+        v-if="topic.features.length"
+        class="at-body"
+      >
         <slot name="intro" />
         <slot name="features-heading">
           <h2>Servicios</h2>
         </slot>
         <div class="feature-grid">
-          <div v-for="f in topic.features" :key="f.title" class="feature-item reveal">
-            <i aria-hidden="true" :class="'fa-solid ' + f.icon" />
+          <div
+            v-for="f in topic.features"
+            :key="f.title"
+            class="feature-item reveal"
+          >
+            <i
+              aria-hidden="true"
+              :class="'fa-solid ' + f.icon"
+            />
             <h3>{{ f.title }}</h3>
             <p>{{ f.desc }}</p>
           </div>
@@ -66,19 +79,43 @@ onUnmounted(() => {
 
       <slot />
 
-      <div class="sh center" style="margin-top: 48px">
+      <div
+        class="sh center"
+        style="margin-top: 48px"
+      >
         <span class="sl">Blog</span>
-        <h2 class="st">Artículos recientes</h2>
+        <h2 class="st">
+          Artículos recientes
+        </h2>
       </div>
 
-      <div v-if="loading" class="norm-empty">
-        <i aria-hidden="true" class="fa-solid fa-spinner fa-spin" />
+      <div
+        v-if="loading"
+        class="norm-empty"
+      >
+        <i
+          aria-hidden="true"
+          class="fa-solid fa-spinner fa-spin"
+        />
       </div>
-      <div v-else-if="error" class="norm-empty">
-        <i aria-hidden="true" class="fa-solid fa-triangle-exclamation" /> {{ error }}
+      <div
+        v-else-if="error"
+        class="norm-empty"
+      >
+        <i
+          aria-hidden="true"
+          class="fa-solid fa-triangle-exclamation"
+        /> {{ error }}
       </div>
-      <div v-else class="blog-grid">
-        <BlogCard v-for="e in entries" :key="e.id" :entry="e" />
+      <div
+        v-else
+        class="blog-grid"
+      >
+        <BlogCard
+          v-for="e in entries"
+          :key="e.id"
+          :entry="e"
+        />
       </div>
 
       <div class="blog-cta">
@@ -87,12 +124,15 @@ onUnmounted(() => {
           class="btn btn-gold"
           :href="
             topic.blogCtaHref ||
-            `${SITE.blog.url}search/label/${encodeURIComponent(topic.blogLabel)}`
+              `${SITE.blog.url}search/label/${encodeURIComponent(topic.blogLabel)}`
           "
           target="_blank"
           rel="noopener"
         >
-          <i aria-hidden="true" class="fa-solid fa-newspaper" /> Ver más en el blog
+          <i
+            aria-hidden="true"
+            class="fa-solid fa-newspaper"
+          /> Ver más en el blog
         </a>
       </div>
     </div>

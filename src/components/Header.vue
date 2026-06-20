@@ -174,7 +174,10 @@ onUnmounted(() => {
 
 <template>
   <!-- Header -->
-  <div id="hdr" :class="{ scrolled }">
+  <div
+    id="hdr"
+    :class="{ scrolled }"
+  >
     <div class="hi">
       <div class="logo-wrap">
         <router-link
@@ -182,11 +185,17 @@ onUnmounted(() => {
           style="display: flex; align-items: center; gap: 12px; text-decoration: none"
         >
           <div class="logo-icon">
-            <img id="hdr-logo" :src="isDark ? logonoche : logodia" alt="LexGeoCat Logo" />
+            <img
+              id="hdr-logo"
+              :src="isDark ? logonoche : logodia"
+              alt="LexGeoCat Logo"
+            >
           </div>
           <div class="logo-text">
             <h1>Lex<span class="geo">Geo</span><span class="cat">Cat</span></h1>
-            <div class="subtitle">Derecho · Catastro · Geomática · Software</div>
+            <div class="subtitle">
+              Derecho · Catastro · Geomática · Software
+            </div>
           </div>
         </router-link>
       </div>
@@ -198,7 +207,9 @@ onUnmounted(() => {
             :href="SITE.social.facebook"
             rel="noopener"
             target="_blank"
-            ><i aria-hidden="true" class="fa-brands fa-facebook-f"
+          ><i
+            aria-hidden="true"
+            class="fa-brands fa-facebook-f"
           /></a>
           <a
             aria-label="YouTube"
@@ -206,7 +217,9 @@ onUnmounted(() => {
             :href="SITE.social.youtube"
             rel="noopener"
             target="_blank"
-            ><i aria-hidden="true" class="fa-brands fa-youtube"
+          ><i
+            aria-hidden="true"
+            class="fa-brands fa-youtube"
           /></a>
           <a
             aria-label="LinkedIn"
@@ -214,7 +227,9 @@ onUnmounted(() => {
             :href="SITE.social.linkedin"
             rel="noopener"
             target="_blank"
-            ><i aria-hidden="true" class="fa-brands fa-linkedin-in"
+          ><i
+            aria-hidden="true"
+            class="fa-brands fa-linkedin-in"
           /></a>
           <a
             aria-label="WhatsApp"
@@ -222,13 +237,21 @@ onUnmounted(() => {
             :href="SITE.social.whatsapp"
             rel="noopener"
             target="_blank"
-            ><i aria-hidden="true" class="fa-brands fa-whatsapp"
+          ><i
+            aria-hidden="true"
+            class="fa-brands fa-whatsapp"
           /></a>
         </div>
         <!-- Desktop GC Stats -->
-        <div id="gc-stats-widget" class="gc-stats-bar">
+        <div
+          id="gc-stats-widget"
+          class="gc-stats-bar"
+        >
           <span class="gc-stat-item gc-views">
-            <i aria-hidden="true" class="fa-solid fa-eye" />
+            <i
+              aria-hidden="true"
+              class="fa-solid fa-eye"
+            />
             <span class="gc-val">{{ totalViews ? totalViews.toLocaleString('es-BO') : '—' }}</span>
             <span class="gc-lbl">visitas</span>
           </span>
@@ -249,7 +272,7 @@ onUnmounted(() => {
                 width="16"
                 height="12"
                 loading="lazy"
-              />
+              >
             </span>
             <a
               class="gc-flag-item gc-more-stats"
@@ -260,7 +283,10 @@ onUnmounted(() => {
               @mouseenter="showTip('Ver más estadísticas', $event)"
               @mouseleave="hideTip"
             >
-              <i aria-hidden="true" class="fa-solid fa-chart-simple" />
+              <i
+                aria-hidden="true"
+                class="fa-solid fa-chart-simple"
+              />
             </a>
           </span>
         </div>
@@ -270,11 +296,25 @@ onUnmounted(() => {
           type="button"
           @click="searchOpen = true"
         >
-          <i aria-hidden="true" class="fa-solid fa-magnifying-glass" />
+          <i
+            aria-hidden="true"
+            class="fa-solid fa-magnifying-glass"
+          />
         </button>
-        <button aria-label="Cambiar tema" class="icon-btn th-btn" type="button" @click="toggle">
-          <i aria-hidden="true" class="fa-solid fa-moon" />
-          <i aria-hidden="true" class="fa-solid fa-sun" />
+        <button
+          aria-label="Cambiar tema"
+          class="icon-btn th-btn"
+          type="button"
+          @click="toggle"
+        >
+          <i
+            aria-hidden="true"
+            class="fa-solid fa-moon"
+          />
+          <i
+            aria-hidden="true"
+            class="fa-solid fa-sun"
+          />
         </button>
         <button
           aria-label="Menú"
@@ -284,7 +324,10 @@ onUnmounted(() => {
           aria-controls="mob-menu"
           @click="mobileOpen = true"
         >
-          <i aria-hidden="true" class="fa-solid fa-bars" />
+          <i
+            aria-hidden="true"
+            class="fa-solid fa-bars"
+          />
         </button>
       </div>
     </div>
@@ -299,10 +342,19 @@ onUnmounted(() => {
     role="navigation"
   >
     <div class="nav-inner">
-      <template v-for="item in nav" :key="item.id">
-        <div v-if="item.children" class="nav-dropdown">
+      <template
+        v-for="item in nav"
+        :key="item.id"
+      >
+        <div
+          v-if="item.children"
+          class="nav-dropdown"
+        >
           <span class="nav-link nav-dropbtn">
-            <i aria-hidden="true" :class="'fa-solid ' + item.icon" />{{ item.label }}
+            <i
+              aria-hidden="true"
+              :class="'fa-solid ' + item.icon"
+            />{{ item.label }}
             <i
               aria-hidden="true"
               class="fa-solid fa-chevron-down"
@@ -331,7 +383,10 @@ onUnmounted(() => {
           :class="{ active: $route.path === item.path }"
           @click="navigateTo(item.id)"
         >
-          <i aria-hidden="true" :class="'fa-solid ' + item.icon" />{{ item.label }}
+          <i
+            aria-hidden="true"
+            :class="'fa-solid ' + item.icon"
+          />{{ item.label }}
         </a>
       </template>
     </div>
@@ -349,7 +404,10 @@ onUnmounted(() => {
   >
     <div class="mob-menu-hd">
       <div style="display: flex; align-items: center; gap: 10px">
-        <div class="logo-icon" style="width: 34px; height: 34px">
+        <div
+          class="logo-icon"
+          style="width: 34px; height: 34px"
+        >
           <i
             aria-hidden="true"
             class="fa-solid fa-map-location-dot"
@@ -363,14 +421,23 @@ onUnmounted(() => {
             font-weight: 800;
             color: var(--text);
           "
-          >{{ SITE.name.slice(0, 3) }}<span style="color: var(--sapphire)">Geo</span
-          ><span style="color: var(--copper)">Cat</span></span
-        >
+        >{{ SITE.name.slice(0, 3) }}<span style="color: var(--sapphire)">Geo</span><span style="color: var(--copper)">Cat</span></span>
       </div>
       <div style="display: flex; align-items: center; gap: 8px">
-        <button aria-label="Cambiar tema" class="icon-btn th-btn-mob" type="button" @click="toggle">
-          <i aria-hidden="true" class="fa-solid fa-moon" />
-          <i aria-hidden="true" class="fa-solid fa-sun" />
+        <button
+          aria-label="Cambiar tema"
+          class="icon-btn th-btn-mob"
+          type="button"
+          @click="toggle"
+        >
+          <i
+            aria-hidden="true"
+            class="fa-solid fa-moon"
+          />
+          <i
+            aria-hidden="true"
+            class="fa-solid fa-sun"
+          />
         </button>
         <button
           class="mob-close"
@@ -378,25 +445,43 @@ onUnmounted(() => {
           aria-label="Cerrar menú"
           @click="mobileOpen = false"
         >
-          <i aria-hidden="true" class="fa-solid fa-xmark" />
+          <i
+            aria-hidden="true"
+            class="fa-solid fa-xmark"
+          />
         </button>
       </div>
     </div>
     <div class="mob-search-wrap">
-      <i aria-hidden="true" class="fa-solid fa-magnifying-glass" />
+      <i
+        aria-hidden="true"
+        class="fa-solid fa-magnifying-glass"
+      />
       <input
         id="mob-srch-input"
         type="text"
         autocomplete="off"
         placeholder="Buscar en el blog..."
         @keydown.enter="doMobSearch"
-      />
-      <button class="mob-search-btn" type="button" @click="doMobSearch">Buscar</button>
+      >
+      <button
+        class="mob-search-btn"
+        type="button"
+        @click="doMobSearch"
+      >
+        Buscar
+      </button>
     </div>
     <!-- Mobile GC Stats -->
-    <div id="gc-stats-widget-mob" class="gc-stats-bar mob-gc-stats">
+    <div
+      id="gc-stats-widget-mob"
+      class="gc-stats-bar mob-gc-stats"
+    >
       <span class="gc-stat-item gc-views">
-        <i aria-hidden="true" class="fa-solid fa-eye" />
+        <i
+          aria-hidden="true"
+          class="fa-solid fa-eye"
+        />
         <span class="gc-val">{{ totalViews ? totalViews.toLocaleString('es-BO') : '—' }}</span>
         <span class="gc-lbl">visitas</span>
       </span>
@@ -416,7 +501,7 @@ onUnmounted(() => {
             width="16"
             height="12"
             loading="lazy"
-          />
+          >
         </span>
         <a
           class="gc-flag-item gc-more-stats"
@@ -425,12 +510,18 @@ onUnmounted(() => {
           target="_blank"
           rel="noopener"
         >
-          <i aria-hidden="true" class="fa-solid fa-chart-simple" />
+          <i
+            aria-hidden="true"
+            class="fa-solid fa-chart-simple"
+          />
         </a>
       </span>
     </div>
     <ul class="mob-nav">
-      <template v-for="item in nav" :key="item.id">
+      <template
+        v-for="item in nav"
+        :key="item.id"
+      >
         <li
           v-if="item.children"
           class="mob-dropdown"
@@ -443,20 +534,44 @@ onUnmounted(() => {
             :aria-controls="'mob-submenu-' + item.id"
             @click="toggleMobDropdown(item.id)"
           >
-            <span><i aria-hidden="true" :class="'fa-solid ' + item.icon" />{{ item.label }}</span>
-            <i aria-hidden="true" class="fa-solid fa-chevron-down arrow" />
+            <span><i
+              aria-hidden="true"
+              :class="'fa-solid ' + item.icon"
+            />{{ item.label }}</span>
+            <i
+              aria-hidden="true"
+              class="fa-solid fa-chevron-down arrow"
+            />
           </button>
-          <ul :id="'mob-submenu-' + item.id" class="mob-submenu">
-            <li v-for="child in item.children" :key="child.id">
-              <a href="javascript:void(0)" @click="navigateTo(child.id)">
-                <i aria-hidden="true" :class="'fa-solid ' + child.icon" />{{ child.label }}
+          <ul
+            :id="'mob-submenu-' + item.id"
+            class="mob-submenu"
+          >
+            <li
+              v-for="child in item.children"
+              :key="child.id"
+            >
+              <a
+                href="javascript:void(0)"
+                @click="navigateTo(child.id)"
+              >
+                <i
+                  aria-hidden="true"
+                  :class="'fa-solid ' + child.icon"
+                />{{ child.label }}
               </a>
             </li>
           </ul>
         </li>
         <li v-else>
-          <a href="javascript:void(0)" @click="navigateTo(item.id)">
-            <i aria-hidden="true" :class="'fa-solid ' + item.icon" />{{ item.label }}
+          <a
+            href="javascript:void(0)"
+            @click="navigateTo(item.id)"
+          >
+            <i
+              aria-hidden="true"
+              :class="'fa-solid ' + item.icon"
+            />{{ item.label }}
           </a>
         </li>
       </template>
@@ -465,7 +580,11 @@ onUnmounted(() => {
 
   <!-- Tooltip -->
   <Teleport to="body">
-    <div v-if="tip" class="gc-tooltip" :style="{ left: tip.x + 'px', top: tip.y + 'px' }">
+    <div
+      v-if="tip"
+      class="gc-tooltip"
+      :style="{ left: tip.x + 'px', top: tip.y + 'px' }"
+    >
       {{ tip.text }}
     </div>
   </Teleport>
@@ -478,9 +597,15 @@ onUnmounted(() => {
     role="dialog"
     @click.self="searchOpen = false"
   >
-    <div ref="searchModalRef" class="srch-modal">
+    <div
+      ref="searchModalRef"
+      class="srch-modal"
+    >
       <div class="srch-modal-header">
-        <i aria-hidden="true" class="fa-solid fa-magnifying-glass" />
+        <i
+          aria-hidden="true"
+          class="fa-solid fa-magnifying-glass"
+        />
         <input
           id="srch-modal-input"
           autocomplete="off"
@@ -488,22 +613,26 @@ onUnmounted(() => {
           type="text"
           @keydown.enter="doSearch"
           @keydown.escape="searchOpen = false"
-        />
+        >
         <button
           aria-label="Cerrar búsqueda"
           class="srch-modal-close"
           type="button"
           @click="searchOpen = false"
         >
-          <i aria-hidden="true" class="fa-solid fa-xmark" />
+          <i
+            aria-hidden="true"
+            class="fa-solid fa-xmark"
+          />
         </button>
       </div>
       <div class="srch-modal-body">
         <div class="srch-status">
-          <i aria-hidden="true" class="fa-solid fa-magnifying-glass" />
-          <span
-            >La búsqueda se realiza en el blog alojado en Blogger. Escribe y presiona Enter.</span
-          >
+          <i
+            aria-hidden="true"
+            class="fa-solid fa-magnifying-glass"
+          />
+          <span>La búsqueda se realiza en el blog alojado en Blogger. Escribe y presiona Enter.</span>
         </div>
       </div>
     </div>

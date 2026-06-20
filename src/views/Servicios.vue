@@ -339,55 +339,107 @@ onUnmounted(() => {
       <div class="svc-hero-inner">
         <div>
           <div class="svc-hero-badge">
-            <i aria-hidden="true" class="fa-solid fa-briefcase" style="font-size: 10px" /> Centro de
+            <i
+              aria-hidden="true"
+              class="fa-solid fa-briefcase"
+              style="font-size: 10px"
+            /> Centro de
             Servicios Profesionales
           </div>
-          <h1 class="svc-hero-title">Consultoría <em>integral</em><br />en Territorio y Derecho</h1>
+          <h1 class="svc-hero-title">
+            Consultoría <em>integral</em><br>en Territorio y Derecho
+          </h1>
           <p class="svc-hero-desc">
             Siete áreas de especialización con más de 40 servicios específicos. Desde usucapión y
             catastro predial hasta visores GIS y aplicaciones web a medida — todo con respaldo
             profesional habilitado y registro oficial.
           </p>
           <div class="svc-hero-actions">
-            <button class="btn btn-gold" @click="scrollToPanel('panel-derecho')">
-              <i aria-hidden="true" class="fa-solid fa-list" /> Explorar Servicios
+            <button
+              class="btn btn-gold"
+              @click="scrollToPanel('panel-derecho')"
+            >
+              <i
+                aria-hidden="true"
+                class="fa-solid fa-list"
+              /> Explorar Servicios
             </button>
-            <button class="btn btn-ghost" @click="cot.openModal()">
-              <i aria-hidden="true" class="fa-solid fa-calculator" /> Simular Cotización
+            <button
+              class="btn btn-ghost"
+              @click="cot.openModal()"
+            >
+              <i
+                aria-hidden="true"
+                class="fa-solid fa-calculator"
+              /> Simular Cotización
             </button>
           </div>
         </div>
         <div class="svc-hero-stats">
           <div class="svc-hstat">
-            <div class="svc-hstat-n">7</div>
-            <div class="svc-hstat-l">Áreas</div>
-            <i aria-hidden="true" class="fa-solid fa-layer-group svc-hstat-i" />
+            <div class="svc-hstat-n">
+              7
+            </div>
+            <div class="svc-hstat-l">
+              Áreas
+            </div>
+            <i
+              aria-hidden="true"
+              class="fa-solid fa-layer-group svc-hstat-i"
+            />
           </div>
           <div class="svc-hstat">
-            <div class="svc-hstat-n">40+</div>
-            <div class="svc-hstat-l">Servicios</div>
-            <i aria-hidden="true" class="fa-solid fa-list-check svc-hstat-i" />
+            <div class="svc-hstat-n">
+              40+
+            </div>
+            <div class="svc-hstat-l">
+              Servicios
+            </div>
+            <i
+              aria-hidden="true"
+              class="fa-solid fa-list-check svc-hstat-i"
+            />
           </div>
           <div class="svc-hstat">
-            <div class="svc-hstat-n">2</div>
-            <div class="svc-hstat-l">Registros</div>
-            <i aria-hidden="true" class="fa-solid fa-id-card svc-hstat-i" />
+            <div class="svc-hstat-n">
+              2
+            </div>
+            <div class="svc-hstat-l">
+              Registros
+            </div>
+            <i
+              aria-hidden="true"
+              class="fa-solid fa-id-card svc-hstat-i"
+            />
           </div>
           <div class="svc-hstat">
-            <div class="svc-hstat-n">BO</div>
-            <div class="svc-hstat-l">Cobertura</div>
-            <i aria-hidden="true" class="fa-solid fa-earth-americas svc-hstat-i" />
+            <div class="svc-hstat-n">
+              BO
+            </div>
+            <div class="svc-hstat-l">
+              Cobertura
+            </div>
+            <i
+              aria-hidden="true"
+              class="fa-solid fa-earth-americas svc-hstat-i"
+            />
           </div>
         </div>
       </div>
     </div>
   </section>
 
-  <div class="c" style="padding-top: 32px; padding-bottom: 32px">
+  <div
+    class="c"
+    style="padding-top: 32px; padding-bottom: 32px"
+  >
     <div class="creds-banner reveal">
       <div class="cred-badge">
         <div class="cred-badge-icon">
-          <i aria-hidden="true" class="fa-solid fa-gavel" />
+          <i
+            aria-hidden="true"
+            class="fa-solid fa-gavel"
+          />
         </div>
         <div class="cred-badge-info">
           <h4>Registro Público de Abogacía</h4>
@@ -398,7 +450,10 @@ onUnmounted(() => {
       <div class="creds-divider" />
       <div class="cred-badge">
         <div class="cred-badge-icon">
-          <i aria-hidden="true" class="fa-solid fa-compass-drafting" />
+          <i
+            aria-hidden="true"
+            class="fa-solid fa-compass-drafting"
+          />
         </div>
         <div class="cred-badge-info">
           <h4>Sociedad de Ingenieros de Bolivia</h4>
@@ -409,23 +464,32 @@ onUnmounted(() => {
       <div class="creds-divider" />
       <div class="cred-badge">
         <div class="cred-badge-icon">
-          <i aria-hidden="true" class="fa-solid fa-university" />
+          <i
+            aria-hidden="true"
+            class="fa-solid fa-university"
+          />
         </div>
         <div class="cred-badge-info">
           <h4>Formación Académica</h4>
-          <p>UMSA · Catastro & Ord. Territorial<br />UPEA · Licenciatura en Derecho</p>
+          <p>UMSA · Catastro & Ord. Territorial<br>UPEA · Licenciatura en Derecho</p>
         </div>
       </div>
     </div>
   </div>
 
   <div id="svc-panels-container">
-    <div id="panel-derecho" class="svc-area-panel">
+    <div
+      id="panel-derecho"
+      class="svc-area-panel"
+    >
       <div class="area-header">
         <div class="c">
           <div class="area-header-inner">
             <div class="area-icon-lg area-derecho">
-              <i aria-hidden="true" class="fa-solid fa-scale-balanced" />
+              <i
+                aria-hidden="true"
+                class="fa-solid fa-scale-balanced"
+              />
             </div>
             <div>
               <h2>Asesoría Legal Territorial</h2>
@@ -436,15 +500,18 @@ onUnmounted(() => {
                 Bolivia.
               </p>
               <div class="area-creds">
-                <span class="area-cred"
-                  ><i aria-hidden="true" class="fa-solid fa-certificate" /> R.P.A. Nº
-                  {{ SITE.rpa }}</span
-                ><span class="area-cred"
-                  ><i aria-hidden="true" class="fa-solid fa-globe" /> Cobertura Nacional</span
-                ><span class="area-cred"
-                  ><i aria-hidden="true" class="fa-solid fa-comments" /> Consulta inicial
-                  gratuita</span
-                >
+                <span class="area-cred"><i
+                  aria-hidden="true"
+                  class="fa-solid fa-certificate"
+                /> R.P.A. Nº
+                  {{ SITE.rpa }}</span><span class="area-cred"><i
+                  aria-hidden="true"
+                  class="fa-solid fa-globe"
+                /> Cobertura Nacional</span><span class="area-cred"><i
+                  aria-hidden="true"
+                  class="fa-solid fa-comments"
+                /> Consulta inicial
+                  gratuita</span>
               </div>
             </div>
           </div>
@@ -460,12 +527,18 @@ onUnmounted(() => {
         </div>
       </div>
     </div>
-    <div id="panel-catastro" class="svc-area-panel">
+    <div
+      id="panel-catastro"
+      class="svc-area-panel"
+    >
       <div class="area-header">
         <div class="c">
           <div class="area-header-inner">
             <div class="area-icon-lg area-catastro">
-              <i aria-hidden="true" class="fa-solid fa-map-location-dot" />
+              <i
+                aria-hidden="true"
+                class="fa-solid fa-map-location-dot"
+              />
             </div>
             <div>
               <h2>Gestión y Catastro Multifinalitario</h2>
@@ -475,15 +548,18 @@ onUnmounted(() => {
                 plataformas SIG y normativa catastral vigente.
               </p>
               <div class="area-creds">
-                <span class="area-cred"
-                  ><i aria-hidden="true" class="fa-solid fa-certificate" /> R.N.T. Nº
-                  {{ SITE.rnt }}</span
-                ><span class="area-cred"
-                  ><i aria-hidden="true" class="fa-solid fa-graduation-cap" /> TUS — UMSA</span
-                ><span class="area-cred"
-                  ><i aria-hidden="true" class="fa-solid fa-building" /> Catastro Urbano y
-                  Rural</span
-                >
+                <span class="area-cred"><i
+                  aria-hidden="true"
+                  class="fa-solid fa-certificate"
+                /> R.N.T. Nº
+                  {{ SITE.rnt }}</span><span class="area-cred"><i
+                  aria-hidden="true"
+                  class="fa-solid fa-graduation-cap"
+                /> TUS — UMSA</span><span class="area-cred"><i
+                  aria-hidden="true"
+                  class="fa-solid fa-building"
+                /> Catastro Urbano y
+                  Rural</span>
               </div>
             </div>
           </div>
@@ -499,12 +575,18 @@ onUnmounted(() => {
         </div>
       </div>
     </div>
-    <div id="panel-ordenamiento" class="svc-area-panel">
+    <div
+      id="panel-ordenamiento"
+      class="svc-area-panel"
+    >
       <div class="area-header">
         <div class="c">
           <div class="area-header-inner">
             <div class="area-icon-lg area-ordenamiento">
-              <i aria-hidden="true" class="fa-solid fa-compass-drafting" />
+              <i
+                aria-hidden="true"
+                class="fa-solid fa-compass-drafting"
+              />
             </div>
             <div>
               <h2>Ordenamiento Territorial</h2>
@@ -513,12 +595,14 @@ onUnmounted(() => {
                 Gobiernos Autónomos.
               </p>
               <div class="area-creds">
-                <span class="area-cred"
-                  ><i aria-hidden="true" class="fa-solid fa-file-contract" /> PLOT / PDM / POT</span
-                ><span class="area-cred"
-                  ><i aria-hidden="true" class="fa-solid fa-building-columns" /> Asesoría a
-                  GAMs</span
-                >
+                <span class="area-cred"><i
+                  aria-hidden="true"
+                  class="fa-solid fa-file-contract"
+                /> PLOT / PDM / POT</span><span class="area-cred"><i
+                  aria-hidden="true"
+                  class="fa-solid fa-building-columns"
+                /> Asesoría a
+                  GAMs</span>
               </div>
             </div>
           </div>
@@ -534,12 +618,18 @@ onUnmounted(() => {
         </div>
       </div>
     </div>
-    <div id="panel-geografia" class="svc-area-panel">
+    <div
+      id="panel-geografia"
+      class="svc-area-panel"
+    >
       <div class="area-header">
         <div class="c">
           <div class="area-header-inner">
             <div class="area-icon-lg area-geografia">
-              <i aria-hidden="true" class="fa-solid fa-earth-americas" />
+              <i
+                aria-hidden="true"
+                class="fa-solid fa-earth-americas"
+              />
             </div>
             <div>
               <h2>Estudios y Análisis Geográficos</h2>
@@ -561,12 +651,18 @@ onUnmounted(() => {
         </div>
       </div>
     </div>
-    <div id="panel-topografia" class="svc-area-panel">
+    <div
+      id="panel-topografia"
+      class="svc-area-panel"
+    >
       <div class="area-header">
         <div class="c">
           <div class="area-header-inner">
             <div class="area-icon-lg area-topografia">
-              <i aria-hidden="true" class="fa-solid fa-mountain" />
+              <i
+                aria-hidden="true"
+                class="fa-solid fa-mountain"
+              />
             </div>
             <div>
               <h2>Topografía y Geodesia Aplicada</h2>
@@ -575,12 +671,14 @@ onUnmounted(() => {
                 georeferenciación en el sistema SIRGAS-BOL.
               </p>
               <div class="area-creds">
-                <span class="area-cred"
-                  ><i aria-hidden="true" class="fa-solid fa-satellite" /> GNSS / SIRGAS-BOL</span
-                ><span class="area-cred"
-                  ><i aria-hidden="true" class="fa-solid fa-drafting-compass" /> Estación
-                  Total</span
-                >
+                <span class="area-cred"><i
+                  aria-hidden="true"
+                  class="fa-solid fa-satellite"
+                /> GNSS / SIRGAS-BOL</span><span class="area-cred"><i
+                  aria-hidden="true"
+                  class="fa-solid fa-drafting-compass"
+                /> Estación
+                  Total</span>
               </div>
             </div>
           </div>
@@ -596,12 +694,18 @@ onUnmounted(() => {
         </div>
       </div>
     </div>
-    <div id="panel-geomatica" class="svc-area-panel">
+    <div
+      id="panel-geomatica"
+      class="svc-area-panel"
+    >
       <div class="area-header">
         <div class="c">
           <div class="area-header-inner">
             <div class="area-icon-lg area-geomatica">
-              <i aria-hidden="true" class="fa-solid fa-layer-group" />
+              <i
+                aria-hidden="true"
+                class="fa-solid fa-layer-group"
+              />
             </div>
             <div>
               <h2>Geomática y Sistemas de Información Geográfica</h2>
@@ -610,13 +714,16 @@ onUnmounted(() => {
                 cartografía temática, teledetección y geoservicios OGC.
               </p>
               <div class="area-creds">
-                <span class="area-cred"
-                  ><i aria-hidden="true" class="fa-solid fa-database" /> PostGIS / GeoServer</span
-                ><span class="area-cred"
-                  ><i aria-hidden="true" class="fa-brands fa-python" /> Python / GeoPandas</span
-                ><span class="area-cred"
-                  ><i aria-hidden="true" class="fa-solid fa-globe" /> WMS / WFS / WCS</span
-                >
+                <span class="area-cred"><i
+                  aria-hidden="true"
+                  class="fa-solid fa-database"
+                /> PostGIS / GeoServer</span><span class="area-cred"><i
+                  aria-hidden="true"
+                  class="fa-brands fa-python"
+                /> Python / GeoPandas</span><span class="area-cred"><i
+                  aria-hidden="true"
+                  class="fa-solid fa-globe"
+                /> WMS / WFS / WCS</span>
               </div>
             </div>
           </div>
@@ -632,12 +739,18 @@ onUnmounted(() => {
         </div>
       </div>
     </div>
-    <div id="panel-software" class="svc-area-panel">
+    <div
+      id="panel-software"
+      class="svc-area-panel"
+    >
       <div class="area-header">
         <div class="c">
           <div class="area-header-inner">
             <div class="area-icon-lg area-software">
-              <i aria-hidden="true" class="fa-solid fa-code" />
+              <i
+                aria-hidden="true"
+                class="fa-solid fa-code"
+              />
             </div>
             <div>
               <h2>Desarrollo de Software y Aplicaciones Web</h2>
@@ -646,13 +759,16 @@ onUnmounted(() => {
                 institucionales.
               </p>
               <div class="area-creds">
-                <span class="area-cred"
-                  ><i aria-hidden="true" class="fa-brands fa-js" /> JavaScript / Python</span
-                ><span class="area-cred"
-                  ><i aria-hidden="true" class="fa-solid fa-map" /> Leaflet / MapLibre</span
-                ><span class="area-cred"
-                  ><i aria-hidden="true" class="fa-brands fa-github" /> GitHub Pages</span
-                >
+                <span class="area-cred"><i
+                  aria-hidden="true"
+                  class="fa-brands fa-js"
+                /> JavaScript / Python</span><span class="area-cred"><i
+                  aria-hidden="true"
+                  class="fa-solid fa-map"
+                /> Leaflet / MapLibre</span><span class="area-cred"><i
+                  aria-hidden="true"
+                  class="fa-brands fa-github"
+                /> GitHub Pages</span>
               </div>
             </div>
           </div>
@@ -674,19 +790,25 @@ onUnmounted(() => {
     <div class="c">
       <div class="sh center">
         <span class="sl">Metodología</span>
-        <h2 class="st">¿Cómo Trabajamos?</h2>
+        <h2 class="st">
+          ¿Cómo Trabajamos?
+        </h2>
         <p class="sd">
           Proceso transparente, orientado a resultados y adaptado al contexto boliviano.
         </p>
       </div>
       <div class="process-grid">
         <div class="process-step reveal">
-          <div class="process-num">01</div>
+          <div class="process-num">
+            01
+          </div>
           <h4>Consulta Inicial</h4>
           <p>Diagnóstico gratuito por WhatsApp o correo.</p>
         </div>
         <div class="process-step reveal">
-          <div class="process-num">02</div>
+          <div class="process-num">
+            02
+          </div>
           <h4>Propuesta Técnica</h4>
           <p>
             Entregamos una propuesta detallada con alcance, metodología, cronograma y cotización
@@ -694,12 +816,16 @@ onUnmounted(() => {
           </p>
         </div>
         <div class="process-step reveal">
-          <div class="process-num">03</div>
+          <div class="process-num">
+            03
+          </div>
           <h4>Ejecución</h4>
           <p>Desarrollo del servicio con actualizaciones periódicas.</p>
         </div>
         <div class="process-step reveal">
-          <div class="process-num">04</div>
+          <div class="process-num">
+            04
+          </div>
           <h4>Entrega y Soporte</h4>
           <p>Entrega de productos, documentación y soporte post-servicio.</p>
         </div>
@@ -707,17 +833,25 @@ onUnmounted(() => {
     </div>
   </section>
 
-  <section id="blog" class="sec-dark">
+  <section
+    id="blog"
+    class="sec-dark"
+  >
     <div class="c">
       <div class="sh center">
         <span class="sl">Desde el Blog</span>
-        <h2 class="st">Artículos Técnicos</h2>
+        <h2 class="st">
+          Artículos Técnicos
+        </h2>
         <p class="sd">
           Contenido práctico sobre derecho territorial, catastro, geomática y desarrollo de software
           aplicado a Bolivia.
         </p>
       </div>
-      <div id="svc-blog-grid" class="blog-grid">
+      <div
+        id="svc-blog-grid"
+        class="blog-grid"
+      >
         <p
           style="
             color: var(--text3);
@@ -731,9 +865,13 @@ onUnmounted(() => {
         </p>
       </div>
       <div style="text-align: center; margin-top: 40px">
-        <a class="btn btn-ghost" :href="SITE.blog.url"
-          ><i aria-hidden="true" class="fa-solid fa-newspaper" /> Ver todos en el Blog</a
-        >
+        <a
+          class="btn btn-ghost"
+          :href="SITE.blog.url"
+        ><i
+          aria-hidden="true"
+          class="fa-solid fa-newspaper"
+        /> Ver todos en el Blog</a>
       </div>
     </div>
   </section>
@@ -750,13 +888,27 @@ onUnmounted(() => {
           <a
             class="btn btn-whatsapp"
             :href="`https://wa.me/${SITE.whatsappNumber}?text=${encodeURIComponent('Hola, quiero información sobre sus servicios')}`"
-            ><i aria-hidden="true" class="fa-brands fa-whatsapp" /> Escribir por WhatsApp</a
+          ><i
+            aria-hidden="true"
+            class="fa-brands fa-whatsapp"
+          /> Escribir por WhatsApp</a>
+          <router-link
+            class="btn btn-teal"
+            to="/pages/contacto.html"
           >
-          <router-link class="btn btn-teal" to="/pages/contacto.html">
-            <i aria-hidden="true" class="fa-solid fa-envelope" /> Formulario de Contacto
+            <i
+              aria-hidden="true"
+              class="fa-solid fa-envelope"
+            /> Formulario de Contacto
           </router-link>
-          <button class="btn btn-ghost" @click="cot.openModal()">
-            <i aria-hidden="true" class="fa-solid fa-calculator" /> Simular Cotización
+          <button
+            class="btn btn-ghost"
+            @click="cot.openModal()"
+          >
+            <i
+              aria-hidden="true"
+              class="fa-solid fa-calculator"
+            /> Simular Cotización
           </button>
         </div>
       </div>
