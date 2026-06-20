@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, watch } from 'vue'
 import { useCotizadorStore } from './store'
-
 import { insertCotizacion } from '../../lib/queries/cotizaciones'
 import { toDirectImageUrl } from '../../shared/utils/image'
 import {
