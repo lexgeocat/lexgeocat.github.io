@@ -1,6 +1,6 @@
 import { ref, watch } from 'vue'
-import logonoche from '@/assets/img/logo-noche.png'
-import logodia from '@/assets/img/logo-dia.png'
+import logonoche from '@/assets/img/logo-noche.webp'
+import logodia from '@/assets/img/logo-dia.webp'
 
 const THEME_KEY = 'lgc-theme'
 const isDark = ref(true)

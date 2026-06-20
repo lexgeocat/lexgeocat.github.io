@@ -8,5 +8,5 @@ export async function fetchFactoresPrecioActivos(): Promise<FactorPrecio[]> {
     .eq('activo', true)
 
   if (error) throw new Error(`[factores_precio] ${error.message}`)
-  return data ?? []
+  return (data ?? []) as FactorPrecio[]
 }

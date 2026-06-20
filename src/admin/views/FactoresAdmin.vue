@@ -27,7 +27,7 @@
             <td>{{ f.id }}</td>
             <td>{{ f.etiqueta }}</td>
             <td>{{ f.descripcion || '-' }}</td>
-            <td>{{ Array.isArray(f.parametros) ? f.parametros.map((p: any) => p.label || p.key).join(', ') : '-' }}</td>
+            <td>{{ Array.isArray(f.parametros) ? f.parametros.map((p: FactorParam) => p.label || p.key).join(', ') : '-' }}</td>
             <td>{{ f.activo ? 'Sí' : 'No' }}</td>
           </tr>
           <tr v-if="factores.length === 0">

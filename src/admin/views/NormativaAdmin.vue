@@ -59,7 +59,7 @@ onMounted(async () => {
     .select('id, titulo, categoria, estado, fecha_publicacion')
     .order('fecha_publicacion', { ascending: false })
   if (err) error.value = err.message
-  else normativa.value = data ?? []
+  else normativa.value = (data ?? []) as Norma[]
   loading.value = false
 })
 </script>

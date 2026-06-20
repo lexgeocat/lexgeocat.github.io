@@ -13,7 +13,6 @@ export type CotizacionInsert = Pick<
       | 'rango_max'
       | 'multiplicador_aplicado'
       | 'extra_aplicado'
-      | 'formula'
     >
   >
 

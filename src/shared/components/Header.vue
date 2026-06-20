@@ -4,8 +4,8 @@ import { SITE } from '../../config/site'
 import { useTheme } from '../composables/useTheme'
 import { useGoatCounter, FLAG_CDN } from '../composables/useGoatCounter'
 import { useFocusTrap } from '../composables/useFocusTrap'
-import logonoche from '@/assets/img/logo-noche.png'
-import logodia from '@/assets/img/logo-dia.png'
+import logonoche from '@/assets/img/logo-noche.webp'
+import logodia from '@/assets/img/logo-dia.webp'
 import { useRouter } from 'vue-router'
 
 const { isDark, toggle } = useTheme()

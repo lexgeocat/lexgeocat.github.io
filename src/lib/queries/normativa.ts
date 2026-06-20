@@ -9,5 +9,5 @@ export async function fetchNormativaActiva(): Promise<Normativa[]> {
     .order('fecha_publicacion', { ascending: false })
 
   if (error) throw new Error(`[normativa] ${error.message}`)
-  return data ?? []
+  return (data ?? []) as Normativa[]
 }
