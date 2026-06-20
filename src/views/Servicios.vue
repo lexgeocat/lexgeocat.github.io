@@ -15,10 +15,6 @@ const SUPABASE_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY as string
 let blogScriptEl: HTMLScriptElement | null = null
 let blogCbId: string | null = null
 let blogTimer: ReturnType<typeof setTimeout> | null = null
-function esc(s: unknown): string {
-  if (s == null) return ''
-  return String(s).replace(/&/g, '&').replace(/</g, '<').replace(/>/g, '>').replace(/"/g, '"')
-}
 
 function scrollToPanel(id: string) {
   document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' })

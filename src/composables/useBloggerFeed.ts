@@ -62,7 +62,7 @@ function parseEntry(e: any, overrideCls?: string, overrideLabel?: string): BlogE
   return { id: url, title, url, thumb, excerpt, date, categoryLabel: cat.label, categoryCls: cat.cls }
 }
 
-function jsonpFetch(url: string, limit: number): Promise<any[]> {
+function jsonpFetch(url: string): Promise<any[]> {
   return new Promise((resolve, reject) => {
     const cbId = '_lgc_' + Math.random().toString(36).slice(2, 11)
     let done = false
@@ -112,7 +112,7 @@ export function useBloggerFeed(options: {
     try {
       const labelPart = options.label ? `/-/${encodeURIComponent(options.label)}` : ''
       const url = `${SITE.blog.feed}${labelPart}?max-results=${options.limit ?? 3}`
-      const raw = await jsonpFetch(url, options.limit ?? 3)
+      const raw = await jsonpFetch(url)
       entries.value = raw
         .filter((e: any) => e.title?.$t?.trim())
         .slice(0, options.limit ?? 3)
