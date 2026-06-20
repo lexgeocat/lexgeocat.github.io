@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted, nextTick } from 'vue'
 import { useReveal } from '../composables/useReveal'
+import { fetchNormativaActiva } from '../lib/queries'
+import type { Normativa } from '../types/supabase'
 
-const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL as string
-const SUPABASE_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY as string
 const CATEGORIA_LABELS: Record<string, string> = {
   leyes: 'Leyes',
   codigos: 'Códigos',
@@ -24,22 +24,7 @@ const ESTADO_LABELS: Record<string, string> = {
   modificada: 'Modificada',
 }
 
-interface Norma {
-  id: string
-  titulo: string
-  categoria: string
-  numero_norma: string | null
-  fecha_promulgacion: string | null
-  fecha_publicacion: string | null
-  estado: string
-  activo: boolean
-  resumen: string | null
-  palabras_clave: string[]
-  archivo_url: string | null
-  archivo_nombre: string | null
-}
-
-const allNormas = ref<Norma[]>([])
+const allNormas = ref<Normativa[]>([])
 const loading = ref(true)
 const error = ref('')
 
@@ -99,12 +84,7 @@ onMounted(async () => {
     })
   })
   try {
-    const res = await fetch(
-      `${SUPABASE_URL}/rest/v1/normativa?select=*&activo=eq.true&order=fecha_publicacion.desc`,
-      { headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` } },
-    )
-    if (!res.ok) throw new Error('Error HTTP ' + res.status)
-    allNormas.value = (await res.json()) as Norma[]
+    allNormas.value = await fetchNormativaActiva()
   } catch (e: unknown) {
     error.value = e instanceof Error ? e.message : 'Error al cargar la normativa'
   } finally {

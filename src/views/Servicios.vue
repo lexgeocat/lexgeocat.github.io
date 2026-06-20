@@ -3,28 +3,20 @@ import { onMounted, onUnmounted } from 'vue'
 import { useReveal } from '../composables/useReveal'
 import { SITE } from '../config/site'
 import { useCotizadorStore } from '../stores/cotizador'
+import { toDirectImageUrl } from '../lib/image'
+import { fetchFactoresPrecioActivos, fetchServiciosActivos } from '../lib/queries'
+import { useBloggerFeed } from '../composables/useBloggerFeed'
+import BlogCard from '../components/BlogCard.vue'
 import CotizadorModal from '../components/CotizadorModal.vue'
-import type { Servicio, FactorPrecio } from '../types/supabase'
-import type { BloggerEntry, BloggerFeed } from '../types/blogger'
+import type { Servicio } from '../types/supabase'
 
 const reveal = useReveal()
 const cot = useCotizadorStore()
-
-const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL as string
-const SUPABASE_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY as string
-
-let blogScriptEl: HTMLScriptElement | null = null
-let blogCbId: string | null = null
-let blogTimer: ReturnType<typeof setTimeout> | null = null
+const { entries: blogEntries, loading: blogLoading, error: blogError, load: loadBlog } =
+  useBloggerFeed({ limit: 3 })
 
 function scrollToPanel(id: string) {
   document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
-}
-
-function toDirectImageUrl(url: string): string {
-  if (!url) return ''
-  const m = url.match(/drive\.google\.com\/file\/d\/([^/]+)/)
-  return m ? 'https://drive.google.com/uc?id=' + m[1] : url
 }
 
 onMounted(() => {
@@ -34,302 +26,214 @@ onMounted(() => {
     })
   })
 
-  // Blog feed
-  blogCbId = '_lgc_svc_blog_' + Math.random().toString(36).substr(2, 9)
-  let blogTimedOut = false
-  const fallbackHtml =
-    '<p style="color:var(--text3);text-align:center;padding:40px;grid-column:1/-1;font-size:.85rem">No se pudieron cargar los artículos. <a href="${SITE.blog.url}" style="color:var(--teal)">Visita el blog</a>.</p>'
-  blogTimer = setTimeout(() => {
-    blogTimedOut = true
-    try {
-      delete (window as unknown as Record<string, unknown>)[blogCbId!]
-    } catch {}
-    const box = document.getElementById('svc-blog-grid')
-    if (box) box.innerHTML = fallbackHtml
-  }, 10000)
-  ;(window as unknown as Record<string, unknown>)[blogCbId] = (data: BloggerFeed) => {
-    if (blogTimedOut) return
-    if (blogTimer) clearTimeout(blogTimer)
-    const box = document.getElementById('svc-blog-grid')
-    if (!box) {
-      try {
-        delete (window as unknown as Record<string, unknown>)[blogCbId!]
-      } catch {}
+  loadBlog()
+
+  loadCatalog()
+})
+
+function escHtml(s: unknown): string {
+  if (s == null) return ''
+  return String(s).replace(/&/g, '&').replace(/</g, '<').replace(/>/g, '>').replace(/"/g, '"')
+}
+
+function toggleSpec(el: Element) {
+  const body = el.nextElementSibling
+  if (!body) return
+  if (el.classList.contains('open')) {
+    el.classList.remove('open')
+    body.classList.remove('open')
+  } else {
+    el.classList.add('open')
+    body.classList.add('open')
+  }
+}
+;(window as unknown as Record<string, unknown>).__lgcToggleSpec = toggleSpec
+
+const CAT_CONFIG: Record<string, { icon: string; color: string; subtitle: string }> = {
+  'Derecho Civil': {
+    icon: 'fa-handshake',
+    color: 'var(--copper)',
+    subtitle: 'Contratos, propiedad, familia y sucesiones',
+  },
+  'Derecho Agrario': {
+    icon: 'fa-seedling',
+    color: '#3a5e3a',
+    subtitle: 'Tierra, INRA y comunidades',
+  },
+  'Derecho Minero': {
+    icon: 'fa-gem',
+    color: '#c8660c',
+    subtitle: 'Concesiones, recursos y sociedades',
+  },
+  'Derecho Corporativo': {
+    icon: 'fa-building',
+    color: '#c8660c',
+    subtitle: 'Sociedades, registros y compliance',
+  },
+  Catastro: {
+    icon: 'fa-draw-polygon',
+    color: 'var(--sapphire)',
+    subtitle: 'Campo, fichas prediales y diagnóstico',
+  },
+  Topografía: {
+    icon: 'fa-ruler-combined',
+    color: '#c8660c',
+    subtitle: 'Campo, procesamiento y cartografía',
+  },
+  'Topografía / Geodesia': {
+    icon: 'fa-satellite',
+    color: '#c8660c',
+    subtitle: 'GNSS, control altimétrico y SIRGAS-BOL',
+  },
+  Geomática: { icon: 'fa-map', color: '#3a5e3a', subtitle: 'Análisis espacial y visualización' },
+  'Geomática / Teledetección': {
+    icon: 'fa-satellite-dish',
+    color: '#3a5e3a',
+    subtitle: 'Imágenes Sentinel, Landsat y NDVI',
+  },
+  'Geomática / Software': {
+    icon: 'fa-code',
+    color: '#3a5e3a',
+    subtitle: 'Python, GeoPandas y automatización GIS',
+  },
+  Software: { icon: 'fa-globe', color: '#7c6fc8', subtitle: 'Frontend, backend y geoespacial' },
+  'Software / Geomática': {
+    icon: 'fa-map-location-dot',
+    color: '#7c6fc8',
+    subtitle: 'Visores GIS y aplicaciones web',
+  },
+  'Software / GIS': {
+    icon: 'fa-map-location-dot',
+    color: '#7c6fc8',
+    subtitle: 'Visores GIS y aplicaciones web',
+  },
+}
+
+const AREA_KEYS = [
+  'derecho',
+  'catastro',
+  'ordenamiento',
+  'geografia',
+  'topografia',
+  'geomatica',
+  'software',
+]
+
+function renderServicios(rows: Servicio[]) {
+  const cotData: Record<string, import('../stores/cotizador').CotService> = {}
+  const areaServices: Record<string, { v: string; l: string }[]> = {}
+  const categoriaServices: Record<
+    string,
+    Record<string, { v: string; l: string; descripcion: string; tags: string[]; img_url: string }[]>
+  > = {}
+
+  rows.forEach((r) => {
+    if (!r.activo) return
+    cotData[r.id] = {
+      id: r.id,
+      label: r.label,
+      descripcion: r.descripcion || '',
+      tags: r.tags || [],
+      img_url: r.img_url || '',
+      area: r.area,
+      areaKey: r.area,
+      categoria: r.categoria || '',
+      baseMin: Number(r.precio_min) || 0,
+      baseMax: Number(r.precio_max) || 0,
+      timeMin: r.tiempo_min || '',
+      timeMax: r.tiempo_max || '',
+      complexity: r.complejidad || '',
+      detailsType: r.details_type || 'general',
+    }
+    if (!areaServices[r.area]) areaServices[r.area] = []
+    areaServices[r.area]!.push({ v: r.id, l: r.label })
+    const cat = r.categoria || 'General'
+    if (!categoriaServices[r.area]) categoriaServices[r.area] = {}
+    if (!categoriaServices[r.area]![cat]) categoriaServices[r.area]![cat] = []
+    categoriaServices[r.area]![cat]!.push({
+      v: r.id,
+      l: r.label,
+      descripcion: r.descripcion || '',
+      tags: r.tags || [],
+      img_url: r.img_url || '',
+    })
+  })
+
+  cot.catalog = cotData
+  cot.areaServices = areaServices
+  cot.catalogLoaded = true
+
+  AREA_KEYS.forEach((areaKey) => {
+    const container = document.getElementById('svc-grid-' + areaKey)
+    if (!container) return
+    const categorias = categoriaServices[areaKey] ?? {}
+    const catKeys = Object.keys(categorias)
+    if (!catKeys.length) {
+      container.innerHTML =
+        '<p style="color:var(--text3);padding:20px;text-align:center">Próximamente servicios en esta área.</p>'
       return
     }
-    const all = (data?.feed?.entry || []).filter((e: BloggerEntry) => Boolean(e.title?.$t?.trim()))
-    if (!all.length) {
-      box.innerHTML =
-        '<p style="color:var(--text3);text-align:center;padding:40px;grid-column:1/-1;font-size:.85rem">Próximamente artículos desde el blog técnico.</p>'
-    } else {
-      box.innerHTML = all
-        .slice(0, 3)
-        .map((e: BloggerEntry) => {
-          const t = (e.title?.$t ?? '').trim()
-          const lnk =
-            (e.link || []).find((l: { rel?: string; href?: string }) => l.rel === 'alternate')
-              ?.href || 'https://lexgeocat.blogspot.com/'
-          const html = e.content?.$t || e.summary?.$t || ''
-          const snip = html
-            .replace(/<[^>]*>/g, ' ')
-            .replace(/\s+/g, ' ')
-            .trim()
-            .slice(0, 120)
-          const thumb = e['media$thumbnail']?.url?.replace('/s72-c/', '/s600-c/') || ''
-          const img = thumb
-            ? `<img src="${thumb.replace(/&/g, '&')}" alt="${t.replace(/"/g, '"')}" loading="lazy">`
-            : ''
-          const date = e.published?.$t
-            ? new Date(e.published.$t).toLocaleDateString('es', {
-                year: 'numeric',
-                month: 'short',
-                day: 'numeric',
-              })
-            : ''
-          return `<a class="blog-card reveal" href="${lnk}"><div class="blog-card-thumb">${img || '<div class="blog-card-thumb-plh" style="background:linear-gradient(135deg,#1a1a2e,#16213e)"><i aria-hidden="true" class="fa-solid fa-newspaper"></i></div>'}<span class="blog-card-badge white">Blog</span></div><div class="blog-card-body"><h3 class="blog-card-title">${t}</h3><p class="blog-card-excerpt">${snip}…</p><div class="blog-card-meta"><span class="blog-card-date"><i aria-hidden="true" class="fa-regular fa-calendar"></i> ${date}</span><span class="blog-card-cta">→ Leer</span></div></div></a>`
-        })
-        .join('')
-    }
-    setTimeout(() => reveal.observe(), 100)
-    try {
-      delete (window as unknown as Record<string, unknown>)[blogCbId!]
-    } catch {}
-  }
-  blogScriptEl = document.createElement('script')
-  blogScriptEl.src = `${SITE.blog.feed}?max-results=3&alt=json-in-script&callback=${blogCbId}`
-  blogScriptEl.async = true
-  blogScriptEl.onerror = () => {
-    if (blogTimer) clearTimeout(blogTimer)
-    if (!blogTimedOut) {
-      blogTimedOut = true
-      try {
-        delete (window as unknown as Record<string, unknown>)[blogCbId!]
-      } catch {}
-      const box = document.getElementById('svc-blog-grid')
-      if (box) box.innerHTML = fallbackHtml
-    }
-  }
-  document.body.appendChild(blogScriptEl)
-
-  // Load servicios + populate globals
-  const AREA_KEYS = [
-    'derecho',
-    'catastro',
-    'ordenamiento',
-    'geografia',
-    'topografia',
-    'geomatica',
-    'software',
-  ]
-  const CAT_CONFIG: Record<string, { icon: string; color: string; subtitle: string }> = {
-    'Derecho Civil': {
-      icon: 'fa-handshake',
-      color: 'var(--copper)',
-      subtitle: 'Contratos, propiedad, familia y sucesiones',
-    },
-    'Derecho Agrario': {
-      icon: 'fa-seedling',
-      color: '#3a5e3a',
-      subtitle: 'Tierra, INRA y comunidades',
-    },
-    'Derecho Minero': {
-      icon: 'fa-gem',
-      color: '#c8660c',
-      subtitle: 'Concesiones, recursos y sociedades',
-    },
-    'Derecho Corporativo': {
-      icon: 'fa-building',
-      color: '#c8660c',
-      subtitle: 'Sociedades, registros y compliance',
-    },
-    Catastro: {
-      icon: 'fa-draw-polygon',
-      color: 'var(--sapphire)',
-      subtitle: 'Campo, fichas prediales y diagnóstico',
-    },
-    Topografía: {
-      icon: 'fa-ruler-combined',
-      color: '#c8660c',
-      subtitle: 'Campo, procesamiento y cartografía',
-    },
-    'Topografía / Geodesia': {
-      icon: 'fa-satellite',
-      color: '#c8660c',
-      subtitle: 'GNSS, control altimétrico y SIRGAS-BOL',
-    },
-    Geomática: { icon: 'fa-map', color: '#3a5e3a', subtitle: 'Análisis espacial y visualización' },
-    'Geomática / Teledetección': {
-      icon: 'fa-satellite-dish',
-      color: '#3a5e3a',
-      subtitle: 'Imágenes Sentinel, Landsat y NDVI',
-    },
-    'Geomática / Software': {
-      icon: 'fa-code',
-      color: '#3a5e3a',
-      subtitle: 'Python, GeoPandas y automatización GIS',
-    },
-    Software: { icon: 'fa-globe', color: '#7c6fc8', subtitle: 'Frontend, backend y geoespacial' },
-    'Software / Geomática': {
-      icon: 'fa-map-location-dot',
-      color: '#7c6fc8',
-      subtitle: 'Visores GIS y aplicaciones web',
-    },
-    'Software / GIS': {
-      icon: 'fa-map-location-dot',
-      color: '#7c6fc8',
-      subtitle: 'Visores GIS y aplicaciones web',
-    },
-  }
-
-  function escHtml(s: unknown): string {
-    if (s == null) return ''
-    return String(s).replace(/&/g, '&').replace(/</g, '<').replace(/>/g, '>').replace(/"/g, '"')
-  }
-
-  function toggleSpec(el: Element) {
-    const body = el.nextElementSibling
-    if (!body) return
-    if (el.classList.contains('open')) {
-      el.classList.remove('open')
-      body.classList.remove('open')
-    } else {
-      el.classList.add('open')
-      body.classList.add('open')
-    }
-  }
-  ;(window as unknown as Record<string, unknown>).__lgcToggleSpec = toggleSpec
-
-  fetch(`${SUPABASE_URL}/rest/v1/servicios?select=*&activo=eq.true&order=area.asc,orden.asc`, {
-    headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` },
+    let html = ''
+    catKeys.forEach((cat, idx) => {
+      const isFirst = idx === 0
+      const cfg = CAT_CONFIG[cat] ?? { icon: 'fa-tag', color: 'var(--text2)', subtitle: '' }
+      const iconStyles = `background: rgba(42,100,150,0.1); border-color: rgba(42,100,150,0.2); color: ${cfg.color};`
+      const iconHtml = cfg.icon ? `<i aria-hidden="true" class="fa-solid ${cfg.icon}"></i>` : ''
+      html += `<div class="specialty-group">`
+      html += `<div class="specialty-header${isFirst ? ' open' : ''}" data-action="toggle-spec">`
+      html += `<div class="spec-header-left"><div class="spec-icon" style="${iconStyles}">${iconHtml}</div><div>`
+      html += `<div class="spec-title">${escHtml(cat)}</div>`
+      if (cfg.subtitle) html += `<div class="spec-subtitle">${escHtml(cfg.subtitle)}</div>`
+      html += `</div></div><i aria-hidden="true" class="fa-solid fa-chevron-down spec-chevron"></i></div>`
+      html += `<div class="specialty-body${isFirst ? ' open' : ''}"><div class="specialty-body-inner"><div class="services-grid">`
+      categorias[cat]!.forEach((svc) => {
+        const tagsHtml = svc.tags?.length
+          ? `<div class="svc-item-tags">${svc.tags.map((t: string) => `<span class="svc-item-tag">${escHtml(t)}</span>`).join('')}</div>`
+          : ''
+        const thumbUrl = toDirectImageUrl(svc.img_url || '')
+        const thumbHtml = thumbUrl
+          ? `<div class="svc-item-thumb" style="background-image:url(${thumbUrl.replace(/"/g, '%22')})"></div>`
+          : ''
+        html += `<div class="svc-item">${thumbHtml}<div class="svc-item-body">`
+        html += `<div class="svc-item-header"><div class="svc-item-dot"></div><div class="svc-item-name">${escHtml(svc.l)}</div></div>`
+        html += `<p class="svc-item-desc">${escHtml(svc.descripcion)}</p>${tagsHtml}`
+        html += `<button class="svc-item-cta" data-svc="${escHtml(svc.v)}"><i aria-hidden="true" class="fa-solid fa-calculator"></i> Simular cotización</button>`
+        html += `</div></div>`
+      })
+      html += `</div></div></div></div>`
+    })
+    container.innerHTML = html
   })
-    .then((r) => {
-      if (!r.ok) throw new Error('HTTP ' + r.status)
-      return r.json()
-    })
-    .then((rows: Servicio[]) => {
-      const cotData: Record<string, import('../stores/cotizador').CotService> = {}
-      const areaServices: Record<string, { v: string; l: string }[]> = {}
-      const categoriaServices: Record<
-        string,
-        Record<
-          string,
-          { v: string; l: string; descripcion: string; tags: string[]; img_url: string }[]
-        >
-      > = {}
 
-      rows.forEach((r: Servicio) => {
-        if (!r.activo) return
-        cotData[r.id] = {
-          id: r.id,
-          label: r.label,
-          descripcion: r.descripcion || '',
-          tags: r.tags || [],
-          img_url: r.img_url || '',
-          area: r.area,
-          areaKey: r.area,
-          categoria: r.categoria || '',
-          baseMin: Number(r.precio_min) || 0,
-          baseMax: Number(r.precio_max) || 0,
-          timeMin: r.tiempo_min || '',
-          timeMax: r.tiempo_max || '',
-          complexity: r.complejidad || '',
-          detailsType: r.details_type || 'general',
-        }
-        if (!areaServices[r.area]) areaServices[r.area] = []
-        areaServices[r.area]!.push({ v: r.id, l: r.label })
-        const cat = r.categoria || 'General'
-        if (!categoriaServices[r.area]) categoriaServices[r.area] = {}
-        if (!categoriaServices[r.area]![cat]) categoriaServices[r.area]![cat] = []
-        categoriaServices[r.area]![cat]!.push({
-          v: r.id,
-          l: r.label,
-          descripcion: r.descripcion || '',
-          tags: r.tags || [],
-          img_url: r.img_url || '',
-        })
-      })
-
-      cot.catalog = cotData
-      cot.areaServices = areaServices
-      cot.catalogLoaded = true
-
-      AREA_KEYS.forEach((areaKey) => {
-        const container = document.getElementById('svc-grid-' + areaKey)
-        if (!container) return
-        const categorias = categoriaServices[areaKey] ?? {}
-        const catKeys = Object.keys(categorias)
-        if (!catKeys.length) {
-          container.innerHTML =
-            '<p style="color:var(--text3);padding:20px;text-align:center">Próximamente servicios en esta área.</p>'
-          return
-        }
-        let html = ''
-        catKeys.forEach((cat, idx) => {
-          const isFirst = idx === 0
-          const cfg = CAT_CONFIG[cat] ?? { icon: 'fa-tag', color: 'var(--text2)', subtitle: '' }
-          const iconStyles = `background: rgba(42,100,150,0.1); border-color: rgba(42,100,150,0.2); color: ${cfg.color};`
-          const iconHtml = cfg.icon ? `<i aria-hidden="true" class="fa-solid ${cfg.icon}"></i>` : ''
-          html += `<div class="specialty-group">`
-          html += `<div class="specialty-header${isFirst ? ' open' : ''}" data-action="toggle-spec">`
-          html += `<div class="spec-header-left"><div class="spec-icon" style="${iconStyles}">${iconHtml}</div><div>`
-          html += `<div class="spec-title">${escHtml(cat)}</div>`
-          if (cfg.subtitle) html += `<div class="spec-subtitle">${escHtml(cfg.subtitle)}</div>`
-          html += `</div></div><i aria-hidden="true" class="fa-solid fa-chevron-down spec-chevron"></i></div>`
-          html += `<div class="specialty-body${isFirst ? ' open' : ''}"><div class="specialty-body-inner"><div class="services-grid">`
-          categorias[cat]!.forEach((svc) => {
-            const tagsHtml = svc.tags?.length
-              ? `<div class="svc-item-tags">${svc.tags.map((t: string) => `<span class="svc-item-tag">${escHtml(t)}</span>`).join('')}</div>`
-              : ''
-            const thumbUrl = toDirectImageUrl(svc.img_url || '')
-            const thumbHtml = thumbUrl
-              ? `<div class="svc-item-thumb" style="background-image:url(${thumbUrl.replace(/"/g, '%22')})"></div>`
-              : ''
-            html += `<div class="svc-item">${thumbHtml}<div class="svc-item-body">`
-            html += `<div class="svc-item-header"><div class="svc-item-dot"></div><div class="svc-item-name">${escHtml(svc.l)}</div></div>`
-            html += `<p class="svc-item-desc">${escHtml(svc.descripcion)}</p>${tagsHtml}`
-            html += `<button class="svc-item-cta" data-svc="${escHtml(svc.v)}"><i aria-hidden="true" class="fa-solid fa-calculator"></i> Simular cotización</button>`
-            html += `</div></div>`
-          })
-          html += `</div></div></div></div>`
-        })
-        container.innerHTML = html
-      })
-
-      document.querySelectorAll('.specialty-header[data-action="toggle-spec"]').forEach((el) => {
-        el.addEventListener('click', () => toggleSpec(el as Element))
-      })
-      document.querySelectorAll('.svc-item-cta[data-svc]').forEach((btn) => {
-        btn.addEventListener('click', () => cot.openModal((btn as HTMLElement).dataset.svc))
-      })
-    })
-    .catch((err: unknown) => console.error('[LexGeoCat] Error cargando catálogo:', err))
-
-  fetch(`${SUPABASE_URL}/rest/v1/factores_precio?select=*&activo=eq.true`, {
-    headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` },
+  document.querySelectorAll('.specialty-header[data-action="toggle-spec"]').forEach((el) => {
+    el.addEventListener('click', () => toggleSpec(el as Element))
   })
-    .then((r) => {
-      if (!r.ok) throw new Error('HTTP ' + r.status)
-      return r.json()
+  document.querySelectorAll('.svc-item-cta[data-svc]').forEach((btn) => {
+    btn.addEventListener('click', () => cot.openModal((btn as HTMLElement).dataset.svc))
+  })
+}
+
+async function loadCatalog() {
+  try {
+    const rows = await fetchServiciosActivos()
+    renderServicios(rows)
+  } catch (err) {
+    console.error('[LexGeoCat] Error cargando catálogo:', err)
+  }
+  try {
+    const rows = await fetchFactoresPrecioActivos()
+    const fp: Record<string, (typeof rows)[number]> = {}
+    rows.forEach((r) => {
+      fp[r.id] = r
     })
-    .then((rows: FactorPrecio[]) => {
-      const fp: Record<string, FactorPrecio> = {}
-      rows.forEach((r) => {
-        fp[r.id] = r
-      })
-      cot.factores = fp
-    })
-    .catch((err: unknown) => console.warn('[LexGeoCat] Error cargando factores_precio:', err))
-})
+    cot.factores = fp
+  } catch (err) {
+    console.warn('[LexGeoCat] Error cargando factores_precio:', err)
+  }
+}
 
 onUnmounted(() => {
   reveal.disconnect()
-  if (blogTimer) clearTimeout(blogTimer)
-  if (blogCbId) {
-    try {
-      delete (window as unknown as Record<string, unknown>)[blogCbId]
-    } catch {}
-  }
-  if (blogScriptEl?.parentNode) blogScriptEl.parentNode.removeChild(blogScriptEl)
 })
 </script>
 
@@ -849,20 +753,59 @@ onUnmounted(() => {
         </p>
       </div>
       <div
-        id="svc-blog-grid"
+        v-if="blogLoading"
+        style="
+          color: var(--text3);
+          text-align: center;
+          padding: 40px;
+          grid-column: 1/-1;
+          font-size: 0.85rem;
+        "
+      >
+        <i
+          aria-hidden="true"
+          class="fa-solid fa-spinner fa-spin"
+          style="margin-right: 8px"
+        />
+        Cargando artículos…
+      </div>
+      <div
+        v-else-if="blogError"
+        style="
+          color: var(--text3);
+          text-align: center;
+          padding: 40px;
+          grid-column: 1/-1;
+          font-size: 0.85rem;
+        "
+      >
+        No se pudieron cargar los artículos.
+        <a
+          :href="SITE.blog.url"
+          style="color: var(--teal)"
+        >Visita el blog</a>.
+      </div>
+      <div
+        v-else-if="!blogEntries.length"
+        style="
+          color: var(--text3);
+          text-align: center;
+          padding: 40px;
+          grid-column: 1/-1;
+          font-size: 0.85rem;
+        "
+      >
+        Próximamente artículos desde el blog técnico.
+      </div>
+      <div
+        v-else
         class="blog-grid"
       >
-        <p
-          style="
-            color: var(--text3);
-            text-align: center;
-            padding: 40px;
-            grid-column: 1/-1;
-            font-size: 0.85rem;
-          "
-        >
-          Cargando artículos…
-        </p>
+        <BlogCard
+          v-for="e in blogEntries"
+          :key="e.id"
+          :entry="e"
+        />
       </div>
       <div style="text-align: center; margin-top: 40px">
         <a

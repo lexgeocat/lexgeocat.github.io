@@ -1,0 +1,12 @@
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "LexGeoCat",
+  "url": "https://lexgeocat.github.io/",
+  "inLanguage": "es-BO",
+  "publisher": {
+    "@type": "LegalService",
+    "name": "LexGeoCat",
+    "url": "https://lexgeocat.github.io/"
+  }
+}

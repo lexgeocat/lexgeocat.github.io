@@ -4,12 +4,10 @@
 User-agent: *
 Allow: /
 
-# Bloquear archivos internos que no necesitan indexarse
-Disallow: /assets/js/
-Disallow: /assets/css/
-
-# Permitir acceso a imágenes y recursos visuales
-Allow: /assets/img/
+# Bloquear archivos JavaScript y CSS del build
+Disallow: /assets/*.js
+Disallow: /assets/*.css
+Disallow: /assets/vendor/
 
 # Sitemap
 Sitemap: https://lexgeocat.github.io/sitemap.xml

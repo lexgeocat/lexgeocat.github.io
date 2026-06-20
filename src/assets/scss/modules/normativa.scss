@@ -15,6 +15,7 @@
   flex-wrap: wrap;
   flex: 1;
 }
+
 .norm-toolbar-right {
   flex-shrink: 0;
 }
@@ -36,6 +37,7 @@
   font-size: 0.88rem;
   outline: none;
   transition: border-color 0.2s;
+
   &:focus {
     border-color: var(--copper);
   }
@@ -62,6 +64,7 @@
   outline: none;
   cursor: pointer;
   transition: border-color 0.2s;
+
   &:focus {
     border-color: var(--copper);
   }
@@ -86,6 +89,7 @@
     margin-bottom: 14px;
     color: var(--border2);
   }
+
   p {
     font-size: 0.95rem;
   }
@@ -235,21 +239,27 @@
     flex-direction: column;
     align-items: stretch;
   }
+
   .norm-toolbar-left {
     flex-direction: column;
   }
+
   .norm-search-wrap {
     min-width: unset;
   }
+
   .norm-search {
     width: 100%;
   }
+
   .norm-select {
     width: 100%;
   }
+
   .norm-grid {
     grid-template-columns: 1fr;
   }
+
   .norm-card {
     flex-wrap: wrap;
   }

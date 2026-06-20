@@ -1,41 +1,21 @@
-const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL as string
-const SUPABASE_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY as string
+import { createClient, type SupabaseClient } from '@supabase/supabase-js'
+import type { Database } from '../types/database'
 
-interface SupabaseClient {
-  from(table: string): {
-    insert(data: Record<string, unknown>): Promise<{ error: unknown }>
+const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL
+const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY
+
+let client: SupabaseClient<Database> | null = null
+
+export function getSupabase(): SupabaseClient<Database> {
+  if (!client) {
+    if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
+      throw new Error(
+        '[Supabase] Faltan variables de entorno VITE_SUPABASE_URL / VITE_SUPABASE_ANON_KEY',
+      )
+    }
+    client = createClient<Database>(SUPABASE_URL, SUPABASE_ANON_KEY, {
+      auth: { persistSession: false, autoRefreshToken: false },
+    })
   }
-}
-
-function createSupabaseClient(): SupabaseClient {
-  return {
-    from(table: string) {
-      return {
-        async insert(data: Record<string, unknown>) {
-          try {
-            const res = await fetch(`${SUPABASE_URL}/rest/v1/${table}`, {
-              method: 'POST',
-              headers: {
-                apikey: SUPABASE_KEY,
-                Authorization: `Bearer ${SUPABASE_KEY}`,
-                'Content-Type': 'application/json',
-                Prefer: 'return=minimal',
-              },
-              body: JSON.stringify(data),
-            })
-            if (!res.ok) return { error: new Error('HTTP ' + res.status) }
-            return { error: null }
-          } catch (err) {
-            return { error: err }
-          }
-        },
-      }
-    },
-  }
-}
-
-const supabase = createSupabaseClient()
-
-export function useSupabase() {
-  return { supabase }
+  return client
 }

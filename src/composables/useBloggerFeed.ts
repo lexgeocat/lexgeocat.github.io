@@ -1,5 +1,6 @@
 import { ref } from 'vue'
 import { SITE } from '../config/site'
+import { detectCategory } from '../lib/categories'
 import type { BloggerEntry, BloggerFeed } from '../types/blogger'
 
 export interface BlogEntry {
@@ -11,28 +12,6 @@ export interface BlogEntry {
   date: string
   categoryLabel: string
   categoryCls: string
-}
-
-const CAT_MAP: Record<string, { cls: string; label: string }> = {
-  derecho: { cls: 'gold', label: 'Derecho' },
-  legal: { cls: 'gold', label: 'Derecho' },
-  gis: { cls: 'teal', label: 'GIS' },
-  geomática: { cls: 'teal', label: 'GIS' },
-  sig: { cls: 'teal', label: 'GIS' },
-  geoinformacion: { cls: 'teal', label: 'GIS' },
-  catastro: { cls: 'white', label: 'Catastro' },
-}
-
-function detectCat(labels: BloggerEntry['category']): { cls: string; label: string } {
-  if (!labels?.length) return { cls: 'white', label: 'Catastro' }
-  for (const c of labels) {
-    const key = (c.$t || '').toLowerCase()
-    for (const k of Object.keys(CAT_MAP)) {
-      if (key.includes(k)) return CAT_MAP[k]!
-    }
-  }
-  const first = (labels[0]!.$t || '').trim()
-  return { cls: 'white', label: first || 'Blog' }
 }
 
 function parseEntry(e: BloggerEntry, overrideCls?: string, overrideLabel?: string): BlogEntry {
@@ -69,7 +48,7 @@ function parseEntry(e: BloggerEntry, overrideCls?: string, overrideLabel?: strin
   const cat =
     overrideCls && overrideLabel
       ? { cls: overrideCls, label: overrideLabel }
-      : detectCat(e.category || [])
+      : detectCategory(e.category || [])
 
   return {
     id: url,

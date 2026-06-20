@@ -1,14 +1,27 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, watch } from 'vue'
 import { useCotizadorStore } from '../stores/cotizador'
-import { useSupabase } from '../lib/supabase'
+import { insertCotizacion } from '../lib/queries'
+import { toDirectImageUrl } from '../lib/image'
+import {
+  checkSubmission,
+  generateCaptcha,
+  recordSubmission,
+  type CaptchaChallenge,
+} from '../lib/anti-spam'
 import { useFocusTrap } from '../composables/useFocusTrap'
 
 const cot = useCotizadorStore()
-const { supabase } = useSupabase()
 
 const modalRef = ref<HTMLElement | null>(null)
 const trap = useFocusTrap(modalRef)
+
+const openedAt = ref(0)
+const challenge = ref<CaptchaChallenge>({ question: '', answer: 0 })
+const captchaInput = ref('')
+const honeypot = ref('')
+const submitError = ref('')
+const submitting = ref(false)
 
 function onOverlayClick(e: MouseEvent) {
   if (e.target === e.currentTarget) cot.closeModal()
@@ -22,24 +35,43 @@ watch(
   () => cot.open,
   (val) => {
     document.body.style.overflow = val ? 'hidden' : ''
-    if (val) trap.activate()
-    else trap.deactivate()
+    if (val) {
+      openedAt.value = Date.now()
+      challenge.value = generateCaptcha()
+      captchaInput.value = ''
+      honeypot.value = ''
+      submitError.value = ''
+      submitting.value = false
+      trap.activate()
+    } else {
+      trap.deactivate()
+    }
   },
 )
 
 onMounted(() => document.addEventListener('keydown', onEsc))
 onUnmounted(() => document.removeEventListener('keydown', onEsc))
 
-function toDirectImageUrl(url: string) {
-  if (!url) return ''
-  const m = url.match(/drive\.google\.com\/file\/d\/([^/]+)/)
-  return m ? 'https://drive.google.com/uc?id=' + m[1] : url
-}
-
 async function saveAndNext() {
-  if (!cot.step2Valid) return
+  if (!cot.step2Valid || submitting.value) return
   const svc = cot.selectedService
   if (!svc) return
+
+  const verdict = checkSubmission({
+    openedAt: openedAt.value,
+    challenge: challenge.value,
+    userAnswer: captchaInput.value,
+    honeypot: honeypot.value,
+  })
+  if (!verdict.ok) {
+    if (verdict.message) submitError.value = verdict.message
+    challenge.value = generateCaptcha()
+    captchaInput.value = ''
+    return
+  }
+
+  submitting.value = true
+  submitError.value = ''
   cot.goStep(3)
   const { min, max, multiplier, extra } = cot.estimate
   const detalles: Record<string, string | string[] | number> = {}
@@ -52,7 +84,7 @@ async function saveAndNext() {
   })
 
   try {
-    await supabase.from('cotizaciones').insert({
+    await insertCotizacion({
       servicio_id: svc.id,
       area: svc.areaKey,
       detalles,
@@ -62,7 +94,12 @@ async function saveAndNext() {
       multiplicador_aplicado: Math.round(multiplier * 100) / 100,
       extra_aplicado: Math.round(extra),
     })
-  } catch {}
+    recordSubmission()
+  } catch (e) {
+    submitError.value = e instanceof Error ? e.message : 'Error al enviar la cotización.'
+  } finally {
+    submitting.value = false
+  }
 }
 </script>
 
@@ -276,8 +313,44 @@ async function saveAndNext() {
               placeholder="Describe brevemente tu caso..."
             />
 
+            <input
+              v-model="honeypot"
+              type="text"
+              name="website"
+              tabindex="-1"
+              autocomplete="off"
+              aria-hidden="true"
+              style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0"
+            >
+
+            <label class="cot-label">Verificación anti-spam</label>
             <div
-              v-if="!cot.step2Valid"
+              style="display:flex;align-items:center;gap:10px;flex-wrap:wrap"
+            >
+              <span style="font-family:var(--font-mono);font-size:.9rem;color:var(--text2)">
+                ¿Cuánto es {{ challenge.question }}?
+              </span>
+              <input
+                v-model="captchaInput"
+                type="number"
+                class="cot-input"
+                style="max-width:90px"
+                inputmode="numeric"
+                autocomplete="off"
+                required
+              >
+            </div>
+
+            <div
+              v-if="submitError"
+              class="cot-validation-msg"
+              style="color:var(--copper)"
+              role="alert"
+            >
+              {{ submitError }}
+            </div>
+            <div
+              v-else-if="!cot.step2Valid"
               class="cot-validation-msg"
             >
               Selecciona una opción en cada campo requerido (*)

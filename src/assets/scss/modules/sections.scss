@@ -4,6 +4,7 @@
 .sec-stripe {
   padding: 80px 0;
 }
+
 .sec-dark,
 .sec-muted,
 .sec-stripe {
@@ -85,9 +86,11 @@
   .st {
     color: var(--text);
   }
+
   .sd {
     color: var(--text2);
   }
+
   .sl {
     color: var(--copper);
   }
@@ -98,6 +101,7 @@
   display: grid;
   gap: 18px;
 }
+
 .g2 {
   grid-template-columns: repeat(2, 1fr);
 }
@@ -109,9 +113,11 @@
     grid-template-columns: repeat(2, 1fr);
   }
 }
+
 .g4 {
   grid-template-columns: repeat(4, 1fr);
 }
+
 .g-auto {
   grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
 }
@@ -174,6 +180,7 @@
     color: var(--text2);
     max-width: 640px;
   }
+
   .sl {
     color: var(--copper);
   }
@@ -190,6 +197,7 @@
   margin: 0 auto;
   padding: calc(var(--h) + 44px + 24px) 28px 60px;
 }
+
 .page-content {
   padding: 60px 0;
 }

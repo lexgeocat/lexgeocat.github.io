@@ -93,9 +93,11 @@
           color: inherit;
           text-decoration: none;
         }
+
         span.cat {
           color: var(--copper);
         }
+
         span.geo {
           color: var(--sapphire);
         }
@@ -288,6 +290,7 @@
     &::-webkit-scrollbar {
       display: none;
     }
+
     .widget {
       display: none !important;
     }

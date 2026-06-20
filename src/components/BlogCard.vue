@@ -1,26 +1,8 @@
 <script setup lang="ts">
 import type { BlogEntry } from '../composables/useBloggerFeed'
+import { getCategoryGrad, getCategoryIcon } from '../lib/categories'
 
 defineProps<{ entry: BlogEntry }>()
-
-const GRAD_MAP: Record<string, string> = {
-  Derecho:
-    'linear-gradient(135deg,var(--color-esp-derecho-bg-from),var(--color-esp-derecho-bg-to))',
-  GIS: 'linear-gradient(135deg,var(--color-esp-geomatica-bg-from),var(--color-esp-geomatica-bg-to))',
-  Catastro:
-    'linear-gradient(135deg,var(--color-esp-catastro-bg-from),var(--color-esp-catastro-bg-to))',
-}
-const ICON_MAP: Record<string, string> = {
-  Derecho: 'fa-scale-balanced',
-  GIS: 'fa-map-location-dot',
-  Catastro: 'fa-draw-polygon',
-}
-function grad(label: string) {
-  return GRAD_MAP[label] || 'linear-gradient(135deg,var(--bg3),var(--bg2))'
-}
-function icon(label: string) {
-  return ICON_MAP[label] || 'fa-newspaper'
-}
 </script>
 
 <template>
@@ -40,11 +22,11 @@ function icon(label: string) {
       <div
         v-else
         class="blog-card-thumb-plh"
-        :style="{ background: grad(entry.categoryLabel) }"
+        :style="{ background: getCategoryGrad(entry.categoryLabel) }"
       >
         <i
           aria-hidden="true"
-          :class="'fa-solid ' + icon(entry.categoryLabel)"
+          :class="'fa-solid ' + getCategoryIcon(entry.categoryLabel)"
         />
       </div>
       <span :class="'blog-card-badge ' + entry.categoryCls">{{ entry.categoryLabel }}</span>
