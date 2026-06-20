@@ -1,6 +1,10 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import { SITE } from '../config/site'
+import type { FactorPrecio, FactorParam } from '../types/supabase'
+
+export type { FactorParam }
+export type Factor = FactorPrecio
 
 export interface CotService {
   id: string
@@ -19,24 +23,6 @@ export interface CotService {
   detailsType: string
   unit_label?: string
 }
-
-export interface FactorParam {
-  key: string
-  label: string
-  tipo: 'chips' | 'chips_multi' | 'number'
-  requerido?: boolean
-  min?: number
-  max?: number
-  placeholder?: string
-  precio_unit?: number
-  opciones?: { label: string; multiplicador?: number; precio_extra?: number }[]
-}
-
-export interface Factor {
-  id: string
-  parametros: FactorParam[]
-}
-
 export interface ChipSelection {
   key: string
   label: string
@@ -70,8 +56,8 @@ export const useCotizadorStore = defineStore('cotizador', () => {
 
   const requiredKeys = computed<string[]>(() =>
     (currentFactor.value?.parametros ?? [])
-      .filter(p => p.tipo === 'chips' && p.requerido)
-      .map(p => p.key)
+      .filter((p: FactorParam) => p.tipo === 'chips' && p.requerido)
+      .map((p: FactorParam) => p.key)
   )
 
   const step2Valid = computed(() =>
@@ -85,7 +71,7 @@ export const useCotizadorStore = defineStore('cotizador', () => {
     let extra = 0
     chipSelections.value.forEach(s => { mult *= s.multiplicador; extra += s.extra })
     Object.entries(numberInputs.value).forEach(([k, v]) => {
-      const param = currentFactor.value?.parametros.find(p => p.key === k)
+      const param = currentFactor.value?.parametros.find((p: FactorParam) => p.key === k)
       if (param?.precio_unit && v > 0) extra += v * param.precio_unit
     })
     const min = Math.round((svc.baseMin * mult + extra) / 50) * 50

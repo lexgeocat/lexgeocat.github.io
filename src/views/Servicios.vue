@@ -1,10 +1,11 @@
-```html
 <script setup lang="ts">
 import { onMounted, onUnmounted } from 'vue'
 import { useReveal } from '../composables/useReveal'
 import { SITE } from '../config/site'
 import { useCotizadorStore } from '../stores/cotizador'
 import CotizadorModal from '../components/CotizadorModal.vue'
+import type { Servicio, FactorPrecio } from '../types/supabase'
+import type { BloggerEntry, BloggerFeed } from '../types/blogger'
 
 const reveal = useReveal()
 const cot = useCotizadorStore()
@@ -39,21 +40,21 @@ onMounted(() => {
     const box = document.getElementById('svc-blog-grid')
     if (box) box.innerHTML = fallbackHtml
   }, 10000)
-  ;(window as any)[blogCbId] = (data: any) => {
+;(window as unknown as Record<string, unknown>)[blogCbId] = (data: BloggerFeed) => {
     if (blogTimedOut) return
     if (blogTimer) clearTimeout(blogTimer)
     const box = document.getElementById('svc-blog-grid')
     if (!box) { try { delete (window as any)[blogCbId!] } catch {}; return }
-    const all = (data?.feed?.entry || []).filter((e: any) => e.title?.$t?.trim())
+    const all = (data?.feed?.entry || []).filter((e: BloggerEntry) => Boolean(e.title?.$t?.trim()))
     if (!all.length) {
       box.innerHTML = '<p style="color:var(--text3);text-align:center;padding:40px;grid-column:1/-1;font-size:.85rem">Próximamente artículos desde el blog técnico.</p>'
     } else {
-      box.innerHTML = all.slice(0, 3).map((e: any) => {
-        const t = e.title.$t.trim()
+      box.innerHTML = all.slice(0, 3).map((e: BloggerEntry) => {
+        const t = (e.title?.$t ?? '').trim()
         const lnk = (e.link || []).find((l: any) => l.rel === 'alternate')?.href || 'https://lexgeocat.blogspot.com/'
         const html = e.content?.$t || e.summary?.$t || ''
         const snip = html.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 120)
-        const thumb = e.media$thumbnail?.url?.replace('/s72-c/', '/s600-c/') || ''
+        const thumb = e['media$thumbnail']?.url?.replace('/s72-c/', '/s600-c/') || ''
         const img = thumb ? `<img src="${thumb.replace(/&/g, '&')}" alt="${t.replace(/"/g, '"')}" loading="lazy">` : ''
         const date = e.published?.$t ? new Date(e.published.$t).toLocaleDateString('es', { year: 'numeric', month: 'short', day: 'numeric' }) : ''
         return `<a class="blog-card reveal" href="${lnk}"><div class="blog-card-thumb">${img || '<div class="blog-card-thumb-plh" style="background:linear-gradient(135deg,#1a1a2e,#16213e)"><i class="fa-solid fa-newspaper"></i></div>'}<span class="blog-card-badge white">Blog</span></div><div class="blog-card-body"><h3 class="blog-card-title">${t}</h3><p class="blog-card-excerpt">${snip}…</p><div class="blog-card-meta"><span class="blog-card-date"><i class="fa-regular fa-calendar"></i> ${date}</span><span class="blog-card-cta">→ Leer</span></div></div></a>`
@@ -111,36 +112,36 @@ onMounted(() => {
     headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` },
   })
     .then(r => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json() })
-    .then((rows: any[]) => {
-      const cotData: Record<string, any> = {}
-      const areaServices: Record<string, any[]> = {}
-      const categoriaServices: Record<string, Record<string, any[]>> = {}
+    .then((rows: Servicio[]) => {
+      const cotData: Record<string, import('../stores/cotizador').CotService> = {}
+      const areaServices: Record<string, { v: string; l: string }[]> = {}
+      const categoriaServices: Record<string, Record<string, { v: string; l: string; descripcion: string; tags: string[]; img_url: string }[]>> = {}
 
-      rows.forEach((r: any) => {
+      rows.forEach((r: Servicio) => {
         if (!r.activo) return
-        cotData[r.id] = { label: r.label, descripcion: r.descripcion || '', tags: r.tags || [], img_url: r.img_url || '', area: r.area, areaKey: r.area, categoria: r.categoria || r.area_label || '', baseMin: Number(r.precio_min) || 0, baseMax: Number(r.precio_max) || 0, timeMin: r.tiempo_min || '', timeMax: r.tiempo_max || '', complexity: r.complejidad || '', detailsType: r.details_type || 'general' }
+        cotData[r.id] = { id: r.id, label: r.label, descripcion: r.descripcion || '', tags: r.tags || [], img_url: r.img_url || '', area: r.area, areaKey: r.area, categoria: r.categoria || '', baseMin: Number(r.precio_min) || 0, baseMax: Number(r.precio_max) || 0, timeMin: r.tiempo_min || '', timeMax: r.tiempo_max || '', complexity: r.complejidad || '', detailsType: r.details_type || 'general' }
         if (!areaServices[r.area]) areaServices[r.area] = []
-        areaServices[r.area].push({ v: r.id, l: r.label })
-        const cat = r.categoria || r.area_label || 'General'
+        areaServices[r.area]!.push({ v: r.id, l: r.label })
+        const cat = r.categoria || 'General'
         if (!categoriaServices[r.area]) categoriaServices[r.area] = {}
-        if (!categoriaServices[r.area][cat]) categoriaServices[r.area][cat] = []
-        categoriaServices[r.area][cat].push({ v: r.id, l: r.label, descripcion: r.descripcion || '', tags: r.tags || [], img_url: r.img_url || '' })
+        if (!categoriaServices[r.area]![cat]) categoriaServices[r.area]![cat] = []
+        categoriaServices[r.area]![cat]!.push({ v: r.id, l: r.label, descripcion: r.descripcion || '', tags: r.tags || [], img_url: r.img_url || '' })
       })
 
-      cot.catalog = cotData
+        cot.catalog = cotData
       cot.areaServices = areaServices
       cot.catalogLoaded = true
 
       AREA_KEYS.forEach(areaKey => {
         const container = document.getElementById('svc-grid-' + areaKey)
         if (!container) return
-        const categorias = categoriaServices[areaKey] || {}
+        const categorias = categoriaServices[areaKey] ?? {}
         const catKeys = Object.keys(categorias)
         if (!catKeys.length) { container.innerHTML = '<p style="color:var(--text3);padding:20px;text-align:center">Próximamente servicios en esta área.</p>'; return }
         let html = ''
         catKeys.forEach((cat, idx) => {
           const isFirst = idx === 0
-          const cfg = CAT_CONFIG[cat] || { icon: 'fa-tag', color: 'var(--text2)', subtitle: '' }
+          const cfg = CAT_CONFIG[cat] ?? { icon: 'fa-tag', color: 'var(--text2)', subtitle: '' }
           const iconStyles = `background: rgba(42,100,150,0.1); border-color: rgba(42,100,150,0.2); color: ${cfg.color};`
           const iconHtml = cfg.icon ? `<i class="fa-solid ${cfg.icon}"></i>` : ''
           html += `<div class="specialty-group">`
@@ -150,7 +151,7 @@ onMounted(() => {
           if (cfg.subtitle) html += `<div class="spec-subtitle">${escHtml(cfg.subtitle)}</div>`
           html += `</div></div><i class="fa-solid fa-chevron-down spec-chevron"></i></div>`
           html += `<div class="specialty-body${isFirst ? ' open' : ''}"><div class="specialty-body-inner"><div class="services-grid">`
-          categorias[cat].forEach((svc: any) => {
+          categorias[cat]!.forEach((svc) => {
             const tagsHtml = svc.tags?.length ? `<div class="svc-item-tags">${svc.tags.map((t: string) => `<span class="svc-item-tag">${escHtml(t)}</span>`).join('')}</div>` : ''
             const thumbUrl = toDirectImageUrl(svc.img_url || '')
             const thumbHtml = thumbUrl ? `<div class="svc-item-thumb" style="background-image:url(${thumbUrl.replace(/"/g, '%22')})"></div>` : ''
@@ -170,18 +171,18 @@ onMounted(() => {
         btn.addEventListener('click', () => cot.openModal((btn as HTMLElement).dataset.svc))
       })
     })
-    .catch((err: Error) => console.error('[LexGeoCat] Error cargando catálogo:', err))
+    .catch((err: unknown) => console.error('[LexGeoCat] Error cargando catálogo:', err))
 
   fetch(`${SUPABASE_URL}/rest/v1/factores_precio?select=*&activo=eq.true`, {
     headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` },
   })
     .then(r => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json() })
-    .then((rows: any[]) => {
-      const fp: Record<string, any> = {}
-      rows.forEach((r: any) => { fp[r.id] = r })
+    .then((rows: FactorPrecio[]) => {
+      const fp: Record<string, FactorPrecio> = {}
+      rows.forEach((r) => { fp[r.id] = r })
       cot.factores = fp
     })
-    .catch((err: Error) => console.warn('[LexGeoCat] Error cargando factores_precio:', err))
+    .catch((err: unknown) => console.warn('[LexGeoCat] Error cargando factores_precio:', err))
 })
 
 onUnmounted(() => {
