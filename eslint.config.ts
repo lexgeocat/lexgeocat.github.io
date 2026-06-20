@@ -1,5 +1,6 @@
 import pluginVue from 'eslint-plugin-vue'
 import tseslint from 'typescript-eslint'
+import vueParser from 'vue-eslint-parser'
 
 export default tseslint.config(
   ...pluginVue.configs['flat/recommended'],
@@ -7,6 +8,7 @@ export default tseslint.config(
   {
     files: ['src/**/*.{ts,vue}'],
     languageOptions: {
+      parser: vueParser,
       parserOptions: {
         parser: tseslint.parser,
         extraFileExtensions: ['.vue'],
