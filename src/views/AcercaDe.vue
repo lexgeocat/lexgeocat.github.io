@@ -78,7 +78,7 @@ onUnmounted(() => { reveal.disconnect() })
             <span class="about-tag"><i class="fa-solid fa-cloud"></i> Despliegue web (VPS, GitHub Pages)</span>
           </div>
           <div style="margin-top:32px;display:flex;flex-wrap:wrap;gap:12px">
-            <router-link class="btn btn-gold" to="/contacto"><i class="fa-solid fa-envelope"></i> Solicitar consultoría</router-link>
+            <router-link class="btn btn-gold" to="/pages/contacto.html"><i class="fa-solid fa-envelope"></i> Solicitar consultoría</router-link>
             <a class="btn btn-ghost" href="https://lexgeocat.blogspot.com/" style="border-color:var(--border);color:var(--text)"><i class="fa-solid fa-newspaper"></i> Visitar el blog</a>
           </div>
         </div>

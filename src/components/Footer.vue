@@ -52,6 +52,9 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
             <li><router-link to="/pages/catastro.html"><i class="fa-solid fa-chevron-right"></i>Catastro</router-link></li>
             <li><router-link to="/pages/ordenamiento.html"><i class="fa-solid fa-chevron-right"></i>Ord. Territorial</router-link></li>
             <li><router-link to="/pages/geografia.html"><i class="fa-solid fa-chevron-right"></i>Geografía</router-link></li>
+            <li><router-link to="/pages/topogeodesia.html"><i class="fa-solid fa-chevron-right"></i>Topografía y Geodesia</router-link></li>
+            <li><router-link to="/pages/geomantica.html"><i class="fa-solid fa-chevron-right"></i>Geomática</router-link></li>
+            <li><router-link to="/pages/desarrollo-software.html"><i class="fa-solid fa-chevron-right"></i>Software</router-link></li>
             <li><a :href="SITE.blog.url"><i class="fa-solid fa-chevron-right"></i>Blog</a></li>
           </ul>
         </div>

@@ -93,7 +93,7 @@ onUnmounted(() => {
           <p class="hero-desc">Plataforma especializada en consultoría, recursos y formación técnica en materia legal, catastral y sistemas de información geográfica adaptados al contexto boliviano.</p>
           <div class="hero-btns">
             <router-link class="btn btn-gold" to="/pages/servicios.html"><i class="fa-solid fa-briefcase"></i> Ver Servicios</router-link>
-            <a class="btn btn-ghost" href="${SITE.blog.url}"><i class="fa-solid fa-newspaper"></i> Explorar Blog</a>
+            <a class="btn btn-ghost" :href="SITE.blog.url"><i class="fa-solid fa-newspaper"></i> Explorar Blog</a>
           </div>
           <div class="hero-stats">
             <div class="hstat">
@@ -209,7 +209,7 @@ onUnmounted(() => {
        <BlogCard v-for="e in blogEntries" :key="e.id" :entry="e" />
       </div>
       <div style="text-align:center;margin-top:44px">
-        <a class="btn btn-gold" href="${SITE.blog.url}"><i class="fa-solid fa-newspaper"></i> Ver todos en el Blog</a>
+        <a class="btn btn-gold" :href="SITE.blog.url"><i class="fa-solid fa-newspaper"></i> Ver todos en el Blog</a>
       </div>
     </div>
   </section>

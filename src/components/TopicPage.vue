@@ -4,7 +4,7 @@ import { useReveal } from '../composables/useReveal'
 import { useBloggerFeed } from '../composables/useBloggerFeed'
 import BlogCard from './BlogCard.vue'
 import type { TopicConfig } from '../content/topics'
-import { SITE } from '@/config/site.ts'
+import { SITE } from '../config/site'
 
 const props = defineProps<{ topic: TopicConfig }>()
 
