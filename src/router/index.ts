@@ -13,7 +13,8 @@ const router = createRouter({
       component: () => import('../views/Home.vue'),
       meta: {
         title: 'LexGeoCat — Derecho, Catastro y Geomática en Bolivia',
-        description: 'Servicios profesionales en Derecho, Catastro, Ordenamiento Territorial, Geografía, Topografía, Geodesia, Geomática y Desarrollo de Software en Bolivia.',
+        description:
+          'Servicios profesionales en Derecho, Catastro, Ordenamiento Territorial, Geografía, Topografía, Geodesia, Geomática y Desarrollo de Software en Bolivia.',
         navLabel: 'Inicio',
         navIcon: 'fa-house',
       },
@@ -24,7 +25,8 @@ const router = createRouter({
       component: () => import('../views/Servicios.vue'),
       meta: {
         title: 'Servicios Profesionales — Derecho, Catastro y Geomática | LexGeoCat',
-        description: 'Consultoría integral en derecho territorial, catastro, ordenamiento, topografía, geomática y desarrollo de software en Bolivia. Cotización en línea.',
+        description:
+          'Consultoría integral en derecho territorial, catastro, ordenamiento, topografía, geomática y desarrollo de software en Bolivia. Cotización en línea.',
         navLabel: 'Servicios',
         navIcon: 'fa-briefcase',
       },
@@ -35,7 +37,8 @@ const router = createRouter({
       component: () => import('../views/Derecho.vue'),
       meta: {
         title: 'Derecho — Legislación Boliviana y Derecho Territorial | LexGeoCat',
-        description: 'Asesoría legal en derecho civil, usucapión, derecho registral, notarial y normativa territorial boliviana.',
+        description:
+          'Asesoría legal en derecho civil, usucapión, derecho registral, notarial y normativa territorial boliviana.',
         navLabel: 'Derecho',
         navIcon: 'fa-scale-balanced',
         navGroup: 'Especialidades',
@@ -47,7 +50,8 @@ const router = createRouter({
       component: () => import('../views/Catastro.vue'),
       meta: {
         title: 'Catastro Multifinalitario en Bolivia | LexGeoCat',
-        description: 'Registro predial, fichas catastrales, valuación fiscal y nomenclatura catastral en Bolivia.',
+        description:
+          'Registro predial, fichas catastrales, valuación fiscal y nomenclatura catastral en Bolivia.',
         navLabel: 'Catastro',
         navIcon: 'fa-map',
         navGroup: 'Especialidades',
@@ -59,7 +63,8 @@ const router = createRouter({
       component: () => import('../views/Ordenamiento.vue'),
       meta: {
         title: 'Ordenamiento Territorial en Bolivia | LexGeoCat',
-        description: 'Planificación urbana, zonificación, uso de suelo y gestión territorial municipal en Bolivia.',
+        description:
+          'Planificación urbana, zonificación, uso de suelo y gestión territorial municipal en Bolivia.',
         navLabel: 'Ord. Territorial',
         navIcon: 'fa-compass-drafting',
         navGroup: 'Especialidades',
@@ -71,7 +76,8 @@ const router = createRouter({
       component: () => import('../views/Geografia.vue'),
       meta: {
         title: 'Geografía — Estudios Territoriales en Bolivia | LexGeoCat',
-        description: 'Análisis del territorio boliviano: geografía física, humana, regional, urbana y rural.',
+        description:
+          'Análisis del territorio boliviano: geografía física, humana, regional, urbana y rural.',
         navLabel: 'Geografía',
         navIcon: 'fa-earth-americas',
         navGroup: 'Especialidades',
@@ -83,7 +89,8 @@ const router = createRouter({
       component: () => import('../views/TopoGeodesia.vue'),
       meta: {
         title: 'Topografía y Geodesia en Bolivia | LexGeoCat',
-        description: 'Levantamientos topográficos, posicionamiento GNSS, redes geodésicas y georeferenciación profesional en Bolivia.',
+        description:
+          'Levantamientos topográficos, posicionamiento GNSS, redes geodésicas y georeferenciación profesional en Bolivia.',
         navLabel: 'Topografía y Geodesia',
         navIcon: 'fa-mountains',
         navGroup: 'Especialidades',
@@ -95,7 +102,8 @@ const router = createRouter({
       component: () => import('../views/Geomatica.vue'),
       meta: {
         title: 'Geomática y SIG en Bolivia | LexGeoCat',
-        description: 'Sistemas de información geográfica, teledetección, PostGIS/QGIS y análisis espacial avanzado en Bolivia.',
+        description:
+          'Sistemas de información geográfica, teledetección, PostGIS/QGIS y análisis espacial avanzado en Bolivia.',
         navLabel: 'Geomática',
         navIcon: 'fa-layer-group',
         navGroup: 'Especialidades',
@@ -107,7 +115,8 @@ const router = createRouter({
       component: () => import('../views/DesarrolloSoftware.vue'),
       meta: {
         title: 'Desarrollo de Software y Aplicaciones Web GIS | LexGeoCat',
-        description: 'Aplicaciones web geográficas, APIs geoespaciales y sistemas de gestión territorial a medida en Bolivia.',
+        description:
+          'Aplicaciones web geográficas, APIs geoespaciales y sistemas de gestión territorial a medida en Bolivia.',
         navLabel: 'Software',
         navIcon: 'fa-code',
         navGroup: 'Especialidades',
@@ -119,7 +128,8 @@ const router = createRouter({
       component: () => import('../views/AcercaDe.vue'),
       meta: {
         title: 'Sobre Mí — Cristian Ruiz Quiroga | LexGeoCat',
-        description: 'Técnico en Catastro y Ordenamiento Territorial, Licenciado en Derecho. R.N.T. 970285 y R.P.A. 13437938CBRQ.',
+        description:
+          'Técnico en Catastro y Ordenamiento Territorial, Licenciado en Derecho. R.N.T. 970285 y R.P.A. 13437938CBRQ.',
         navLabel: 'Sobre Mí',
         navIcon: 'fa-user',
       },
@@ -130,7 +140,8 @@ const router = createRouter({
       component: () => import('../views/Contacto.vue'),
       meta: {
         title: 'Contacto | LexGeoCat',
-        description: 'Consultas profesionales en derecho, catastro y geomática en Bolivia. Escríbenos por WhatsApp o correo.',
+        description:
+          'Consultas profesionales en derecho, catastro y geomática en Bolivia. Escríbenos por WhatsApp o correo.',
         navLabel: 'Contacto',
         navIcon: 'fa-envelope',
       },
@@ -141,7 +152,8 @@ const router = createRouter({
       component: () => import('../views/Recursos.vue'),
       meta: {
         title: 'Recursos y Herramientas | LexGeoCat',
-        description: 'Formatos legales, guías catastrales, tutoriales SIG y recursos técnicos para profesionales del territorio.',
+        description:
+          'Formatos legales, guías catastrales, tutoriales SIG y recursos técnicos para profesionales del territorio.',
         navLabel: 'Recursos',
         navIcon: 'fa-folder-open',
       },
@@ -152,7 +164,8 @@ const router = createRouter({
       component: () => import('../views/Normativa.vue'),
       meta: {
         title: 'Biblioteca Jurídica — Normativa Legal Boliviana | LexGeoCat',
-        description: 'Leyes, códigos, decretos reglamentarios, jurisprudencia y doctrina del ordenamiento jurídico boliviano.',
+        description:
+          'Leyes, códigos, decretos reglamentarios, jurisprudencia y doctrina del ordenamiento jurídico boliviano.',
         navLabel: 'Normativa',
         navIcon: 'fa-gavel',
       },

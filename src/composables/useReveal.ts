@@ -13,7 +13,7 @@ export function useReveal() {
           }
         })
       },
-      { threshold: 0.08, rootMargin: '0px 0px -40px 0px' }
+      { threshold: 0.08, rootMargin: '0px 0px -40px 0px' },
     )
     ;(window as unknown as Record<string, unknown>).__lgcReveal = rIO
     document.querySelectorAll('.reveal').forEach((el) => rIO?.observe(el))
@@ -56,7 +56,7 @@ export function useCounters() {
           cIO?.unobserve(el)
         })
       },
-      { threshold: 0.5 }
+      { threshold: 0.5 },
     )
     document.querySelectorAll('.hstat-n[data-count]').forEach((el) => cIO?.observe(el))
   }

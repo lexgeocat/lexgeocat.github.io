@@ -4,13 +4,15 @@ import type { BlogEntry } from '../composables/useBloggerFeed'
 defineProps<{ entry: BlogEntry }>()
 
 const GRAD_MAP: Record<string, string> = {
-  Derecho:  'linear-gradient(135deg,var(--color-esp-derecho-bg-from),var(--color-esp-derecho-bg-to))',
-  GIS:      'linear-gradient(135deg,var(--color-esp-geomatica-bg-from),var(--color-esp-geomatica-bg-to))',
-  Catastro: 'linear-gradient(135deg,var(--color-esp-catastro-bg-from),var(--color-esp-catastro-bg-to))',
+  Derecho:
+    'linear-gradient(135deg,var(--color-esp-derecho-bg-from),var(--color-esp-derecho-bg-to))',
+  GIS: 'linear-gradient(135deg,var(--color-esp-geomatica-bg-from),var(--color-esp-geomatica-bg-to))',
+  Catastro:
+    'linear-gradient(135deg,var(--color-esp-catastro-bg-from),var(--color-esp-catastro-bg-to))',
 }
 const ICON_MAP: Record<string, string> = {
-  Derecho:  'fa-scale-balanced',
-  GIS:      'fa-map-location-dot',
+  Derecho: 'fa-scale-balanced',
+  GIS: 'fa-map-location-dot',
   Catastro: 'fa-draw-polygon',
 }
 function grad(label: string) {
@@ -22,25 +24,11 @@ function icon(label: string) {
 </script>
 
 <template>
-  <a
-    class="blog-card"
-    :href="entry.url"
-    target="_blank"
-    rel="noopener"
-  >
+  <a class="blog-card" :href="entry.url" target="_blank" rel="noopener">
     <div class="blog-card-thumb">
-      <img
-        v-if="entry.thumb"
-        :src="entry.thumb"
-        :alt="entry.title"
-        loading="lazy"
-      >
-      <div
-        v-else
-        class="blog-card-thumb-plh"
-        :style="{ background: grad(entry.categoryLabel) }"
-      >
-        <i :class="'fa-solid ' + icon(entry.categoryLabel)" />
+      <img v-if="entry.thumb" :src="entry.thumb" :alt="entry.title" loading="lazy" />
+      <div v-else class="blog-card-thumb-plh" :style="{ background: grad(entry.categoryLabel) }">
+        <i aria-hidden="true" :class="'fa-solid ' + icon(entry.categoryLabel)" />
       </div>
       <span :class="'blog-card-badge ' + entry.categoryCls">{{ entry.categoryLabel }}</span>
     </div>
@@ -49,7 +37,7 @@ function icon(label: string) {
       <p class="blog-card-excerpt">{{ entry.excerpt }}…</p>
       <div class="blog-card-meta">
         <span class="blog-card-date">
-          <i class="fa-regular fa-calendar" /> {{ entry.date }}
+          <i aria-hidden="true" class="fa-regular fa-calendar" /> {{ entry.date }}
         </span>
         <span class="blog-card-cta">→ Leer en Blog</span>
       </div>

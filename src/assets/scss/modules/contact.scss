@@ -1,19 +1,26 @@
 .contact-wrap {
-  display: grid; grid-template-columns: 1fr 1.2fr; gap: var(--sp-12);
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: var(--sp-12);
 
-  @media (width <= 768px) { grid-template-columns: 1fr }
+  @media (width <= 768px) {
+    grid-template-columns: 1fr;
+  }
 }
 
 .contact-info {
   h3 {
     font-family: var(--font-display);
-    font-size: var(--fs-2xl-2); font-weight: 700;
+    font-size: var(--fs-2xl-2);
+    font-weight: 700;
     margin-bottom: 14px;
   }
 
   p {
-    font-size: var(--fs-md-3); color: var(--text2);
-    line-height: var(--lh-normal); margin-bottom: var(--sp-6);
+    font-size: var(--fs-md-3);
+    color: var(--text2);
+    line-height: var(--lh-normal);
+    margin-bottom: var(--sp-6);
   }
 }
 
@@ -25,16 +32,22 @@
 }
 
 .contact-icon {
-  width: 42px; height: 42px; border-radius: 8px;
+  width: 42px;
+  height: 42px;
+  border-radius: 8px;
   background: var(--copper-lt);
-  display: flex; align-items: center; justify-content: center;
-  font-size: var(--fs-body); color: var(--copper); flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--fs-body);
+  color: var(--copper);
+  flex-shrink: 0;
   border: 1px solid var(--color-badge-def);
 }
 
 .contact-text {
   h4 {
-    font-size: .85rem;
+    font-size: 0.85rem;
     font-weight: 600;
     margin-bottom: 2px;
     font-family: var(--font-heading);
@@ -48,27 +61,43 @@
 }
 
 .cf-form {
-  background: var(--card); border: 1px solid var(--border); border-radius: var(--r); padding: var(--sp-8);
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: var(--sp-8);
 
-  .form-group { margin-bottom: 18px }
+  .form-group {
+    margin-bottom: 18px;
+  }
 
   label {
     display: block;
     font-family: var(--font-heading);
-    font-size: var(--fs-sm-3); font-weight: 600;
-    color: var(--text2); margin-bottom: 7px;
-    text-transform: uppercase; letter-spacing: .06em;
+    font-size: var(--fs-sm-3);
+    font-weight: 600;
+    color: var(--text2);
+    margin-bottom: 7px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
   }
 
-  input, textarea, select {
-    width: 100%; padding: var(--sp-3) var(--sp-4);
-    background: var(--bg2); border: 1px solid var(--border);
-    border-radius: 8px; color: var(--text);
-    font-family: var(--font-body); font-size: var(--fs-md-3);
-    transition: all .25s; outline: none;
+  input,
+  textarea,
+  select {
+    width: 100%;
+    padding: var(--sp-3) var(--sp-4);
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: var(--fs-md-3);
+    transition: all 0.25s;
+    outline: none;
 
     &:focus {
-      border-color: var(--copper); box-shadow: var(--sh-copper);
+      border-color: var(--copper);
+      box-shadow: var(--sh-copper);
       background: var(--card);
     }
   }
@@ -79,19 +108,31 @@
   }
 
   .btn-submit {
-    background: var(--copper); color: var(--bg);
-    border: none; padding: 13px var(--sp-8); border-radius: 8px;
-    font-family: var(--font-body); font-weight: 600; font-size: var(--fs-md-3);
-    cursor: pointer; transition: all .25s;
-    display: inline-flex; align-items: center; gap: var(--sp-2);
-    width: 100%; justify-content: center;
+    background: var(--copper);
+    color: var(--bg);
+    border: none;
+    padding: 13px var(--sp-8);
+    border-radius: 8px;
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: var(--fs-md-3);
+    cursor: pointer;
+    transition: all 0.25s;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--sp-2);
+    width: 100%;
+    justify-content: center;
 
     &:hover {
-      background: var(--copper2); transform: translateY(-2px);
+      background: var(--copper2);
+      transform: translateY(-2px);
       box-shadow: var(--sh-copper-h);
     }
 
-    i { font-size: 14px }
+    i {
+      font-size: 14px;
+    }
   }
 }
 
@@ -111,11 +152,13 @@
   }
 
   .cta-email {
-    font-size: .85rem;
+    font-size: 0.85rem;
     color: var(--text2);
     margin-bottom: var(--sp-5);
 
-    i { color: var(--copper); }
+    i {
+      color: var(--copper);
+    }
   }
 }
 

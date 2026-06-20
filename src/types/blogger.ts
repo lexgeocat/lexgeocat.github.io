@@ -22,7 +22,7 @@ export interface BloggerEntry {
   published?: BloggerText
   link?: BloggerLink[]
   category?: BloggerCategory[]
-  'media$thumbnail'?: BloggerThumbnail
+  media$thumbnail?: BloggerThumbnail
 }
 
 export interface BloggerFeed {

@@ -28,9 +28,13 @@ img {
 }
 
 a {
-  color: var(--copper); text-decoration: none; transition: color .2s;
+  color: var(--copper);
+  text-decoration: none;
+  transition: color 0.2s;
 
-  &:hover { color: var(--copper2) }
+  &:hover {
+    color: var(--copper2);
+  }
 }
 
 ::selection {
@@ -38,15 +42,20 @@ a {
   color: #fff;
 }
 
-h1, h2, h3, h4, h5 {
+h1,
+h2,
+h3,
+h4,
+h5 {
   line-height: var(--lh-tight);
   color: var(--text);
 }
 
-h1, h2 {
+h1,
+h2 {
   font-family: var(--font-display);
   font-weight: 400;
-  letter-spacing: -.01em;
+  letter-spacing: -0.01em;
 }
 
 h3 {
@@ -54,12 +63,16 @@ h3 {
   font-weight: 700;
 }
 
-h4, h5 {
+h4,
+h5 {
   font-family: var(--font-heading);
   font-weight: 600;
 }
 
-.navbar, .Attribution { display: none !important }
+.navbar,
+.Attribution {
+  display: none !important;
+}
 
 .c {
   max-width: var(--con);
@@ -83,7 +96,9 @@ h4, h5 {
 .reveal {
   opacity: 0;
   transform: translateY(20px);
-  transition: opacity .65s var(--ease-out), transform .65s var(--ease-out);
+  transition:
+    opacity 0.65s var(--ease-out),
+    transform 0.65s var(--ease-out);
 
   &.visible {
     opacity: 1;
@@ -101,8 +116,12 @@ h4, h5 {
   margin-bottom: 16px;
 }
 
-::-webkit-scrollbar { width: 5px }
-::-webkit-scrollbar-track { background: var(--bg2) }
+::-webkit-scrollbar {
+  width: 5px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg2);
+}
 
 ::-webkit-scrollbar-thumb {
   background: var(--border3);

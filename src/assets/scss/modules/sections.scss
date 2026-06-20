@@ -1,5 +1,14 @@
-.sec, .sec-dark, .sec-muted, .sec-stripe { padding: 80px 0 }
-.sec-dark, .sec-muted, .sec-stripe { background: var(--bg2) }
+.sec,
+.sec-dark,
+.sec-muted,
+.sec-stripe {
+  padding: 80px 0;
+}
+.sec-dark,
+.sec-muted,
+.sec-stripe {
+  background: var(--bg2);
+}
 
 /* Section header */
 .sh {
@@ -8,15 +17,20 @@
   &.center {
     text-align: center;
 
-    .sd { margin: 0 auto }
+    .sd {
+      margin: 0 auto;
+    }
   }
 }
 
 /* Section label */
 .sl {
-  display: inline-flex; align-items: center; gap: 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
   font-family: var(--font-heading);
-  font-size: .66rem; font-weight: 700;
+  font-size: 0.66rem;
+  font-weight: 700;
   letter-spacing: var(--ls-caps);
   text-transform: uppercase;
   color: var(--copper);
@@ -25,7 +39,8 @@
   &::before {
     content: '';
     display: inline-block;
-    width: 20px; height: 1.5px;
+    width: 20px;
+    height: 1.5px;
     background: linear-gradient(90deg, var(--copper), var(--sapphire));
     border-radius: 1px;
   }
@@ -33,7 +48,8 @@
   &::after {
     content: '';
     display: inline-block;
-    width: 6px; height: 1.5px;
+    width: 6px;
+    height: 1.5px;
     background: var(--sapphire);
     border-radius: 1px;
   }
@@ -45,11 +61,15 @@
   font-size: var(--fs-h2);
   font-weight: 400;
   margin-bottom: 14px;
-  letter-spacing: -.01em;
+  letter-spacing: -0.01em;
 
-  @media (width <= 768px) { font-size: 1.7rem }
+  @media (width <= 768px) {
+    font-size: 1.7rem;
+  }
 
-  @media (width <= 480px) { font-size: 1.45rem }
+  @media (width <= 480px) {
+    font-size: 1.45rem;
+  }
 }
 
 /* Section description */
@@ -60,10 +80,17 @@
   line-height: var(--lh-normal);
 }
 
-.sec-dark, .sec-muted {
-  .st { color: var(--text) }
-  .sd { color: var(--text2) }
-  .sl { color: var(--copper) }
+.sec-dark,
+.sec-muted {
+  .st {
+    color: var(--text);
+  }
+  .sd {
+    color: var(--text2);
+  }
+  .sl {
+    color: var(--copper);
+  }
 }
 
 /* Grids */
@@ -71,35 +98,66 @@
   display: grid;
   gap: 18px;
 }
-.g2 { grid-template-columns: repeat(2, 1fr) }
+.g2 {
+  grid-template-columns: repeat(2, 1fr);
+}
 
-.g3 { grid-template-columns: repeat(3, 1fr);
+.g3 {
+  grid-template-columns: repeat(3, 1fr);
 
- @media (width <= 900px) { grid-template-columns: repeat(2, 1fr) } }
-.g4 { grid-template-columns: repeat(4, 1fr) }
-.g-auto { grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)) }
+  @media (width <= 900px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+.g4 {
+  grid-template-columns: repeat(4, 1fr);
+}
+.g-auto {
+  grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+}
 
-@media (width <= 768px) { .g2,.g3,.g4,.g-auto { grid-template-columns: 1fr } }
+@media (width <= 768px) {
+  .g2,
+  .g3,
+  .g4,
+  .g-auto {
+    grid-template-columns: 1fr;
+  }
+}
 
 /* Page hero */
 .page-hero {
   padding: calc(var(--h) + 44px + 48px) 0 48px;
   background: var(--bg);
-  position: relative; overflow: hidden;
+  position: relative;
+  overflow: hidden;
   border-bottom: 1px solid var(--border);
 
   &::before {
-    content: ''; position: absolute; inset: 0;
+    content: '';
+    position: absolute;
+    inset: 0;
     background-image:
       linear-gradient(var(--color-grid-line) 1px, transparent 1px),
       linear-gradient(90deg, var(--color-grid-line) 1px, transparent 1px);
     background-size: 48px 48px;
-    opacity: .4;
+    opacity: 0.4;
   }
 
   &::after {
-    content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 2px;
-    background: linear-gradient(90deg, transparent, var(--copper) 30%, var(--sapphire) 70%, transparent);
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      var(--copper) 30%,
+      var(--sapphire) 70%,
+      transparent
+    );
   }
 
   .c {
@@ -116,7 +174,9 @@
     color: var(--text2);
     max-width: 640px;
   }
-  .sl { color: var(--copper) }
+  .sl {
+    color: var(--copper);
+  }
 }
 
 .page-hero-icon {
@@ -130,4 +190,6 @@
   margin: 0 auto;
   padding: calc(var(--h) + 44px + 24px) 28px 60px;
 }
-.page-content { padding: 60px 0 }
+.page-content {
+  padding: 60px 0;
+}

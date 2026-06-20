@@ -46,7 +46,7 @@ export const useCotizadorStore = defineStore('cotizador', () => {
   const nota = ref('')
 
   const selectedService = computed<CotService | null>(() =>
-    selectedServiceId.value ? catalog.value[selectedServiceId.value] ?? null : null
+    selectedServiceId.value ? (catalog.value[selectedServiceId.value] ?? null) : null,
   )
 
   const currentFactor = computed<Factor | null>(() => {
@@ -57,11 +57,11 @@ export const useCotizadorStore = defineStore('cotizador', () => {
   const requiredKeys = computed<string[]>(() =>
     (currentFactor.value?.parametros ?? [])
       .filter((p: FactorParam) => p.tipo === 'chips' && p.requerido)
-      .map((p: FactorParam) => p.key)
+      .map((p: FactorParam) => p.key),
   )
 
   const step2Valid = computed(() =>
-    requiredKeys.value.every(k => chipSelections.value.some(s => s.key === k))
+    requiredKeys.value.every((k) => chipSelections.value.some((s) => s.key === k)),
   )
 
   const estimate = computed(() => {
@@ -69,7 +69,10 @@ export const useCotizadorStore = defineStore('cotizador', () => {
     if (!svc) return { min: 0, max: 0, multiplier: 1, extra: 0 }
     let mult = 1
     let extra = 0
-    chipSelections.value.forEach(s => { mult *= s.multiplicador; extra += s.extra })
+    chipSelections.value.forEach((s) => {
+      mult *= s.multiplicador
+      extra += s.extra
+    })
     Object.entries(numberInputs.value).forEach(([k, v]) => {
       const param = currentFactor.value?.parametros.find((p: FactorParam) => p.key === k)
       if (param?.precio_unit && v > 0) extra += v * param.precio_unit
@@ -82,7 +85,7 @@ export const useCotizadorStore = defineStore('cotizador', () => {
   const waLink = computed(() => {
     const svc = selectedService.value
     if (!svc) return `https://wa.me/${SITE.whatsappNumber}`
-    const parts = chipSelections.value.map(s => s.label)
+    const parts = chipSelections.value.map((s) => s.label)
     let msg = `Hola, me interesa el servicio de *${svc.label}*. `
     if (parts.length) msg += `Parámetros: ${parts.join(', ')}. `
     if (nota.value) msg += `Nota: ${nota.value}. `
@@ -115,32 +118,60 @@ export const useCotizadorStore = defineStore('cotizador', () => {
     nota.value = ''
   }
 
-  function toggleChip(key: string, label: string, multiplicador: number, extra: number, isMulti: boolean) {
+  function toggleChip(
+    key: string,
+    label: string,
+    multiplicador: number,
+    extra: number,
+    isMulti: boolean,
+  ) {
     if (isMulti) {
-      const idx = chipSelections.value.findIndex(s => s.key === key && s.label === label)
+      const idx = chipSelections.value.findIndex((s) => s.key === key && s.label === label)
       if (idx >= 0) chipSelections.value.splice(idx, 1)
       else chipSelections.value.push({ key, label, multiplicador, extra })
     } else {
-      const filtered = chipSelections.value.filter(s => s.key !== key)
+      const filtered = chipSelections.value.filter((s) => s.key !== key)
       filtered.push({ key, label, multiplicador, extra })
       chipSelections.value = filtered
     }
   }
 
   function isChipSelected(key: string, label: string) {
-    return chipSelections.value.some(s => s.key === key && s.label === label)
+    return chipSelections.value.some((s) => s.key === key && s.label === label)
   }
 
   function setNumber(key: string, value: number) {
     numberInputs.value[key] = value
   }
 
-  function goStep(n: number) { step.value = n }
+  function goStep(n: number) {
+    step.value = n
+  }
 
   return {
-    open, step, catalog, areaServices, factores, catalogLoaded,
-    selectedArea, selectedServiceId, chipSelections, numberInputs, nota,
-    selectedService, currentFactor, requiredKeys, step2Valid, estimate, waLink,
-    openModal, closeModal, reset, toggleChip, isChipSelected, setNumber, goStep,
+    open,
+    step,
+    catalog,
+    areaServices,
+    factores,
+    catalogLoaded,
+    selectedArea,
+    selectedServiceId,
+    chipSelections,
+    numberInputs,
+    nota,
+    selectedService,
+    currentFactor,
+    requiredKeys,
+    step2Valid,
+    estimate,
+    waLink,
+    openModal,
+    closeModal,
+    reset,
+    toggleChip,
+    isChipSelected,
+    setNumber,
+    goStep,
   }
 })

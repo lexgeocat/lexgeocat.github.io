@@ -51,7 +51,7 @@ const pageSize = 12
 
 const filtered = computed(() => {
   const q = searchQuery.value.toLowerCase().trim()
-  return allNormas.value.filter(n => {
+  return allNormas.value.filter((n) => {
     if (filterCategoria.value && n.categoria !== filterCategoria.value) return false
     if (filterEstado.value && n.estado !== filterEstado.value) return false
     if (q) {
@@ -73,22 +73,35 @@ const paged = computed(() => {
   return filtered.value.slice(start, start + pageSize)
 })
 
-function goPage(n: number) { currentPage.value = n; window.scrollTo({ top: 400, behavior: 'smooth' }) }
-function onSearch() { currentPage.value = 1 }
+function goPage(n: number) {
+  currentPage.value = n
+  window.scrollTo({ top: 400, behavior: 'smooth' })
+}
+function onSearch() {
+  currentPage.value = 1
+}
 
 function formatDate(d: string | null) {
   if (!d) return '—'
-  return new Date(d + 'T00:00:00').toLocaleDateString('es-BO', { day: '2-digit', month: 'short', year: 'numeric' })
+  return new Date(d + 'T00:00:00').toLocaleDateString('es-BO', {
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric',
+  })
 }
 
 const reveal = useReveal()
 
 onMounted(async () => {
-  requestAnimationFrame(() => { requestAnimationFrame(() => { reveal.observe() }) })
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      reveal.observe()
+    })
+  })
   try {
     const res = await fetch(
       `${SUPABASE_URL}/rest/v1/normativa?select=*&activo=eq.true&order=fecha_publicacion.desc`,
-      { headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` } }
+      { headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` } },
     )
     if (!res.ok) throw new Error('Error HTTP ' + res.status)
     allNormas.value = (await res.json()) as Norma[]
@@ -102,21 +115,22 @@ onMounted(async () => {
   }
 })
 
-onUnmounted(() => { reveal.disconnect() })
+onUnmounted(() => {
+  reveal.disconnect()
+})
 </script>
 
 <template>
   <section class="page-hero">
     <div class="c">
       <div class="page-hero-icon">
-        <i class="fa-solid fa-scroll" />
+        <i aria-hidden="true" class="fa-solid fa-scroll" />
       </div>
       <span class="sl">Biblioteca Jurídica</span>
-      <h1 class="st">
-        Normativa legal
-      </h1>
+      <h1 class="st">Normativa legal</h1>
       <p class="sd">
-        Leyes, códigos, decretos reglamentarios, jurisprudencia y doctrina del ordenamiento jurídico boliviano en materia territorial, catastral y de derechos reales.
+        Leyes, códigos, decretos reglamentarios, jurisprudencia y doctrina del ordenamiento jurídico
+        boliviano en materia territorial, catastral y de derechos reales.
       </p>
     </div>
   </section>
@@ -126,91 +140,61 @@ onUnmounted(() => { reveal.disconnect() })
       <div class="norm-toolbar reveal">
         <div class="norm-toolbar-left">
           <div class="norm-search-wrap">
-            <i class="fa-solid fa-search norm-search-icon" />
+            <i aria-hidden="true" class="fa-solid fa-search norm-search-icon" />
             <input
               v-model="searchQuery"
               type="text"
               class="norm-search"
               placeholder="Buscar por título, número o palabras clave..."
               @input="onSearch"
-            >
+            />
           </div>
-          <select
-            v-model="filterCategoria"
-            class="norm-select"
-            @change="onSearch"
-          >
-            <option value="">
-              Todas las categorías
-            </option>
-            <option
-              v-for="(lb, v) in CATEGORIA_LABELS"
-              :key="v"
-              :value="v"
-            >
+          <select v-model="filterCategoria" class="norm-select" @change="onSearch">
+            <option value="">Todas las categorías</option>
+            <option v-for="(lb, v) in CATEGORIA_LABELS" :key="v" :value="v">
               {{ lb }}
             </option>
           </select>
-          <select
-            v-model="filterEstado"
-            class="norm-select"
-            @change="onSearch"
-          >
-            <option value="">
-              Todos los estados
-            </option>
-            <option
-              v-for="(lb, v) in ESTADO_LABELS"
-              :key="v"
-              :value="v"
-            >
+          <select v-model="filterEstado" class="norm-select" @change="onSearch">
+            <option value="">Todos los estados</option>
+            <option v-for="(lb, v) in ESTADO_LABELS" :key="v" :value="v">
               {{ lb }}
             </option>
           </select>
         </div>
         <div class="norm-toolbar-right">
-          <span class="norm-count">{{ filtered.length }} {{ filtered.length === 1 ? 'documento' : 'documentos' }}</span>
+          <span class="norm-count"
+            >{{ filtered.length }} {{ filtered.length === 1 ? 'documento' : 'documentos' }}</span
+          >
         </div>
       </div>
 
-      <div
-        v-if="loading"
-        class="norm-empty"
-      >
-        <i class="fa-solid fa-spinner fa-spin" />
+      <div v-if="loading" class="norm-empty">
+        <i aria-hidden="true" class="fa-solid fa-spinner fa-spin" />
         <p>Cargando normativa…</p>
       </div>
 
-      <div
-        v-else-if="error"
-        class="norm-empty"
-      >
+      <div v-else-if="error" class="norm-empty">
         <i
+          aria-hidden="true"
           class="fa-solid fa-triangle-exclamation"
-          style="color:var(--copper)"
+          style="color: var(--copper)"
         />
         <p>Error: {{ error }}</p>
       </div>
 
-      <div
-        v-else-if="!filtered.length"
-        class="norm-empty"
-      >
-        <i class="fa-solid fa-scroll" />
+      <div v-else-if="!filtered.length" class="norm-empty">
+        <i aria-hidden="true" class="fa-solid fa-scroll" />
         <p>No se encontraron documentos con los filtros actuales.</p>
       </div>
 
-      <div
-        v-else
-        class="norm-grid"
-      >
-        <div
-          v-for="n in paged"
-          :key="n.id"
-          class="norm-card reveal"
-        >
+      <div v-else class="norm-grid">
+        <div v-for="n in paged" :key="n.id" class="norm-card reveal">
           <div class="norm-card-icon">
-            <i :class="'fa-solid ' + (CATEGORIA_ICONS[n.categoria] || 'fa-file')" />
+            <i
+              aria-hidden="true"
+              :class="'fa-solid ' + (CATEGORIA_ICONS[n.categoria] || 'fa-file')"
+            />
           </div>
           <div class="norm-card-body">
             <h3 class="norm-card-title">
@@ -218,17 +202,13 @@ onUnmounted(() => { reveal.disconnect() })
             </h3>
             <div class="norm-card-meta">
               <span class="norm-badge-cat">{{ CATEGORIA_LABELS[n.categoria] || n.categoria }}</span>
-              <span :class="'norm-badge-estado norm-badge-estado--' + n.estado">{{ ESTADO_LABELS[n.estado] || n.estado }}</span>
-              <span
-                v-if="n.numero_norma"
-                class="norm-card-num"
-              >{{ n.numero_norma }}</span>
+              <span :class="'norm-badge-estado norm-badge-estado--' + n.estado">{{
+                ESTADO_LABELS[n.estado] || n.estado
+              }}</span>
+              <span v-if="n.numero_norma" class="norm-card-num">{{ n.numero_norma }}</span>
               <span class="norm-card-date">{{ formatDate(n.fecha_publicacion) }}</span>
             </div>
-            <p
-              v-if="n.resumen"
-              class="norm-card-desc"
-            >
+            <p v-if="n.resumen" class="norm-card-desc">
               {{ n.resumen }}
             </p>
           </div>
@@ -239,25 +219,16 @@ onUnmounted(() => { reveal.disconnect() })
               target="_blank"
               rel="noopener"
               class="btn btn-sm btn-primary"
-            ><i class="fa-solid fa-file-pdf" /> Ver PDF</a>
-            <span
-              v-else
-              class="norm-no-pdf"
-            >Sin PDF</span>
+              ><i aria-hidden="true" class="fa-solid fa-file-pdf" /> Ver PDF</a
+            >
+            <span v-else class="norm-no-pdf">Sin PDF</span>
           </div>
         </div>
       </div>
 
-      <div
-        v-if="totalPages > 1"
-        class="norm-pagination"
-      >
-        <button
-          class="page-btn"
-          :disabled="currentPage <= 1"
-          @click="goPage(currentPage - 1)"
-        >
-          <i class="fa-solid fa-chevron-left" />
+      <div v-if="totalPages > 1" class="norm-pagination">
+        <button class="page-btn" :disabled="currentPage <= 1" @click="goPage(currentPage - 1)">
+          <i aria-hidden="true" class="fa-solid fa-chevron-left" />
         </button>
         <button
           v-for="p in totalPages"
@@ -272,7 +243,7 @@ onUnmounted(() => { reveal.disconnect() })
           :disabled="currentPage >= totalPages"
           @click="goPage(currentPage + 1)"
         >
-          <i class="fa-solid fa-chevron-right" />
+          <i aria-hidden="true" class="fa-solid fa-chevron-right" />
         </button>
       </div>
     </div>

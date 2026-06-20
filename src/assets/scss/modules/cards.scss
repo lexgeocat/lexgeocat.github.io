@@ -17,14 +17,10 @@
 }
 
 .cat-card::before {
-  content: "";
+  content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(
-    135deg,
-    var(--c1, var(--bg2)) 0%,
-    var(--c2, var(--bg3)) 100%
-  );
+  background: linear-gradient(135deg, var(--c1, var(--bg2)) 0%, var(--c2, var(--bg3)) 100%);
   opacity: 0;
   transition: opacity 0.35s;
   z-index: 1;
@@ -361,7 +357,7 @@
 }
 
 .svc-card::after {
-  content: "";
+  content: '';
   position: absolute;
   bottom: 0;
   left: 0;
@@ -565,7 +561,7 @@
 }
 
 .about-img-ph-loc {
-  font-size: .8rem;
+  font-size: 0.8rem;
   color: var(--text3);
   margin-top: var(--sp-1);
 }
@@ -701,14 +697,10 @@
 }
 
 .cred-card::before {
-  content: "";
+  content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(
-    135deg,
-    var(--color-glow-amber),
-    transparent 60%
-  );
+  background: linear-gradient(135deg, var(--color-glow-amber), transparent 60%);
   opacity: 0;
   transition: opacity 0.3s;
 }

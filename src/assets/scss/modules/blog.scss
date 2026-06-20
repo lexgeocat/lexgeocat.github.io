@@ -30,17 +30,12 @@
 
   /* Borde gradient animado */
   &::before {
-    content: "";
+    content: '';
     position: absolute;
     inset: 0;
     border-radius: var(--r);
     padding: 1px;
-    background: linear-gradient(
-      135deg,
-      var(--copper),
-      var(--sapphire),
-      transparent 65%
-    );
+    background: linear-gradient(135deg, var(--copper), var(--sapphire), transparent 65%);
     mask:
       linear-gradient(#fff 0 0) content-box,
       linear-gradient(#fff 0 0);
@@ -79,7 +74,7 @@
     background: var(--bg2);
 
     &::after {
-      content: "";
+      content: '';
       position: absolute;
       inset: 0;
       background: linear-gradient(to top, var(--color-overlay), transparent 50%);

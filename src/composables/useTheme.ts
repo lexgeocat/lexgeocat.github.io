@@ -26,7 +26,9 @@ export function useTheme() {
 
   watch(isDark, (val) => {
     applyTheme(val)
-    try { localStorage.setItem(THEME_KEY, val ? 'dark' : 'light') } catch {}
+    try {
+      localStorage.setItem(THEME_KEY, val ? 'dark' : 'light')
+    } catch {}
   })
 
   function toggle() {

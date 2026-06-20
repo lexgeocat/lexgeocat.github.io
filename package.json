@@ -10,9 +10,16 @@
     "typecheck": "vue-tsc --noEmit",
     "lint": "eslint . --max-warnings 0",
     "lint:fix": "eslint . --fix",
-    "format": "prettier --write \"src/**/*.{ts,vue,scss}\""
+    "format": "prettier --write \"src/**/*.{ts,vue,scss}\"",
+    "postinstall": "node scripts/copy-vendor-assets.mjs",
+    "a11y:icons": "node scripts/add-aria-hidden.mjs"
   },
   "dependencies": {
+    "@fontsource/dm-serif-display": "^5.1.0",
+    "@fontsource/inter": "^5.1.1",
+    "@fontsource/jetbrains-mono": "^5.1.2",
+    "@fontsource/syne": "^5.1.1",
+    "@fortawesome/fontawesome-free": "^6.7.2",
     "@unhead/vue": "^3.1.4",
     "pinia": "^3.0.4",
     "vue": "^3.5.34",

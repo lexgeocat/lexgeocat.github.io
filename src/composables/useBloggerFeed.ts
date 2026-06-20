@@ -35,11 +35,7 @@ function detectCat(labels: BloggerEntry['category']): { cls: string; label: stri
   return { cls: 'white', label: first || 'Blog' }
 }
 
-function parseEntry(
-  e: BloggerEntry,
-  overrideCls?: string,
-  overrideLabel?: string,
-): BlogEntry {
+function parseEntry(e: BloggerEntry, overrideCls?: string, overrideLabel?: string): BlogEntry {
   const title =
     e.title?.$t?.trim() ||
     (() => {
@@ -54,12 +50,9 @@ function parseEntry(
       return 'Sin título'
     })()
 
-  const url =
-    (e.link || []).find((l) => l.rel === 'alternate')?.href || SITE.blog.url
+  const url = (e.link || []).find((l) => l.rel === 'alternate')?.href || SITE.blog.url
   const rawThumb = e['media$thumbnail']?.url || ''
-  const thumb = rawThumb
-    ? rawThumb.replace('/s72-c/', '/s600-c/').replace(/&amp;/g, '&')
-    : ''
+  const thumb = rawThumb ? rawThumb.replace('/s72-c/', '/s600-c/').replace(/&amp;/g, '&') : ''
   const html = e.content?.$t || e.summary?.$t || ''
   const excerpt = html
     .replace(/<[^>]*>/g, ' ')
@@ -143,9 +136,7 @@ export function useBloggerFeed(options: {
     loading.value = true
     error.value = ''
     try {
-      const labelPart = options.label
-        ? `/-/${encodeURIComponent(options.label)}`
-        : ''
+      const labelPart = options.label ? `/-/${encodeURIComponent(options.label)}` : ''
       const url = `${SITE.blog.feed}${labelPart}?max-results=${options.limit ?? 3}`
       const raw = await jsonpFetch(url)
       entries.value = raw

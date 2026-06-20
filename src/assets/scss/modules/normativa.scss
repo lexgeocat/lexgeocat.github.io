@@ -15,7 +15,9 @@
   flex-wrap: wrap;
   flex: 1;
 }
-.norm-toolbar-right { flex-shrink: 0 }
+.norm-toolbar-right {
+  flex-shrink: 0;
+}
 
 .norm-search-wrap {
   position: relative;
@@ -31,15 +33,22 @@
   border-radius: var(--r);
   color: var(--text);
   font-family: var(--font-body);
-  font-size: .88rem;
+  font-size: 0.88rem;
   outline: none;
   transition: border-color 0.2s;
-  &:focus { border-color: var(--copper) }
+  &:focus {
+    border-color: var(--copper);
+  }
 }
 
 .norm-search-icon {
-  position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
-  color: var(--text3); font-size: .9rem; pointer-events: none;
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text3);
+  font-size: 0.9rem;
+  pointer-events: none;
 }
 
 .norm-select {
@@ -49,15 +58,17 @@
   border-radius: var(--r);
   color: var(--text);
   font-family: var(--font-body);
-  font-size: .82rem;
+  font-size: 0.82rem;
   outline: none;
   cursor: pointer;
   transition: border-color 0.2s;
-  &:focus { border-color: var(--copper) }
+  &:focus {
+    border-color: var(--copper);
+  }
 }
 
 .norm-count {
-  font-size: .82rem;
+  font-size: 0.82rem;
   color: var(--text3);
   white-space: nowrap;
   padding: 8px 0;
@@ -75,7 +86,9 @@
     margin-bottom: 14px;
     color: var(--border2);
   }
-  p { font-size: .95rem }
+  p {
+    font-size: 0.95rem;
+  }
 }
 
 /* ── Card grid ── */
@@ -123,7 +136,7 @@
 
 .norm-card-title {
   font-family: var(--font-heading);
-  font-size: .9rem;
+  font-size: 0.9rem;
   font-weight: 700;
   color: var(--text);
   margin-bottom: 6px;
@@ -136,14 +149,14 @@
   gap: 8px;
   flex-wrap: wrap;
   margin-bottom: 8px;
-  font-size: .7rem;
+  font-size: 0.7rem;
 }
 
 .norm-badge-cat {
-  font-size: .6rem;
+  font-size: 0.6rem;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: .04em;
+  letter-spacing: 0.04em;
   padding: 2px 8px;
   border-radius: 5px;
   background: var(--copper-lt);
@@ -152,10 +165,10 @@
 }
 
 .norm-badge-estado {
-  font-size: .6rem;
+  font-size: 0.6rem;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: .04em;
+  letter-spacing: 0.04em;
   padding: 2px 8px;
   border-radius: 5px;
   white-space: nowrap;
@@ -186,7 +199,7 @@
 }
 
 .norm-card-desc {
-  font-size: .8rem;
+  font-size: 0.8rem;
   color: var(--text2);
   line-height: 1.5;
   display: -webkit-box;
@@ -202,7 +215,7 @@
 }
 
 .norm-no-pdf {
-  font-size: .72rem;
+  font-size: 0.72rem;
   color: var(--text3);
   font-style: italic;
 }
@@ -222,12 +235,24 @@
     flex-direction: column;
     align-items: stretch;
   }
-  .norm-toolbar-left { flex-direction: column }
-  .norm-search-wrap { min-width: unset }
-  .norm-search { width: 100% }
-  .norm-select { width: 100% }
-  .norm-grid { grid-template-columns: 1fr }
-  .norm-card { flex-wrap: wrap }
+  .norm-toolbar-left {
+    flex-direction: column;
+  }
+  .norm-search-wrap {
+    min-width: unset;
+  }
+  .norm-search {
+    width: 100%;
+  }
+  .norm-select {
+    width: 100%;
+  }
+  .norm-grid {
+    grid-template-columns: 1fr;
+  }
+  .norm-card {
+    flex-wrap: wrap;
+  }
 
   .norm-card-actions {
     width: 100%;
@@ -237,7 +262,7 @@
 
 .page-btn {
   font-family: var(--font-body);
-  font-size: .82rem;
+  font-size: 0.82rem;
   font-weight: 600;
   min-width: 36px;
   height: 36px;
