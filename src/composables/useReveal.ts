@@ -15,7 +15,7 @@ export function useReveal() {
       },
       { threshold: 0.08, rootMargin: '0px 0px -40px 0px' }
     )
-    ;(window as any).__lgcReveal = rIO
+    ;(window as unknown as Record<string, unknown>).__lgcReveal = rIO
     document.querySelectorAll('.reveal').forEach((el) => rIO?.observe(el))
   }
 

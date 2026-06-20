@@ -26,10 +26,16 @@ onUnmounted(() => { reveal.disconnect() })
 <template>
   <section class="page-hero">
     <div class="c">
-      <div class="page-hero-icon"><i :class="'fa-solid ' + topic.icon"></i></div>
+      <div class="page-hero-icon">
+        <i :class="'fa-solid ' + topic.icon" />
+      </div>
       <span class="sl">{{ topic.label }}</span>
-      <h1 class="st">{{ topic.title }}</h1>
-      <p class="sd">{{ topic.description }}</p>
+      <h1 class="st">
+        {{ topic.title }}
+      </h1>
+      <p class="sd">
+        {{ topic.description }}
+      </p>
     </div>
   </section>
 
@@ -37,7 +43,10 @@ onUnmounted(() => { reveal.disconnect() })
     <div class="c">
       <slot name="before-features" />
 
-      <div v-if="topic.features.length" class="at-body">
+      <div
+        v-if="topic.features.length"
+        class="at-body"
+      >
         <slot name="intro" />
         <slot name="features-heading">
           <h2>Servicios</h2>
@@ -48,7 +57,7 @@ onUnmounted(() => { reveal.disconnect() })
             :key="f.title"
             class="feature-item reveal"
           >
-            <i :class="'fa-solid ' + f.icon"></i>
+            <i :class="'fa-solid ' + f.icon" />
             <h3>{{ f.title }}</h3>
             <p>{{ f.desc }}</p>
           </div>
@@ -58,19 +67,37 @@ onUnmounted(() => { reveal.disconnect() })
 
       <slot />
 
-      <div class="sh center" style="margin-top:48px">
+      <div
+        class="sh center"
+        style="margin-top:48px"
+      >
         <span class="sl">Blog</span>
-        <h2 class="st">Artículos recientes</h2>
+        <h2 class="st">
+          Artículos recientes
+        </h2>
       </div>
 
-      <div v-if="loading" class="norm-empty">
-        <i class="fa-solid fa-spinner fa-spin"></i>
+      <div
+        v-if="loading"
+        class="norm-empty"
+      >
+        <i class="fa-solid fa-spinner fa-spin" />
       </div>
-      <div v-else-if="error" class="norm-empty">
-        <i class="fa-solid fa-triangle-exclamation"></i> {{ error }}
+      <div
+        v-else-if="error"
+        class="norm-empty"
+      >
+        <i class="fa-solid fa-triangle-exclamation" /> {{ error }}
       </div>
-      <div v-else class="blog-grid">
-        <BlogCard v-for="e in entries" :key="e.id" :entry="e" />
+      <div
+        v-else
+        class="blog-grid"
+      >
+        <BlogCard
+          v-for="e in entries"
+          :key="e.id"
+          :entry="e"
+        />
       </div>
 
       <div class="blog-cta">
@@ -81,7 +108,7 @@ onUnmounted(() => { reveal.disconnect() })
           target="_blank"
           rel="noopener"
         >
-          <i class="fa-solid fa-newspaper"></i> Ver más en el blog
+          <i class="fa-solid fa-newspaper" /> Ver más en el blog
         </a>
       </div>
     </div>

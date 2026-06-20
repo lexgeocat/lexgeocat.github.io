@@ -22,15 +22,25 @@ function icon(label: string) {
 </script>
 
 <template>
-  <a class="blog-card" :href="entry.url" target="_blank" rel="noopener">
+  <a
+    class="blog-card"
+    :href="entry.url"
+    target="_blank"
+    rel="noopener"
+  >
     <div class="blog-card-thumb">
-      <img v-if="entry.thumb" :src="entry.thumb" :alt="entry.title" loading="lazy" />
+      <img
+        v-if="entry.thumb"
+        :src="entry.thumb"
+        :alt="entry.title"
+        loading="lazy"
+      >
       <div
         v-else
         class="blog-card-thumb-plh"
         :style="{ background: grad(entry.categoryLabel) }"
       >
-        <i :class="'fa-solid ' + icon(entry.categoryLabel)"></i>
+        <i :class="'fa-solid ' + icon(entry.categoryLabel)" />
       </div>
       <span :class="'blog-card-badge ' + entry.categoryCls">{{ entry.categoryLabel }}</span>
     </div>
@@ -39,7 +49,7 @@ function icon(label: string) {
       <p class="blog-card-excerpt">{{ entry.excerpt }}…</p>
       <div class="blog-card-meta">
         <span class="blog-card-date">
-          <i class="fa-regular fa-calendar"></i> {{ entry.date }}
+          <i class="fa-regular fa-calendar" /> {{ entry.date }}
         </span>
         <span class="blog-card-cta">→ Leer en Blog</span>
       </div>

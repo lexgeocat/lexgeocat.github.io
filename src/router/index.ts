@@ -188,9 +188,16 @@ const router = createRouter({
   ],
 })
 
+interface GoatCounterWindow {
+  goatcounter?: {
+    count?: (opts: { path: string }) => void
+  }
+}
+
 router.afterEach((to) => {
-  if (typeof (window as any).goatcounter?.count === 'function') {
-    (window as any).goatcounter.count({ path: to.fullPath })
+  const gc = (window as unknown as GoatCounterWindow).goatcounter
+  if (typeof gc?.count === 'function') {
+    gc.count({ path: to.fullPath })
   }
 })
 

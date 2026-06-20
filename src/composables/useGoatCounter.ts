@@ -42,8 +42,12 @@ async function apiFetch<T>(path: string): Promise<T | null> {
     const res = await fetch(WORKER_BASE + path, { cache: 'no-store', signal: controller.signal })
     if (!res.ok) throw new Error('HTTP ' + res.status)
     return await res.json()
-  } catch (e: any) {
-    if (e.name !== 'AbortError') console.warn('[GC]', e.message)
+  } catch (e: unknown) {
+    const isAbort = e instanceof Error && e.name === 'AbortError'
+    if (!isAbort) {
+      const message = e instanceof Error ? e.message : String(e)
+      console.warn('[GC]', message)
+    }
     return null
   } finally {
     clearTimeout(timeout)

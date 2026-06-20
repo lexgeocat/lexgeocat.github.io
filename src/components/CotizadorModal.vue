@@ -33,7 +33,7 @@ async function saveAndNext() {
   if (!svc) return
   cot.goStep(3)
   const { min, max, multiplier, extra } = cot.estimate
-  const detalles: Record<string, any> = {}
+  const detalles: Record<string, string | string[] | number> = {}
   cot.chipSelections.forEach(s => {
     if (!detalles[s.key]) detalles[s.key] = []
     ;(detalles[s.key] as string[]).push(s.label)
@@ -69,51 +69,107 @@ async function saveAndNext() {
       <div class="cot-modal">
         <div class="cot-header">
           <div class="cot-header-left">
-            <h3><i class="fa-solid fa-calculator" style="color:var(--copper);margin-right:8px;font-size:1rem"></i> Simulador de Cotización</h3>
+            <h3>
+              <i
+                class="fa-solid fa-calculator"
+                style="color:var(--copper);margin-right:8px;font-size:1rem"
+              /> Simulador de Cotización
+            </h3>
             <p>Estimación referencial · No vinculante · Gratis</p>
           </div>
-          <button class="cot-close" @click="cot.closeModal" aria-label="Cerrar"><i class="fa-solid fa-xmark"></i></button>
+          <button
+            class="cot-close"
+            aria-label="Cerrar"
+            @click="cot.closeModal"
+          >
+            <i class="fa-solid fa-xmark" />
+          </button>
         </div>
 
         <div class="cot-body">
           <div class="cot-steps">
-            <div v-for="n in [1,2,3]" :key="n" :class="['cot-step', { active: cot.step === n, done: cot.step > n }]" :data-step="n">
+            <div
+              v-for="n in [1,2,3]"
+              :key="n"
+              :class="['cot-step', { active: cot.step === n, done: cot.step > n }]"
+              :data-step="n"
+            >
               <span class="cot-step-n">{{ n }}</span><br>{{ ['Servicio','Detalles','Resultado'][n-1] }}
             </div>
           </div>
 
           <!-- PASO 1 -->
-          <div v-if="cot.step === 1" class="cot-panel active">
+          <div
+            v-if="cot.step === 1"
+            class="cot-panel active"
+          >
             <label class="cot-label">Área de servicio</label>
-            <select class="cot-select" v-model="cot.selectedArea">
-              <option value="">— Selecciona un área —</option>
-              <option value="derecho">Asesoría Legal / Derecho</option>
-              <option value="catastro">Catastro y Registro Predial</option>
-              <option value="ordenamiento">Ordenamiento Territorial</option>
-              <option value="geografia">Estudios Geográficos</option>
-              <option value="topografia">Topografía y Geodesia</option>
-              <option value="geomatica">Geomática y SIG</option>
-              <option value="software">Desarrollo de Software</option>
+            <select
+              v-model="cot.selectedArea"
+              class="cot-select"
+            >
+              <option value="">
+                — Selecciona un área —
+              </option>
+              <option value="derecho">
+                Asesoría Legal / Derecho
+              </option>
+              <option value="catastro">
+                Catastro y Registro Predial
+              </option>
+              <option value="ordenamiento">
+                Ordenamiento Territorial
+              </option>
+              <option value="geografia">
+                Estudios Geográficos
+              </option>
+              <option value="topografia">
+                Topografía y Geodesia
+              </option>
+              <option value="geomatica">
+                Geomática y SIG
+              </option>
+              <option value="software">
+                Desarrollo de Software
+              </option>
             </select>
 
             <template v-if="cot.selectedArea && cot.areaServices[cot.selectedArea]?.length">
               <label class="cot-label">Servicio específico</label>
-              <select class="cot-select" v-model="cot.selectedServiceId">
-                <option value="">— Selecciona un servicio —</option>
-                <option v-for="s in cot.areaServices[cot.selectedArea]" :key="s.v" :value="s.v">{{ s.l }}</option>
+              <select
+                v-model="cot.selectedServiceId"
+                class="cot-select"
+              >
+                <option value="">
+                  — Selecciona un servicio —
+                </option>
+                <option
+                  v-for="s in cot.areaServices[cot.selectedArea]"
+                  :key="s.v"
+                  :value="s.v"
+                >
+                  {{ s.l }}
+                </option>
               </select>
             </template>
 
             <div class="cot-nav">
-              <span></span>
-              <button class="btn btn-gold" :disabled="!cot.selectedServiceId" @click="cot.goStep(2)">
-                Siguiente <i class="fa-solid fa-arrow-right"></i>
+              <span />
+              <button
+                class="btn btn-gold"
+                :disabled="!cot.selectedServiceId"
+                @click="cot.goStep(2)"
+              >
+                Siguiente <i class="fa-solid fa-arrow-right" />
               </button>
             </div>
           </div>
 
           <!-- PASO 2 -->
-          <div v-if="cot.step === 2" class="cot-panel active">
+          <div
+            v-if="cot.step === 2"
+            class="cot-panel active"
+          >
             <p style="font-size:.82rem;color:var(--text2);margin-bottom:18px">
               Servicio: <strong style="color:var(--text)">{{ cot.selectedService?.label }}</strong>
             </p>
@@ -122,60 +178,101 @@ async function saveAndNext() {
               v-if="cot.selectedService?.img_url"
               class="cot-svc-img"
               :style="{ backgroundImage: `url(${toDirectImageUrl(cot.selectedService.img_url)})` }"
-            ></div>
+            />
 
-            <template v-if="cot.currentFactor" v-for="param in cot.currentFactor.parametros" :key="param.key">
-              <label class="cot-label">
-                {{ param.label }}
-                <span v-if="param.requerido" style="color:var(--copper)"> *</span>
-              </label>
+            <template v-if="cot.currentFactor">
+              <template
+                v-for="param in cot.currentFactor.parametros"
+                :key="param.key"
+              >
+                <label class="cot-label">
+                  {{ param.label }}
+                  <span
+                    v-if="param.requerido"
+                    style="color:var(--copper)"
+                  > *</span>
+                </label>
 
-              <div v-if="param.tipo === 'chips' || param.tipo === 'chips_multi'" class="cot-chips">
-                <span
-                  v-for="opt in param.opciones"
-                  :key="opt.label"
-                  :class="['cot-chip', { selected: cot.isChipSelected(param.key, opt.label), 'sapphire-chip': param.tipo === 'chips_multi' }]"
-                  @click="cot.toggleChip(param.key, opt.label, opt.multiplicador ?? 1, opt.precio_extra ?? 0, param.tipo === 'chips_multi')"
+                <div
+                  v-if="param.tipo === 'chips' || param.tipo === 'chips_multi'"
+                  class="cot-chips"
                 >
-                  {{ opt.label }}
-                  <span v-if="opt.multiplicador && opt.multiplicador !== 1" class="cot-chip-mult">
-                    {{ opt.multiplicador < 1 ? '↓' : '↑' }} ×{{ opt.multiplicador.toFixed(2) }}
+                  <span
+                    v-for="opt in param.opciones"
+                    :key="opt.label"
+                    :class="['cot-chip', { selected: cot.isChipSelected(param.key, opt.label), 'sapphire-chip': param.tipo === 'chips_multi' }]"
+                    @click="cot.toggleChip(param.key, opt.label, opt.multiplicador ?? 1, opt.precio_extra ?? 0, param.tipo === 'chips_multi')"
+                  >
+                    {{ opt.label }}
+                    <span
+                      v-if="opt.multiplicador && opt.multiplicador !== 1"
+                      class="cot-chip-mult"
+                    >
+                      {{ opt.multiplicador < 1 ? '↓' : '↑' }} ×{{ opt.multiplicador.toFixed(2) }}
+                    </span>
+                    <span
+                      v-if="opt.precio_extra"
+                      class="cot-chip-mult"
+                    >+Bs {{ opt.precio_extra }}</span>
                   </span>
-                  <span v-if="opt.precio_extra" class="cot-chip-mult">+Bs {{ opt.precio_extra }}</span>
-                </span>
-              </div>
+                </div>
 
-              <input
-                v-if="param.tipo === 'number'"
-                type="number"
-                class="cot-input"
-                :min="param.min ?? 0"
-                :max="param.max"
-                :placeholder="param.placeholder ?? ''"
-                :value="cot.numberInputs[param.key] ?? 0"
-                @input="cot.setNumber(param.key, +($event.target as HTMLInputElement).value)"
-              />
+                <input
+                  v-if="param.tipo === 'number'"
+                  type="number"
+                  class="cot-input"
+                  :min="param.min ?? 0"
+                  :max="param.max"
+                  :placeholder="param.placeholder ?? ''"
+                  :value="cot.numberInputs[param.key] ?? 0"
+                  @input="cot.setNumber(param.key, +($event.target as HTMLInputElement).value)"
+                >
+              </template>
             </template>
 
-            <label class="cot-label" style="margin-top:6px">Detalles adicionales (opcional)</label>
-            <textarea class="cot-input cot-textarea" v-model="cot.nota" placeholder="Describe brevemente tu caso..."></textarea>
+            <label
+              class="cot-label"
+              style="margin-top:6px"
+            >Detalles adicionales (opcional)</label>
+            <textarea
+              v-model="cot.nota"
+              class="cot-input cot-textarea"
+              placeholder="Describe brevemente tu caso..."
+            />
 
-            <div v-if="!cot.step2Valid" class="cot-validation-msg">
+            <div
+              v-if="!cot.step2Valid"
+              class="cot-validation-msg"
+            >
               Selecciona una opción en cada campo requerido (*)
             </div>
 
             <div class="cot-nav">
-              <button class="btn btn-ghost" @click="cot.goStep(1)"><i class="fa-solid fa-arrow-left"></i> Atrás</button>
-              <button class="btn btn-gold" :disabled="!cot.step2Valid" @click="saveAndNext">
-                Ver Estimación <i class="fa-solid fa-calculator"></i>
+              <button
+                class="btn btn-ghost"
+                @click="cot.goStep(1)"
+              >
+                <i class="fa-solid fa-arrow-left" /> Atrás
+              </button>
+              <button
+                class="btn btn-gold"
+                :disabled="!cot.step2Valid"
+                @click="saveAndNext"
+              >
+                Ver Estimación <i class="fa-solid fa-calculator" />
               </button>
             </div>
           </div>
 
           <!-- PASO 3 -->
-          <div v-if="cot.step === 3" class="cot-panel active">
+          <div
+            v-if="cot.step === 3"
+            class="cot-panel active"
+          >
             <div class="cot-result">
-              <div class="cot-result-title"><i class="fa-solid fa-file-invoice"></i> Estimación para: {{ cot.selectedService?.label }}</div>
+              <div class="cot-result-title">
+                <i class="fa-solid fa-file-invoice" /> Estimación para: {{ cot.selectedService?.label }}
+              </div>
               <div class="cot-result-row">
                 <span class="cot-result-row-label">Área</span>
                 <span class="cot-result-row-val">{{ cot.selectedService?.area }}</span>
@@ -188,13 +285,22 @@ async function saveAndNext() {
                 <span class="cot-result-row-label">Plazo estimado</span>
                 <span class="cot-result-row-val">{{ cot.selectedService?.timeMin }} – {{ cot.selectedService?.timeMax }}</span>
               </div>
-              <div v-if="cot.chipSelections.length" class="cot-result-row">
+              <div
+                v-if="cot.chipSelections.length"
+                class="cot-result-row"
+              >
                 <span class="cot-result-row-label">Parámetros</span>
-                <span class="cot-result-row-val" style="font-size:.75rem">{{ cot.chipSelections.map(s => s.label).join(' · ') }}</span>
+                <span
+                  class="cot-result-row-val"
+                  style="font-size:.75rem"
+                >{{ cot.chipSelections.map(s => s.label).join(' · ') }}</span>
               </div>
               <div class="cot-result-row">
                 <span class="cot-result-row-label">Factor aplicado</span>
-                <span class="cot-result-row-val" style="font-family:var(--font-mono)">
+                <span
+                  class="cot-result-row-val"
+                  style="font-family:var(--font-mono)"
+                >
                   ×{{ cot.estimate.multiplier.toFixed(2) }}{{ cot.estimate.extra > 0 ? ` + Bs ${cot.estimate.extra.toLocaleString()}` : '' }}
                 </span>
               </div>
@@ -202,8 +308,12 @@ async function saveAndNext() {
 
             <div class="cot-total">
               <div>
-                <div class="cot-total-label">Inversión estimada</div>
-                <div class="cot-total-note">Bs bolivianos · Sujeto a consulta formal</div>
+                <div class="cot-total-label">
+                  Inversión estimada
+                </div>
+                <div class="cot-total-note">
+                  Bs bolivianos · Sujeto a consulta formal
+                </div>
               </div>
               <div style="text-align:right">
                 <div class="cot-total-amount">
@@ -213,13 +323,21 @@ async function saveAndNext() {
             </div>
 
             <div class="cot-disclaimer">
-              <i class="fa-solid fa-circle-info"></i>
+              <i class="fa-solid fa-circle-info" />
               <span>Estimación referencial generada automáticamente. Los valores reales pueden variar según la complejidad y condiciones del caso.</span>
             </div>
 
             <div class="cot-footer">
-              <button class="btn btn-ghost" @click="cot.goStep(2)"><i class="fa-solid fa-arrow-left"></i> Ajustar</button>
-              <a class="btn btn-whatsapp" :href="cot.waLink"><i class="fa-brands fa-whatsapp"></i> Solicitar cotización formal</a>
+              <button
+                class="btn btn-ghost"
+                @click="cot.goStep(2)"
+              >
+                <i class="fa-solid fa-arrow-left" /> Ajustar
+              </button>
+              <a
+                class="btn btn-whatsapp"
+                :href="cot.waLink"
+              ><i class="fa-brands fa-whatsapp" /> Solicitar cotización formal</a>
             </div>
           </div>
         </div>

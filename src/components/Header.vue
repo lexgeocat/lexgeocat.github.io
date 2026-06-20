@@ -45,6 +45,11 @@ interface NavItem {
   external?: boolean
   children?: NavItem[]
 }
+interface RouteMetaNav {
+  navLabel?: string
+  navIcon?: string
+  navGroup?: string
+}
 const NAV_ORDER = ['home','servicios','temas','normativa','recursos','blog','acerca-de','contacto']
 
 function buildNav(): NavItem[] {
@@ -53,7 +58,7 @@ function buildNav(): NavItem[] {
  const grouped: Record<string, NavItem[]> = {}
 
   for (const r of routes) {
-   const m = r.meta as any
+   const m = r.meta as RouteMetaNav
     if (!m?.navLabel) continue
    const item: NavItem = { id: r.name as string, label: m.navLabel, icon: m.navIcon || 'fa-circle', path: r.path }
     if (m.navGroup) {
@@ -146,7 +151,10 @@ onUnmounted(() => {
 
 <template>
   <!-- Header -->
-  <div id="hdr" :class="{ scrolled }">
+  <div
+    id="hdr"
+    :class="{ scrolled }"
+  >
     <div class="hi">
       <div class="logo-wrap">
         <router-link
@@ -160,10 +168,10 @@ onUnmounted(() => {
         >
           <div class="logo-icon">
             <img
+              id="hdr-logo"
               :src="isDark ? logonoche : logodia"
               alt="LexGeoCat Logo"
-              id="hdr-logo"
-            />
+            >
           </div>
           <div class="logo-text">
             <h1>Lex<span class="geo">Geo</span><span class="cat">Cat</span></h1>
@@ -181,37 +189,36 @@ onUnmounted(() => {
             :href="SITE.social.facebook"
             rel="noopener"
             target="_blank"
-            ><i class="fa-brands fa-facebook-f"></i
-          ></a>
+          ><i class="fa-brands fa-facebook-f" /></a>
           <a
             aria-label="YouTube"
             class="hdr-social-btn yt"
             :href="SITE.social.youtube"
             rel="noopener"
             target="_blank"
-            ><i class="fa-brands fa-youtube"></i
-          ></a>
+          ><i class="fa-brands fa-youtube" /></a>
           <a
             aria-label="LinkedIn"
             class="hdr-social-btn lk"
             :href="SITE.social.linkedin"
             rel="noopener"
             target="_blank"
-            ><i class="fa-brands fa-linkedin-in"></i
-          ></a>
+          ><i class="fa-brands fa-linkedin-in" /></a>
           <a
             aria-label="WhatsApp"
             class="hdr-social-btn wa"
             :href="SITE.social.whatsapp"
             rel="noopener"
             target="_blank"
-            ><i class="fa-brands fa-whatsapp"></i
-          ></a>
+          ><i class="fa-brands fa-whatsapp" /></a>
         </div>
         <!-- Desktop GC Stats -->
-        <div class="gc-stats-bar" id="gc-stats-widget">
+        <div
+          id="gc-stats-widget"
+          class="gc-stats-bar"
+        >
           <span class="gc-stat-item gc-views">
-            <i class="fa-solid fa-eye"></i>
+            <i class="fa-solid fa-eye" />
             <span class="gc-val">{{
               totalViews ? totalViews.toLocaleString("es-BO") : "—"
             }}</span>
@@ -234,7 +241,7 @@ onUnmounted(() => {
                 width="16"
                 height="12"
                 loading="lazy"
-              />
+              >
             </span>
             <a
               class="gc-flag-item gc-more-stats"
@@ -244,7 +251,7 @@ onUnmounted(() => {
               @mouseenter="showTip('Ver más estadísticas', $event)"
               @mouseleave="hideTip"
             >
-              <i class="fa-solid fa-chart-simple"></i>
+              <i class="fa-solid fa-chart-simple" />
             </a>
           </span>
         </div>
@@ -254,7 +261,7 @@ onUnmounted(() => {
           type="button"
           @click="searchOpen = true"
         >
-          <i class="fa-solid fa-magnifying-glass"></i>
+          <i class="fa-solid fa-magnifying-glass" />
         </button>
         <button
           aria-label="Cambiar tema"
@@ -262,8 +269,8 @@ onUnmounted(() => {
           type="button"
           @click="toggle"
         >
-          <i class="fa-solid fa-moon"></i>
-          <i class="fa-solid fa-sun"></i>
+          <i class="fa-solid fa-moon" />
+          <i class="fa-solid fa-sun" />
         </button>
         <button
           aria-label="Menú"
@@ -271,7 +278,7 @@ onUnmounted(() => {
           type="button"
           @click="mobileOpen = true"
         >
-          <i class="fa-solid fa-bars"></i>
+          <i class="fa-solid fa-bars" />
         </button>
       </div>
     </div>
@@ -279,21 +286,27 @@ onUnmounted(() => {
 
   <!-- Desktop nav -->
   <nav
+    id="nav-bar"
     aria-label="Navegación principal"
     class="nav-bar"
-    id="nav-bar"
     :class="{ hidden: navHidden }"
     role="navigation"
   >
     <div class="nav-inner">
-      <template v-for="item in nav" :key="item.id">
-        <div v-if="item.children" class="nav-dropdown">
+      <template
+        v-for="item in nav"
+        :key="item.id"
+      >
+        <div
+          v-if="item.children"
+          class="nav-dropdown"
+        >
           <span class="nav-link nav-dropbtn">
-            <i :class="'fa-solid ' + item.icon"></i>{{ item.label }}
+            <i :class="'fa-solid ' + item.icon" />{{ item.label }}
             <i
               class="fa-solid fa-chevron-down"
               style="margin-left: 4px; font-size: 10px"
-            ></i>
+            />
           </span>
           <div class="nav-dropdown-content">
             <a
@@ -305,8 +318,7 @@ onUnmounted(() => {
               <i
                 :class="'fa-solid ' + child.icon"
                 style="margin-right: 8px; font-size: 11px"
-              ></i
-              >{{ child.label }}
+              />{{ child.label }}
             </a>
           </div>
         </div>
@@ -317,21 +329,28 @@ onUnmounted(() => {
           :class="{ active: $route.path === item.path }"
           @click="navigateTo(item.id)"
         >
-          <i :class="'fa-solid ' + item.icon"></i>{{ item.label }}
+          <i :class="'fa-solid ' + item.icon" />{{ item.label }}
         </a>
       </template>
     </div>
   </nav>
 
   <!-- Mobile menu -->
-  <div class="mob-menu" id="mob-menu" :class="{ open: mobileOpen }">
+  <div
+    id="mob-menu"
+    class="mob-menu"
+    :class="{ open: mobileOpen }"
+  >
     <div class="mob-menu-hd">
       <div style="display: flex; align-items: center; gap: 10px">
-        <div class="logo-icon" style="width: 34px; height: 34px">
+        <div
+          class="logo-icon"
+          style="width: 34px; height: 34px"
+        >
           <i
             class="fa-solid fa-map-location-dot"
             style="color: var(--copper2); font-size: 14px"
-          ></i>
+          />
         </div>
         <span
           style="
@@ -340,9 +359,7 @@ onUnmounted(() => {
             font-weight: 800;
             color: var(--text);
           "
-          >{{ SITE.name.slice(0,3) }}<span style="color: var(--sapphire)">Geo</span
-          ><span style="color: var(--copper)">Cat</span></span
-        >
+        >{{ SITE.name.slice(0,3) }}<span style="color: var(--sapphire)">Geo</span><span style="color: var(--copper)">Cat</span></span>
       </div>
       <div style="display: flex; align-items: center; gap: 8px">
         <button
@@ -351,31 +368,42 @@ onUnmounted(() => {
           type="button"
           @click="toggle"
         >
-          <i class="fa-solid fa-moon"></i>
-          <i class="fa-solid fa-sun"></i>
+          <i class="fa-solid fa-moon" />
+          <i class="fa-solid fa-sun" />
         </button>
-        <button class="mob-close" type="button" @click="mobileOpen = false">
-          <i class="fa-solid fa-xmark"></i>
+        <button
+          class="mob-close"
+          type="button"
+          @click="mobileOpen = false"
+        >
+          <i class="fa-solid fa-xmark" />
         </button>
       </div>
     </div>
     <div class="mob-search-wrap">
-      <i class="fa-solid fa-magnifying-glass"></i>
+      <i class="fa-solid fa-magnifying-glass" />
       <input
         id="mob-srch-input"
         type="text"
         autocomplete="off"
         placeholder="Buscar en el blog..."
         @keydown.enter="doMobSearch"
-      />
-      <button class="mob-search-btn" type="button" @click="doMobSearch">
+      >
+      <button
+        class="mob-search-btn"
+        type="button"
+        @click="doMobSearch"
+      >
         Buscar
       </button>
     </div>
     <!-- Mobile GC Stats -->
-    <div class="gc-stats-bar mob-gc-stats" id="gc-stats-widget-mob">
+    <div
+      id="gc-stats-widget-mob"
+      class="gc-stats-bar mob-gc-stats"
+    >
       <span class="gc-stat-item gc-views">
-        <i class="fa-solid fa-eye"></i>
+        <i class="fa-solid fa-eye" />
         <span class="gc-val">{{
           totalViews ? totalViews.toLocaleString("es-BO") : "—"
         }}</span>
@@ -397,7 +425,7 @@ onUnmounted(() => {
             width="16"
             height="12"
             loading="lazy"
-          />
+          >
         </span>
         <a
           class="gc-flag-item gc-more-stats"
@@ -405,34 +433,47 @@ onUnmounted(() => {
           target="_blank"
           rel="noopener"
         >
-          <i class="fa-solid fa-chart-simple"></i>
+          <i class="fa-solid fa-chart-simple" />
         </a>
       </span>
     </div>
     <ul class="mob-nav">
-      <template v-for="item in nav" :key="item.id">
-        <li v-if="item.children" class="mob-dropdown">
+      <template
+        v-for="item in nav"
+        :key="item.id"
+      >
+        <li
+          v-if="item.children"
+          class="mob-dropdown"
+        >
           <button
             class="mob-dropbtn"
             type="button"
-            @click="(e: any) => toggleMobDropdown(e)"
+            @click="toggleMobDropdown"
           >
-            <span
-              ><i :class="'fa-solid ' + item.icon"></i>{{ item.label }}</span
-            >
-            <i class="fa-solid fa-chevron-down arrow"></i>
+            <span><i :class="'fa-solid ' + item.icon" />{{ item.label }}</span>
+            <i class="fa-solid fa-chevron-down arrow" />
           </button>
           <ul class="mob-submenu">
-            <li v-for="child in item.children" :key="child.id">
-              <a href="javascript:void(0)" @click="navigateTo(child.id)">
-                <i :class="'fa-solid ' + child.icon"></i>{{ child.label }}
+            <li
+              v-for="child in item.children"
+              :key="child.id"
+            >
+              <a
+                href="javascript:void(0)"
+                @click="navigateTo(child.id)"
+              >
+                <i :class="'fa-solid ' + child.icon" />{{ child.label }}
               </a>
             </li>
           </ul>
         </li>
         <li v-else>
-          <a href="javascript:void(0)" @click="navigateTo(item.id)">
-            <i :class="'fa-solid ' + item.icon"></i>{{ item.label }}
+          <a
+            href="javascript:void(0)"
+            @click="navigateTo(item.id)"
+          >
+            <i :class="'fa-solid ' + item.icon" />{{ item.label }}
           </a>
         </li>
       </template>
@@ -452,39 +493,37 @@ onUnmounted(() => {
 
   <!-- Search overlay -->
   <div
-    aria-modal="true"
     id="srch-overlay"
+    aria-modal="true"
     :class="{ open: searchOpen }"
     role="dialog"
     @click.self="searchOpen = false"
   >
     <div class="srch-modal">
       <div class="srch-modal-header">
-        <i class="fa-solid fa-magnifying-glass"></i>
+        <i class="fa-solid fa-magnifying-glass" />
         <input
-          autocomplete="off"
           id="srch-modal-input"
+          autocomplete="off"
           placeholder="Buscar en el blog de LexGeoCat..."
           type="text"
           @keydown.enter="doSearch"
           @keydown.escape="searchOpen = false"
-        />
+        >
         <button
           aria-label="Cerrar búsqueda"
           class="srch-modal-close"
           type="button"
           @click="searchOpen = false"
         >
-          <i class="fa-solid fa-xmark"></i>
+          <i class="fa-solid fa-xmark" />
         </button>
       </div>
       <div class="srch-modal-body">
         <div class="srch-status">
-          <i class="fa-solid fa-magnifying-glass"></i>
-          <span
-            >La búsqueda se realiza en el blog alojado en Blogger. Escribe y
-            presiona Enter.</span
-          >
+          <i class="fa-solid fa-magnifying-glass" />
+          <span>La búsqueda se realiza en el blog alojado en Blogger. Escribe y
+            presiona Enter.</span>
         </div>
       </div>
     </div>

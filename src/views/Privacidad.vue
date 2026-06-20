@@ -7,11 +7,16 @@ onUnmounted(() => { reveal.disconnect() })
 </script>
 
 <template>
-  <section class="page-wrap" style="padding-top:calc(var(--h) + 48px + 48px)">
+  <section
+    class="page-wrap"
+    style="padding-top:calc(var(--h) + 48px + 48px)"
+  >
     <div class="c">
       <article class="at-body">
         <span class="sl">Legal</span>
-        <h1 class="at-t">Política de Privacidad</h1>
+        <h1 class="at-t">
+          Política de Privacidad
+        </h1>
         <p><em>Última actualización: junio 2026</em></p>
         <h2>1. Responsable</h2>
         <p>LexGeoCat, operado por Cristian B. Ruiz Q., con sede en Viacha, Departamento de La Paz, Bolivia. Contacto: lexgeocat@gmail.com.</p>
