@@ -1,70 +1,11 @@
 -- ═══════════════════════════════════════════════════════════════
--- LEXGEOCAT — Cotizador Avanzado & Imágenes
+-- LEXGEOCAT — 05b. Seed: factores_precio
+-- Requiere: 02_factores_precio.sql, 05a_seed_servicios.sql
+-- Idempotente: upsert por id.
+-- Incluye los factores ya existentes en el proyecto + 'geografia_estudio',
+-- que faltaba para cubrir los servicios de Geografía del seed 05a.
 -- ═══════════════════════════════════════════════════════════════
 
--- 1. Agregar columna de imagen a servicios (URL pública: Google Drive, etc.)
-alter table servicios add column if not exists img_url text;
-
--- 2. Tabla de factores de precio por tipo de detalle
--- Cada fila define los parámetros que se preguntan en el paso 2 del cotizador
--- y cómo se calcula el precio estimado.
-create table if not exists factores_precio (
-  id text primary key,                    -- mismo valor que servicios.details_type
-  etiqueta text not null,                 -- nombre legible
-  descripcion text,                       -- ayuda / contexto
-  parametros jsonb not null default '[]', -- array de objetos { key, label, tipo, opciones, ... }
-  activo boolean default true,
-  created_at timestamptz default now()
-);
-
--- 3. Tabla de cotizaciones solicitadas (leads)
-create table if not exists cotizaciones (
-  id uuid primary key default gen_random_uuid(),
-  servicio_id text not null references servicios(id) on delete restrict,
-  area text not null,
-  detalles jsonb not null default '{}',     -- parámetros seleccionados { "key": "valor" }
-  nota text default '',
-  rango_min numeric,                        -- estimación calculada
-  rango_max numeric,
-  multiplicador_aplicado numeric default 1,
-  extra_aplicado numeric default 0,
-  formula text,                             -- 'multiplicador', 'unitario', 'modular', 'mixto'
-
-  -- datos de contacto (opcional — el lead principal va por WhatsApp)
-  created_at timestamptz default now(),
-  contactado boolean default false,
-  nota_seguimiento text
-);
-
--- 4. Seguridad RLS
-alter table factores_precio enable row level security;
-alter table cotizaciones enable row level security;
-
--- Público puede leer factores_precio (el cotizador los necesita)
-drop policy if exists "Lectura pública factores_precio" on factores_precio;
-create policy "Lectura pública factores_precio"
-  on factores_precio for select
-  using (true);
-
--- Público puede INSERTAR cotizaciones (cualquier visitante puede cotizar)
-drop policy if exists "Inserción pública cotizaciones" on cotizaciones;
-create policy "Inserción pública cotizaciones"
-  on cotizaciones for insert
-  with check (true);
-
--- Solo autenticados pueden LEER/BORRAR cotizaciones
-drop policy if exists "Lectura solo autenticados cotizaciones" on cotizaciones;
-create policy "Lectura solo autenticados cotizaciones"
-  on cotizaciones for select
-  using (auth.role() = 'authenticated');
-
-drop policy if exists "Escritura solo autenticados cotizaciones" on cotizaciones;
-create policy "Escritura solo autenticados cotizaciones"
-  on cotizaciones for update
-  using (auth.role() = 'authenticated')
-  with check (auth.role() = 'authenticated');
-
--- 5. Seed: factores de precio para cada tipo de detalle existente
 insert into factores_precio (id, etiqueta, descripcion, parametros) values
 
 ('general', 'Alcance general',
@@ -341,8 +282,34 @@ insert into factores_precio (id, etiqueta, descripcion, parametros) values
       {"label": "Desarrollo nuevo", "multiplicador": 1.0},
       {"label": "Mantenimiento / mejora", "multiplicador": 0.7}
     ]}
+ ]'),
+
+-- NUEVO: faltaba un factor propio para los servicios de Geografía,
+-- que antes caían todos en 'general'.
+('geografia_estudio', 'Estudio Geográfico',
+ 'Parámetros para estudios y análisis geográficos (física, humana, regional, riesgos).',
+ '[
+   {"key": "extension", "label": "Extensión del área de estudio", "tipo": "chips", "requerido": true,
+    "opciones": [
+      {"label": "Local (1 zona/comunidad)", "multiplicador": 0.8},
+      {"label": "Municipal", "multiplicador": 1.0},
+      {"label": "Departamental / Regional", "multiplicador": 1.6}
+    ]},
+   {"key": "profundidad", "label": "Profundidad del análisis", "tipo": "chips", "requerido": true,
+    "opciones": [
+      {"label": "Diagnóstico general", "multiplicador": 0.85},
+      {"label": "Estudio detallado", "multiplicador": 1.0},
+      {"label": "Estudio con modelamiento espacial", "multiplicador": 1.4}
+    ]},
+   {"key": "entregables", "label": "Entregables adicionales", "tipo": "chips_multi",
+    "opciones": [
+      {"label": "Mapas temáticos", "precio_extra": 300},
+      {"label": "Base de datos SIG", "precio_extra": 400},
+      {"label": "Informe técnico extendido", "precio_extra": 250}
+    ]}
  ]')
 
 on conflict (id) do update set
-  etiqueta = excluded.etiqueta,
-  parametros = excluded.parametros;
+  etiqueta    = excluded.etiqueta,
+  descripcion = excluded.descripcion,
+  parametros  = excluded.parametros;
