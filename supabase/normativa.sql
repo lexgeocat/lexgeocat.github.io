@@ -9,7 +9,7 @@ create table if not exists normativa (
   id                uuid primary key default gen_random_uuid(),
   titulo            text not null,
   categoria         text not null default 'leyes'
-                    check (categoria in ('leyes','codigos','decretos_reglamentarios','jurisprudencia','doctrina')),
+                    check (categoria in ('constitucion','leyes','codigos','decretos_reglamentarios','jurisprudencia','doctrina')),
   numero_norma      text,
   fecha_promulgacion date,
   fecha_publicacion  date,
@@ -27,8 +27,11 @@ create table if not exists normativa (
 
 -- índice para búsqueda y orden
 create index if not exists idx_normativa_fecha_pub on normativa (fecha_publicacion desc);
+
 create index if not exists idx_normativa_categoria on normativa (categoria);
+
 create index if not exists idx_normativa_estado on normativa (estado);
+
 create index if not exists idx_normativa_activo on normativa (activo);
 
 -- trigger para updated_at
@@ -41,6 +44,7 @@ end;
 $$ language plpgsql;
 
 drop trigger if exists trg_normativa_updated_at on normativa;
+
 create trigger trg_normativa_updated_at
   before update on normativa
   for each row execute function update_normativa_updated_at();
@@ -51,25 +55,26 @@ create trigger trg_normativa_updated_at
 -- Ejecutar desde SQL Editor de Supabase (igual que arriba)
 
 -- RLS: permitir lectura anónima, escritura solo autenticados
-insert into storage.buckets (id, name, public)
-values ('normativa-pdfs', 'normativa-pdfs', true)
-on conflict (id) do nothing;
+insert into
+    storage.buckets (id, name, public)
+values (
+        'normativa-pdfs',
+        'normativa-pdfs',
+        true
+    ) on conflict (id) do nothing;
 
 -- policy: lectura pública (el sitio necesita ver los PDFs)
-create policy "normativa-pdfs_select_public"
-on storage.objects for select
-using ( bucket_id = 'normativa-pdfs' );
+create policy "normativa-pdfs_select_public" on storage.objects for
+select using (bucket_id = 'normativa-pdfs');
 
 -- policy: solo usuarios autenticados pueden subir/borrar
-create policy "normativa-pdfs_insert_auth"
-on storage.objects for insert
-to authenticated
-with check ( bucket_id = 'normativa-pdfs' );
+create policy "normativa-pdfs_insert_auth" on storage.objects for
+insert
+    to authenticated
+with
+    check (bucket_id = 'normativa-pdfs');
 
-create policy "normativa-pdfs_delete_auth"
-on storage.objects for delete
-to authenticated
-using ( bucket_id = 'normativa-pdfs' );
+create policy "normativa-pdfs_delete_auth" on storage.objects for delete to authenticated using (bucket_id = 'normativa-pdfs');
 
 -- ═══════════════════════════════════════════════════════════════
 -- RLS para la tabla normativa
@@ -77,22 +82,20 @@ using ( bucket_id = 'normativa-pdfs' );
 alter table normativa enable row level security;
 
 -- lectura para todos (sitio público + admin autenticado)
-create policy "normativa_select_all"
-on normativa for select
-using ( true );
+create policy "normativa_select_all" on normativa for
+select using (true);
 
 -- escritura solo autenticados (admin)
-create policy "normativa_insert_auth"
-on normativa for insert
-to authenticated
-with check ( true );
+create policy "normativa_insert_auth" on normativa for
+insert
+    to authenticated
+with
+    check (true);
 
-create policy "normativa_update_auth"
-on normativa for update
-to authenticated
-using ( true );
+create policy "normativa_update_auth" on normativa for
+update to authenticated using (true);
 
-create policy "normativa_delete_auth"
-on normativa for delete
-to authenticated
-using ( true );
+create policy "normativa_delete_auth" on normativa for delete to authenticated using (true);
+
+create policy "normativa_select_all" on normativa for
+select using (true);
