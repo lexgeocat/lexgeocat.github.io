@@ -214,6 +214,7 @@ interface GoatCounterWindow {
   }
 }
 
+// src/router/index.ts — reemplazar el bloque router.beforeEach
 router.beforeEach(async (to) => {
   if (to.path.startsWith('/admin')) {
     if (to.matched.some((r) => r.meta?.public)) return true

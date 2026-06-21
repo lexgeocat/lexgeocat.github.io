@@ -1,11 +1,16 @@
 <script setup lang="ts">
-import { computed } from 'vue'
-import { useRoute } from 'vue-router'
+import { ref, computed } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import { useHead } from '@unhead/vue'
 import DefaultLayout from './shared/layouts/DefaultLayout.vue'
 
 const route = useRoute()
+const router = useRouter()
 const SITE_URL = 'https://lexgeocat.github.io'
+
+const ready = ref(false)
+router.isReady().then(() => { ready.value = true })
+
 const isAdmin = computed(() => route.path.startsWith('/admin'))
 
 const title = computed(
@@ -39,6 +44,6 @@ useHead({
 </script>
 
 <template>
-  <router-view v-if="isAdmin" />
-  <DefaultLayout v-else />
+  <router-view v-if="ready && isAdmin" />
+  <DefaultLayout v-else-if="ready" />
 </template>

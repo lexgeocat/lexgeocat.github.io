@@ -39,15 +39,19 @@ VITE_SUPABASE_ANON_KEY=<anon-key>
 Ver `supabase/migrations/0001_init.sql` para DDL completo.
 
 ### `servicios`
+
 Catálogo de servicios profesionales. Columnas: area, label, categoria, descripcion, tags, precio_min/max, tiempo_min/max, complejidad, details_type, unit_label, whatsapp_texto, orden, activo.
 
 ### `factores_precio`
+
 Parámetros dinámicos del cotizador. Columna `parametros` es JSONB con la configuración de chips/inputs.
 
 ### `cotizaciones`
+
 Cotizaciones enviadas desde el formulario público. Columnas: servicio_id, area, detalles (JSONB), rango_min/max, multiplicador_aplicado, extra_aplicado, nota, contactado.
 
 ### `normativa`
+
 Biblioteca jurídica. Columnas: titulo, categoria, numero_norma, fechas, estado, resumen, palabras_clave, archivo_url/path/nombre.
 
 ## RLS

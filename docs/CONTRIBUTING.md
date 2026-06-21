@@ -16,6 +16,7 @@ npm run prebuild     # genera sitemap.xml
 ```bash
 npm run typecheck
 npm run lint
+npx eslint . --fix  (solo en caso de errores)
 npm run lint:css
 npm run build
 ```
