@@ -11,18 +11,24 @@
       >
         {{ error }}
       </p>
-      <label>Email <input
-        v-model="email"
-        type="email"
-        required
-        autocomplete="email"
-      ></label>
-      <label>Contraseña <input
-        v-model="password"
-        type="password"
-        required
-        autocomplete="current-password"
-      ></label>
+      <label>
+        Email
+        <input
+          v-model="email"
+          type="email"
+          required
+          autocomplete="email"
+        >
+      </label>
+      <label>
+        Contraseña
+        <input
+          v-model="password"
+          type="password"
+          required
+          autocomplete="current-password"
+        >
+      </label>
       <button
         class="admin-btn"
         type="submit"
@@ -52,6 +58,6 @@ async function handleLogin() {
   const msg = await signIn(email.value, password.value)
   busy.value = false
   if (msg) error.value = msg
-  else router.push('/dashboard')
+  else router.push('/admin/dashboard')
 }
 </script>

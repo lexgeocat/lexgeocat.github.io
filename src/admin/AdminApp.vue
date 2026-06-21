@@ -1,5 +1,8 @@
 <template>
-  <div id="admin-app">
+  <div
+    id="admin-app"
+    data-theme="light"
+  >
     <aside
       v-if="user"
       class="admin-sidebar"
