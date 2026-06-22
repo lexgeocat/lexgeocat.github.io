@@ -2,22 +2,6 @@ import { computed, ref } from 'vue'
 import { fetchNormativaActiva } from '../../lib/queries'
 import type { Normativa } from '../../types/supabase'
 
-export const CATEGORIA_LABELS: Record<string, string> = {
-  leyes: 'Leyes',
-  codigos: 'Códigos',
-  decretos_reglamentarios: 'Decretos Reglamentarios',
-  jurisprudencia: 'Jurisprudencia',
-  doctrina: 'Doctrina',
-}
-
-export const CATEGORIA_ICONS: Record<string, string> = {
-  leyes: 'fa-gavel',
-  codigos: 'fa-book',
-  decretos_reglamentarios: 'fa-stamp',
-  jurisprudencia: 'fa-scale-balanced',
-  doctrina: 'fa-feather-pointed',
-}
-
 export const ESTADO_LABELS: Record<string, string> = {
   vigente: 'Vigente',
   derogada: 'Derogada',
@@ -33,27 +17,33 @@ export function formatDate(d: string | null): string {
   })
 }
 
+/** Normaliza acentos y mayúsculas para búsqueda insensible a diacríticos */
+function normalize(s: string): string {
+  return s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+}
+
 export function useNormativa(pageSize = 12) {
   const allNormas = ref<Normativa[]>([])
   const loading = ref(true)
   const error = ref('')
 
   const searchQuery = ref('')
-  const filterCategoria = ref('')
+  const filterGrupoId = ref('')
+  const filterTipoId = ref('')
   const filterEstado = ref('')
   const currentPage = ref(1)
 
   const filtered = computed(() => {
-    const q = searchQuery.value.toLowerCase().trim()
+    const q = normalize(searchQuery.value.trim())
     return allNormas.value.filter((n) => {
-      if (filterCategoria.value && n.categoria !== filterCategoria.value) return false
+      if (filterTipoId.value && n.tipo_id !== filterTipoId.value) return false
       if (filterEstado.value && n.estado !== filterEstado.value) return false
       if (q) {
         const hay =
-          (n.titulo || '').toLowerCase().includes(q) ||
-          (n.numero_norma || '').toLowerCase().includes(q) ||
-          (n.palabras_clave || []).join(' ').toLowerCase().includes(q) ||
-          (n.resumen || '').toLowerCase().includes(q)
+          normalize(n.titulo || '').includes(q) ||
+          normalize(n.numero_norma || '').includes(q) ||
+          normalize((n.palabras_clave || []).join(' ')).includes(q) ||
+          normalize(n.resumen || '').includes(q)
         if (!hay) return false
       }
       return true
@@ -75,6 +65,15 @@ export function useNormativa(pageSize = 12) {
     currentPage.value = 1
   }
 
+  function onGrupoChange() {
+    filterTipoId.value = ''
+    currentPage.value = 1
+  }
+
+  function onTipoChange() {
+    currentPage.value = 1
+  }
+
   async function load() {
     loading.value = true
     error.value = ''
@@ -92,7 +91,8 @@ export function useNormativa(pageSize = 12) {
     loading,
     error,
     searchQuery,
-    filterCategoria,
+    filterGrupoId,
+    filterTipoId,
     filterEstado,
     currentPage,
     filtered,
@@ -100,6 +100,8 @@ export function useNormativa(pageSize = 12) {
     paged,
     goPage,
     onSearch,
+    onGrupoChange,
+    onTipoChange,
     load,
   }
 }

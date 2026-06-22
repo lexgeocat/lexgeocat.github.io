@@ -16,6 +16,11 @@ export {
   type NormativaUpsert,
 } from './normativa'
 export {
+  fetchNormativaGrupos,
+  fetchNormativaTipos,
+  fetchNormativaTiposAdmin,
+} from './normativaTaxonomia'
+export {
   fetchFactoresPrecioActivos,
   fetchFactoresPrecioAdmin,
   upsertFactor,

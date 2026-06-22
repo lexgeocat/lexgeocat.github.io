@@ -45,18 +45,34 @@
       style="display:flex;gap:10px;flex-wrap:wrap;align-items:center"
     >
       <select
-        v-model="filterCategoria"
+        v-model="filterGrupoId"
+        class="admin-filter-select"
+        @change="onGrupoChange"
+      >
+        <option value="">
+          Todos los grupos
+        </option>
+        <option
+          v-for="g in taxonomia.grupos.value"
+          :key="g.id"
+          :value="g.id"
+        >
+          {{ g.numeral }}. {{ g.nombre }}
+        </option>
+      </select>
+      <select
+        v-model="filterTipoId"
         class="admin-filter-select"
       >
         <option value="">
-          Todas las categorías
+          Todos los tipos
         </option>
         <option
-          v-for="(lb, v) in CATEGORIA_LABELS"
-          :key="v"
-          :value="v"
+          v-for="t in filteredTipos"
+          :key="t.id"
+          :value="t.id"
         >
-          {{ lb }}
+          {{ t.numero }}. {{ t.nombre }}
         </option>
       </select>
       <select
@@ -97,7 +113,7 @@
           <thead>
             <tr>
               <th>Título</th>
-              <th>Categoría</th>
+              <th>Tipo</th>
               <th>Estado</th>
               <th>Fecha</th>
               <th>PDF</th>
@@ -111,7 +127,16 @@
               :key="n.id"
             >
               <td><strong>{{ n.titulo }}</strong></td>
-              <td>{{ CATEGORIA_LABELS[n.categoria] || n.categoria }}</td>
+              <td>
+                <span
+                  v-if="taxonomia.grupoDeTipo(n.tipo_id)"
+                  class="admin-hint"
+                  style="margin-right:6px"
+                >
+                  {{ taxonomia.grupoDeTipo(n.tipo_id)?.numeral }}
+                </span>
+                {{ taxonomia.nombreTipo(n.tipo_id) }}
+              </td>
               <td>
                 <span :class="'admin-badge ' + estadoBadgeClass(n.estado)">{{ ESTADO_LABELS[n.estado] || n.estado }}</span>
               </td>
@@ -219,16 +244,27 @@
             </label>
             <div class="admin-form-row">
               <label>
-                Categoría
+                Tipo de norma (clasificación jerárquica)
                 <select
-                  v-model="form.categoria"
+                  v-model="form.tipo_id"
                   required
                 >
-                  <option
-                    v-for="(lb, v) in CATEGORIA_LABELS"
-                    :key="v"
-                    :value="v"
-                  >{{ lb }}</option>
+                  <option value="">
+                    — Selecciona un tipo —
+                  </option>
+                  <optgroup
+                    v-for="grupo in taxonomia.grupos.value"
+                    :key="grupo.id"
+                    :label="grupo.numeral + '. ' + grupo.nombre"
+                  >
+                    <option
+                      v-for="tipo in taxonomia.tiposPorGrupo.value[grupo.id] || []"
+                      :key="tipo.id"
+                      :value="tipo.id"
+                    >
+                      {{ tipo.numero }}. {{ tipo.nombre }}
+                    </option>
+                  </optgroup>
                 </select>
               </label>
               <label>
@@ -279,6 +315,87 @@
                 placeholder="ej: catastro, registro predial"
               >
             </label>
+            <label>
+              Imagen de portada
+              <input
+                id="normativa-imagen-input"
+                type="file"
+                accept="image/png,image/jpeg,image/webp"
+                @change="onImagenSelect"
+              >
+            </label>
+            <p
+              v-if="imagenPreview"
+              class="admin-hint"
+              style="align-items:flex-start"
+            >
+              <img
+                :src="imagenPreview"
+                alt="Previsualización"
+                class="admin-img-preview"
+              >
+              <span style="flex:1;min-width:0;word-break:break-all">
+                <i
+                  aria-hidden="true"
+                  class="fa-solid fa-image"
+                /> {{ imagenNombre }}
+                <span
+                  v-if="imagenSubiendo"
+                  class="admin-hint"
+                  style="display:block;margin-top:4px"
+                >
+                  <i
+                    aria-hidden="true"
+                    class="fa-solid fa-spinner fa-spin"
+                  /> Subiendo al Worker…
+                </span>
+                <span
+                  v-else-if="imagenPendiente"
+                  class="admin-hint"
+                  style="display:block;margin-top:4px;color:var(--copper)"
+                >
+                  <i
+                    aria-hidden="true"
+                    class="fa-solid fa-clock"
+                  /> Imagen en proceso, estará disponible en el próximo despliegue (2-5 min).
+                </span>
+                <button
+                  v-if="!imagenSubiendo"
+                  type="button"
+                  class="admin-link-btn"
+                  @click="removeImagen"
+                >
+                  Quitar
+                </button>
+              </span>
+            </p>
+            <p
+              v-else-if="form.imagen_url"
+              class="admin-hint"
+            >
+              <i
+                aria-hidden="true"
+                class="fa-solid fa-image"
+              /> Imagen guardada:
+              <code>{{ form.imagen_url }}</code>
+              <span
+                v-if="!resolveNormativaImageUrl(form.imagen_url)"
+                class="admin-hint"
+                style="display:block;margin-top:4px;color:var(--copper)"
+              >
+                <i
+                  aria-hidden="true"
+                  class="fa-solid fa-clock"
+                /> Aún no procesada (en raw-uploads). Estará disponible tras el próximo despliegue.
+              </span>
+              <button
+                type="button"
+                class="admin-link-btn"
+                @click="removeImagen"
+              >
+                Quitar
+              </button>
+            </p>
             <label>
               Archivo PDF
               <input
@@ -351,7 +468,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, onBeforeUnmount } from 'vue'
 import {
   fetchNormativaAdmin,
   upsertNormativa,
@@ -360,16 +477,23 @@ import {
   removeNormativaPdf,
 } from '../../lib/queries'
 import {
-  CATEGORIA_LABELS,
   ESTADO_LABELS,
   formatDate,
 } from '../../features/normativa/useNormativa'
-import type { Normativa } from '../../types/supabase'
+import { useNormativaTaxonomia } from '../../features/normativa/useNormativaTaxonomia'
+import type { Normativa, NormativaTipo } from '../../types/supabase'
+import { getSupabase } from '../../lib/supabase/client'
+import { SITE } from '../../config/site'
+import { resolveNormativaImageUrl } from '../../lib/normativaImage'
+
+const MAX_IMAGE_BYTES = 8 * 1024 * 1024
+const ALLOWED_IMAGE_TYPES = ['image/png', 'image/jpeg', 'image/webp'] as const
 
 const normas = ref<Normativa[]>([])
 const loading = ref(true)
 const error = ref('')
-const filterCategoria = ref('')
+const filterGrupoId = ref('')
+const filterTipoId = ref('')
 const filterEstado = ref('')
 
 const modalOpen = ref(false)
@@ -380,9 +504,26 @@ const keywordsInput = ref('')
 const pendingFile = ref<File | null>(null)
 const toast = ref<{ msg: string; type: 'ok' | 'error' } | null>(null)
 
+const pendingImage = ref<File | null>(null)
+const imagenPreview = ref<string | null>(null)
+const imagenNombre = ref('')
+const imagenSubiendo = ref(false)
+const imagenPendiente = ref(false)
+
+const taxonomia = useNormativaTaxonomia()
+
+const filteredTipos = computed<NormativaTipo[]>(() => {
+  if (!filterGrupoId.value) return taxonomia.tipos.value
+  return taxonomia.tipos.value.filter((t) => t.grupo_id === filterGrupoId.value)
+})
+
+function onGrupoChange() {
+  filterTipoId.value = ''
+}
+
 const emptyForm = (): Partial<Normativa> => ({
   titulo: '',
-  categoria: 'leyes',
+  tipo_id: '',
   estado: 'vigente',
   numero_norma: '',
   fecha_promulgacion: null,
@@ -391,6 +532,7 @@ const emptyForm = (): Partial<Normativa> => ({
   archivo_url: null,
   archivo_path: null,
   archivo_nombre: null,
+  imagen_url: null,
   activo: true,
 })
 
@@ -398,7 +540,11 @@ const form = ref<Partial<Normativa>>(emptyForm())
 
 const filtered = computed(() =>
   normas.value.filter((n) => {
-    if (filterCategoria.value && n.categoria !== filterCategoria.value) return false
+    if (filterGrupoId.value) {
+      const grupo = taxonomia.grupoDeTipo(n.tipo_id)
+      if (!grupo || grupo.id !== filterGrupoId.value) return false
+    }
+    if (filterTipoId.value && n.tipo_id !== filterTipoId.value) return false
     if (filterEstado.value && n.estado !== filterEstado.value) return false
     return true
   }),
@@ -427,11 +573,17 @@ async function load() {
   }
 }
 
+async function loadAll() {
+  await Promise.all([load(), taxonomia.load()])
+}
+
 function openCreate() {
   editing.value = null
   form.value = emptyForm()
   keywordsInput.value = ''
   pendingFile.value = null
+  pendingImage.value = null
+  clearImagePreview()
   formError.value = ''
   modalOpen.value = true
 }
@@ -441,17 +593,99 @@ function openEdit(n: Normativa) {
   form.value = { ...n }
   keywordsInput.value = (n.palabras_clave || []).join(', ')
   pendingFile.value = null
+  pendingImage.value = null
+  clearImagePreview()
   formError.value = ''
   modalOpen.value = true
 }
 
 function closeModal() {
   modalOpen.value = false
+  pendingImage.value = null
+  clearImagePreview()
 }
+
+onBeforeUnmount(() => {
+  clearImagePreview()
+})
 
 function onFileSelect(e: Event) {
   const file = (e.target as HTMLInputElement).files?.[0]
   pendingFile.value = file ?? null
+}
+
+function clearImagePreview() {
+  if (imagenPreview.value) URL.revokeObjectURL(imagenPreview.value)
+  imagenPreview.value = null
+  imagenNombre.value = ''
+  imagenPendiente.value = false
+}
+
+function onImagenSelect(e: Event) {
+  const input = e.target as HTMLInputElement
+  const file = input.files?.[0]
+  if (!file) {
+    pendingImage.value = null
+    clearImagePreview()
+    input.value = ''
+    return
+  }
+  if (!ALLOWED_IMAGE_TYPES.includes(file.type as (typeof ALLOWED_IMAGE_TYPES)[number])) {
+    formError.value = 'Formato no permitido. Usa PNG, JPEG o WebP.'
+    input.value = ''
+    return
+  }
+  if (file.size > MAX_IMAGE_BYTES) {
+    formError.value = `La imagen supera el límite de ${MAX_IMAGE_BYTES / 1024 / 1024} MB.`
+    input.value = ''
+    return
+  }
+  formError.value = ''
+  clearImagePreview()
+  pendingImage.value = file
+  imagenPreview.value = URL.createObjectURL(file)
+  imagenNombre.value = file.name
+  imagenPendiente.value = false
+}
+
+function removeImagen() {
+  pendingImage.value = null
+  clearImagePreview()
+  form.value.imagen_url = null
+  const input = document.getElementById('normativa-imagen-input') as HTMLInputElement | null
+  if (input) input.value = ''
+}
+
+async function uploadNormativaImage(file: File): Promise<{ filename: string }> {
+  const { data: sessionData } = await getSupabase().auth.getSession()
+  const token = sessionData.session?.access_token
+  if (!token) throw new Error('Sesión expirada. Vuelve a iniciar sesión.')
+
+  const fd = new FormData()
+  fd.append('file', file)
+  fd.append('destino', 'normativa')
+
+  const res = await fetch(`${SITE.worker}/upload-image`, {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${token}` },
+    body: fd,
+  })
+
+  let payload: { ok?: boolean; expectedPath?: string; rawPath?: string; error?: string } = {}
+  try {
+    payload = (await res.json()) as typeof payload
+  } catch {
+    // respuesta no-JSON
+  }
+
+  if (!res.ok || !payload.ok || !payload.expectedPath) {
+    const msg = payload.error || `Error ${res.status} al subir la imagen.`
+    throw new Error(msg)
+  }
+
+  const filename = payload.expectedPath.split('/').pop()
+  if (!filename) throw new Error('Respuesta inválida del Worker (sin expectedPath).')
+  return { filename }
 }
 
 async function removeCurrentFile() {
@@ -468,8 +702,8 @@ async function removeCurrentFile() {
 }
 
 async function save() {
-  if (!form.value.titulo || !form.value.categoria || !form.value.estado) {
-    formError.value = 'Completa título, categoría y estado.'
+  if (!form.value.titulo || !form.value.tipo_id || !form.value.estado) {
+    formError.value = 'Completa título, tipo de norma y estado.'
     return
   }
   saving.value = true
@@ -487,12 +721,33 @@ async function save() {
       await upsertNormativa({
         id,
         titulo: form.value.titulo!,
-        categoria: form.value.categoria!,
+        tipo_id: form.value.tipo_id!,
         estado: form.value.estado!,
         archivo_url: uploaded.url,
         archivo_path: uploaded.path,
         archivo_nombre: uploaded.nombre,
       } as Normativa)
+    }
+
+    if (pendingImage.value) {
+      imagenSubiendo.value = true
+      try {
+        const { filename } = await uploadNormativaImage(pendingImage.value)
+        await upsertNormativa({
+          id,
+          titulo: form.value.titulo!,
+          tipo_id: form.value.tipo_id!,
+          estado: form.value.estado!,
+          imagen_url: filename,
+        } as Normativa)
+        form.value.imagen_url = filename
+        imagenPendiente.value = true
+        clearImagePreview()
+        pendingImage.value = null
+        showToast('Imagen recibida. Estará visible tras el próximo despliegue (2-5 min).')
+      } finally {
+        imagenSubiendo.value = false
+      }
     }
 
     showToast(editing.value ? 'Norma actualizada' : 'Norma creada')
@@ -516,7 +771,7 @@ async function confirmDelete(n: Normativa) {
   }
 }
 
-load()
+loadAll()
 </script>
 
 <style scoped>
@@ -534,4 +789,13 @@ load()
 .admin-badge--off-red { background: rgb(192 57 43 / 12%); color: #c0392b; display: inline-flex; align-items: center; gap: 4px; font-size: 0.66rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; padding: 3px 9px; border-radius: 5px; }
 .admin-hint { font-size: 0.76rem; color: var(--text3); display: flex; align-items: center; gap: 6px; }
 .admin-hint i { color: var(--copper); }
+.admin-img-preview {
+  width: 56px;
+  height: 56px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  flex-shrink: 0;
+  display: block;
+}
 </style>

@@ -27,7 +27,7 @@ export async function fetchNormativaAdmin(): Promise<Normativa[]> {
 export interface NormativaUpsert {
   id?: string
   titulo: string
-  categoria: string
+  tipo_id: string
   estado: string
   numero_norma?: string | null
   fecha_promulgacion?: string | null
@@ -37,6 +37,7 @@ export interface NormativaUpsert {
   archivo_url?: string | null
   archivo_path?: string | null
   archivo_nombre?: string | null
+  imagen_url?: string | null
   activo?: boolean
 }
 

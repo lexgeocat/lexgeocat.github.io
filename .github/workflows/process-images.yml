@@ -1,0 +1,39 @@
+name: Process uploaded images
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'raw-uploads/**'
+
+permissions:
+  contents: write
+
+jobs:
+  process:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Install Pillow
+        run: pip install --quiet pillow
+
+      - name: Process images
+        run: python scripts/process_images.py
+
+      - name: Commit changes
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: 'chore: process uploaded images [skip ci]'
+          file_pattern: |
+            src/assets/img/normativa/*.webp
+            src/assets/img/servicios/*.webp
+            raw-uploads/**

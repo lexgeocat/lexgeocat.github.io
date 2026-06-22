@@ -64,10 +64,28 @@ export interface Cotizacion {
   nota_seguimiento: string | null
 }
 
+export interface NormativaGrupo {
+  id: string
+  numeral: string
+  nombre: string
+  orden: number
+  created_at: string
+}
+
+export interface NormativaTipo {
+  id: string
+  grupo_id: string
+  numero: number
+  nombre: string
+  orden: number
+  activo: boolean
+  created_at: string
+}
+
 export interface Normativa {
   id: string
   titulo: string
-  categoria: string
+  tipo_id: string
   numero_norma: string | null
   fecha_promulgacion: string | null
   fecha_publicacion: string | null
@@ -78,6 +96,7 @@ export interface Normativa {
   archivo_url: string | null
   archivo_path: string | null
   archivo_nombre: string | null
+  imagen_url: string | null
   created_at: string
   updated_at: string
 }

@@ -2,6 +2,8 @@ import type {
   Cotizacion,
   FactorPrecio,
   Normativa,
+  NormativaGrupo,
+  NormativaTipo,
   Servicio,
 } from './supabase'
 
@@ -22,8 +24,20 @@ export interface Database {
       }
       normativa: {
         Row: Normativa
-        Insert: Partial<Normativa> & Pick<Normativa, 'titulo' | 'categoria' | 'estado'>
+        Insert: Partial<Normativa> & Pick<Normativa, 'titulo' | 'tipo_id' | 'estado'>
         Update: Partial<Normativa>
+        Relationships: []
+      }
+      normativa_grupos: {
+        Row: NormativaGrupo
+        Insert: Partial<NormativaGrupo> & Pick<NormativaGrupo, 'id' | 'numeral' | 'nombre' | 'orden'>
+        Update: Partial<NormativaGrupo>
+        Relationships: []
+      }
+      normativa_tipos: {
+        Row: NormativaTipo
+        Insert: Partial<NormativaTipo> & Pick<NormativaTipo, 'id' | 'grupo_id' | 'numero' | 'nombre' | 'orden'>
+        Update: Partial<NormativaTipo>
         Relationships: []
       }
       cotizaciones: {
