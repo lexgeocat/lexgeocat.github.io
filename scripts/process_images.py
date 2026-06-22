@@ -66,7 +66,6 @@ def process_one(src: Path, dest: Path) -> None:
 
         img.save(dest, format="WEBP", quality=WEBP_QUALITY, method=6)
 
-
 def process_destino(destino: str) -> tuple[int, list[Path]]:
     src_dir = RAW_DIR / destino
     if not src_dir.exists():
