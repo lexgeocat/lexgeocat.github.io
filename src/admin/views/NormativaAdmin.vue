@@ -324,40 +324,33 @@
                 @change="onImagenSelect"
               >
             </label>
-            <p
+
+            <!-- Preview de imagen recién seleccionada (no subida aún) -->
+            <div
               v-if="imagenPreview"
-              class="admin-hint"
-              style="align-items:flex-start"
+              class="admin-img-row"
             >
               <img
                 :src="imagenPreview"
                 alt="Previsualización"
                 class="admin-img-preview"
               >
-              <span style="flex:1;min-width:0;word-break:break-all">
-                <i
-                  aria-hidden="true"
-                  class="fa-solid fa-image"
-                /> {{ imagenNombre }}
+              <div class="admin-img-info">
+                <span class="admin-hint">
+                  <i
+                    aria-hidden="true"
+                    class="fa-solid fa-image"
+                  />
+                  {{ imagenNombre }}
+                </span>
                 <span
                   v-if="imagenSubiendo"
                   class="admin-hint"
-                  style="display:block;margin-top:4px"
                 >
                   <i
                     aria-hidden="true"
                     class="fa-solid fa-spinner fa-spin"
-                  /> Subiendo al Worker…
-                </span>
-                <span
-                  v-else-if="imagenPendiente"
-                  class="admin-hint"
-                  style="display:block;margin-top:4px;color:var(--copper)"
-                >
-                  <i
-                    aria-hidden="true"
-                    class="fa-solid fa-clock"
-                  /> Imagen en proceso, estará disponible en el próximo despliegue (2-5 min).
+                  /> Subiendo…
                 </span>
                 <button
                   v-if="!imagenSubiendo"
@@ -365,37 +358,91 @@
                   class="admin-link-btn"
                   @click="removeImagen"
                 >
-                  Quitar
+                  Quitar selección
                 </button>
-              </span>
-            </p>
-            <p
-              v-else-if="form.imagen_url"
+              </div>
+            </div>
+
+            <!-- Imagen ya guardada en BD (no hay preview nuevo) -->
+            <div
+              v-else-if="form.imagen_url && !imagenQuitada"
+              class="admin-img-row"
+            >
+              <div class="admin-img-preview admin-img-preview--placeholder">
+                <i
+                  aria-hidden="true"
+                  class="fa-solid fa-image"
+                />
+              </div>
+              <div class="admin-img-info">
+                <span class="admin-hint">
+                  <i
+                    aria-hidden="true"
+                    class="fa-solid fa-circle-check"
+                    style="color: var(--color-success)"
+                  />
+                  Imagen guardada:
+                  <code>{{ form.imagen_url }}</code>
+                </span>
+                <span
+                  v-if="!resolveNormativaImageUrl(form.imagen_url)"
+                  class="admin-hint"
+                  style="color: var(--copper)"
+                >
+                  <i
+                    aria-hidden="true"
+                    class="fa-solid fa-clock"
+                  />
+                  Aún procesándose — visible tras el próximo despliegue.
+                </span>
+                <button
+                  type="button"
+                  class="admin-link-btn"
+                  @click="removeImagen"
+                >
+                  Quitar imagen
+                </button>
+              </div>
+            </div>
+
+            <!-- Confirmación visual de que se quitará al guardar -->
+            <div
+              v-else-if="imagenQuitada"
+              class="admin-img-row"
+            >
+              <div class="admin-img-info">
+                <span
+                  class="admin-hint"
+                  style="color: var(--copper)"
+                >
+                  <i
+                    aria-hidden="true"
+                    class="fa-solid fa-triangle-exclamation"
+                  />
+                  La imagen será eliminada al guardar. Puedes seleccionar otra o
+                  <button
+                    type="button"
+                    class="admin-link-btn"
+                    @click="() => { imagenQuitada = false; form.imagen_url = editing?.imagen_url ?? null }"
+                  >
+                    deshacer
+                  </button>.
+                </span>
+              </div>
+            </div>
+
+            <!-- Aviso de pendiente tras subida exitosa (nuevo deploy) -->
+            <div
+              v-if="imagenPendiente"
               class="admin-hint"
+              style="color: var(--copper); margin-top: 4px"
             >
               <i
                 aria-hidden="true"
-                class="fa-solid fa-image"
-              /> Imagen guardada:
-              <code>{{ form.imagen_url }}</code>
-              <span
-                v-if="!resolveNormativaImageUrl(form.imagen_url)"
-                class="admin-hint"
-                style="display:block;margin-top:4px;color:var(--copper)"
-              >
-                <i
-                  aria-hidden="true"
-                  class="fa-solid fa-clock"
-                /> Aún no procesada (en raw-uploads). Estará disponible tras el próximo despliegue.
-              </span>
-              <button
-                type="button"
-                class="admin-link-btn"
-                @click="removeImagen"
-              >
-                Quitar
-              </button>
-            </p>
+                class="fa-solid fa-clock"
+              />
+              Imagen en proceso — estará visible en el sitio público tras el próximo despliegue (2-5 min).
+            </div>
             <label>
               Archivo PDF
               <input
@@ -509,6 +556,9 @@ const imagenPreview = ref<string | null>(null)
 const imagenNombre = ref('')
 const imagenSubiendo = ref(false)
 const imagenPendiente = ref(false)
+// Marca que el usuario pidió quitar la imagen ya guardada en BD.
+// Se aplica al hacer "Guardar" — no antes, para no perder datos si cancela.
+const imagenQuitada = ref(false)
 
 const taxonomia = useNormativaTaxonomia()
 
@@ -583,6 +633,7 @@ function openCreate() {
   keywordsInput.value = ''
   pendingFile.value = null
   pendingImage.value = null
+  imagenQuitada.value = false
   clearImagePreview()
   formError.value = ''
   modalOpen.value = true
@@ -594,6 +645,7 @@ function openEdit(n: Normativa) {
   keywordsInput.value = (n.palabras_clave || []).join(', ')
   pendingFile.value = null
   pendingImage.value = null
+  imagenQuitada.value = false
   clearImagePreview()
   formError.value = ''
   modalOpen.value = true
@@ -602,6 +654,7 @@ function openEdit(n: Normativa) {
 function closeModal() {
   modalOpen.value = false
   pendingImage.value = null
+  imagenQuitada.value = false
   clearImagePreview()
 }
 
@@ -615,8 +668,10 @@ function onFileSelect(e: Event) {
 }
 
 function clearImagePreview() {
-  if (imagenPreview.value) URL.revokeObjectURL(imagenPreview.value)
-  imagenPreview.value = null
+  if (imagenPreview.value) {
+    URL.revokeObjectURL(imagenPreview.value)
+    imagenPreview.value = null
+  }
   imagenNombre.value = ''
   imagenPendiente.value = false
 }
@@ -627,7 +682,6 @@ function onImagenSelect(e: Event) {
   if (!file) {
     pendingImage.value = null
     clearImagePreview()
-    input.value = ''
     return
   }
   if (!ALLOWED_IMAGE_TYPES.includes(file.type as (typeof ALLOWED_IMAGE_TYPES)[number])) {
@@ -641,7 +695,9 @@ function onImagenSelect(e: Event) {
     return
   }
   formError.value = ''
+  // Revocar URL anterior antes de crear la nueva (evita leak de memoria)
   clearImagePreview()
+  imagenQuitada.value = false
   pendingImage.value = file
   imagenPreview.value = URL.createObjectURL(file)
   imagenNombre.value = file.name
@@ -649,11 +705,20 @@ function onImagenSelect(e: Event) {
 }
 
 function removeImagen() {
+  // 1. Limpia la imagen nueva seleccionada (si la hay)
   pendingImage.value = null
   clearImagePreview()
-  form.value.imagen_url = null
+
+  // 2. Limpia el input file del DOM
   const input = document.getElementById('normativa-imagen-input') as HTMLInputElement | null
   if (input) input.value = ''
+
+  // 3. Si había una imagen guardada en BD, marca que debe borrarse al guardar
+  if (form.value.imagen_url) {
+    imagenQuitada.value = true
+    // Mostramos el efecto visual inmediatamente, pero el null se persiste al guardar
+    form.value.imagen_url = null
+  }
 }
 
 async function uploadNormativaImage(file: File): Promise<{ filename: string }> {
@@ -729,6 +794,19 @@ async function save() {
       } as Normativa)
     }
 
+    // ── Imagen: quitar ─────────────────────────────────────────────────────
+    if (imagenQuitada.value && !pendingImage.value) {
+      await upsertNormativa({
+        id,
+        titulo: form.value.titulo!,
+        tipo_id: form.value.tipo_id!,
+        estado: form.value.estado!,
+        imagen_url: null,
+      } as Normativa)
+      imagenQuitada.value = false
+    }
+
+    // ── Imagen: subir nueva ────────────────────────────────────────────────
     if (pendingImage.value) {
       imagenSubiendo.value = true
       try {
@@ -741,6 +819,7 @@ async function save() {
           imagen_url: filename,
         } as Normativa)
         form.value.imagen_url = filename
+        imagenQuitada.value = false
         imagenPendiente.value = true
         clearImagePreview()
         pendingImage.value = null
@@ -797,5 +876,34 @@ loadAll()
   border: 1px solid var(--border);
   flex-shrink: 0;
   display: block;
+}
+.admin-img-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 10px 12px;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+.admin-img-info {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+  min-width: 0;
+}
+.admin-img-preview--placeholder {
+  width: 56px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--copper-lt);
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  color: var(--copper);
+  font-size: 1.2rem;
+  flex-shrink: 0;
 }
 </style>
