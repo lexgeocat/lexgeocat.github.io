@@ -24,3 +24,12 @@ dist-ssr
 *.sw?
 public/assets/vendor
 .env
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+
+# Script: imágenes ya procesadas (auditoría local, no se suben)
+raw-uploads/_processed/
