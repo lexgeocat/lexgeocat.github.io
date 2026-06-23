@@ -98,39 +98,38 @@
 /* ── Card grid ── */
 .norm-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-  gap: 14px;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
 }
 
 .norm-card {
   display: flex;
-  align-items: flex-start;
-  gap: 14px;
+  flex-direction: column;
   background: var(--card);
   border: 1px solid var(--border);
   border-radius: var(--r);
-  padding: 18px;
+  overflow: hidden;
   transition: all 0.2s;
 
   &:hover {
     border-color: var(--copper);
     box-shadow: var(--sh2);
     transform: translateY(-2px);
+
+    .norm-card-img {
+      transform: scale(1.04);
+    }
   }
 }
 
-.norm-card-icon {
-  width: 40px;
-  height: 40px;
-  border-radius: 10px;
-  background: var(--copper-lt);
-  border: 1px solid var(--copper-2);
+.norm-card-cover {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  background: linear-gradient(135deg, var(--copper-lt) 0%, var(--copper-2) 100%);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--copper);
-  font-size: 1rem;
-  flex-shrink: 0;
   overflow: hidden;
 }
 
@@ -139,37 +138,110 @@
   height: 100%;
   object-fit: cover;
   display: block;
+  transition: transform 0.35s ease;
+}
+
+.norm-card-cover-fallback {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 20px;
+  text-align: center;
+  color: var(--copper);
+
+  i {
+    font-size: 2.6rem;
+    opacity: 0.7;
+  }
+}
+
+.norm-card-cover-fallback-title {
+  font-family: var(--font-heading);
+  font-size: 0.78rem;
+  font-weight: 700;
+  line-height: 1.35;
+  color: var(--text);
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.norm-card-cover-numeral {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  width: 34px;
+  height: 34px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.92);
+  color: var(--copper);
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  font-weight: 700;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+}
+
+.norm-card-cover-estado {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  font-size: 0.6rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 4px 10px;
+  border-radius: 5px;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(4px);
+  white-space: nowrap;
 }
 
 .norm-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 16px 18px 18px;
   flex: 1;
-  min-width: 0;
 }
 
 .norm-card-title {
   font-family: var(--font-heading);
-  font-size: 0.9rem;
+  font-size: 0.98rem;
   font-weight: 700;
   color: var(--text);
-  margin-bottom: 6px;
-  line-height: 1.4;
+  line-height: 1.35;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .norm-card-meta {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   flex-wrap: wrap;
-  margin-bottom: 8px;
-  font-size: 0.7rem;
+  font-size: 0.74rem;
+}
+
+.norm-card-meta-sep {
+  color: var(--text3);
 }
 
 .norm-badge-cat {
-  font-size: 0.6rem;
+  display: inline-block;
+  align-self: flex-start;
+  font-size: 0.62rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.04em;
-  padding: 2px 8px;
+  padding: 3px 9px;
   border-radius: 5px;
   background: var(--copper-lt);
   color: var(--copper);
@@ -211,7 +283,7 @@
 }
 
 .norm-card-desc {
-  font-size: 0.8rem;
+  font-size: 0.82rem;
   color: var(--text2);
   line-height: 1.5;
   display: -webkit-box;
@@ -221,7 +293,8 @@
 }
 
 .norm-card-actions {
-  flex-shrink: 0;
+  margin-top: auto;
+  padding-top: 6px;
   display: flex;
   align-items: center;
 }
@@ -266,15 +339,6 @@
 
   .norm-grid {
     grid-template-columns: 1fr;
-  }
-
-  .norm-card {
-    flex-wrap: wrap;
-  }
-
-  .norm-card-actions {
-    width: 100%;
-    justify-content: flex-end;
   }
 }
 

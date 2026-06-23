@@ -323,7 +323,7 @@ onUnmounted(() => {
           :key="n.id"
           class="norm-card reveal"
         >
-          <div class="norm-card-icon">
+          <div class="norm-card-cover">
             <img
               v-if="resolveNormativaImageUrl(n.imagen_url)"
               :src="resolveNormativaImageUrl(n.imagen_url)!"
@@ -331,29 +331,41 @@ onUnmounted(() => {
               loading="lazy"
               class="norm-card-img"
             >
-            <i
+            <div
               v-else
-              aria-hidden="true"
-              class="fa-solid fa-file-lines"
-            />
+              class="norm-card-cover-fallback"
+            >
+              <i
+                aria-hidden="true"
+                class="fa-solid fa-file-lines"
+              />
+              <span class="norm-card-cover-fallback-title">{{ n.titulo }}</span>
+            </div>
+            <span
+              v-if="taxonomia.grupoDeTipo(n.tipo_id)"
+              class="norm-card-cover-numeral"
+            >{{ taxonomia.grupoDeTipo(n.tipo_id)?.numeral }}</span>
+            <span :class="'norm-card-cover-estado norm-badge-estado--' + n.estado">
+              {{ ESTADO_LABELS[n.estado] || n.estado }}
+            </span>
           </div>
           <div class="norm-card-body">
+            <span class="norm-badge-cat">{{ taxonomia.nombreTipo(n.tipo_id) }}</span>
             <h3 class="norm-card-title">
               {{ n.titulo }}
             </h3>
-            <div class="norm-card-meta">
-              <span
-                v-if="taxonomia.grupoDeTipo(n.tipo_id)"
-                class="norm-badge-numeral"
-              >{{ taxonomia.grupoDeTipo(n.tipo_id)?.numeral }}</span>
-              <span class="norm-badge-cat">{{ taxonomia.nombreTipo(n.tipo_id) }}</span>
-              <span :class="'norm-badge-estado norm-badge-estado--' + n.estado">
-                {{ ESTADO_LABELS[n.estado] || n.estado }}
-              </span>
+            <div
+              v-if="n.numero_norma || n.fecha_publicacion"
+              class="norm-card-meta"
+            >
               <span
                 v-if="n.numero_norma"
                 class="norm-card-num"
               >{{ n.numero_norma }}</span>
+              <span
+                v-if="n.numero_norma && n.fecha_publicacion"
+                class="norm-card-meta-sep"
+              >·</span>
               <span class="norm-card-date">{{ formatDate(n.fecha_publicacion) }}</span>
             </div>
             <p
@@ -362,24 +374,24 @@ onUnmounted(() => {
             >
               {{ n.resumen }}
             </p>
-          </div>
-          <div class="norm-card-actions">
-            <a
-              v-if="n.archivo_url"
-              :href="n.archivo_url"
-              target="_blank"
-              rel="noopener"
-              class="btn btn-sm btn-primary"
-            >
-              <i
-                aria-hidden="true"
-                class="fa-solid fa-file-pdf"
-              /> Ver PDF
-            </a>
-            <span
-              v-else
-              class="norm-no-pdf"
-            >Sin PDF</span>
+            <div class="norm-card-actions">
+              <a
+                v-if="n.archivo_url"
+                :href="n.archivo_url"
+                target="_blank"
+                rel="noopener"
+                class="btn btn-sm btn-primary"
+              >
+                <i
+                  aria-hidden="true"
+                  class="fa-solid fa-file-pdf"
+                /> Ver PDF
+              </a>
+              <span
+                v-else
+                class="norm-no-pdf"
+              >Sin PDF</span>
+            </div>
           </div>
         </div>
       </div>
