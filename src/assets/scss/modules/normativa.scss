@@ -98,8 +98,8 @@
 /* ── Card grid ── */
 .norm-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 22px;
 }
 
 .norm-card {
@@ -115,30 +115,50 @@
     border-color: var(--copper);
     box-shadow: var(--sh2);
     transform: translateY(-2px);
-
-    .norm-card-img {
-      transform: scale(1.04);
-    }
   }
 }
 
 .norm-card-cover {
   position: relative;
   width: 100%;
-  aspect-ratio: 16 / 10;
-  background: linear-gradient(135deg, var(--copper-lt) 0%, var(--copper-2) 100%);
+  aspect-ratio: 3 / 4;
+
+  /* Fondo ligeramente más oscuro que la card → "vitrina" que da profundidad.
+     Usa color-mix con var(--text) para que se adapte a cualquier tema. */
+  background:
+    radial-gradient(ellipse at center, color-mix(in srgb, var(--copper) 10%, transparent) 0%, transparent 70%),
+    color-mix(in srgb, var(--text) 6%, var(--card));
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
+  cursor: pointer;
+  outline: none;
+
+  &:focus-visible {
+    box-shadow: inset 0 0 0 3px var(--copper);
+  }
+
+  &:hover .norm-card-cover-overlay,
+  &:focus-visible .norm-card-cover-overlay {
+    opacity: 1;
+  }
 }
 
 .norm-card-img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
   display: block;
-  transition: transform 0.35s ease;
+  padding: 6%;
+
+  /* Sombra suave que levanta la portada sobre el fondo del cover */
+  filter: drop-shadow(0 6px 14px rgb(0 0 0 / 25%));
+  transition: transform 0.4s ease;
+}
+
+.norm-card-cover:hover .norm-card-img {
+  transform: scale(1.02);
 }
 
 .norm-card-cover-fallback {
@@ -147,12 +167,12 @@
   align-items: center;
   justify-content: center;
   gap: 10px;
-  padding: 20px;
+  padding: 24px;
   text-align: center;
   color: var(--copper);
 
   i {
-    font-size: 2.6rem;
+    font-size: 2.8rem;
     opacity: 0.7;
   }
 }
@@ -169,50 +189,81 @@
   overflow: hidden;
 }
 
-.norm-card-cover-numeral {
+.norm-card-cover-tags {
   position: absolute;
-  top: 12px;
-  left: 12px;
-  width: 34px;
-  height: 34px;
+  top: 10px;
+  left: 10px;
+  right: 10px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  pointer-events: none;
+}
+
+.norm-card-cover-numeral {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border-radius: 50%;
-  background: rgb(255 255 255 / 92%);
+  min-width: 30px;
+  height: 30px;
+  padding: 0 8px;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 94%);
   color: var(--copper);
   font-family: var(--font-mono);
-  font-size: 0.82rem;
+  font-size: 0.78rem;
   font-weight: 700;
-  box-shadow: 0 2px 6px rgb(0 0 0 / 12%);
+  box-shadow: 0 2px 6px rgb(0 0 0 / 14%);
 }
 
-.norm-card-cover-estado {
-  position: absolute;
-  top: 12px;
-  right: 12px;
+.norm-card-cover-tag {
+  display: inline-block;
+  max-width: 100%;
   font-size: 0.6rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.04em;
   padding: 4px 10px;
   border-radius: 5px;
-  background: rgb(255 255 255 / 92%);
-  backdrop-filter: blur(4px);
+  background: rgb(255 255 255 / 94%);
+  color: var(--copper);
+  box-shadow: 0 2px 6px rgb(0 0 0 / 14%);
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.norm-card-cover-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: rgb(0 0 0 / 55%);
+  color: #fff;
+  font-family: var(--font-heading);
+  font-size: 0.92rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  opacity: 0;
+  transition: opacity 0.22s ease;
+
+  i {
+    font-size: 1.6rem;
+  }
 }
 
 .norm-card-body {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  padding: 16px 18px 18px;
-  flex: 1;
+  padding: 14px 16px 16px;
 }
 
 .norm-card-title {
   font-family: var(--font-heading);
-  font-size: 0.98rem;
+  font-size: 0.92rem;
   font-weight: 700;
   color: var(--text);
   line-height: 1.35;
@@ -220,32 +271,6 @@
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
-}
-
-.norm-card-meta {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  flex-wrap: wrap;
-  font-size: 0.74rem;
-}
-
-.norm-card-meta-sep {
-  color: var(--text3);
-}
-
-.norm-badge-cat {
-  display: inline-block;
-  align-self: flex-start;
-  font-size: 0.62rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  padding: 3px 9px;
-  border-radius: 5px;
-  background: var(--copper-lt);
-  color: var(--copper);
-  white-space: nowrap;
 }
 
 .norm-badge-estado {
@@ -273,36 +298,216 @@
   color: var(--color-badge-modificada);
 }
 
-.norm-card-num {
-  font-family: var(--font-mono);
-  color: var(--text2);
-}
-
-.norm-card-date {
+.norm-no-pdf {
+  font-size: 0.78rem;
   color: var(--text3);
+  font-style: italic;
 }
 
-.norm-card-desc {
-  font-size: 0.82rem;
-  color: var(--text2);
-  line-height: 1.5;
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
+/* ── Modal de descarga ─────────────────────────────────────────────────────── */
+.norm-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: rgb(0 0 0 / 65%);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.norm-modal {
+  position: relative;
+  width: 100%;
+  max-width: 880px;
+  max-height: calc(100vh - 48px);
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  box-shadow: 0 24px 60px rgb(0 0 0 / 35%);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.norm-modal-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 2;
+  width: 36px;
+  height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--card) 92%, transparent);
+  color: var(--text);
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.18s;
+
+  &:hover {
+    color: var(--copper);
+    border-color: var(--copper);
+  }
+}
+
+.norm-modal-grid {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: 0;
   overflow: hidden;
 }
 
-.norm-card-actions {
-  margin-top: auto;
-  padding-top: 6px;
+.norm-modal-cover {
+  background:
+    radial-gradient(ellipse at center, color-mix(in srgb, var(--copper) 12%, transparent) 0%, transparent 70%),
+    color-mix(in srgb, var(--text) 8%, var(--card));
   display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  min-height: 360px;
+}
+
+.norm-modal-img {
+  width: 100%;
+  height: auto;
+  max-height: 60vh;
+  object-fit: contain;
+  display: block;
+  filter: drop-shadow(0 10px 28px rgb(0 0 0 / 35%));
+}
+
+.norm-modal-cover-fallback {
+  color: var(--copper);
+
+  i {
+    font-size: 4rem;
+    opacity: 0.7;
+  }
+}
+
+.norm-modal-body {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 26px 28px 28px;
+  overflow-y: auto;
+  max-height: calc(100vh - 48px);
+}
+
+.norm-modal-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
   align-items: center;
 }
 
-.norm-no-pdf {
-  font-size: 0.72rem;
-  color: var(--text3);
-  font-style: italic;
+.norm-modal-tag-numeral {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 32px;
+  height: 32px;
+  padding: 0 10px;
+  border-radius: 999px;
+  background: var(--copper-lt);
+  color: var(--copper);
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.norm-modal-tag {
+  display: inline-block;
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 4px 10px;
+  border-radius: 5px;
+  background: var(--copper-lt);
+  color: var(--copper);
+}
+
+.norm-modal-title {
+  font-family: var(--font-heading);
+  font-size: 1.45rem;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.25;
+}
+
+.norm-modal-meta {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 8px;
+  margin: 0;
+  padding: 14px 16px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--copper-lt) 40%, transparent);
+}
+
+.norm-modal-meta-row {
+  display: grid;
+  grid-template-columns: 180px 1fr;
+  gap: 12px;
+  font-size: 0.86rem;
+
+  dt {
+    color: var(--text3);
+    font-weight: 600;
+  }
+
+  dd {
+    margin: 0;
+    color: var(--text);
+    font-family: var(--font-mono);
+  }
+}
+
+.norm-modal-desc {
+  font-size: 0.92rem;
+  color: var(--text2);
+  line-height: 1.6;
+}
+
+.norm-modal-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: auto;
+  padding-top: 6px;
+}
+
+@media (width <= 768px) {
+  .norm-modal-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .norm-modal-cover {
+    min-height: 280px;
+    padding: 18px;
+  }
+
+  .norm-modal-body {
+    padding: 20px 22px 24px;
+  }
+
+  .norm-modal-meta-row {
+    grid-template-columns: 1fr;
+    gap: 2px;
+
+    dd {
+      font-family: var(--font-body);
+    }
+  }
 }
 
 /* ── Pagination ── */
@@ -370,5 +575,24 @@
     background: var(--copper);
     border-color: var(--copper);
     color: #fff;
+  }
+}
+
+/* ── Modo oscuro — ajustes de contraste ──────────────────────────────────────
+   Los containers (cover, modal-cover) ya se adaptan al tema porque usan
+   color-mix con var(--card) y var(--text). Solo necesitamos asegurar
+   legibilidad de las tags translúcidas y del panel meta. */
+[data-theme='dark'] {
+  .norm-card-cover-numeral,
+  .norm-card-cover-tag {
+    background: color-mix(in srgb, var(--card) 96%, transparent);
+  }
+
+  .norm-card-cover-fallback i {
+    opacity: 0.85;
+  }
+
+  .norm-modal-meta {
+    background: color-mix(in srgb, var(--copper-lt) 70%, transparent);
   }
 }

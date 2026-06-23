@@ -8,6 +8,12 @@ escribe como WebP calidad 85 en src/assets/img/<destino>/<slug>.webp, donde
 Worker (formato: <timestamp>-<slug>.<ext>).
 
 Tras procesar con éxito, borra el archivo original de raw-uploads/.
+
+Opciones:
+  --transparent   Quita el fondo blanco (casi-blanco) de la imagen resultante,
+                  preservando la transparencia al guardarla como WebP. Útil
+                  para portadas de libros que se muestran sobre superficies
+                  de cualquier color (modo claro/oscuro).
 """
 
 from __future__ import annotations
@@ -23,6 +29,14 @@ MAX_SIDE = 800
 WEBP_QUALITY = 85
 # El Worker genera: <timestamp>-<safeName>.<ext>
 TIMESTAMP_PREFIX = re.compile(r"^\d+-(?P<slug>.+)$")
+
+# Umbral para considerar un píxel como "blanco de fondo".
+# Por encima de este valor en los 3 canales → se hace transparente.
+WHITE_THRESHOLD = 245
+# Distancia máxima al blanco puro permitida como "halo" (anti-aliasing).
+# Un píxel que está dentro de este margen pero no supera WHITE_THRESHOLD se
+# atenúa proporcionalmente para evitar bordes duros.
+HALO_RANGE = 8  # 245..252 → se atenúa
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 RAW_DIR = REPO_ROOT / "raw-uploads"
@@ -48,15 +62,47 @@ def slug_from_filename(name: str) -> str | None:
     return m.group("slug")
 
 
-def process_one(src: Path, dest: Path) -> None:
+def remove_white_bg(img: Image.Image) -> Image.Image:
+    """Convierte el fondo blanco/casi-blanco en transparente (canal alfa).
+
+    Implementa un threshold suave:
+      - píxel con min(R,G,B) ≥ WHITE_THRESHOLD       → alfa = 0 (totalmente transparente)
+      - píxel con min(R,G,B) en [WHITE_THRESHOLD-HALO_RANGE, WHITE_THRESHOLD)
+                                                    → alfa decreciente (halo limpio)
+      - resto                                        → alfa = 255
+    """
+    if img.mode != "RGBA":
+        img = img.convert("RGBA")
+    pixels = img.load()
+    w, h = img.size
+    for y in range(h):
+        for x in range(w):
+            r, g, b, a = pixels[x, y]
+            mn = min(r, g, b)
+            if mn >= WHITE_THRESHOLD:
+                pixels[x, y] = (r, g, b, 0)
+            elif mn >= WHITE_THRESHOLD - HALO_RANGE:
+                # Atenuación lineal: a 245 → 255, a 252 → 0
+                alpha = int(255 * (mn - (WHITE_THRESHOLD - HALO_RANGE)) / HALO_RANGE)
+                pixels[x, y] = (r, g, b, alpha)
+    return img
+
+
+def process_one(src: Path, dest: Path, transparent: bool = False) -> None:
     dest.parent.mkdir(parents=True, exist_ok=True)
     with Image.open(src) as img:
         img.load()
-        # Preservar transparencia en WebP
-        if img.mode in ("P", "LA"):
-            img = img.convert("RGBA")
-        elif img.mode not in ("RGB", "RGBA"):
-            img = img.convert("RGB")
+        # Para poder quitar el fondo necesitamos RGBA
+        if transparent:
+            if img.mode != "RGBA":
+                img = img.convert("RGBA")
+            img = remove_white_bg(img)
+        else:
+            # Preservar transparencia si ya existe; si no, RGB
+            if img.mode in ("P", "LA"):
+                img = img.convert("RGBA")
+            elif img.mode not in ("RGB", "RGBA"):
+                img = img.convert("RGB")
 
         w, h = img.size
         scale = min(1.0, MAX_SIDE / float(max(w, h)))
@@ -64,9 +110,13 @@ def process_one(src: Path, dest: Path) -> None:
             new_size = (max(1, int(round(w * scale))), max(1, int(round(h * scale))))
             img = img.resize(new_size, Image.LANCZOS)
 
-        img.save(dest, format="WEBP", quality=WEBP_QUALITY, method=6)
+        # WebP soporta RGBA → con alfa se conserva la transparencia
+        save_kwargs = {"format": "WEBP", "quality": WEBP_QUALITY, "method": 6}
+        if img.mode == "RGBA":
+            save_kwargs["lossless"] = False  # sí permite alfa con calidad
+        img.save(dest, **save_kwargs)
 
-def process_destino(destino: str) -> tuple[int, list[Path]]:
+def process_destino(destino: str, transparent: bool = False) -> tuple[int, list[Path]]:
     src_dir = RAW_DIR / destino
     if not src_dir.exists():
         print(f"  [skip] carpeta raw-uploads/{destino}/ no existe, nada que procesar.")
@@ -95,10 +145,11 @@ def process_destino(destino: str) -> tuple[int, list[Path]]:
             continue
 
         dest = dest_dir / f"{slug}.webp"
-        print(f"  [proc] {entry.name} → {dest.relative_to(REPO_ROOT)}")
+        suffix = " (fondo blanco → transparente)" if transparent else ""
+        print(f"  [proc] {entry.name} → {dest.relative_to(REPO_ROOT)}{suffix}")
 
         try:
-            process_one(entry, dest)
+            process_one(entry, dest, transparent=transparent)
         except Exception as exc:
             print(f"  [error] {entry.name}: {exc}", file=sys.stderr)
             failed.append(entry)
@@ -115,16 +166,22 @@ def process_destino(destino: str) -> tuple[int, list[Path]]:
 
 
 def main() -> int:
+    args = sys.argv[1:]
+    transparent = "--transparent" in args
+
     if not RAW_DIR.exists():
         print("[done] Directorio raw-uploads/ no existe. Nada que procesar.")
         return 0
+
+    if transparent:
+        print("[modo] Quitar fondo blanco (canal alfa) activado.")
 
     total = 0
     all_failed: list[Path] = []
 
     for destino in DESTINOS:
         print(f"[destino] {destino}")
-        n, failed = process_destino(destino)
+        n, failed = process_destino(destino, transparent=transparent)
         total += n
         all_failed.extend(failed)
 
