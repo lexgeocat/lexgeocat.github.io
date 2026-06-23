@@ -1,3 +1,59 @@
+/* ── B. Skeleton loading ─────────────────────────────────────────────────────
+   Placeholders con shimmer animation; mantiene el espacio reservado → sin CLS. */
+.norm-skeleton-card {
+  pointer-events: none;
+  cursor: default;
+}
+
+.norm-skeleton-cover {
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  background:
+    linear-gradient(90deg,
+      color-mix(in srgb, var(--text) 4%, transparent) 0%,
+      color-mix(in srgb, var(--text) 10%, transparent) 50%,
+      color-mix(in srgb, var(--text) 4%, transparent) 100%);
+  background-size: 200% 100%;
+  animation: norm-shimmer 1.4s linear infinite;
+}
+
+.norm-skeleton-body {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px 16px 16px;
+}
+
+.norm-skeleton-line {
+  height: 12px;
+  border-radius: 6px;
+  background:
+    linear-gradient(90deg,
+      color-mix(in srgb, var(--text) 4%, transparent) 0%,
+      color-mix(in srgb, var(--text) 10%, transparent) 50%,
+      color-mix(in srgb, var(--text) 4%, transparent) 100%);
+  background-size: 200% 100%;
+  animation: norm-shimmer 1.4s linear infinite;
+
+  &--tag {
+    height: 16px;
+    width: 38%;
+  }
+
+  &--title {
+    height: 14px;
+
+    &.short {
+      width: 60%;
+    }
+  }
+}
+
+@keyframes norm-shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
 /* ── Toolbar ── */
 .norm-toolbar {
   display: flex;

@@ -472,9 +472,39 @@ async function onSignOut() {
   display: flex;
   align-items: center;
   gap: 8px;
+  /* D. Slide-up + fade-in, fade-out antes del setTimeout. */
+  animation: admin-toast-in 0.32s var(--ease-out) both;
+  will-change: transform, opacity;
 
   i { color: var(--color-success); }
   &.error i { color: #ff6b5b; }
+}
+
+@keyframes admin-toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes admin-toast-out {
+  from {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(16px) scale(0.96);
+  }
+}
+
+.admin-toast.is-leaving {
+  animation: admin-toast-out 0.28s var(--ease-out) both;
+  pointer-events: none;
 }
 
 .admin-loading {
@@ -510,6 +540,9 @@ async function onSignOut() {
   justify-content: center;
   padding: 40px 20px;
   overflow-y: auto;
+  /* C. Animación de entrada consistente con el modal público. */
+  animation: admin-modal-overlay-in 0.22s var(--ease-out) both;
+  will-change: opacity;
 }
 
 .admin-modal {
@@ -519,6 +552,24 @@ async function onSignOut() {
   border-radius: var(--rl);
   box-shadow: var(--sh3);
   overflow: hidden;
+  animation: admin-modal-in 0.26s var(--ease-out) both;
+  will-change: transform, opacity;
+}
+
+@keyframes admin-modal-overlay-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes admin-modal-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
 .admin-modal-head {

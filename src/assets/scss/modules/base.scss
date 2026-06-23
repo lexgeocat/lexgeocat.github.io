@@ -100,6 +100,10 @@ h5 {
     opacity 0.65s var(--ease-out),
     transform 0.65s var(--ease-out);
 
+  /* F. El delay se calcula por índice visual (asignado por useReveal como
+     custom property --reveal-i, no por batch de IntersectionObserver). */
+  transition-delay: calc(var(--reveal-i, 0) * 0.1s);
+
   &.visible {
     opacity: 1;
     transform: translateY(0);

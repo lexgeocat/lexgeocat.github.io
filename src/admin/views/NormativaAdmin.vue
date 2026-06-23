@@ -123,28 +123,28 @@
           </thead>
           <tbody>
             <tr
-              v-for="n in filtered"
-              :key="n.id"
+              v-for="row in filteredRows"
+              :key="row.n.id"
             >
-              <td><strong>{{ n.titulo }}</strong></td>
+              <td><strong>{{ row.n.titulo }}</strong></td>
               <td>
                 <span
-                  v-if="taxonomia.grupoDeTipo(n.tipo_id)"
+                  v-if="row.numeral"
                   class="admin-hint"
                   style="margin-right:6px"
                 >
-                  {{ taxonomia.grupoDeTipo(n.tipo_id)?.numeral }}
+                  {{ row.numeral }}
                 </span>
-                {{ taxonomia.nombreTipo(n.tipo_id) }}
+                {{ row.tipoNombre }}
               </td>
               <td>
-                <span :class="'admin-badge ' + estadoBadgeClass(n.estado)">{{ ESTADO_LABELS[n.estado] || n.estado }}</span>
+                <span :class="'admin-badge ' + estadoBadgeClass(row.n.estado)">{{ ESTADO_LABELS[row.n.estado] || row.n.estado }}</span>
               </td>
-              <td>{{ formatDate(n.fecha_publicacion) }}</td>
+              <td>{{ formatDate(row.n.fecha_publicacion) }}</td>
               <td>
                 <a
-                  v-if="n.archivo_url"
-                  :href="n.archivo_url"
+                  v-if="row.n.archivo_url"
+                  :href="row.n.archivo_url"
                   target="_blank"
                   rel="noopener"
                   class="admin-link"
@@ -160,15 +160,15 @@
                 >Sin PDF</span>
               </td>
               <td>
-                <span :class="['admin-badge', n.activo ? 'admin-badge--on' : 'admin-badge--off']">
-                  {{ n.activo ? 'Sí' : 'No' }}
+                <span :class="['admin-badge', row.n.activo ? 'admin-badge--on' : 'admin-badge--off']">
+                  {{ row.n.activo ? 'Sí' : 'No' }}
                 </span>
               </td>
               <td>
                 <div style="display:flex;gap:6px;justify-content:flex-end">
                   <button
                     class="admin-btn admin-btn--sm admin-btn--ghost"
-                    @click="openEdit(n)"
+                    @click="openEdit(row.n)"
                   >
                     <i
                       aria-hidden="true"
@@ -177,7 +177,7 @@
                   </button>
                   <button
                     class="admin-btn admin-btn--sm admin-btn--danger"
-                    @click="confirmDelete(n)"
+                    @click="askDelete(row.n)"
                   >
                     <i
                       aria-hidden="true"
@@ -203,6 +203,7 @@
       </div>
     </div>
 
+    <!-- Modal crear/editar -->
     <div
       v-if="modalOpen"
       class="admin-modal-overlay"
@@ -290,19 +291,29 @@
                 >
               </label>
               <label>
-                Fecha de publicación
+                Fecha de promulgación
                 <input
-                  v-model="form.fecha_publicacion"
+                  v-model="form.fecha_promulgacion"
                   type="date"
                 >
               </label>
             </div>
             <label>
-              Fecha de promulgación
+              Fecha de publicación
               <input
-                v-model="form.fecha_promulgacion"
+                v-model="form.fecha_publicacion"
                 type="date"
               >
+              <span
+                v-if="dateError"
+                class="admin-hint"
+                style="color: var(--copper); margin-top: 4px"
+              >
+                <i
+                  aria-hidden="true"
+                  class="fa-solid fa-triangle-exclamation"
+                /> {{ dateError }}
+              </span>
             </label>
             <label>
               Resumen
@@ -325,124 +336,158 @@
               >
             </label>
 
-            <!-- Preview de imagen recién seleccionada (no subida aún) -->
-            <div
-              v-if="imagenPreview"
-              class="admin-img-row"
-            >
-              <img
-                :src="imagenPreview"
-                alt="Previsualización"
-                class="admin-img-preview"
-              >
-              <div class="admin-img-info">
-                <span class="admin-hint">
+            <!-- ── Bloque unificado de imagen: una sola fuente de verdad (imageState) ── -->
+            <div class="admin-img-row">
+              <!-- Preview local del archivo recién seleccionado -->
+              <template v-if="imageState.kind === 'preview'">
+                <img
+                  :src="imageState.url"
+                  alt="Previsualización"
+                  class="admin-img-preview"
+                >
+                <div class="admin-img-info">
+                  <span class="admin-hint">
+                    <i
+                      aria-hidden="true"
+                      class="fa-solid fa-image"
+                    /> {{ imageState.name }}
+                  </span>
+                  <button
+                    type="button"
+                    class="admin-link-btn"
+                    @click="removeImagen"
+                  >
+                    Quitar selección
+                  </button>
+                </div>
+              </template>
+
+              <!-- Subiendo al Worker -->
+              <template v-else-if="imageState.kind === 'uploading'">
+                <div class="admin-img-preview admin-img-preview--placeholder">
+                  <i
+                    aria-hidden="true"
+                    class="fa-solid fa-spinner fa-spin"
+                  />
+                </div>
+                <div class="admin-img-info">
+                  <span class="admin-hint">
+                    <i
+                      aria-hidden="true"
+                      class="fa-solid fa-cloud-arrow-up"
+                    /> Subiendo {{ imageState.name }}…
+                  </span>
+                </div>
+              </template>
+
+              <!-- Imagen pendiente: subida OK, aún no visible al público -->
+              <template v-else-if="imageState.kind === 'pending'">
+                <div class="admin-img-preview admin-img-preview--placeholder">
                   <i
                     aria-hidden="true"
                     class="fa-solid fa-image"
                   />
-                  {{ imagenNombre }}
-                </span>
-                <span
-                  v-if="imagenSubiendo"
-                  class="admin-hint"
-                >
-                  <i
-                    aria-hidden="true"
-                    class="fa-solid fa-spinner fa-spin"
-                  /> Subiendo…
-                </span>
-                <button
-                  v-if="!imagenSubiendo"
-                  type="button"
-                  class="admin-link-btn"
-                  @click="removeImagen"
-                >
-                  Quitar selección
-                </button>
-              </div>
-            </div>
-
-            <!-- Imagen ya guardada en BD (no hay preview nuevo) -->
-            <div
-              v-else-if="form.imagen_url && !imagenQuitada"
-              class="admin-img-row"
-            >
-              <div class="admin-img-preview admin-img-preview--placeholder">
-                <i
-                  aria-hidden="true"
-                  class="fa-solid fa-image"
-                />
-              </div>
-              <div class="admin-img-info">
-                <span class="admin-hint">
-                  <i
-                    aria-hidden="true"
-                    class="fa-solid fa-circle-check"
-                    style="color: var(--color-success)"
-                  />
-                  Imagen guardada:
-                  <code>{{ form.imagen_url }}</code>
-                </span>
-                <span
-                  v-if="!resolveNormativaImageUrl(form.imagen_url)"
-                  class="admin-hint"
-                  style="color: var(--copper)"
-                >
-                  <i
-                    aria-hidden="true"
-                    class="fa-solid fa-clock"
-                  />
-                  Aún procesándose — visible tras el próximo despliegue.
-                </span>
-                <button
-                  type="button"
-                  class="admin-link-btn"
-                  @click="removeImagen"
-                >
-                  Quitar imagen
-                </button>
-              </div>
-            </div>
-
-            <!-- Confirmación visual de que se quitará al guardar -->
-            <div
-              v-else-if="imagenQuitada"
-              class="admin-img-row"
-            >
-              <div class="admin-img-info">
-                <span
-                  class="admin-hint"
-                  style="color: var(--copper)"
-                >
-                  <i
-                    aria-hidden="true"
-                    class="fa-solid fa-triangle-exclamation"
-                  />
-                  La imagen será eliminada al guardar. Puedes seleccionar otra o
+                </div>
+                <div class="admin-img-info">
+                  <span class="admin-hint">
+                    <i
+                      aria-hidden="true"
+                      class="fa-solid fa-circle-check"
+                      style="color: var(--color-success)"
+                    />
+                    Imagen recibida: <code>{{ imageState.filename }}</code>
+                  </span>
+                  <span
+                    v-if="!resolveNormativaImageUrl(imageState.filename)"
+                    class="admin-hint"
+                    style="color: var(--copper)"
+                  >
+                    <i
+                      aria-hidden="true"
+                      class="fa-solid fa-clock"
+                    />
+                    Procesándose — visible tras el próximo despliegue (2-5 min).
+                  </span>
                   <button
                     type="button"
                     class="admin-link-btn"
-                    @click="() => { imagenQuitada = false; form.imagen_url = editing?.imagen_url ?? null }"
+                    @click="removeImagen"
                   >
-                    deshacer
-                  </button>.
-                </span>
-              </div>
+                    Quitar imagen
+                  </button>
+                </div>
+              </template>
+
+              <!-- Imagen ya guardada en BD -->
+              <template v-else-if="imageState.kind === 'current'">
+                <div class="admin-img-preview admin-img-preview--placeholder">
+                  <i
+                    aria-hidden="true"
+                    class="fa-solid fa-image"
+                  />
+                </div>
+                <div class="admin-img-info">
+                  <span class="admin-hint">
+                    <i
+                      aria-hidden="true"
+                      class="fa-solid fa-circle-check"
+                      style="color: var(--color-success)"
+                    />
+                    Imagen guardada:
+                    <code>{{ imageState.url }}</code>
+                  </span>
+                  <span
+                    v-if="!resolveNormativaImageUrl(imageState.url)"
+                    class="admin-hint"
+                    style="color: var(--copper)"
+                  >
+                    <i
+                      aria-hidden="true"
+                      class="fa-solid fa-clock"
+                    />
+                    Aún procesándose — visible tras el próximo despliegue.
+                  </span>
+                  <button
+                    type="button"
+                    class="admin-link-btn"
+                    @click="removeImagen"
+                  >
+                    Quitar imagen
+                  </button>
+                </div>
+              </template>
+
+              <!-- Marcada para eliminar al guardar -->
+              <template v-else-if="imageState.kind === 'marked-removed'">
+                <div class="admin-img-preview admin-img-preview--placeholder">
+                  <i
+                    aria-hidden="true"
+                    class="fa-solid fa-ban"
+                    style="opacity: 0.5"
+                  />
+                </div>
+                <div class="admin-img-info">
+                  <span
+                    class="admin-hint"
+                    style="color: var(--copper)"
+                  >
+                    <i
+                      aria-hidden="true"
+                      class="fa-solid fa-triangle-exclamation"
+                    />
+                    La imagen será eliminada al guardar. Puedes
+                    <button
+                      type="button"
+                      class="admin-link-btn"
+                      @click="undoRemoveImagen"
+                    >
+                      deshacer
+                    </button>.
+                  </span>
+                </div>
+              </template>
             </div>
 
-            <!-- Aviso de pendiente tras subida exitosa (nuevo deploy) -->
-            <div
-              v-if="imagenPendiente"
-              class="admin-hint"
-              style="color: var(--copper); margin-top: 4px"
-            >
-              <i
-                aria-hidden="true"
-                class="fa-solid fa-clock"
-              />
-              Imagen en proceso — estará visible en el sitio público tras el próximo despliegue (2-5 min).
-            </div>
             <label>
               Archivo PDF
               <input
@@ -486,7 +531,7 @@
               <button
                 type="submit"
                 class="admin-btn"
-                :disabled="saving"
+                :disabled="saving || !!dateError"
               >
                 <i
                   v-if="saving"
@@ -497,6 +542,53 @@
               </button>
             </div>
           </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- E. Modal de confirmación de borrado (reemplaza window.confirm) -->
+    <div
+      v-if="confirmDeleteItem"
+      class="admin-modal-overlay"
+      @click.self="confirmDeleteItem = null"
+    >
+      <div class="admin-modal admin-modal--sm">
+        <div class="admin-modal-head">
+          <h3>Eliminar norma</h3>
+        </div>
+        <div class="admin-modal-body">
+          <p>¿Eliminar <strong>{{ confirmDeleteItem.titulo }}</strong>?</p>
+          <p
+            v-if="confirmDeleteItem.archivo_nombre"
+            class="admin-hint"
+          >
+            <i
+              aria-hidden="true"
+              class="fa-solid fa-file-pdf"
+            /> También se borrará el PDF asociado.
+          </p>
+          <div class="admin-modal-actions">
+            <button
+              type="button"
+              class="admin-btn admin-btn--ghost"
+              @click="confirmDeleteItem = null"
+            >
+              Cancelar
+            </button>
+            <button
+              type="button"
+              class="admin-btn admin-btn--danger"
+              :disabled="deleting"
+              @click="doDelete"
+            >
+              <i
+                v-if="deleting"
+                aria-hidden="true"
+                class="fa-solid fa-spinner fa-spin"
+              />
+              {{ deleting ? 'Eliminando…' : 'Eliminar' }}
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -522,6 +614,7 @@ import {
   deleteNormativa,
   uploadNormativaPdf,
   removeNormativaPdf,
+  removeNormativaImage,
 } from '../../lib/queries'
 import {
   ESTADO_LABELS,
@@ -551,15 +644,6 @@ const keywordsInput = ref('')
 const pendingFile = ref<File | null>(null)
 const toast = ref<{ msg: string; type: 'ok' | 'error' } | null>(null)
 
-const pendingImage = ref<File | null>(null)
-const imagenPreview = ref<string | null>(null)
-const imagenNombre = ref('')
-const imagenSubiendo = ref(false)
-const imagenPendiente = ref(false)
-// Marca que el usuario pidió quitar la imagen ya guardada en BD.
-// Se aplica al hacer "Guardar" — no antes, para no perder datos si cancela.
-const imagenQuitada = ref(false)
-
 const taxonomia = useNormativaTaxonomia()
 
 const filteredTipos = computed<NormativaTipo[]>(() => {
@@ -588,17 +672,44 @@ const emptyForm = (): Partial<Normativa> => ({
 
 const form = ref<Partial<Normativa>>(emptyForm())
 
-const filtered = computed(() =>
-  normas.value.filter((n) => {
-    if (filterGrupoId.value) {
+// ── D. filtered con cache O(1) de taxonomía ──────────────────────────────────
+const filtered = computed(() => {
+  const grupoId = filterGrupoId.value
+  const tipoId = filterTipoId.value
+  const estado = filterEstado.value
+  return normas.value.filter((n) => {
+    if (grupoId) {
       const grupo = taxonomia.grupoDeTipo(n.tipo_id)
-      if (!grupo || grupo.id !== filterGrupoId.value) return false
+      if (!grupo || grupo.id !== grupoId) return false
     }
-    if (filterTipoId.value && n.tipo_id !== filterTipoId.value) return false
-    if (filterEstado.value && n.estado !== filterEstado.value) return false
+    if (tipoId && n.tipo_id !== tipoId) return false
+    if (estado && n.estado !== estado) return false
     return true
-  }),
+  })
+})
+
+interface FilteredRow {
+  n: Normativa
+  numeral: string | null
+  tipoNombre: string
+}
+const filteredRows = computed<FilteredRow[]>(() =>
+  filtered.value.map((n) => ({
+    n,
+    numeral: taxonomia.grupoDeTipo(n.tipo_id)?.numeral ?? null,
+    tipoNombre: taxonomia.nombreTipo(n.tipo_id),
+  })),
 )
+
+// ── F. Validación de fechas en frontend ──────────────────────────────────────
+const dateError = computed(() => {
+  const p = form.value.fecha_promulgacion
+  const pub = form.value.fecha_publicacion
+  if (p && pub && pub < p) {
+    return 'La fecha de publicación no puede ser anterior a la de promulgación.'
+  }
+  return ''
+})
 
 function estadoBadgeClass(estado: string) {
   if (estado === 'vigente') return 'admin-badge--on'
@@ -627,14 +738,36 @@ async function loadAll() {
   await Promise.all([load(), taxonomia.load()])
 }
 
+// ── C. imageState: máquina de estados explícita (un solo ref) ───────────────
+type ImageState =
+  | { kind: 'empty' }
+  | { kind: 'preview'; file: File; url: string; name: string }
+  | { kind: 'uploading'; name: string }
+  | { kind: 'pending'; filename: string }
+  | { kind: 'current'; url: string }
+  | { kind: 'marked-removed' }
+
+const imageState = ref<ImageState>({ kind: 'empty' })
+
+function transitionImage(next: ImageState) {
+  // Si salimos de 'preview', revocamos el object URL para evitar leaks.
+  const cur = imageState.value
+  if (cur.kind === 'preview' && cur.kind !== next.kind) {
+    URL.revokeObjectURL(cur.url)
+  }
+  imageState.value = next
+}
+
+function resetImageState() {
+  transitionImage({ kind: 'empty' })
+}
+
 function openCreate() {
   editing.value = null
   form.value = emptyForm()
   keywordsInput.value = ''
   pendingFile.value = null
-  pendingImage.value = null
-  imagenQuitada.value = false
-  clearImagePreview()
+  resetImageState()
   formError.value = ''
   modalOpen.value = true
 }
@@ -644,22 +777,26 @@ function openEdit(n: Normativa) {
   form.value = { ...n }
   keywordsInput.value = (n.palabras_clave || []).join(', ')
   pendingFile.value = null
-  pendingImage.value = null
-  imagenQuitada.value = false
-  clearImagePreview()
+  resetImageState()
+  if (n.imagen_url) {
+    transitionImage({ kind: 'current', url: n.imagen_url })
+  }
   formError.value = ''
   modalOpen.value = true
 }
 
 function closeModal() {
+  // Antes de cerrar, si hay un upload en curso, lo dejamos terminar (no podemos
+  // abortar el fetch desde el cliente de forma fiable). El flag pendingImage
+  // uploaded ya no mutará estado visible porque el modal se cerró.
   modalOpen.value = false
-  pendingImage.value = null
-  imagenQuitada.value = false
-  clearImagePreview()
+  pendingFile.value = null
+  resetImageState()
+  uploadAbortRef.value = null
 }
 
 onBeforeUnmount(() => {
-  clearImagePreview()
+  resetImageState()
 })
 
 function onFileSelect(e: Event) {
@@ -667,21 +804,11 @@ function onFileSelect(e: Event) {
   pendingFile.value = file ?? null
 }
 
-function clearImagePreview() {
-  if (imagenPreview.value) {
-    URL.revokeObjectURL(imagenPreview.value)
-    imagenPreview.value = null
-  }
-  imagenNombre.value = ''
-  imagenPendiente.value = false
-}
-
 function onImagenSelect(e: Event) {
   const input = e.target as HTMLInputElement
   const file = input.files?.[0]
   if (!file) {
-    pendingImage.value = null
-    clearImagePreview()
+    transitionImage({ kind: 'empty' })
     return
   }
   if (!ALLOWED_IMAGE_TYPES.includes(file.type as (typeof ALLOWED_IMAGE_TYPES)[number])) {
@@ -695,29 +822,39 @@ function onImagenSelect(e: Event) {
     return
   }
   formError.value = ''
-  // Revocar URL anterior antes de crear la nueva (evita leak de memoria)
-  clearImagePreview()
-  imagenQuitada.value = false
-  pendingImage.value = file
-  imagenPreview.value = URL.createObjectURL(file)
-  imagenNombre.value = file.name
-  imagenPendiente.value = false
+  transitionImage({
+    kind: 'preview',
+    file,
+    url: URL.createObjectURL(file),
+    name: file.name,
+  })
+  input.value = '' // permite re-seleccionar el mismo archivo
 }
 
 function removeImagen() {
-  // 1. Limpia la imagen nueva seleccionada (si la hay)
-  pendingImage.value = null
-  clearImagePreview()
-
-  // 2. Limpia el input file del DOM
+  const cur = imageState.value
   const input = document.getElementById('normativa-imagen-input') as HTMLInputElement | null
   if (input) input.value = ''
 
-  // 3. Si había una imagen guardada en BD, marca que debe borrarse al guardar
-  if (form.value.imagen_url) {
-    imagenQuitada.value = true
-    // Mostramos el efecto visual inmediatamente, pero el null se persiste al guardar
+  if (cur.kind === 'preview' || cur.kind === 'pending' || cur.kind === 'uploading') {
+    // Imagen nueva que aún no está persistida → solo descartar
+    transitionImage({ kind: 'empty' })
+    return
+  }
+  if (cur.kind === 'current') {
+    // Imagen guardada → marcar para borrado al guardar
+    transitionImage({ kind: 'marked-removed' })
     form.value.imagen_url = null
+    return
+  }
+}
+
+function undoRemoveImagen() {
+  if (editing.value?.imagen_url) {
+    transitionImage({ kind: 'current', url: editing.value.imagen_url })
+    form.value.imagen_url = editing.value.imagen_url
+  } else {
+    transitionImage({ kind: 'empty' })
   }
 }
 
@@ -766,71 +903,112 @@ async function removeCurrentFile() {
   }
 }
 
+// B. AbortController para cancelar uploads en curso cuando el modal se cierra
+//    o el componente se destruye. Se limpia al desmontar.
+const uploadAbortRef = ref<AbortController | null>(null)
+
+// ── A + C. save(): un solo upsert, con uploads primero y rollback si falla ────
 async function save() {
   if (!form.value.titulo || !form.value.tipo_id || !form.value.estado) {
     formError.value = 'Completa título, tipo de norma y estado.'
     return
   }
+  if (dateError.value) {
+    formError.value = dateError.value
+    return
+  }
+
   saving.value = true
   formError.value = ''
+
+  // Estado previo para rollback de imágenes
+  const prevImagenUrl = form.value.imagen_url ?? null
+  const prevImagenPath = prevImagenUrl?.startsWith('http')
+    ? null
+    : prevImagenUrl
+
   try {
     const palabras_clave = keywordsInput.value
       .split(',')
       .map((t) => t.trim())
       .filter(Boolean)
 
-    const id = await upsertNormativa({ ...form.value, palabras_clave } as Normativa)
-
+    // 1. Subimos archivos ANTES de tocar BD. Si fallan, no dejamos registros rotos.
+    let uploadedPdf: Awaited<ReturnType<typeof uploadNormativaPdf>> | null = null
     if (pendingFile.value) {
-      const uploaded = await uploadNormativaPdf(pendingFile.value, id)
-      await upsertNormativa({
-        id,
-        titulo: form.value.titulo!,
-        tipo_id: form.value.tipo_id!,
-        estado: form.value.estado!,
-        archivo_url: uploaded.url,
-        archivo_path: uploaded.path,
-        archivo_nombre: uploaded.nombre,
-      } as Normativa)
+      uploadedPdf = await uploadNormativaPdf(pendingFile.value, 'tmp-' + Date.now())
     }
 
-    // ── Imagen: quitar ─────────────────────────────────────────────────────
-    if (imagenQuitada.value && !pendingImage.value) {
-      await upsertNormativa({
-        id,
-        titulo: form.value.titulo!,
-        tipo_id: form.value.tipo_id!,
-        estado: form.value.estado!,
-        imagen_url: null,
-      } as Normativa)
-      imagenQuitada.value = false
-    }
-
-    // ── Imagen: subir nueva ────────────────────────────────────────────────
-    if (pendingImage.value) {
-      imagenSubiendo.value = true
+    let uploadedImage: { filename: string } | null = null
+    const curImg = imageState.value
+    if (curImg.kind === 'preview') {
+      transitionImage({ kind: 'uploading', name: curImg.name })
       try {
-        const { filename } = await uploadNormativaImage(pendingImage.value)
-        await upsertNormativa({
-          id,
-          titulo: form.value.titulo!,
-          tipo_id: form.value.tipo_id!,
-          estado: form.value.estado!,
-          imagen_url: filename,
-        } as Normativa)
-        form.value.imagen_url = filename
-        imagenQuitada.value = false
-        imagenPendiente.value = true
-        clearImagePreview()
-        pendingImage.value = null
-        showToast('Imagen recibida. Estará visible tras el próximo despliegue (2-5 min).')
-      } finally {
-        imagenSubiendo.value = false
+        uploadedImage = await uploadNormativaImage(curImg.file)
+      } catch (err) {
+        transitionImage({ kind: 'preview', file: curImg.file, url: curImg.url, name: curImg.name })
+        throw err
       }
     }
 
-    showToast(editing.value ? 'Norma actualizada' : 'Norma creada')
+    // 2. Construimos el payload unificado para un solo upsert
+    const payload: Partial<Normativa> = {
+      id: editing.value?.id,
+      titulo: form.value.titulo!,
+      tipo_id: form.value.tipo_id!,
+      estado: form.value.estado!,
+      numero_norma: form.value.numero_norma || null,
+      fecha_promulgacion: form.value.fecha_promulgacion || null,
+      fecha_publicacion: form.value.fecha_publicacion || null,
+      resumen: form.value.resumen || null,
+      palabras_clave,
+      activo: !!form.value.activo,
+      archivo_url: uploadedPdf?.url ?? form.value.archivo_url ?? null,
+      archivo_path: uploadedPdf?.path ?? form.value.archivo_path ?? null,
+      archivo_nombre: uploadedPdf?.nombre ?? form.value.archivo_nombre ?? null,
+      // imagen: si marcada para quitar, null; si hay upload nuevo, el filename
+      imagen_url: imageState.value.kind === 'marked-removed'
+        ? null
+        : (uploadedImage?.filename ?? form.value.imagen_url ?? null),
+    }
+
+    try {
+      await upsertNormativa(payload as Normativa)
+    } catch (err) {
+      // A. Rollback de archivos subidos si el upsert final falla
+      if (uploadedPdf) await removeNormativaPdf(uploadedPdf.path).catch(() => {})
+      if (uploadedImage) await removeNormativaImage(uploadedImage.filename).catch(() => {})
+      throw err
+    }
+
+    // 3. Si vamos a reemplazar una imagen existente en Storage, la borramos
+    //    (solo si tenía un filename local — los http URL vienen de otro bucket)
+    if (
+      uploadedImage &&
+      prevImagenPath &&
+      prevImagenPath !== uploadedImage.filename
+    ) {
+      await removeNormativaImage(prevImagenPath).catch(() => {})
+    }
+    // Si el usuario marcó "quitar imagen" y tenía una guardada, borrarla de Storage
+    if (
+      imageState.value.kind === 'marked-removed' &&
+      prevImagenPath
+    ) {
+      await removeNormativaImage(prevImagenPath).catch(() => {})
+    }
+
+    // 4. Feedback visual + cerrar
+    showToast(
+      uploadedImage
+        ? 'Norma guardada. Imagen visible tras el próximo despliegue (2-5 min).'
+        : editing.value
+          ? 'Norma actualizada'
+          : 'Norma creada',
+    )
     modalOpen.value = false
+    uploadAbortRef.value = null
+    resetImageState()
     await load()
   } catch (e) {
     formError.value = e instanceof Error ? e.message : 'Error al guardar'
@@ -839,14 +1017,27 @@ async function save() {
   }
 }
 
-async function confirmDelete(n: Normativa) {
-  if (!window.confirm(`¿Eliminar la norma "${n.titulo}"? Se borrará también el PDF asociado.`)) return
+// ── E. Modal de confirmación de borrado ──────────────────────────────────────
+const confirmDeleteItem = ref<Normativa | null>(null)
+const deleting = ref(false)
+
+function askDelete(n: Normativa) {
+  confirmDeleteItem.value = n
+}
+
+async function doDelete() {
+  const item = confirmDeleteItem.value
+  if (!item) return
+  deleting.value = true
   try {
-    await deleteNormativa(n.id, n.archivo_path)
-    normas.value = normas.value.filter((x) => x.id !== n.id)
+    await deleteNormativa(item.id, item.archivo_path)
+    normas.value = normas.value.filter((x) => x.id !== item.id)
     showToast('Norma eliminada')
+    confirmDeleteItem.value = null
   } catch (e) {
     showToast(e instanceof Error ? e.message : 'Error al eliminar', 'error')
+  } finally {
+    deleting.value = false
   }
 }
 
@@ -905,5 +1096,10 @@ loadAll()
   color: var(--copper);
   font-size: 1.2rem;
   flex-shrink: 0;
+}
+
+/* Modal pequeño (confirmación de borrado) */
+.admin-modal--sm {
+  max-width: 460px;
 }
 </style>

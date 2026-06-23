@@ -2,6 +2,7 @@ import { getSupabase } from '../supabase/client'
 import type { Normativa } from '../../types/supabase'
 
 const BUCKET = 'normativa-pdfs'
+const IMAGE_BUCKET = 'normativa-images'
 
 export async function fetchNormativaActiva(): Promise<Normativa[]> {
   const { data, error } = await getSupabase()
@@ -76,4 +77,14 @@ export async function uploadNormativaPdf(
 export async function removeNormativaPdf(path: string): Promise<void> {
   const { error } = await getSupabase().storage.from(BUCKET).remove([path])
   if (error) throw new Error(`[normativa-pdfs] ${error.message}`)
+}
+
+/**
+ * Borra un archivo de imagen de portada del bucket `normativa-images`.
+ * Se usa para rollback cuando el upsert de BD falla tras una subida exitosa,
+ * o cuando el usuario confirma "Quitar imagen".
+ */
+export async function removeNormativaImage(path: string): Promise<void> {
+  const { error } = await getSupabase().storage.from(IMAGE_BUCKET).remove([path])
+  if (error) throw new Error(`[normativa-images] ${error.message}`)
 }

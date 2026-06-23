@@ -1,13 +1,10 @@
 #!/usr/bin/env python3
 """Convierte y optimiza imágenes subidas a raw-uploads/.
 
-Recorre raw-uploads/normativa/ y raw-uploads/servicios/, redimensiona cada
-imagen a un máximo de 800px en el lado mayor (preservando aspect ratio) y la
-escribe como WebP calidad 85 en src/assets/img/<destino>/<slug>.webp, donde
-<slug> es el nombre de archivo sin el prefijo de timestamp que añadió el
-Worker (formato: <timestamp>-<slug>.<ext>).
-
-Tras procesar con éxito, borra el archivo original de raw-uploads/.
+Recorre raw-uploads/normativa/ y raw-uploads/servicios/, valida tamaño y modo,
+redimensiona cada imagen a un máximo de 800px en el lado mayor (preservando
+aspect ratio) y la escribe como WebP calidad 85 en
+src/assets/img/<destino>/<slug>.webp.
 
 Opciones:
   --transparent   Quita el fondo blanco (casi-blanco) de la imagen resultante,
@@ -18,105 +15,179 @@ Opciones:
 
 from __future__ import annotations
 
+import argparse
 import os
 import re
 import sys
+import unicodedata
 from pathlib import Path
 
 from PIL import Image
+import numpy as np
 
 MAX_SIDE = 800
 WEBP_QUALITY = 85
+
 # El Worker genera: <timestamp>-<safeName>.<ext>
 TIMESTAMP_PREFIX = re.compile(r"^\d+-(?P<slug>.+)$")
 
 # Umbral para considerar un píxel como "blanco de fondo".
-# Por encima de este valor en los 3 canales → se hace transparente.
 WHITE_THRESHOLD = 245
-# Distancia máxima al blanco puro permitida como "halo" (anti-aliasing).
-# Un píxel que está dentro de este margen pero no supera WHITE_THRESHOLD se
-# atenúa proporcionalmente para evitar bordes duros.
-HALO_RANGE = 8  # 245..252 → se atenúa
+# Rango de halo: píxeles con min(R,G,B) en [WHITE_THRESHOLD-HALO_RANGE+1,
+# WHITE_THRESHOLD-1] se atenúan linealmente para evitar bordes duros.
+HALO_RANGE = 8
+
+# Tamaño máximo permitido para imágenes raw (defensa contra OOM en CI).
+MAX_RAW_BYTES = 25 * 1024 * 1024  # 25 MB
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 RAW_DIR = REPO_ROOT / "raw-uploads"
 DEST_ROOT = REPO_ROOT / "src" / "assets" / "img"
+PROCESSED_DIR = RAW_DIR / "_processed"
 DESTINOS = ("normativa", "servicios")
 
-try:
-    sys.stdout.reconfigure(encoding="utf-8")
-    sys.stderr.reconfigure(encoding="utf-8")
-except Exception:
-    pass
+
+def parse_args() -> argparse.Namespace:
+    p = argparse.ArgumentParser(description="Procesa imágenes de raw-uploads/.")
+    p.add_argument(
+        "--transparent",
+        action="store_true",
+        help="Quita el fondo blanco (casi-blanco) preservando la transparencia.",
+    )
+    return p.parse_args()
+
+
+def setup_stdout() -> None:
+    try:
+        sys.stdout.reconfigure(encoding="utf-8")
+        sys.stderr.reconfigure(encoding="utf-8")
+    except Exception:
+        pass
 
 
 def slug_from_filename(name: str) -> str | None:
     """
-    Quita prefijo timestamp y extensión.
-    1782011606159-p.jpeg  →  p
+    Quita prefijo timestamp y extensión, luego sanea el slug resultante.
+    1782011606159-p.jpeg                → p
+    1782011606159-Mi Imagen (1).jpg     → mi-imagen-1
     """
     stem = name.rsplit(".", 1)[0] if "." in name else name
     m = TIMESTAMP_PREFIX.match(stem)
     if not m:
         return None
-    return m.group("slug")
+    return slugify(m.group("slug"))
+
+
+def slugify(text: str) -> str:
+    """Normaliza a ASCII, kebab-case, sin caracteres reservados para URL."""
+    # NFD: separa diacríticos → los elimina con 'Mn'.
+    normalized = unicodedata.normalize("NFD", text)
+    stripped = "".join(c for c in normalized if unicodedata.category(c) != "Mn")
+    ascii_text = stripped.encode("ascii", "ignore").decode("ascii")
+    # Cualquier cosa que no sea [a-z0-9] → guion.
+    kebab = re.sub(r"[^a-z0-9]+", "-", ascii_text.lower()).strip("-")
+    return kebab or "imagen"
 
 
 def remove_white_bg(img: Image.Image) -> Image.Image:
-    """Convierte el fondo blanco/casi-blanco en transparente (canal alfa).
+    """Quita el fondo blanco/casi-blanco con halo alfa vectorizado (NumPy).
 
-    Implementa un threshold suave:
-      - píxel con min(R,G,B) ≥ WHITE_THRESHOLD       → alfa = 0 (totalmente transparente)
-      - píxel con min(R,G,B) en [WHITE_THRESHOLD-HALO_RANGE, WHITE_THRESHOLD)
-                                                    → alfa decreciente (halo limpio)
-      - resto                                        → alfa = 255
+    - min(R,G,B) ≥ WHITE_THRESHOLD            → alfa = 0 (transparente)
+    - min(R,G,B) ∈ [WHITE_THRESHOLD-HALO_RANGE+1, WHITE_THRESHOLD-1]
+                                              → alfa decreciente de 255 → 1
+    - resto                                   → alfa = 255
+
+    NOTA: np.asarray() sobre una Pillow.Image devuelve un buffer de solo
+    lectura; copiamos con np.array(...) para obtener un array escribible.
     """
     if img.mode != "RGBA":
         img = img.convert("RGBA")
-    pixels = img.load()
+
+    arr = np.array(img, dtype=np.uint8)  # copia escribible
+    r, g, b, _a = arr[..., 0], arr[..., 1], arr[..., 2], arr[..., 3]
+    mn = np.minimum(np.minimum(r, g), b)
+
+    alpha = np.full(mn.shape, 255, dtype=np.uint8)
+
+    # Totalmente transparentes: píxeles blancos puros
+    alpha[mn >= WHITE_THRESHOLD] = 0
+
+    # Halo: píxeles "casi blancos" — atenuación lineal.
+    halo_lo = WHITE_THRESHOLD - HALO_RANGE  # inclusivo: alpha = 255
+    halo_hi = WHITE_THRESHOLD - 1           # inclusivo: alpha = 1
+    halo_mask = (mn >= halo_lo) & (mn <= halo_hi)
+    if halo_mask.any():
+        # Mapear mn ∈ [halo_lo, halo_hi] → alpha ∈ [255, 1]
+        norm = (mn[halo_mask].astype(np.int32) - halo_lo) / max(1, halo_hi - halo_lo)
+        alpha[halo_mask] = (255 - 254 * norm).astype(np.uint8)
+
+    arr[..., 3] = alpha
+    return Image.fromarray(arr, mode="RGBA")
+
+
+def process_one(src: Path, dest: Path, transparent: bool) -> tuple[Path, int]:
+    """Abre, transforma y guarda la imagen. Devuelve (ruta_final, bytes_escritos)."""
+    # G. CMYK → RGB antes de cualquier operación (WebP no soporta CMYK).
+    # Importante: copiar el buffer a una imagen nueva (no usar `with Image.open`
+    # + load()) porque el LazyImage resultante es de solo lectura y resize/save
+    # fallan con "assignment destination is read-only".
+    raw = Image.open(src)
+    try:
+        img = raw.copy()
+    finally:
+        raw.close()
+
+    if img.mode == "CMYK":
+        img = img.convert("RGB")
+
+    if transparent:
+        if img.mode != "RGBA":
+            img = img.convert("RGBA")
+        img = remove_white_bg(img)
+    else:
+        if img.mode in ("P", "LA"):
+            img = img.convert("RGBA")
+        elif img.mode not in ("RGB", "RGBA"):
+            img = img.convert("RGB")
+
+    # Redimensionado preservando aspect ratio
     w, h = img.size
-    for y in range(h):
-        for x in range(w):
-            r, g, b, a = pixels[x, y]
-            mn = min(r, g, b)
-            if mn >= WHITE_THRESHOLD:
-                pixels[x, y] = (r, g, b, 0)
-            elif mn >= WHITE_THRESHOLD - HALO_RANGE:
-                # Atenuación lineal: a 245 → 255, a 252 → 0
-                alpha = int(255 * (mn - (WHITE_THRESHOLD - HALO_RANGE)) / HALO_RANGE)
-                pixels[x, y] = (r, g, b, alpha)
-    return img
+    scale = min(1.0, MAX_SIDE / float(max(w, h)))
+    if scale < 1.0:
+        new_size = (max(1, int(round(w * scale))), max(1, int(round(h * scale))))
+        img = img.resize(new_size, Image.LANCZOS)
 
-
-def process_one(src: Path, dest: Path, transparent: bool = False) -> None:
     dest.parent.mkdir(parents=True, exist_ok=True)
-    with Image.open(src) as img:
-        img.load()
-        # Para poder quitar el fondo necesitamos RGBA
-        if transparent:
-            if img.mode != "RGBA":
-                img = img.convert("RGBA")
-            img = remove_white_bg(img)
-        else:
-            # Preservar transparencia si ya existe; si no, RGB
-            if img.mode in ("P", "LA"):
-                img = img.convert("RGBA")
-            elif img.mode not in ("RGB", "RGBA"):
-                img = img.convert("RGB")
 
-        w, h = img.size
-        scale = min(1.0, MAX_SIDE / float(max(w, h)))
-        if scale < 1.0:
-            new_size = (max(1, int(round(w * scale))), max(1, int(round(h * scale))))
-            img = img.resize(new_size, Image.LANCZOS)
+    # C. Quitar metadatos EXIF/GPS/ICC: Pillow no añade EXIF al guardar WebP
+    # a menos que se pase explícitamente, así que basta con no copiarlo.
+    save_kwargs: dict = {"format": "WEBP", "quality": WEBP_QUALITY, "method": 6}
+    img.save(dest, **save_kwargs)
 
-        # WebP soporta RGBA → con alfa se conserva la transparencia
-        save_kwargs = {"format": "WEBP", "quality": WEBP_QUALITY, "method": 6}
-        if img.mode == "RGBA":
-            save_kwargs["lossless"] = False  # sí permite alfa con calidad
-        img.save(dest, **save_kwargs)
+    return dest, dest.stat().st_size
 
-def process_destino(destino: str, transparent: bool = False) -> tuple[int, list[Path]]:
+
+def move_to_processed(src: Path) -> None:
+    """E. Mueve el archivo raw a raw-uploads/_processed/<destino>/<nombre>."""
+    destino = src.parent.name
+    target_dir = PROCESSED_DIR / destino
+    target_dir.mkdir(parents=True, exist_ok=True)
+    target = target_dir / src.name
+    # Si ya existe uno con el mismo nombre, añade sufijo -<n>.
+    if target.exists():
+        stem = target.stem
+        suffix = target.suffix
+        n = 1
+        while True:
+            cand = target_dir / f"{stem}-{n}{suffix}"
+            if not cand.exists():
+                target = cand
+                break
+            n += 1
+    os.replace(src, target)
+
+
+def process_destino(destino: str, transparent: bool) -> tuple[int, list[Path]]:
     src_dir = RAW_DIR / destino
     if not src_dir.exists():
         print(f"  [skip] carpeta raw-uploads/{destino}/ no existe, nada que procesar.")
@@ -140,8 +211,20 @@ def process_destino(destino: str, transparent: bool = False) -> tuple[int, list[
         if not slug:
             print(
                 f"  [skip] {entry.name} — no tiene prefijo de timestamp esperado "
-                f"(<timestamp>-<slug>.<ext>). Se ignora sin borrar."
+                f"(<timestamp>-<slug>.<ext>). Se mueve sin procesar."
             )
+            failed.append(entry)
+            continue
+
+        # D. Validar tamaño ANTES de abrir para evitar OOM en CI.
+        size = entry.stat().st_size
+        if size > MAX_RAW_BYTES:
+            print(
+                f"  [skip] {entry.name} — {size / 1024 / 1024:.1f} MB excede el "
+                f"límite de {MAX_RAW_BYTES / 1024 / 1024:.0f} MB. Se mueve sin procesar.",
+                file=sys.stderr,
+            )
+            failed.append(entry)
             continue
 
         dest = dest_dir / f"{slug}.webp"
@@ -149,16 +232,18 @@ def process_destino(destino: str, transparent: bool = False) -> tuple[int, list[
         print(f"  [proc] {entry.name} → {dest.relative_to(REPO_ROOT)}{suffix}")
 
         try:
-            process_one(entry, dest, transparent=transparent)
+            _, written = process_one(entry, dest, transparent=transparent)
+            print(f"         → {written / 1024:.1f} KB WebP")
         except Exception as exc:
             print(f"  [error] {entry.name}: {exc}", file=sys.stderr)
             failed.append(entry)
             continue
 
+        # E. Mover (no borrar) a _processed/ para permitir auditoría y re-run.
         try:
-            os.remove(entry)
+            move_to_processed(entry)
         except OSError as exc:
-            print(f"  [warn] no se pudo borrar {entry.name}: {exc}", file=sys.stderr)
+            print(f"  [warn] no se pudo archivar {entry.name}: {exc}", file=sys.stderr)
 
         processed += 1
 
@@ -166,8 +251,9 @@ def process_destino(destino: str, transparent: bool = False) -> tuple[int, list[
 
 
 def main() -> int:
-    args = sys.argv[1:]
-    transparent = "--transparent" in args
+    args = parse_args()
+    transparent = args.transparent
+    setup_stdout()
 
     if not RAW_DIR.exists():
         print("[done] Directorio raw-uploads/ no existe. Nada que procesar.")
@@ -188,11 +274,11 @@ def main() -> int:
     print(f"[done] {total} imagen(es) procesada(s).")
     if all_failed:
         print(
-            f"[warn] {len(all_failed)} archivo(s) con error — no se borraron:",
+            f"[warn] {len(all_failed)} archivo(s) no procesados (movidos a _processed/):",
             file=sys.stderr,
         )
         for f in all_failed:
-            print(f"  - {f.name}", file=sys.stderr)
+            print(f"  - {f}", file=sys.stderr)
         return 1
     return 0
 

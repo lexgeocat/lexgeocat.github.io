@@ -4,6 +4,7 @@ import { useReveal } from '../shared/composables/useReveal'
 import {
   ESTADO_LABELS,
   formatDate,
+  normalize,
   useNormativa,
 } from '../features/normativa/useNormativa'
 import { useNormativaTaxonomia } from '../features/normativa/useNormativaTaxonomia'
@@ -14,7 +15,7 @@ import type { Normativa } from '../types/supabase'
 const reveal = useReveal()
 const taxonomia = useNormativaTaxonomia()
 
-// Solo usamos allNormas + carga; toda la lógica de filtro vive aquí
+// useNormativa es solo el loader; toda la lógica de filtro vive aquí (single source of truth)
 const { allNormas, loading, error, load } = useNormativa()
 
 // ── Estado de filtros (única fuente de verdad) ────────────────────────────────
@@ -28,23 +29,13 @@ const currentPage   = ref(1)
 // ── Modal de descarga ─────────────────────────────────────────────────────────
 const downloadItem = ref<Normativa | null>(null)
 
-// ── Helpers ───────────────────────────────────────────────────────────────────
-/** Elimina acentos y pone en minúsculas para comparación */
-function normalize(s: string): string {
-  return s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
-}
-
 // ── Derivados de taxonomía ────────────────────────────────────────────────────
 const tiposParaFiltro = computed(() => {
   if (!filterGrupoId.value) return taxonomia.tipos.value
   return taxonomia.tiposPorGrupo.value[filterGrupoId.value] ?? []
 })
 
-/**
- * Conjunto de tipo_ids que pertenecen al grupo seleccionado.
- * null  → no hay grupo seleccionado (no filtrar por grupo)
- * Set   → filtrar; si está vacío y la taxonomía ya cargó, el grupo no tiene tipos
- */
+/** Set de tipo_ids del grupo seleccionado, o null si no hay grupo. */
 const grupoTipoIds = computed<Set<string> | null>(() => {
   if (!filterGrupoId.value) return null
   const list = taxonomia.tiposPorGrupo.value[filterGrupoId.value]
@@ -55,15 +46,13 @@ const grupoTipoIds = computed<Set<string> | null>(() => {
 const filteredAll = computed(() => {
   const q       = normalize(searchQuery.value.trim())
   const grupoIds = grupoTipoIds.value
+  const tipoId   = filterTipoId.value
+  const estado   = filterEstado.value
 
   return allNormas.value.filter((n) => {
-    // Filtro de grupo: excluye si el tipo de la norma no pertenece al grupo
     if (grupoIds !== null && (!n.tipo_id || !grupoIds.has(n.tipo_id))) return false
-    // Filtro de tipo
-    if (filterTipoId.value && n.tipo_id !== filterTipoId.value) return false
-    // Filtro de estado
-    if (filterEstado.value && n.estado !== filterEstado.value) return false
-    // Búsqueda libre (sin acentos)
+    if (tipoId && n.tipo_id !== tipoId) return false
+    if (estado && n.estado !== estado) return false
     if (q) {
       const fields = [n.titulo, n.numero_norma, n.resumen, ...(n.palabras_clave ?? [])]
       if (!fields.some((f) => f && normalize(f).includes(q))) return false
@@ -82,10 +71,7 @@ const pagedView = computed(() => {
   return filteredAll.value.slice(start, start + PAGE_SIZE)
 })
 
-/**
- * Lista de páginas visible con ellipsis: 1 … 4 5 6 … 20
- * Siempre muestra primera, última, y ±1 alrededor de la actual.
- */
+/** Lista de páginas visible con ellipsis: 1 … 4 5 6 … 20 */
 const visiblePages = computed<(number | '...')[]>(() => {
   const total = totalPagesView.value
   const cur   = currentPage.value
@@ -101,23 +87,67 @@ const visiblePages = computed<(number | '...')[]>(() => {
   return pages
 })
 
-// ── Watchers reactivos (sustituyen @change handlers) ─────────────────────────
-// Resetea página al cambiar cualquier filtro
+// ── A. Memo de la URL de imagen por id (evita 2× llamadas por card) ──────────
+const imageUrlById = computed<Map<string, string | null>>(() => {
+  const m = new Map<string, string | null>()
+  for (const n of pagedView.value) {
+    m.set(n.id, resolveNormativaImageUrl(n.imagen_url))
+  }
+  return m
+})
+
+/** Wrapper estable: una sola llamada por id, cacheada en imageUrlById. */
+function cardImage(id: string): string | null {
+  return imageUrlById.value.get(id) ?? null
+}
+
+// ── B. Lookup O(1) de metadata de taxonomía por card ─────────────────────────
+interface CardMeta {
+  numeral: string | null
+  tipoNombre: string
+}
+const metaById = computed<Map<string, CardMeta>>(() => {
+  const m = new Map<string, CardMeta>()
+  for (const n of pagedView.value) {
+    const grupo = taxonomia.grupoDeTipo(n.tipo_id)
+    m.set(n.id, {
+      numeral: grupo?.numeral ?? null,
+      tipoNombre: taxonomia.nombreTipo(n.tipo_id),
+    })
+  }
+  return m
+})
+
+function cardMeta(id: string): CardMeta {
+  return metaById.value.get(id) ?? { numeral: null, tipoNombre: '' }
+}
+
+// Computed para el item del modal (una sola resolución por apertura)
+const modalMeta = computed(() => {
+  const item = downloadItem.value
+  if (!item) return null
+  const grupo = taxonomia.grupoDeTipo(item.tipo_id)
+  return {
+    numeral: grupo?.numeral ?? null,
+    tipoNombre: taxonomia.nombreTipo(item.tipo_id),
+  }
+})
+
+// ── Watchers reactivos ────────────────────────────────────────────────────────
 watch([searchQuery, filterGrupoId, filterTipoId, filterEstado], () => {
   currentPage.value = 1
 })
-// Al cambiar grupo, limpia el tipo seleccionado
 watch(filterGrupoId, () => {
   filterTipoId.value = ''
 })
-// Re-registra el IntersectionObserver cada vez que cambian las cards visibles
-// (filtrado o cambio de página). Sin esto las cards nuevas quedan con opacity:0.
+
+// C. Reveal incremental: re-observa solo nodos nuevos sin desconectar los ya visibles
 watch(pagedView, async () => {
   await nextTick()
-  reveal.disconnect()
   reveal.observe()
 })
-// Bloquea scroll del body mientras el modal está abierto
+
+// E. Bloquea scroll del body mientras el modal está abierto
 watch(downloadItem, (v) => {
   if (typeof document === 'undefined') return
   document.body.style.overflow = v ? 'hidden' : ''
@@ -135,10 +165,15 @@ function clearFilters() {
   filterEstado.value  = ''
 }
 
+// F. Scroll al inicio real de la grid (no a 400 hardcodeado)
+const gridEl = ref<HTMLElement | null>(null)
 function goPage(n: number) {
   if (n < 1 || n > totalPagesView.value) return
   currentPage.value = n
-  window.scrollTo({ top: 400, behavior: 'smooth' })
+  const top = gridEl.value?.getBoundingClientRect().top ?? 0
+  // getBoundingClientRect da coords relativas al viewport; queremos scroll absoluto
+  const absoluteTop = (top < 0 ? 0 : top) + window.scrollY - 24
+  window.scrollTo({ top: Math.max(0, absoluteTop), behavior: 'smooth' })
 }
 
 // ── Modal de descarga ─────────────────────────────────────────────────────────
@@ -156,21 +191,17 @@ function onKeydown(e: KeyboardEvent) {
 
 // ── Ciclo de vida ─────────────────────────────────────────────────────────────
 onMounted(async () => {
-  requestAnimationFrame(() => {
-    requestAnimationFrame(() => {
-      reveal.observe()
-    })
-  })
   window.addEventListener('keydown', onKeydown)
   await Promise.all([load(), taxonomia.load()])
   await nextTick()
-  reveal.disconnect()
   reveal.observe()
 })
 
 onUnmounted(() => {
   reveal.disconnect()
   window.removeEventListener('keydown', onKeydown)
+  // E. Garantiza liberar scroll si desmontamos con el modal abierto
+  if (typeof document !== 'undefined') document.body.style.overflow = ''
 })
 </script>
 
@@ -288,16 +319,25 @@ onUnmounted(() => {
         </div>
       </div>
 
-      <!-- Estado: cargando -->
+      <!-- B. Skeleton loading — preserva espacio y evita CLS -->
       <div
         v-if="loading"
-        class="norm-empty"
+        class="norm-grid norm-skeleton"
+        aria-busy="true"
+        aria-label="Cargando normativa"
       >
-        <i
-          aria-hidden="true"
-          class="fa-solid fa-spinner fa-spin"
-        />
-        <p>Cargando normativa…</p>
+        <div
+          v-for="i in 6"
+          :key="i"
+          class="norm-card norm-skeleton-card"
+        >
+          <div class="norm-skeleton-cover" />
+          <div class="norm-skeleton-body">
+            <div class="norm-skeleton-line norm-skeleton-line--tag" />
+            <div class="norm-skeleton-line norm-skeleton-line--title" />
+            <div class="norm-skeleton-line norm-skeleton-line--title short" />
+          </div>
+        </div>
       </div>
 
       <!-- Estado: error -->
@@ -340,6 +380,7 @@ onUnmounted(() => {
       <!-- Grid de resultados -->
       <div
         v-else
+        ref="gridEl"
         class="norm-grid"
       >
         <div
@@ -357,8 +398,8 @@ onUnmounted(() => {
             @keydown.space.prevent="openDownloadModal(n)"
           >
             <img
-              v-if="resolveNormativaImageUrl(n.imagen_url)"
-              :src="resolveNormativaImageUrl(n.imagen_url)!"
+              v-if="cardImage(n.id)"
+              :src="cardImage(n.id)!"
               :alt="`Portada de ${n.titulo}`"
               loading="lazy"
               class="norm-card-img"
@@ -375,10 +416,10 @@ onUnmounted(() => {
             </div>
             <div class="norm-card-cover-tags">
               <span
-                v-if="taxonomia.grupoDeTipo(n.tipo_id)"
+                v-if="cardMeta(n.id).numeral"
                 class="norm-card-cover-numeral"
-              >{{ taxonomia.grupoDeTipo(n.tipo_id)?.numeral }}</span>
-              <span class="norm-card-cover-tag">{{ taxonomia.nombreTipo(n.tipo_id) }}</span>
+              >{{ cardMeta(n.id).numeral }}</span>
+              <span class="norm-card-cover-tag">{{ cardMeta(n.id).tipoNombre }}</span>
             </div>
             <div class="norm-card-cover-overlay">
               <i
@@ -489,10 +530,10 @@ onUnmounted(() => {
             <div class="norm-modal-body">
               <div class="norm-modal-tags">
                 <span
-                  v-if="taxonomia.grupoDeTipo(downloadItem.tipo_id)"
+                  v-if="modalMeta?.numeral"
                   class="norm-modal-tag-numeral"
-                >{{ taxonomia.grupoDeTipo(downloadItem.tipo_id)?.numeral }}</span>
-                <span class="norm-modal-tag">{{ taxonomia.nombreTipo(downloadItem.tipo_id) }}</span>
+                >{{ modalMeta.numeral }}</span>
+                <span class="norm-modal-tag">{{ modalMeta?.tipoNombre }}</span>
                 <span :class="'norm-badge-estado norm-badge-estado--' + downloadItem.estado">
                   {{ ESTADO_LABELS[downloadItem.estado] || downloadItem.estado }}
                 </span>
@@ -639,23 +680,35 @@ onUnmounted(() => {
   pointer-events: none;
 }
 
-/* ── Transición del modal ──────────────────────────────────────────────────── */
+/* ── Transición del modal ────────────────────────────────────────────────────
+   A. Sin CSS nesting: selectores aplanados para compatibilidad con
+      navegadores antiguos (legacy instituciones públicas).
+   E. will-change en el elemento transformado para promover capa GPU. */
 .modal-fade-enter-active,
 .modal-fade-leave-active {
   transition: opacity 0.22s ease;
+}
 
-  .norm-modal {
-    transition: transform 0.22s ease, opacity 0.22s ease;
-  }
+.modal-fade-enter-active .norm-modal,
+.modal-fade-leave-active .norm-modal {
+  transition: transform 0.22s ease, opacity 0.22s ease;
+  will-change: transform, opacity;
 }
 
 .modal-fade-enter-from,
 .modal-fade-leave-to {
   opacity: 0;
+}
 
-  .norm-modal {
-    transform: translateY(12px) scale(0.98);
-    opacity: 0;
-  }
+.modal-fade-enter-from .norm-modal,
+.modal-fade-leave-to .norm-modal {
+  transform: translateY(12px) scale(0.98);
+  opacity: 0;
+}
+
+.modal-fade-enter-to .norm-modal,
+.modal-fade-leave-from .norm-modal {
+  transform: translateY(0) scale(1);
+  opacity: 1;
 }
 </style>

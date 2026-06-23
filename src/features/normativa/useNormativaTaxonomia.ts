@@ -18,14 +18,29 @@ export function useNormativaTaxonomia() {
     return map
   })
 
-  function nombreTipo(tipoId: string): string {
-    return tipos.value.find((t) => t.id === tipoId)?.nombre ?? tipoId
+  // ── Índices O(1) en lugar de Array.find en cada card ──────────────────────
+  const tiposById = computed<Map<string, NormativaTipo>>(() => {
+    const m = new Map<string, NormativaTipo>()
+    for (const t of tipos.value) m.set(t.id, t)
+    return m
+  })
+
+  const gruposById = computed<Map<string, NormativaGrupo>>(() => {
+    const m = new Map<string, NormativaGrupo>()
+    for (const g of grupos.value) m.set(g.id, g)
+    return m
+  })
+
+  /** Resuelve el grupo al que pertenece un tipo en O(1). */
+  function grupoDeTipo(tipoId: string): NormativaGrupo | null {
+    const tipo = tiposById.value.get(tipoId)
+    if (!tipo) return null
+    return gruposById.value.get(tipo.grupo_id) ?? null
   }
 
-  function grupoDeTipo(tipoId: string): NormativaGrupo | null {
-    const tipo = tipos.value.find((t) => t.id === tipoId)
-    if (!tipo) return null
-    return grupos.value.find((g) => g.id === tipo.grupo_id) ?? null
+  /** Nombre del tipo en O(1); cae al id si no existe. */
+  function nombreTipo(tipoId: string): string {
+    return tiposById.value.get(tipoId)?.nombre ?? tipoId
   }
 
   async function load() {
@@ -42,5 +57,16 @@ export function useNormativaTaxonomia() {
     }
   }
 
-  return { grupos, tipos, tiposPorGrupo, loading, error, nombreTipo, grupoDeTipo, load }
+  return {
+    grupos,
+    tipos,
+    tiposPorGrupo,
+    tiposById,
+    gruposById,
+    loading,
+    error,
+    nombreTipo,
+    grupoDeTipo,
+    load,
+  }
 }

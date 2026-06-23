@@ -13,6 +13,7 @@ export {
   deleteNormativa,
   uploadNormativaPdf,
   removeNormativaPdf,
+  removeNormativaImage,
   type NormativaUpsert,
 } from './normativa'
 export {
