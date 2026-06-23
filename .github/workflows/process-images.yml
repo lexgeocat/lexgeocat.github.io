@@ -27,8 +27,8 @@ jobs:
         with:
           python-version: '3.x'
 
-      - name: Install Pillow
-        run: pip install --quiet pillow
+      - name: Install dependencies
+        run: pip install --quiet pillow numpy
 
       - name: Process images
         run: python scripts/process_images.py
