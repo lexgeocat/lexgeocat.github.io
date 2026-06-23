@@ -79,13 +79,25 @@ def slug_from_filename(name: str) -> str | None:
 
 
 def slugify(text: str) -> str:
-    """Normaliza a ASCII, kebab-case, sin caracteres reservados para URL."""
-    # NFD: separa diacríticos → los elimina con 'Mn'.
+    """Normaliza el slug preservando compatibilidad con filenames del Worker.
+
+    El Worker genera nombres como `chatgpt-image-22-jun-2026-09_30_57-p-m`
+    que se almacenan también en BD (columna `imagen_url`). Si cambiáramos
+    `_` por `-`, el slug en disco dejaría de coincidir con el filename en
+    BD y `normativaImage.ts` no podría resolverlo.
+
+    Reglas:
+      - diacríticos → ASCII (`NFD` + filtro `Mn`)
+      - cualquier cosa fuera de [a-zA-Z0-9._-] → guion
+      - minúsculas
+      - colapsa múltiples guiones
+    """
     normalized = unicodedata.normalize("NFD", text)
     stripped = "".join(c for c in normalized if unicodedata.category(c) != "Mn")
-    ascii_text = stripped.encode("ascii", "ignore").decode("ascii")
-    # Cualquier cosa que no sea [a-z0-9] → guion.
-    kebab = re.sub(r"[^a-z0-9]+", "-", ascii_text.lower()).strip("-")
+    # Preservamos [a-z0-9._-]; el resto (espacios, paréntesis, símbolos) → guion.
+    # Importante: NO reemplazar `_` para mantener compat con el filename del Worker.
+    kebab = re.sub(r"[^a-z0-9._-]+", "-", stripped.lower())
+    kebab = re.sub(r"-+", "-", kebab).strip("-")
     return kebab or "imagen"
 
 

@@ -31,7 +31,7 @@ jobs:
         run: pip install --quiet pillow numpy
 
       - name: Process images
-        run: python scripts/process_images.py
+        run: python scripts/process_images.py --transparent
 
       - name: Commit changes
         id: auto-commit
