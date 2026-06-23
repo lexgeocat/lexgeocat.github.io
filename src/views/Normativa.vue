@@ -421,6 +421,11 @@ onUnmounted(() => {
               >{{ cardMeta(n.id).numeral }}</span>
               <span class="norm-card-cover-tag">{{ cardMeta(n.id).tipoNombre }}</span>
             </div>
+            <span
+              v-if="n.estado"
+              :class="'norm-card-corner-estado norm-card-corner-estado--' + n.estado"
+              :aria-label="`Estado: ${ESTADO_LABELS[n.estado] || n.estado}`"
+            >{{ ESTADO_LABELS[n.estado] || n.estado }}</span>
             <div class="norm-card-cover-overlay">
               <i
                 aria-hidden="true"

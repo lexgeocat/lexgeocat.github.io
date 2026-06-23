@@ -191,6 +191,9 @@
   cursor: pointer;
   outline: none;
 
+  /* Promueve capa para que el zoom + transición de tags sean fluidos. */
+  will-change: transform;
+
   &:focus-visible {
     box-shadow: inset 0 0 0 3px var(--copper);
   }
@@ -210,11 +213,14 @@
 
   /* Sombra suave que levanta la portada sobre el fondo del cover */
   filter: drop-shadow(0 6px 14px rgb(0 0 0 / 25%));
-  transition: transform 0.4s ease;
+  transition: transform 0.5s cubic-bezier(0.2, 0.7, 0.2, 1), filter 0.5s ease;
+  will-change: transform, filter;
 }
 
-.norm-card-cover:hover .norm-card-img {
-  transform: scale(1.02);
+/* Hover en la card → zoom + sombra más profunda + lift de las tags */
+.norm-card:hover .norm-card-img {
+  transform: scale(1.08);
+  filter: drop-shadow(0 14px 24px rgb(0 0 0 / 35%));
 }
 
 .norm-card-cover-fallback {
@@ -247,13 +253,24 @@
 
 .norm-card-cover-tags {
   position: absolute;
-  top: 10px;
+  bottom: 10px;
   left: 10px;
   right: 10px;
   display: flex;
   align-items: center;
   gap: 6px;
   pointer-events: none;
+  /* Sube y crece al hacer hover en la card */
+  transition: transform 0.4s cubic-bezier(0.2, 0.7, 0.2, 1);
+  transform-origin: left bottom;
+}
+
+.norm-card:hover .norm-card-cover-tags {
+  transform: translateY(-3px) scale(1.06);
+}
+
+.norm-card:hover .norm-card-cover-tags {
+  transform: translateY(-3px) scale(1.06);
 }
 
 .norm-card-cover-numeral {
@@ -287,6 +304,44 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+/* ── Etiqueta diagonal de estado (esquina superior derecha) ─────────────────
+   Ribbon clásico: se ancla a la esquina, gira -45° y queda como una banda
+   diagonal. Hereda colores via modificadores --<estado>. */
+.norm-card-corner-estado {
+  position: absolute;
+  top: 18px;
+  right: -40px;
+  width: 160px;
+  text-align: center;
+  transform: rotate(45deg);
+  font-family: var(--font-heading);
+  font-size: 0.6rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  padding: 5px 0;
+  color: #fff;
+  background: color-mix(in srgb, var(--text) 68%, transparent);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  pointer-events: none;
+  z-index: 3;
+  text-shadow: 0 1px 4px rgb(0 0 0 / 30%);
+  transition: background 0.3s ease;
+}
+
+.norm-card-corner-estado--vigente {
+  background: linear-gradient(135deg, rgb(45 154 79 / 78%), rgb(31 122 58 / 78%));
+}
+
+.norm-card-corner-estado--derogada {
+  background: linear-gradient(135deg, rgb(192 57 43 / 75%), rgb(150 45 34 / 75%));
+}
+
+.norm-card-corner-estado--modificada {
+  background: linear-gradient(135deg, rgb(196 149 36 / 70%), rgb(155 120 25 / 70%));
 }
 
 .norm-card-cover-overlay {
