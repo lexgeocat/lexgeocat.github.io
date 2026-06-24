@@ -65,6 +65,15 @@ export async function toggleServicioActivo(id: string, activo: boolean): Promise
 
 const IMAGE_BUCKET = 'servicios-images'
 
+/**
+ * DEPRECATED — Las imágenes de portada de Servicios viven en el repo de GitHub
+ * (Worker → raw-uploads/ → Action → src/assets/img/servicios/), NO en Supabase
+ * Storage. Esta función quedó de una versión anterior del pipeline y ya no se
+ * llama desde ningún lado. Si en el futuro se decide almacenar copias en
+ * Storage, reactivar con el bucket correcto.
+ *
+ * Borra un archivo de imagen del bucket `servicios-images`.
+ */
 export async function removeServicioImage(path: string): Promise<void> {
   const { error } = await getSupabase().storage.from(IMAGE_BUCKET).remove([path])
   if (error) throw new Error(`[servicios-images] ${error.message}`)

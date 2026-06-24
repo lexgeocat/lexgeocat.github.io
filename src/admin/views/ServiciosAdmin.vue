@@ -548,7 +548,6 @@ import {
   upsertServicio,
   deleteServicio,
   toggleServicioActivo,
-  removeServicioImage,
 } from '../../lib/queries'
 import { AREA_KEYS } from '../../features/servicios/useServiciosCatalog'
 import type { Servicio } from '../../types/supabase'
@@ -752,8 +751,6 @@ async function save() {
   saving.value = true
   formError.value = ''
 
-  const prevImgUrl = form.value.img_url ?? null
-
   try {
     const tags = tagsInput.value
       .split(',')
@@ -798,34 +795,15 @@ async function save() {
     try {
       await upsertServicio(payload as Servicio)
     } catch (err) {
-      // NOTA: a diferencia de NormativaAdmin, aquí NO hay rollback del archivo
-      // subido. El Worker de servicios ya commitea la imagen a `raw-uploads/`
-      // en el repo de GitHub como parte de su flujo, por lo que borrarla de
-      // un eventual bucket de Supabase Storage no la elimina del repo ni
-      // impide que el Action la procese en el siguiente deploy. Implementar
-      // un "rollback" aquí sería silenciar un problema real: si el upsert
-      // falla, la imagen quedará visible en `src/assets/img/servicios/`
-      // aunque el registro de BD no la referencie. El operador debe estar
-      // consciente de esto.
+      // NO hay rollback de la imagen subida: el Worker ya la commiteó a
+      // `raw-uploads/<destino>/` en el repo de GitHub como parte de su flujo.
+      // Borrarla de un eventual bucket de Supabase Storage no la eliminaría
+      // del repo ni impediría que el Action la procese en el siguiente deploy.
+      // Si el upsert falla, la imagen queda huérfana en `src/assets/img/` pero
+      // es inocua. Lo mismo aplica para la limpieza de imágenes previas al
+      // reemplazar o quitar una portada: el archivo viejo en el repo se
+      // queda sin referencia en BD, pero no afecta el funcionamiento.
       throw err
-    }
-
-    // 3. Limpiar imagen previa si fue reemplazada o marcada para borrar.
-    //    Solo intentamos borrar de Storage si el valor previo es un filename
-    //    local (no una URL http(s) externa legada, que nunca estuvo en el bucket).
-    const prevIsLocal = !!prevImgUrl && !/^https?:\/\//.test(prevImgUrl)
-    if (
-      uploadedImage &&
-      prevIsLocal &&
-      prevImgUrl !== uploadedImage.filename
-    ) {
-      await removeServicioImage(prevImgUrl).catch(() => {})
-    }
-    if (
-      imageState.value.kind === 'marked-removed' &&
-      prevIsLocal
-    ) {
-      await removeServicioImage(prevImgUrl).catch(() => {})
     }
 
     showToast(
