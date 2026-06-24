@@ -41,7 +41,6 @@ export interface Servicio {
   complejidad: string | null
   details_type: string
   unit_label: string | null
-  whatsapp_texto: string | null
   orden: number
   activo: boolean
   created_at: string

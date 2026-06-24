@@ -456,13 +456,6 @@
                 placeholder="general"
               >
             </label>
-            <label>
-              Texto WhatsApp predefinido
-              <input
-                v-model="form.whatsapp_texto"
-                placeholder="ej: Consulta Derecho Civil"
-              >
-            </label>
             <label class="servicios-check-label">
               <input
                 v-model="form.activo"
@@ -594,7 +587,6 @@ const emptyForm = (): Partial<Servicio> => ({
   complejidad: '',
   details_type: 'general',
   unit_label: '',
-  whatsapp_texto: '',
   orden: 0,
   activo: true,
 })
@@ -796,7 +788,6 @@ async function save() {
       complejidad: form.value.complejidad || null,
       details_type: form.value.details_type || 'general',
       unit_label: form.value.unit_label || null,
-      whatsapp_texto: form.value.whatsapp_texto || null,
       orden: form.value.orden ?? 0,
       activo: !!form.value.activo,
       img_url: imageState.value.kind === 'marked-removed'
