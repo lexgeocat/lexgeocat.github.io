@@ -36,10 +36,10 @@ jobs:
       - name: Commit processed WebPs
         run: |
           set -e
-          # Stage SOLO los WebPs nuevos producidos por el script + mover los raws
-          # a _processed/ (gitignored, auditoría local).
-          git add 'src/assets/img/normativa/*.webp' 'src/assets/img/servicios/*.webp' || true
-          git add 'raw-uploads/**' || true
+          # Stage todos los cambios (adiciones, modificaciones, eliminaciones) en los
+          # directorios de imágenes y raw-uploads. No usa globs del shell para evitar
+          # problemas con rutas que no existían previamente en el índice de git.
+          git add -A src/assets/img/normativa/ src/assets/img/servicios/ raw-uploads/ || true
 
           if git diff --cached --quiet; then
             echo "No hay WebPs nuevos que commitear."
