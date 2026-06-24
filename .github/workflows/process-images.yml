@@ -63,3 +63,9 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: gh workflow run deploy.yml --ref main
+
+      - name: Purge old raw archives (retención 30 días)
+        run: |
+          find raw-uploads/_processed/ -type f -mtime +30 -delete 2>/dev/null || true
+          # También elimina directorios vacíos que hayan quedado
+          find raw-uploads/_processed/ -type d -empty -delete 2>/dev/null || true
