@@ -35,7 +35,6 @@ const CORS_HEADERS = {
 const GITHUB_OWNER = 'lexgeocat';
 const GITHUB_REPO = 'lexgeocat.github.io';
 const MAX_UPLOAD_BYTES = 8 * 1024 * 1024; // 8 MB
-const ALLOWED_IMAGE_TYPES = new Set(['image/png', 'image/jpeg', 'image/webp']);
 const ALLOWED_DESTINOS = new Set(['normativa', 'servicios']);
 
 function jsonResponse(body, status = 200, extra = {}) {
