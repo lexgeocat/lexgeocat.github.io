@@ -14,6 +14,7 @@ concurrency:
 permissions:
   contents: write
   actions: write
+  issues: write
 
 jobs:
   process:
@@ -35,6 +36,7 @@ jobs:
         run: pip install --quiet pillow
 
       - name: Process images
+        id: process
         continue-on-error: true
         run: python scripts/process_images.py
 
@@ -69,3 +71,14 @@ jobs:
           find raw-uploads/_processed/ -type f -mtime +30 -delete 2>/dev/null || true
           # También elimina directorios vacíos que hayan quedado
           find raw-uploads/_processed/ -type d -empty -delete 2>/dev/null || true
+
+      - name: Notify on script failure
+        if: steps.process.outcome == 'failure'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh issue create \
+            --title "⚠️ Pipeline de imágenes: fallo inesperado en el script" \
+            --label "bug" \
+            --body "El paso 'Process images' falló en \`${{ github.ref }}\` (commit ${{ github.sha }}).
+            [Ver logs](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})"

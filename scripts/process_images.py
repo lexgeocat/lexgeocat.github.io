@@ -24,6 +24,10 @@ WEBP_QUALITY = 85
 TIMESTAMP_PREFIX = re.compile(r"^\d+-(?P<slug>.+)$")
 
 # Tamaño máximo permitido para imágenes raw (defensa contra OOM en CI).
+# El frontend (imageUpload.ts) y el Worker validan 8 MB antes de llegar
+# al repo, pero por si un archivo mayor se cuela (subida directa, bypass
+# del Worker), Python aplica un límite más alto (25 MB) antes de abrirlo
+# con Pillow para evitar Out-of-Memory en el runner de CI.
 MAX_RAW_BYTES = 25 * 1024 * 1024  # 25 MB
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
