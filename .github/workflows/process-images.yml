@@ -7,6 +7,10 @@ on:
       - 'raw-uploads/**'
   workflow_dispatch:
 
+concurrency:
+  group: process-images
+  cancel-in-progress: true
+
 permissions:
   contents: write
   actions: write
