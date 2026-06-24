@@ -31,6 +31,7 @@ jobs:
         run: pip install --quiet pillow
 
       - name: Process images
+        continue-on-error: true
         run: python scripts/process_images.py
 
       - name: Commit processed WebPs

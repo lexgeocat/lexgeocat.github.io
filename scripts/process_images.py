@@ -133,6 +133,15 @@ def move_to_processed(src: Path) -> None:
     os.replace(src, target)
 
 
+def move_failed_to_processed(entry: Path, reason: str) -> None:
+    """Mueve un archivo fallido a `_processed/` para que no bloquee futuros runs."""
+    print(f"  [skip] {entry.name} — {reason}")
+    try:
+        move_to_processed(entry)
+    except OSError as exc:
+        print(f"  [warn] no se pudo archivar {entry.name}: {exc}", file=sys.stderr)
+
+
 def process_destino(destino: str) -> tuple[int, list[Path]]:
     src_dir = RAW_DIR / destino
     if not src_dir.exists():
@@ -155,9 +164,10 @@ def process_destino(destino: str) -> tuple[int, list[Path]]:
     for entry in entries:
         slug = slug_from_filename(entry.name)
         if not slug:
-            print(
-                f"  [skip] {entry.name} — no tiene prefijo de timestamp esperado "
-                f"(<timestamp>-<slug>.<ext>). Se mueve sin procesar."
+            move_failed_to_processed(
+                entry,
+                "no tiene prefijo de timestamp esperado "
+                "(<timestamp>-<slug>.<ext>).",
             )
             failed.append(entry)
             continue
@@ -165,10 +175,10 @@ def process_destino(destino: str) -> tuple[int, list[Path]]:
         # Validar tamaño ANTES de abrir para evitar OOM en CI.
         size = entry.stat().st_size
         if size > MAX_RAW_BYTES:
-            print(
-                f"  [skip] {entry.name} — {size / 1024 / 1024:.1f} MB excede el "
-                f"límite de {MAX_RAW_BYTES / 1024 / 1024:.0f} MB. Se mueve sin procesar.",
-                file=sys.stderr,
+            move_failed_to_processed(
+                entry,
+                f"{size / 1024 / 1024:.1f} MB excede el límite de "
+                f"{MAX_RAW_BYTES / 1024 / 1024:.0f} MB.",
             )
             failed.append(entry)
             continue
@@ -180,7 +190,7 @@ def process_destino(destino: str) -> tuple[int, list[Path]]:
             _, written = process_one(entry, dest)
             print(f"         → {written / 1024:.1f} KB WebP")
         except Exception as exc:
-            print(f"  [error] {entry.name}: {exc}", file=sys.stderr)
+            move_failed_to_processed(entry, str(exc))
             failed.append(entry)
             continue
 
@@ -219,7 +229,10 @@ def main() -> int:
         )
         for f in all_failed:
             print(f"  - {f}", file=sys.stderr)
-        return 1
+        # No retornar 1: los WebPs buenos ya se generaron y deben committearse.
+        # Si salimos con exit code != 0, GitHub Actions corta el workflow y
+        # los WebPs se pierden con el runner efímero.
+        print("[info] Se reportan fallos pero no se bloquea el commit de los WebPs exitosos.")
     return 0
 
 

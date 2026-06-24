@@ -614,7 +614,6 @@ import {
   deleteNormativa,
   uploadNormativaPdf,
   removeNormativaPdf,
-  removeNormativaImage,
 } from '../../lib/queries'
 import {
   ESTADO_LABELS,
@@ -896,12 +895,6 @@ async function save() {
   saving.value = true
   formError.value = ''
 
-  // Estado previo para rollback de imágenes
-  const prevImagenUrl = form.value.imagen_url ?? null
-  const prevImagenPath = prevImagenUrl?.startsWith('http')
-    ? null
-    : prevImagenUrl
-
   try {
     const palabras_clave = keywordsInput.value
       .split(',')
@@ -950,27 +943,15 @@ async function save() {
     try {
       await upsertNormativa(payload as Normativa)
     } catch (err) {
-      // A. Rollback de archivos subidos si el upsert final falla
+      // Rollback del PDF (sí vive en Supabase Storage).
       if (uploadedPdf) await removeNormativaPdf(uploadedPdf.path).catch(() => {})
-      if (uploadedImage) await removeNormativaImage(uploadedImage.filename).catch(() => {})
+      // NO hay rollback de la imagen subida: el Worker ya la commiteó a
+      // `raw-uploads/normativa/` en el repo de GitHub como parte de su flujo.
+      // Borrarla de un eventual bucket de Supabase Storage (`normativa-images`)
+      // no la eliminaría del repo ni impediría que el Action la procese en el
+      // siguiente deploy. Si el upsert falla, la imagen queda en
+      // `src/assets/img/normativa/` huérfana pero inocua.
       throw err
-    }
-
-    // 3. Si vamos a reemplazar una imagen existente en Storage, la borramos
-    //    (solo si tenía un filename local — los http URL vienen de otro bucket)
-    if (
-      uploadedImage &&
-      prevImagenPath &&
-      prevImagenPath !== uploadedImage.filename
-    ) {
-      await removeNormativaImage(prevImagenPath).catch(() => {})
-    }
-    // Si el usuario marcó "quitar imagen" y tenía una guardada, borrarla de Storage
-    if (
-      imageState.value.kind === 'marked-removed' &&
-      prevImagenPath
-    ) {
-      await removeNormativaImage(prevImagenPath).catch(() => {})
     }
 
     // 4. Feedback visual + cerrar

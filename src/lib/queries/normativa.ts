@@ -80,9 +80,13 @@ export async function removeNormativaPdf(path: string): Promise<void> {
 }
 
 /**
+ * DEPRECATED — Las imágenes de portada de Normativa viven en el repo de GitHub
+ * (Worker → raw-uploads/ → Action → src/assets/img/normativa/), NO en Supabase
+ * Storage. Esta función quedó de una versión anterior del pipeline y ya no se
+ * llama desde ningún lado. Si en el futuro se decide almacenar copias en
+ * Storage, reactivar con el bucket correcto.
+ *
  * Borra un archivo de imagen de portada del bucket `normativa-images`.
- * Se usa para rollback cuando el upsert de BD falla tras una subida exitosa,
- * o cuando el usuario confirma "Quitar imagen".
  */
 export async function removeNormativaImage(path: string): Promise<void> {
   const { error } = await getSupabase().storage.from(IMAGE_BUCKET).remove([path])
