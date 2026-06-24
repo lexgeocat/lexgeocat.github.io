@@ -250,9 +250,22 @@
                 accept="image/png,image/jpeg,image/webp"
                 @change="onImagenSelect"
               >
+              <span
+                v-if="imgError"
+                class="admin-hint"
+                style="color:#c0392b"
+              >
+                <i
+                  aria-hidden="true"
+                  class="fa-solid fa-triangle-exclamation"
+                /> {{ imgError }}
+              </span>
             </label>
 
-            <div class="admin-img-row">
+            <div
+              class="admin-img-row"
+              :class="{ 'admin-img-row--error': !!imgError }"
+            >
               <template v-if="imageState.kind === 'preview'">
                 <img
                   :src="imageState.url"
@@ -280,7 +293,7 @@
                 <div class="admin-img-preview admin-img-preview--placeholder">
                   <i
                     aria-hidden="true"
-                    class="fa-solid fa-spinner fa-spin"
+                    class="fa-solid fa-image"
                   />
                 </div>
                 <div class="admin-img-info">
@@ -290,6 +303,9 @@
                       class="fa-solid fa-cloud-arrow-up"
                     /> Subiendo {{ imageState.name }}…
                   </span>
+                  <div class="admin-progress-bar">
+                    <div class="admin-progress-bar__fill" />
+                  </div>
                 </div>
               </template>
 
@@ -569,6 +585,7 @@ const modalOpen = ref(false)
 const editing = ref<Servicio | null>(null)
 const saving = ref(false)
 const formError = ref('')
+const imgError = ref('')
 const tagsInput = ref('')
 const toast = ref<{ msg: string; type: 'ok' | 'error' } | null>(null)
 
@@ -655,6 +672,7 @@ function openCreate() {
   tagsInput.value = ''
   resetImageState()
   formError.value = ''
+  imgError.value = ''
   modalOpen.value = true
 }
 
@@ -673,6 +691,7 @@ function openEdit(s: Servicio) {
     transitionImage({ kind: 'current', url: resolved })
   }
   formError.value = ''
+  imgError.value = ''
   modalOpen.value = true
 }
 
@@ -693,16 +712,16 @@ function onImagenSelect(e: Event) {
     return
   }
   if (!ALLOWED_IMAGE_TYPES.includes(file.type as (typeof ALLOWED_IMAGE_TYPES)[number])) {
-    formError.value = 'Formato no permitido. Usa PNG, JPEG o WebP.'
+    imgError.value = 'Formato no permitido. Usa PNG, JPEG o WebP.'
     input.value = ''
     return
   }
   if (file.size > MAX_IMAGE_BYTES) {
-    formError.value = `La imagen supera el límite de ${MAX_IMAGE_BYTES / 1024 / 1024} MB.`
+    imgError.value = `La imagen supera el límite de ${MAX_IMAGE_BYTES / 1024 / 1024} MB.`
     input.value = ''
     return
   }
-  formError.value = ''
+  imgError.value = ''
   transitionImage({
     kind: 'preview',
     file,
@@ -714,6 +733,7 @@ function onImagenSelect(e: Event) {
 
 function removeImagen() {
   formError.value = ''
+  imgError.value = ''
   const cur = imageState.value
   const input = document.getElementById('servicios-imagen-input') as HTMLInputElement | null
   if (input) input.value = ''
@@ -859,62 +879,9 @@ load()
 </script>
 
 <style scoped>
-.admin-filter-select, .admin-filter-search {
-  padding: 8px 12px;
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  font-size: 0.85rem;
-  background: var(--bg2);
-  color: var(--text);
-}
 .admin-filter-search { flex: 1; min-width: 220px; }
-.admin-count { font-size: 0.78rem; color: var(--text3); margin-left: auto; white-space: nowrap; }
 .mono { font-family: var(--font-mono); font-size: 0.8rem; }
 .badge-area { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 0.72rem; background: var(--copper-lt); color: var(--copper); text-transform: capitalize; }
-.admin-link-btn { background: none; border: none; color: var(--copper); text-decoration: underline; cursor: pointer; font-size: 0.76rem; margin-left: 6px; }
-.admin-hint { font-size: 0.76rem; color: var(--text3); display: flex; align-items: center; gap: 6px; }
-.admin-hint i { color: var(--copper); }
-.admin-img-preview {
-  width: 56px;
-  height: 56px;
-  object-fit: cover;
-  border-radius: 8px;
-  border: 1px solid var(--border);
-  flex-shrink: 0;
-  display: block;
-}
-.admin-img-row {
-  display: flex;
-  align-items: flex-start;
-  gap: 12px;
-  padding: 10px 12px;
-  background: var(--bg2);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-}
-.admin-img-info {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  flex: 1;
-  min-width: 0;
-}
-.admin-img-preview--placeholder {
-  width: 56px;
-  height: 56px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--copper-lt);
-  border-radius: 8px;
-  border: 1px solid var(--border);
-  color: var(--copper);
-  font-size: 1.2rem;
-  flex-shrink: 0;
-}
-.admin-modal--sm {
-  max-width: 460px;
-}
 .servicios-filter-bar {
   display: flex;
   gap: 10px;

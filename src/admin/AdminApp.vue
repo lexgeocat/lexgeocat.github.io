@@ -653,4 +653,127 @@ async function onSignOut() {
     pointer-events: none;
   }
 }
+
+/* ── Clases compartidas entre NormativaAdmin y ServiciosAdmin ──────────────── */
+
+.admin-filter-select {
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 0.85rem;
+  background: var(--bg2);
+  color: var(--text);
+}
+
+.admin-count {
+  font-size: 0.78rem;
+  color: var(--text3);
+  margin-left: auto;
+  white-space: nowrap;
+}
+
+.admin-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.78rem;
+  color: var(--copper);
+  font-weight: 600;
+}
+
+.admin-link-btn {
+  background: none;
+  border: none;
+  color: var(--copper);
+  text-decoration: underline;
+  cursor: pointer;
+  font-size: 0.76rem;
+  margin-left: 6px;
+}
+
+.admin-hint {
+  font-size: 0.76rem;
+  color: var(--text3);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+
+  i { color: var(--copper); }
+}
+
+.admin-img-preview {
+  width: 56px;
+  height: 56px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  flex-shrink: 0;
+  display: block;
+
+  &--placeholder {
+    width: 56px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--copper-lt);
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    color: var(--copper);
+    font-size: 1.2rem;
+    flex-shrink: 0;
+  }
+}
+
+.admin-img-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 10px 12px;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+
+  &--error {
+    border-color: #c0392b;
+    background: rgb(192 57 43 / 5%);
+  }
+}
+
+.admin-img-info {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+  min-width: 0;
+}
+
+/* Modal pequeño (confirmación de borrado) */
+.admin-modal--sm {
+  max-width: 460px;
+}
+
+/* Barra de progreso indeterminada durante upload */
+.admin-progress-bar {
+  width: 100%;
+  height: 4px;
+  background: var(--border);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.admin-progress-bar__fill {
+  height: 100%;
+  width: 40%;
+  background: var(--copper);
+  border-radius: 4px;
+  animation: admin-progress-indeterminate 1.4s ease-in-out infinite;
+  will-change: transform;
+}
+
+@keyframes admin-progress-indeterminate {
+  0%   { transform: translateX(-100%); }
+  50%  { transform: translateX(130%); }
+  100% { transform: translateX(300%); }
+}
 </style>

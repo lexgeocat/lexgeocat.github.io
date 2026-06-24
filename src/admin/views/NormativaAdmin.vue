@@ -334,10 +334,23 @@
                 accept="image/png,image/jpeg,image/webp"
                 @change="onImagenSelect"
               >
+              <span
+                v-if="imgError"
+                class="admin-hint"
+                style="color:#c0392b"
+              >
+                <i
+                  aria-hidden="true"
+                  class="fa-solid fa-triangle-exclamation"
+                /> {{ imgError }}
+              </span>
             </label>
 
             <!-- ── Bloque unificado de imagen: una sola fuente de verdad (imageState) ── -->
-            <div class="admin-img-row">
+            <div
+              class="admin-img-row"
+              :class="{ 'admin-img-row--error': !!imgError }"
+            >
               <!-- Preview local del archivo recién seleccionado -->
               <template v-if="imageState.kind === 'preview'">
                 <img
@@ -367,7 +380,7 @@
                 <div class="admin-img-preview admin-img-preview--placeholder">
                   <i
                     aria-hidden="true"
-                    class="fa-solid fa-spinner fa-spin"
+                    class="fa-solid fa-image"
                   />
                 </div>
                 <div class="admin-img-info">
@@ -377,6 +390,9 @@
                       class="fa-solid fa-cloud-arrow-up"
                     /> Subiendo {{ imageState.name }}…
                   </span>
+                  <div class="admin-progress-bar">
+                    <div class="admin-progress-bar__fill" />
+                  </div>
                 </div>
               </template>
 
@@ -639,6 +655,7 @@ const modalOpen = ref(false)
 const editing = ref<Normativa | null>(null)
 const saving = ref(false)
 const formError = ref('')
+const imgError = ref('')
 const keywordsInput = ref('')
 const pendingFile = ref<File | null>(null)
 const toast = ref<{ msg: string; type: 'ok' | 'error' } | null>(null)
@@ -772,6 +789,7 @@ function openCreate() {
   pendingFile.value = null
   resetImageState()
   formError.value = ''
+  imgError.value = ''
   modalOpen.value = true
 }
 
@@ -785,6 +803,7 @@ function openEdit(n: Normativa) {
     transitionImage({ kind: 'current', url: n.imagen_url })
   }
   formError.value = ''
+  imgError.value = ''
   modalOpen.value = true
 }
 
@@ -814,16 +833,16 @@ function onImagenSelect(e: Event) {
     return
   }
   if (!ALLOWED_IMAGE_TYPES.includes(file.type as (typeof ALLOWED_IMAGE_TYPES)[number])) {
-    formError.value = 'Formato no permitido. Usa PNG, JPEG o WebP.'
+    imgError.value = 'Formato no permitido. Usa PNG, JPEG o WebP.'
     input.value = ''
     return
   }
   if (file.size > MAX_IMAGE_BYTES) {
-    formError.value = `La imagen supera el límite de ${MAX_IMAGE_BYTES / 1024 / 1024} MB.`
+    imgError.value = `La imagen supera el límite de ${MAX_IMAGE_BYTES / 1024 / 1024} MB.`
     input.value = ''
     return
   }
-  formError.value = ''
+  imgError.value = ''
   transitionImage({
     kind: 'preview',
     file,
@@ -835,6 +854,7 @@ function onImagenSelect(e: Event) {
 
 function removeImagen() {
   formError.value = ''
+  imgError.value = ''
   const cur = imageState.value
   const input = document.getElementById('normativa-imagen-input') as HTMLInputElement | null
   if (input) input.value = ''
@@ -996,61 +1016,5 @@ loadAll()
 </script>
 
 <style scoped>
-.admin-filter-select {
-  padding: 8px 12px;
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  font-size: 0.85rem;
-  background: var(--bg2);
-  color: var(--text);
-}
-.admin-count { font-size: 0.78rem; color: var(--text3); margin-left: auto; }
-.admin-link { display: inline-flex; align-items: center; gap: 5px; font-size: 0.78rem; color: var(--copper); font-weight: 600; }
-.admin-link-btn { background: none; border: none; color: var(--copper); text-decoration: underline; cursor: pointer; font-size: 0.76rem; margin-left: 6px; }
 .admin-badge--off-red { background: rgb(192 57 43 / 12%); color: #c0392b; display: inline-flex; align-items: center; gap: 4px; font-size: 0.66rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; padding: 3px 9px; border-radius: 5px; }
-.admin-hint { font-size: 0.76rem; color: var(--text3); display: flex; align-items: center; gap: 6px; }
-.admin-hint i { color: var(--copper); }
-.admin-img-preview {
-  width: 56px;
-  height: 56px;
-  object-fit: cover;
-  border-radius: 8px;
-  border: 1px solid var(--border);
-  flex-shrink: 0;
-  display: block;
-}
-.admin-img-row {
-  display: flex;
-  align-items: flex-start;
-  gap: 12px;
-  padding: 10px 12px;
-  background: var(--bg2);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-}
-.admin-img-info {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  flex: 1;
-  min-width: 0;
-}
-.admin-img-preview--placeholder {
-  width: 56px;
-  height: 56px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--copper-lt);
-  border-radius: 8px;
-  border: 1px solid var(--border);
-  color: var(--copper);
-  font-size: 1.2rem;
-  flex-shrink: 0;
-}
-
-/* Modal pequeño (confirmación de borrado) */
-.admin-modal--sm {
-  max-width: 460px;
-}
 </style>
