@@ -40,6 +40,11 @@ jobs:
           commit_message: 'chore: process uploaded images [skip ci]'
           commit_user_name: 'github-actions[bot]'
           commit_user_email: 'github-actions[bot]@users.noreply.github.com'
+          # disable_globbing: evita que el shell expanda `*.webp` contra los archivos
+          # que YA existen en `src/assets/img/normativa/` y omita el patrón de
+          # `src/assets/img/servicios/` (que está vacío hasta el primer upload).
+          # Sin esto, el primer procesamiento de servicios no se commitea.
+          disable_globbing: true
           file_pattern: |
             src/assets/img/normativa/*.webp
             src/assets/img/servicios/*.webp
