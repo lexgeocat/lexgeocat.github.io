@@ -754,9 +754,8 @@ type ImageState =
 const imageState = ref<ImageState>({ kind: 'empty' })
 
 function transitionImage(next: ImageState) {
-  // Si salimos de 'preview', revocamos el object URL para evitar leaks.
   const cur = imageState.value
-  if (cur.kind === 'preview' && cur.kind !== next.kind) {
+  if (cur.kind === 'preview') {
     URL.revokeObjectURL(cur.url)
   }
   imageState.value = next
@@ -796,7 +795,6 @@ function closeModal() {
   modalOpen.value = false
   pendingFile.value = null
   resetImageState()
-  uploadAbortRef.value = null
 }
 
 onBeforeUnmount(() => {
@@ -836,6 +834,7 @@ function onImagenSelect(e: Event) {
 }
 
 function removeImagen() {
+  formError.value = ''
   const cur = imageState.value
   const input = document.getElementById('normativa-imagen-input') as HTMLInputElement | null
   if (input) input.value = ''
@@ -877,10 +876,6 @@ async function removeCurrentFile() {
   }
 }
 
-// B. AbortController para cancelar uploads en curso cuando el modal se cierra
-//    o el componente se destruye. Se limpia al desmontar.
-const uploadAbortRef = ref<AbortController | null>(null)
-
 // ── A + C. save(): un solo upsert, con uploads primero y rollback si falla ────
 async function save() {
   if (!form.value.titulo || !form.value.tipo_id || !form.value.estado) {
@@ -914,7 +909,8 @@ async function save() {
       try {
         uploadedImage = await uploadAdminImage(curImg.file, 'normativa')
       } catch (err) {
-        transitionImage({ kind: 'preview', file: curImg.file, url: curImg.url, name: curImg.name })
+        const restoredUrl = URL.createObjectURL(curImg.file)
+        transitionImage({ kind: 'preview', file: curImg.file, url: restoredUrl, name: curImg.name })
         throw err
       }
     }
@@ -963,7 +959,6 @@ async function save() {
           : 'Norma creada',
     )
     modalOpen.value = false
-    uploadAbortRef.value = null
     resetImageState()
     await load()
   } catch (e) {

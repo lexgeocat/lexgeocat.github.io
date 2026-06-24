@@ -611,7 +611,7 @@ const imageState = ref<ImageState>({ kind: 'empty' })
 
 function transitionImage(next: ImageState) {
   const cur = imageState.value
-  if (cur.kind === 'preview' && cur.kind !== next.kind) {
+  if (cur.kind === 'preview') {
     URL.revokeObjectURL(cur.url)
   }
   imageState.value = next
@@ -679,7 +679,6 @@ function openEdit(s: Servicio) {
 function closeModal() {
   modalOpen.value = false
   resetImageState()
-  uploadAbortRef.value = null
 }
 
 onBeforeUnmount(() => {
@@ -714,6 +713,7 @@ function onImagenSelect(e: Event) {
 }
 
 function removeImagen() {
+  formError.value = ''
   const cur = imageState.value
   const input = document.getElementById('servicios-imagen-input') as HTMLInputElement | null
   if (input) input.value = ''
@@ -740,9 +740,6 @@ function undoRemoveImagen() {
 
 // uploadServicioImage: ver `uploadAdminImage` en src/admin/shared/imageUpload.ts
 
-// AbortController para cancelar uploads al cerrar el modal
-const uploadAbortRef = ref<AbortController | null>(null)
-
 async function save() {
   if (!form.value.id || !form.value.area || !form.value.label || !form.value.categoria) {
     formError.value = 'Completa los campos obligatorios.'
@@ -765,7 +762,8 @@ async function save() {
       try {
         uploadedImage = await uploadAdminImage(curImg.file, 'servicios')
       } catch (err) {
-        transitionImage({ kind: 'preview', file: curImg.file, url: curImg.url, name: curImg.name })
+        const restoredUrl = URL.createObjectURL(curImg.file)
+        transitionImage({ kind: 'preview', file: curImg.file, url: restoredUrl, name: curImg.name })
         throw err
       }
     }
@@ -814,7 +812,6 @@ async function save() {
           : 'Servicio creado',
     )
     modalOpen.value = false
-    uploadAbortRef.value = null
     resetImageState()
     await load()
   } catch (e) {
