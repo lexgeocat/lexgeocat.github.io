@@ -622,12 +622,12 @@ import {
 } from '../../features/normativa/useNormativa'
 import { useNormativaTaxonomia } from '../../features/normativa/useNormativaTaxonomia'
 import type { Normativa, NormativaTipo } from '../../types/supabase'
-import { getSupabase } from '../../lib/supabase/client'
-import { SITE } from '../../config/site'
 import { resolveNormativaImageUrl } from '../../lib/normativaImage'
-
-const MAX_IMAGE_BYTES = 8 * 1024 * 1024
-const ALLOWED_IMAGE_TYPES = ['image/png', 'image/jpeg', 'image/webp'] as const
+import {
+  MAX_IMAGE_BYTES,
+  ALLOWED_IMAGE_TYPES,
+  uploadAdminImage,
+} from '../shared/imageUpload'
 
 const normas = ref<Normativa[]>([])
 const loading = ref(true)
@@ -739,6 +739,11 @@ async function loadAll() {
 }
 
 // ── C. imageState: máquina de estados explícita (un solo ref) ───────────────
+// Duplicada intencionalmente con ServiciosAdmin.vue. Las transiciones escriben sobre
+// `form.value.imagen_url` y leen de `editing.value`, refs locales del componente.
+// Extraer un composable obligaría a inyectarlos por callback, sin reducir duplicación
+// real (el bloque son ~30 líneas). Si aparece una tercera vista admin con gestión de
+// imágenes, conviene refactorizar a `useAdminImageUpload(form, editing)`.
 type ImageState =
   | { kind: 'empty' }
   | { kind: 'preview'; file: File; url: string; name: string }
@@ -858,37 +863,7 @@ function undoRemoveImagen() {
   }
 }
 
-async function uploadNormativaImage(file: File): Promise<{ filename: string }> {
-  const { data: sessionData } = await getSupabase().auth.getSession()
-  const token = sessionData.session?.access_token
-  if (!token) throw new Error('Sesión expirada. Vuelve a iniciar sesión.')
-
-  const fd = new FormData()
-  fd.append('file', file)
-  fd.append('destino', 'normativa')
-
-  const res = await fetch(`${SITE.worker}/upload-image`, {
-    method: 'POST',
-    headers: { Authorization: `Bearer ${token}` },
-    body: fd,
-  })
-
-  let payload: { ok?: boolean; expectedPath?: string; rawPath?: string; error?: string } = {}
-  try {
-    payload = (await res.json()) as typeof payload
-  } catch {
-    // respuesta no-JSON
-  }
-
-  if (!res.ok || !payload.ok || !payload.expectedPath) {
-    const msg = payload.error || `Error ${res.status} al subir la imagen.`
-    throw new Error(msg)
-  }
-
-  const filename = payload.expectedPath.split('/').pop()
-  if (!filename) throw new Error('Respuesta inválida del Worker (sin expectedPath).')
-  return { filename }
-}
+// uploadNormativaImage: ver `uploadAdminImage` en src/admin/shared/imageUpload.ts
 
 async function removeCurrentFile() {
   if (!form.value.archivo_path) return
@@ -944,7 +919,7 @@ async function save() {
     if (curImg.kind === 'preview') {
       transitionImage({ kind: 'uploading', name: curImg.name })
       try {
-        uploadedImage = await uploadNormativaImage(curImg.file)
+        uploadedImage = await uploadAdminImage(curImg.file, 'normativa')
       } catch (err) {
         transitionImage({ kind: 'preview', file: curImg.file, url: curImg.url, name: curImg.name })
         throw err

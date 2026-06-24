@@ -1,6 +1,8 @@
 import { fetchFactoresPrecioActivos, fetchServiciosActivos } from '../../lib/queries'
 import type { CotService } from '../cotizador/store'
 import type { FactorPrecio, Servicio } from '../../types/supabase'
+import { resolveServicioImageUrl } from '../../lib/servicioImage'
+import { toDirectImageUrl } from '../../shared/utils/image'
 
 export interface CategorySpec {
   icon: string
@@ -121,6 +123,19 @@ export function toggleSpec(el: Element) {
   }
 }
 
+/**
+ * Resuelve `img_url` al URL público final para el catálogo:
+ * 1. Si es un filename local → build-time glob (`resolveServicioImageUrl`).
+ * 2. Si no resuelve pero es una URL externa legada → fallback a `toDirectImageUrl`
+ *    (soporta Google Drive directo, URLs http(s) normales, etc.).
+ * 3. Si nada aplica → string vacío.
+ */
+function resolveImgUrl(raw: string | null | undefined): string {
+  const resolved = resolveServicioImageUrl(raw)
+  if (resolved) return resolved
+  return toDirectImageUrl(raw || '')
+}
+
 function buildCatalog(rows: Servicio[]): CatalogShape {
   const cotData: Record<string, CotService> = {}
   const areaServices: Record<string, { v: string; l: string }[]> = {}
@@ -128,12 +143,13 @@ function buildCatalog(rows: Servicio[]): CatalogShape {
 
   rows.forEach((r) => {
     if (!r.activo) return
+    const imgUrl = resolveImgUrl(r.img_url)
     cotData[r.id] = {
       id: r.id,
       label: r.label,
       descripcion: r.descripcion || '',
       tags: r.tags || [],
-      img_url: r.img_url || '',
+      img_url: imgUrl,
       area: r.area,
       areaKey: r.area,
       categoria: r.categoria || '',
@@ -154,7 +170,7 @@ function buildCatalog(rows: Servicio[]): CatalogShape {
       l: r.label,
       descripcion: r.descripcion || '',
       tags: r.tags || [],
-      img_url: r.img_url || '',
+      img_url: imgUrl,
     })
   })
 

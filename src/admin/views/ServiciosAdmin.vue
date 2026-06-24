@@ -41,8 +41,7 @@
     </p>
 
     <div
-      class="admin-card"
-      style="display:flex;gap:10px;flex-wrap:wrap;align-items:center"
+      class="admin-card servicios-filter-bar"
     >
       <select
         v-model="filterArea"
@@ -80,8 +79,7 @@
 
     <div
       v-else
-      class="admin-card"
-      style="padding:0"
+      class="admin-card servicios-table-card"
     >
       <div class="admin-table-wrap">
         <table class="admin-table">
@@ -114,7 +112,7 @@
                 </span>
               </td>
               <td>
-                <div style="display:flex;gap:6px;justify-content:flex-end">
+                <div class="servicios-row-actions">
                   <button
                     class="admin-btn admin-btn--sm admin-btn--ghost"
                     @click="openEdit(s)"
@@ -245,12 +243,160 @@
               >
             </label>
             <label>
-              Imagen (URL)
+              Imagen
               <input
-                v-model="form.img_url"
-                placeholder="https://..."
+                id="servicios-imagen-input"
+                type="file"
+                accept="image/png,image/jpeg,image/webp"
+                @change="onImagenSelect"
               >
             </label>
+
+            <div class="admin-img-row">
+              <template v-if="imageState.kind === 'preview'">
+                <img
+                  :src="imageState.url"
+                  alt="Previsualización"
+                  class="admin-img-preview"
+                >
+                <div class="admin-img-info">
+                  <span class="admin-hint">
+                    <i
+                      aria-hidden="true"
+                      class="fa-solid fa-image"
+                    /> {{ imageState.name }}
+                  </span>
+                  <button
+                    type="button"
+                    class="admin-link-btn"
+                    @click="removeImagen"
+                  >
+                    Quitar selección
+                  </button>
+                </div>
+              </template>
+
+              <template v-else-if="imageState.kind === 'uploading'">
+                <div class="admin-img-preview admin-img-preview--placeholder">
+                  <i
+                    aria-hidden="true"
+                    class="fa-solid fa-spinner fa-spin"
+                  />
+                </div>
+                <div class="admin-img-info">
+                  <span class="admin-hint">
+                    <i
+                      aria-hidden="true"
+                      class="fa-solid fa-cloud-arrow-up"
+                    /> Subiendo {{ imageState.name }}…
+                  </span>
+                </div>
+              </template>
+
+              <template v-else-if="imageState.kind === 'pending'">
+                <div class="admin-img-preview admin-img-preview--placeholder">
+                  <i
+                    aria-hidden="true"
+                    class="fa-solid fa-image"
+                  />
+                </div>
+                <div class="admin-img-info">
+                  <span class="admin-hint">
+                    <i
+                      aria-hidden="true"
+                      class="fa-solid fa-circle-check"
+                      style="color: var(--color-success)"
+                    />
+                    Imagen recibida: <code>{{ imageState.filename }}</code>
+                  </span>
+                  <span
+                    v-if="!resolveServicioImageUrl(imageState.filename)"
+                    class="admin-hint"
+                    style="color: var(--copper)"
+                  >
+                    <i
+                      aria-hidden="true"
+                      class="fa-solid fa-clock"
+                    />
+                    Procesándose — visible tras el próximo despliegue (2-5 min).
+                  </span>
+                  <button
+                    type="button"
+                    class="admin-link-btn"
+                    @click="removeImagen"
+                  >
+                    Quitar imagen
+                  </button>
+                </div>
+              </template>
+
+              <template v-else-if="imageState.kind === 'current'">
+                <div class="admin-img-preview admin-img-preview--placeholder">
+                  <i
+                    aria-hidden="true"
+                    class="fa-solid fa-image"
+                  />
+                </div>
+                <div class="admin-img-info">
+                  <span class="admin-hint">
+                    <i
+                      aria-hidden="true"
+                      class="fa-solid fa-circle-check"
+                      style="color: var(--color-success)"
+                    />
+                    Imagen guardada:
+                    <code>{{ imageState.url }}</code>
+                  </span>
+                  <span
+                    v-if="!resolveServicioImageUrl(imageState.url)"
+                    class="admin-hint"
+                    style="color: var(--copper)"
+                  >
+                    <i
+                      aria-hidden="true"
+                      class="fa-solid fa-clock"
+                    />
+                    Aún procesándose — visible tras el próximo despliegue.
+                  </span>
+                  <button
+                    type="button"
+                    class="admin-link-btn"
+                    @click="removeImagen"
+                  >
+                    Quitar imagen
+                  </button>
+                </div>
+              </template>
+
+              <template v-else-if="imageState.kind === 'marked-removed'">
+                <div class="admin-img-preview admin-img-preview--placeholder">
+                  <i
+                    aria-hidden="true"
+                    class="fa-solid fa-ban"
+                    style="opacity: 0.5"
+                  />
+                </div>
+                <div class="admin-img-info">
+                  <span
+                    class="admin-hint"
+                    style="color: var(--copper)"
+                  >
+                    <i
+                      aria-hidden="true"
+                      class="fa-solid fa-triangle-exclamation"
+                    />
+                    La imagen será eliminada al guardar. Puedes
+                    <button
+                      type="button"
+                      class="admin-link-btn"
+                      @click="undoRemoveImagen"
+                    >
+                      deshacer
+                    </button>.
+                  </span>
+                </div>
+              </template>
+            </div>
             <div class="admin-form-row">
               <label>
                 Precio mínimo (Bs)
@@ -317,11 +463,11 @@
                 placeholder="ej: Consulta Derecho Civil"
               >
             </label>
-            <label style="flex-direction:row;align-items:center;gap:8px">
+            <label class="servicios-check-label">
               <input
                 v-model="form.activo"
                 type="checkbox"
-                style="width:auto"
+                class="servicios-check-input"
               >
               Activo (visible públicamente)
             </label>
@@ -351,6 +497,44 @@
       </div>
     </div>
 
+    <!-- Modal de confirmación de borrado -->
+    <div
+      v-if="confirmDeleteItem"
+      class="admin-modal-overlay"
+      @click.self="confirmDeleteItem = null"
+    >
+      <div class="admin-modal admin-modal--sm">
+        <div class="admin-modal-head">
+          <h3>Eliminar servicio</h3>
+        </div>
+        <div class="admin-modal-body">
+          <p>¿Eliminar <strong>{{ confirmDeleteItem.label }}</strong>?</p>
+          <div class="admin-modal-actions">
+            <button
+              type="button"
+              class="admin-btn admin-btn--ghost"
+              @click="confirmDeleteItem = null"
+            >
+              Cancelar
+            </button>
+            <button
+              type="button"
+              class="admin-btn admin-btn--danger"
+              :disabled="deleting"
+              @click="doDelete"
+            >
+              <i
+                v-if="deleting"
+                aria-hidden="true"
+                class="fa-solid fa-spinner fa-spin"
+              />
+              {{ deleting ? 'Eliminando…' : 'Eliminar' }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div
       v-if="toast"
       :class="['admin-toast', { error: toast.type === 'error' }]"
@@ -365,15 +549,23 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, onBeforeUnmount } from 'vue'
 import {
   fetchServiciosAdmin,
   upsertServicio,
   deleteServicio,
   toggleServicioActivo,
+  removeServicioImage,
 } from '../../lib/queries'
 import { AREA_KEYS } from '../../features/servicios/useServiciosCatalog'
 import type { Servicio } from '../../types/supabase'
+import { resolveServicioImageUrl } from '../../lib/servicioImage'
+import { toDirectImageUrl } from '../../shared/utils/image'
+import {
+  MAX_IMAGE_BYTES,
+  ALLOWED_IMAGE_TYPES,
+  uploadAdminImage,
+} from '../shared/imageUpload'
 
 const servicios = ref<Servicio[]>([])
 const loading = ref(true)
@@ -409,6 +601,35 @@ const emptyForm = (): Partial<Servicio> => ({
 
 const form = ref<Partial<Servicio>>(emptyForm())
 
+// ── ImageState: máquina de estados explícita ────────────────────────────────────
+// Duplicada intencionalmente con NormativaAdmin.vue. Las transiciones (`removeImagen`,
+// `undoRemoveImagen`, `onImagenSelect`) escriben sobre `form.value.img_url` y leen de
+// `editing.value`, ambos refs locales del componente. Extraer un composable obligaría
+// a inyectar esos refs por callback, lo que añade fricción sin reducir duplicación real
+// (el bloque entero son ~30 líneas). Si en el futuro aparece una tercera vista admin
+// con gestión de imágenes, conviene refactorizar a `useAdminImageUpload(form, editing)`.
+type ImageState =
+  | { kind: 'empty' }
+  | { kind: 'preview'; file: File; url: string; name: string }
+  | { kind: 'uploading'; name: string }
+  | { kind: 'pending'; filename: string }
+  | { kind: 'current'; url: string }
+  | { kind: 'marked-removed' }
+
+const imageState = ref<ImageState>({ kind: 'empty' })
+
+function transitionImage(next: ImageState) {
+  const cur = imageState.value
+  if (cur.kind === 'preview' && cur.kind !== next.kind) {
+    URL.revokeObjectURL(cur.url)
+  }
+  imageState.value = next
+}
+
+function resetImageState() {
+  transitionImage({ kind: 'empty' })
+}
+
 const filtered = computed(() =>
   servicios.value.filter((s) => {
     if (filterArea.value && s.area !== filterArea.value) return false
@@ -441,6 +662,7 @@ function openCreate() {
   editing.value = null
   form.value = emptyForm()
   tagsInput.value = ''
+  resetImageState()
   formError.value = ''
   modalOpen.value = true
 }
@@ -449,13 +671,86 @@ function openEdit(s: Servicio) {
   editing.value = s
   form.value = { ...s }
   tagsInput.value = (s.tags || []).join(', ')
+  resetImageState()
+  if (s.img_url) {
+    // 1) Intenta resolver como asset local (filename en src/assets/img/servicios/).
+    // 2) Si no, asume URL externa legada y aplícale el resolver de Google Drive.
+    // En ambos casos el estado es 'current': el admin ve la imagen tal como está
+    // hoy, aunque venga de fuera del repo. Si sube un archivo nuevo, el filename
+    // resultante reemplaza por completo esta URL.
+    const resolved = resolveServicioImageUrl(s.img_url) ?? toDirectImageUrl(s.img_url)
+    transitionImage({ kind: 'current', url: resolved })
+  }
   formError.value = ''
   modalOpen.value = true
 }
 
 function closeModal() {
   modalOpen.value = false
+  resetImageState()
+  uploadAbortRef.value = null
 }
+
+onBeforeUnmount(() => {
+  resetImageState()
+})
+
+function onImagenSelect(e: Event) {
+  const input = e.target as HTMLInputElement
+  const file = input.files?.[0]
+  if (!file) {
+    transitionImage({ kind: 'empty' })
+    return
+  }
+  if (!ALLOWED_IMAGE_TYPES.includes(file.type as (typeof ALLOWED_IMAGE_TYPES)[number])) {
+    formError.value = 'Formato no permitido. Usa PNG, JPEG o WebP.'
+    input.value = ''
+    return
+  }
+  if (file.size > MAX_IMAGE_BYTES) {
+    formError.value = `La imagen supera el límite de ${MAX_IMAGE_BYTES / 1024 / 1024} MB.`
+    input.value = ''
+    return
+  }
+  formError.value = ''
+  transitionImage({
+    kind: 'preview',
+    file,
+    url: URL.createObjectURL(file),
+    name: file.name,
+  })
+  input.value = ''
+}
+
+function removeImagen() {
+  const cur = imageState.value
+  const input = document.getElementById('servicios-imagen-input') as HTMLInputElement | null
+  if (input) input.value = ''
+
+  if (cur.kind === 'preview' || cur.kind === 'pending' || cur.kind === 'uploading') {
+    transitionImage({ kind: 'empty' })
+    return
+  }
+  if (cur.kind === 'current') {
+    transitionImage({ kind: 'marked-removed' })
+    form.value.img_url = ''
+    return
+  }
+}
+
+function undoRemoveImagen() {
+  if (editing.value?.img_url) {
+    transitionImage({ kind: 'current', url: editing.value.img_url })
+    form.value.img_url = editing.value.img_url
+  } else {
+    transitionImage({ kind: 'empty' })
+  }
+}
+
+// uploadServicioImage: ver `uploadAdminImage` en src/admin/shared/imageUpload.ts
+
+// AbortController para cancelar uploads al cerrar el modal
+const uploadAbortRef = ref<AbortController | null>(null)
 
 async function save() {
   if (!form.value.id || !form.value.area || !form.value.label || !form.value.categoria) {
@@ -464,14 +759,94 @@ async function save() {
   }
   saving.value = true
   formError.value = ''
+
+  const prevImgUrl = form.value.img_url ?? null
+
   try {
     const tags = tagsInput.value
       .split(',')
       .map((t) => t.trim())
       .filter(Boolean)
-    await upsertServicio({ ...form.value, tags } as Servicio)
-    showToast(editing.value ? 'Servicio actualizado' : 'Servicio creado')
+
+    // 1. Subir imagen ANTES del upsert
+    let uploadedImage: { filename: string } | null = null
+    const curImg = imageState.value
+    if (curImg.kind === 'preview') {
+      transitionImage({ kind: 'uploading', name: curImg.name })
+      try {
+        uploadedImage = await uploadAdminImage(curImg.file, 'servicios')
+      } catch (err) {
+        transitionImage({ kind: 'preview', file: curImg.file, url: curImg.url, name: curImg.name })
+        throw err
+      }
+    }
+
+    // 2. Upsert
+    const payload: Partial<Servicio> = {
+      id: form.value.id,
+      area: form.value.area!,
+      label: form.value.label!,
+      categoria: form.value.categoria!,
+      descripcion: form.value.descripcion || null,
+      tags,
+      precio_min: form.value.precio_min ?? 0,
+      precio_max: form.value.precio_max ?? 0,
+      tiempo_min: form.value.tiempo_min || null,
+      tiempo_max: form.value.tiempo_max || null,
+      complejidad: form.value.complejidad || null,
+      details_type: form.value.details_type || 'general',
+      unit_label: form.value.unit_label || null,
+      whatsapp_texto: form.value.whatsapp_texto || null,
+      orden: form.value.orden ?? 0,
+      activo: !!form.value.activo,
+      img_url: imageState.value.kind === 'marked-removed'
+        ? null
+        : (uploadedImage?.filename ?? form.value.img_url) || null,
+    }
+
+    try {
+      await upsertServicio(payload as Servicio)
+    } catch (err) {
+      // NOTA: a diferencia de NormativaAdmin, aquí NO hay rollback del archivo
+      // subido. El Worker de servicios ya commitea la imagen a `raw-uploads/`
+      // en el repo de GitHub como parte de su flujo, por lo que borrarla de
+      // un eventual bucket de Supabase Storage no la elimina del repo ni
+      // impide que el Action la procese en el siguiente deploy. Implementar
+      // un "rollback" aquí sería silenciar un problema real: si el upsert
+      // falla, la imagen quedará visible en `src/assets/img/servicios/`
+      // aunque el registro de BD no la referencie. El operador debe estar
+      // consciente de esto.
+      throw err
+    }
+
+    // 3. Limpiar imagen previa si fue reemplazada o marcada para borrar.
+    //    Solo intentamos borrar de Storage si el valor previo es un filename
+    //    local (no una URL http(s) externa legada, que nunca estuvo en el bucket).
+    const prevIsLocal = !!prevImgUrl && !/^https?:\/\//.test(prevImgUrl)
+    if (
+      uploadedImage &&
+      prevIsLocal &&
+      prevImgUrl !== uploadedImage.filename
+    ) {
+      await removeServicioImage(prevImgUrl).catch(() => {})
+    }
+    if (
+      imageState.value.kind === 'marked-removed' &&
+      prevIsLocal
+    ) {
+      await removeServicioImage(prevImgUrl).catch(() => {})
+    }
+
+    showToast(
+      uploadedImage
+        ? 'Servicio guardado. Imagen visible tras el próximo despliegue (2-5 min).'
+        : editing.value
+          ? 'Servicio actualizado'
+          : 'Servicio creado',
+    )
     modalOpen.value = false
+    uploadAbortRef.value = null
+    resetImageState()
     await load()
   } catch (e) {
     formError.value = e instanceof Error ? e.message : 'Error al guardar'
@@ -490,14 +865,27 @@ async function onToggleActivo(s: Servicio) {
   }
 }
 
-async function confirmDelete(s: Servicio) {
-  if (!window.confirm(`¿Eliminar el servicio "${s.label}"? Esta acción no se puede deshacer.`)) return
+// ── Delete modal ─────────────────────────────────────────────────────────────────
+const confirmDeleteItem = ref<Servicio | null>(null)
+const deleting = ref(false)
+
+function confirmDelete(s: Servicio) {
+  confirmDeleteItem.value = s
+}
+
+async function doDelete() {
+  const item = confirmDeleteItem.value
+  if (!item) return
+  deleting.value = true
   try {
-    await deleteServicio(s.id)
-    servicios.value = servicios.value.filter((x) => x.id !== s.id)
+    await deleteServicio(item.id)
+    servicios.value = servicios.value.filter((x) => x.id !== item.id)
     showToast('Servicio eliminado')
+    confirmDeleteItem.value = null
   } catch (e) {
     showToast(e instanceof Error ? e.message : 'Error al eliminar', 'error')
+  } finally {
+    deleting.value = false
   }
 }
 
@@ -517,4 +905,70 @@ load()
 .admin-count { font-size: 0.78rem; color: var(--text3); margin-left: auto; white-space: nowrap; }
 .mono { font-family: var(--font-mono); font-size: 0.8rem; }
 .badge-area { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 0.72rem; background: var(--copper-lt); color: var(--copper); text-transform: capitalize; }
+.admin-link-btn { background: none; border: none; color: var(--copper); text-decoration: underline; cursor: pointer; font-size: 0.76rem; margin-left: 6px; }
+.admin-hint { font-size: 0.76rem; color: var(--text3); display: flex; align-items: center; gap: 6px; }
+.admin-hint i { color: var(--copper); }
+.admin-img-preview {
+  width: 56px;
+  height: 56px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  flex-shrink: 0;
+  display: block;
+}
+.admin-img-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 10px 12px;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+.admin-img-info {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+  min-width: 0;
+}
+.admin-img-preview--placeholder {
+  width: 56px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--copper-lt);
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  color: var(--copper);
+  font-size: 1.2rem;
+  flex-shrink: 0;
+}
+.admin-modal--sm {
+  max-width: 460px;
+}
+.servicios-filter-bar {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.servicios-table-card {
+  padding: 0;
+}
+.servicios-row-actions {
+  display: flex;
+  gap: 6px;
+  justify-content: flex-end;
+}
+.servicios-check-label {
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+}
+.servicios-check-input {
+  width: auto;
+}
 </style>

@@ -3,7 +3,6 @@ import { onMounted, onUnmounted } from 'vue'
 import { useReveal } from '../shared/composables/useReveal'
 import { SITE } from '../config/site'
 import { useCotizadorStore } from '../features/cotizador/store'
-import { toDirectImageUrl } from '../shared/utils/image'
 import {
   AREA_KEYS,
   CAT_CONFIG,
@@ -72,7 +71,7 @@ function renderServicios(catalog: Awaited<ReturnType<typeof loadServiciosCatalog
         const tagsHtml = svc.tags?.length
           ? `<div class="svc-item-tags">${svc.tags.map((t: string) => `<span class="svc-item-tag">${escHtml(t)}</span>`).join('')}</div>`
           : ''
-        const thumbUrl = toDirectImageUrl(svc.img_url || '')
+        const thumbUrl = svc.img_url
         const thumbHtml = thumbUrl
           ? `<div class="svc-item-thumb" style="background-image:url(${thumbUrl.replace(/"/g, '%22')})"></div>`
           : ''

@@ -63,3 +63,10 @@ export async function toggleServicioActivo(id: string, activo: boolean): Promise
     .eq('id', id)
   if (error) throw new Error(`[servicios] ${error.message}`)
 }
+
+const IMAGE_BUCKET = 'servicios-images'
+
+export async function removeServicioImage(path: string): Promise<void> {
+  const { error } = await getSupabase().storage.from(IMAGE_BUCKET).remove([path])
+  if (error) throw new Error(`[servicios-images] ${error.message}`)
+}

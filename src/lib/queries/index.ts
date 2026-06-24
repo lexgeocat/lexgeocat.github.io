@@ -4,6 +4,7 @@ export {
   upsertServicio,
   deleteServicio,
   toggleServicioActivo,
+  removeServicioImage,
   type ServicioUpsert,
 } from './servicios'
 export {
