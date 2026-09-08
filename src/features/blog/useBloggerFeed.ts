@@ -15,8 +15,9 @@ export interface BlogEntry {
 }
 
 function parseEntry(e: BloggerEntry, overrideCls?: string, overrideLabel?: string): BlogEntry {
+  const rawTitle = e.title?.$t ?? ''
   const title =
-    e.title?.$t?.trim() ||
+    rawTitle.trim() ||
     (() => {
       const links = e.link || []
       for (const l of links) {
@@ -119,8 +120,6 @@ export function useBloggerFeed(options: {
       const url = `${SITE.blog.feed}${labelPart}?max-results=${options.limit ?? 3}`
       const raw = await jsonpFetch(url)
       entries.value = raw
-        .filter((e) => e.title?.$t?.trim())
-        .slice(0, options.limit ?? 3)
         .map((e) => parseEntry(e, options.categoryCls, options.categoryLabel))
     } catch (e) {
       error.value = e instanceof Error ? e.message : 'Error cargando artículos'
