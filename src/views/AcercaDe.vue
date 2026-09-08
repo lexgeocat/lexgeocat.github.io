@@ -34,13 +34,13 @@ onUnmounted(() => {
                 Cristian B. Ruiz Q.
               </div>
               <div class="about-img-ph-loc">
-                Viacha · La Paz · Bolivia
+                La Paz · Bolivia
               </div>
             </div>
           </div>
           <div class="about-badge-wrap">
             <div class="about-badge-n">
-              7
+              5
             </div>
             <div class="about-badge-l">
               Especialidades
@@ -53,14 +53,14 @@ onUnmounted(() => {
             class="st"
             style="color: var(--text)"
           >
-            Cristian B. Ruiz Quiroga
+            Cristian B. Ruiz Q.
           </h1>
           <p class="about-subtitle">
             Técnico Universitario Superior en Catastro y Ordenamiento Territorial · Licenciado en
             Derecho
           </p>
           <p>
-            Soy <strong>Tec. Univ. Sup. en Catastro y Ordenamiento Territorial</strong> egresado de
+            Soy <strong>Tec. Univ. Sup. en Catastro y Ordenamiento Territorial</strong> titulado de
             la <strong>UMSA</strong>, colegiado en la
             <strong>Sociedad de Ingenieros de Bolivia — S.I.B. Nacional</strong> bajo el
             <strong>Registro Nacional Técnico R.N.T. Nº 970285</strong>. Complemento mi formación
@@ -137,8 +137,16 @@ onUnmounted(() => {
           <div class="about-tags">
             <span class="about-tag"><i
               aria-hidden="true"
-              class="fa-solid fa-scale-balanced"
-            /> Derecho</span>
+              class="fa-solid fa-tractor"
+            /> Derecho Agrario</span>
+            <span class="about-tag"><i
+              aria-hidden="true"
+              class="fa-solid fa-building-columns"
+            /> Derecho Administrativo</span>
+            <span class="about-tag"><i
+              aria-hidden="true"
+              class="fa-solid fa-leaf"
+            /> Derecho Ambiental</span>
             <span class="about-tag"><i
               aria-hidden="true"
               class="fa-solid fa-map"
@@ -148,31 +156,35 @@ onUnmounted(() => {
               class="fa-solid fa-compass-drafting"
             /> Ordenamiento
               Territorial</span>
-            <span class="about-tag"><i
-              aria-hidden="true"
-              class="fa-solid fa-earth-americas"
-            /> Geografía</span>
-            <span class="about-tag"><i
-              aria-hidden="true"
-              class="fa-solid fa-mountain"
-            /> Topografía y Geodesia</span>
-            <span class="about-tag"><i
-              aria-hidden="true"
-              class="fa-solid fa-layer-group"
-            /> Geomática</span>
-            <span class="about-tag"><i
-              aria-hidden="true"
-              class="fa-solid fa-code"
-            /> Desarrollo de Software y Web</span>
           </div>
           <h3 class="about-h3">
             Conocimientos autodidactas complementarios
           </h3>
           <p class="about-autodidacta-text">
             Además de mi formación universitaria, desarrollo de manera autodidacta competencias
-            avanzadas en:
+            avanzadas en el campo de la Geomática:
           </p>
           <div class="about-tags">
+            <span class="about-tag"><i
+              aria-hidden="true"
+              class="fa-solid fa-earth-americas"
+            /> Sistemas de Información Geográfica (SIG)</span>
+            <span class="about-tag"><i
+              aria-hidden="true"
+              class="fa-solid fa-layer-group"
+            /> QGIS</span>
+            <span class="about-tag"><i
+              aria-hidden="true"
+              class="fa-solid fa-globe"
+            /> ArcGIS Desktop / ArcGIS Online</span>
+            <span class="about-tag"><i
+              aria-hidden="true"
+              class="fa-solid fa-mountain"
+            /> Topografía y Geodesia</span>
+            <span class="about-tag"><i
+              aria-hidden="true"
+              class="fa-solid fa-code"
+            /> Desarrollo de Software y Web</span>
             <span class="about-tag"><i
               aria-hidden="true"
               class="fa-solid fa-cube"
@@ -180,37 +192,7 @@ onUnmounted(() => {
             <span class="about-tag"><i
               aria-hidden="true"
               class="fa-solid fa-server"
-            /> GeoServer / MapServer</span>
-            <span class="about-tag"><i
-              aria-hidden="true"
-              class="fa-solid fa-map"
-            /> QGIS avanzado</span>
-            <span class="about-tag"><i
-              aria-hidden="true"
-              class="fa-solid fa-satellite-dish"
-            /> Teledetección</span>
-            <span class="about-tag"><i
-              aria-hidden="true"
-              class="fa-solid fa-drone"
-            /> Fotogrametría con drone</span>
-            <span class="about-tag"><i
-              aria-hidden="true"
-              class="fa-solid fa-globe"
-            /> Python geo-espacial</span>
-            <span class="about-tag"><i
-              aria-hidden="true"
-              class="fa-solid fa-code"
-            /> JavaScript / Leaflet /
-              MapLibre</span>
-            <span class="about-tag"><i
-              aria-hidden="true"
-              class="fa-solid fa-gears"
-            /> Automatización SIG</span>
-            <span class="about-tag"><i
-              aria-hidden="true"
-              class="fa-solid fa-cloud"
-            /> Despliegue web (VPS, GitHub
-              Pages)</span>
+            /> GeoServer / GeoNetwork / GeoNode</span>
           </div>
           <div class="about-actions">
             <router-link
@@ -239,9 +221,12 @@ onUnmounted(() => {
       <div class="at-body">
         <h2>Formación y ejercicio profesional</h2>
         <p>
-          Mi perfil combina la práctica jurídica con la gestión técnica del territorio, lo que me
-          permite abordar proyectos que requieren tanto criterio legal como precisión cartográfica,
-          catastral y tecnológica.
+          Mi trayectoria articula dos campos que pocas veces convergen en un mismo perfil: el
+          ejercicio del derecho y la gestión técnica del territorio. Esta doble formación me
+          permite intervenir en procesos de saneamiento de la propiedad, regularización catastral,
+          ordenamiento territorial y asesoría jurídica especializada en Derecho Agrario,
+          Administrativo y Ambiental, integrando siempre el marco normativo vigente con la
+          realidad técnica del terreno.
         </p>
         <div class="legal-note">
           <i
