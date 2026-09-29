@@ -11,6 +11,15 @@ if (!PLACEHOLDER.test(template)) {
     throw new Error('[prerender] falta <meta name="seo-placeholder"> en index.html')
 }
 
+// Fix 3: detectar en build si el router usa paths no registrados en ROUTES
+const routerSrc = readFileSync(join(root, 'src/router/index.ts'), 'utf8')
+const used = [...routerSrc.matchAll(/seo\('([^']+)'\)/g)].map((m) => m[1])
+const known = new Set(ROUTES.map((r) => r.path))
+const missing = used.filter((p) => !known.has(p))
+if (missing.length) {
+    throw new Error(`[prerender] seo() usa paths no registrados: ${missing.join(', ')}`)
+}
+
 const OG_IMAGE = `${SITE_URL}/og-image.png`
 const esc = (s) => s.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;')
 const jsonLd = (obj) =>

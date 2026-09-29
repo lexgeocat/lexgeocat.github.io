@@ -15,15 +15,12 @@ const router = createRouter({
       component: () => import('../admin/AdminApp.vue'),
       children: adminRoutes,
     },
+    // HOME
     {
       path: '/',
       name: 'home',
       component: () => import('../views/Home.vue'),
-      meta: {
-        ...seo('/pages/index.html'),
-        navLabel: 'Inicio',
-        navIcon: 'fa-house',
-      },
+      meta: { ...seo('/'), navLabel: 'Inicio', navIcon: 'fa-house' },
     },
     {
       path: '/pages/servicios.html',

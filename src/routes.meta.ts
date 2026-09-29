@@ -113,8 +113,17 @@ export const ROUTES: RouteSeo[] = [
   },
 ]
 
+const FALLBACK = {
+  title: 'LexGeoCat — Derecho, Catastro y Geomática en Bolivia',
+  description:
+    'Servicios profesionales en Derecho, Catastro, Ordenamiento Territorial, Topografía, Geomática y Desarrollo de Software en Bolivia.',
+}
+
 export function seo(path: string) {
   const r = ROUTES.find((x) => x.path === path)
-  if (!r) throw new Error(`[seo] ruta no registrada en routes.meta.ts: ${path}`)
+  if (!r) {
+    console.warn(`[seo] ruta no registrada en routes.meta.ts: ${path}`)
+    return FALLBACK
+  }
   return { title: r.title, description: r.description }
 }
