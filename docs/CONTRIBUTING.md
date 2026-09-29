@@ -8,7 +8,7 @@ npm run build        # build producción
 npm run typecheck    # vue-tsc --noEmit
 npm run lint         # eslint + --fix
 npm run lint:css     # stylelint
-npm run prebuild     # genera sitemap.xml
+npm run prebuild     # genera sitemap-lgc.xml
 ```
 
 ## Antes de hacer push

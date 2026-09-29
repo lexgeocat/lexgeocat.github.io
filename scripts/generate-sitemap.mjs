@@ -4,7 +4,7 @@ import { fileURLToPath } from 'node:url'
 import { ROUTES, SITE_URL } from '../src/routes.meta.ts'
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..')
-const sitemapOut = join(root, 'public/sitemap.xml')
+const sitemapOut = join(root, 'public/sitemap-lgc.xml')
 
 // Fecha en zona horaria de Bolivia (evita lastmod "futuro" por UTC)
 const lastmod = new Date().toLocaleDateString('en-CA', { timeZone: 'America/La_Paz' })
