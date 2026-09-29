@@ -138,7 +138,7 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
               </router-link>
             </li>
             <li>
-              <router-link to="/pages/geomantica.html">
+              <router-link to="/pages/geomatica.html">
                 <i
                   aria-hidden="true"
                   class="fa-solid fa-chevron-right"

@@ -1,13 +1,19 @@
 {
   "@context": "https://schema.org",
   "@type": "LegalService",
+  "@id": "https://lexgeocat.github.io/#organization",
   "name": "LexGeoCat",
   "url": "https://lexgeocat.github.io/",
-  "image": "https://lexgeocat.github.io/favicon.svg",
-  "logo": "https://lexgeocat.github.io/android-chrome-512x512.png",
+  "image": "https://lexgeocat.github.io/og-image.png",
+  "logo": {
+    "@type": "ImageObject",
+    "url": "https://lexgeocat.github.io/android-chrome-512x512.png",
+    "width": 512,
+    "height": 512
+  },
   "email": "lexgeocat@gmail.com",
   "telephone": "+59176711790",
-  "priceRange": "Bs",
+  "priceRange": "Bs 250 - Bs 90000",
   "address": {
     "@type": "PostalAddress",
     "addressLocality": "Viacha",
@@ -18,10 +24,13 @@
     "@type": "Country",
     "name": "Bolivia"
   },
+  "knowsLanguage": "es",
   "founder": {
     "@type": "Person",
+    "@id": "https://lexgeocat.github.io/#founder",
     "name": "Cristian B. Ruiz Quiroga",
-    "jobTitle": "Abogado · Ingeniero Catastral",
+    "jobTitle": "Abogado · Técnico en Catastro y Ordenamiento Territorial",
+    "url": "https://lexgeocat.github.io/pages/acerca-de.html",
     "knowsAbout": [
       "Derecho Territorial",
       "Catastro Multifinalitario",
@@ -32,10 +41,15 @@
       "Ordenamiento Territorial"
     ]
   },
+  "hasOfferCatalog": {
+    "@type": "OfferCatalog",
+    "name": "Servicios profesionales",
+    "url": "https://lexgeocat.github.io/pages/servicios.html"
+  },
   "sameAs": [
     "https://www.facebook.com/CrisCat17",
-    "https://www.linkedin.com/lexgeocat",
-    "https://www.youtube.com/@lexgeocat"
+    "https://www.youtube.com/@lexgeocat",
+    "https://lexgeocat.blogspot.com/"
   ],
   "description": "Servicios profesionales en Derecho, Catastro, Ordenamiento Territorial, Geografía, Topografía, Geodesia, Geomática y Desarrollo de Software en Bolivia."
 }

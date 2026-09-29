@@ -1,13 +1,5 @@
-# LexGeoCat — Robots.txt
-# https://lexgeocat.github.io/
-
 User-agent: *
 Allow: /
+Disallow: /admin
 
-# Bloquear archivos JavaScript y CSS del build
-Disallow: /assets/*.js
-Disallow: /assets/*.css
-Disallow: /assets/vendor/
-
-# Sitemap
 Sitemap: https://lexgeocat.github.io/sitemap.xml

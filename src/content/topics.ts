@@ -192,7 +192,7 @@ export const TOPICS: TopicConfig[] = [
   },
   {
     slug: 'geomatica',
-    routePath: '/pages/geomantica.html',
+    routePath: '/pages/geomatica.html',
     icon: 'fa-layer-group',
     label: 'Especialidad',
     title: 'Geomática',

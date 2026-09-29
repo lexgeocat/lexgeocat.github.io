@@ -24,6 +24,9 @@ const description = computed(
 const canonical = computed(() => SITE_URL + route.path)
 const robots = computed(() => (route.meta.noindex ? 'noindex,follow' : 'index,follow'))
 
+// OG Image estática para que el cliente no pise la generada en build/SSR
+const ogImage = 'https://lexgeocat.github.io/og-image.png'
+
 useHead({
   title,
   meta: [
@@ -35,7 +38,9 @@ useHead({
     { property: 'og:type', content: 'website' },
     { property: 'og:locale', content: 'es_BO' },
     { property: 'og:site_name', content: 'LexGeoCat' },
-    { name: 'twitter:card', content: 'summary' },
+    { property: 'og:image', content: ogImage },
+    { name: 'twitter:card', content: 'summary_large_image' },
+    { name: 'twitter:image', content: ogImage },
     { name: 'twitter:title', content: title },
     { name: 'twitter:description', content: description },
   ],

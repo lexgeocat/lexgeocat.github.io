@@ -114,17 +114,6 @@ function buildNav(): NavItem[] {
 
 const nav = buildNav()
 
-function navigateTo(id: string) {
-  const item =
-    nav.find((n) => n.id === id) || nav.flatMap((n) => n.children || []).find((n) => n.id === id)
-  if (!item) return
-  if (item.external || item.path.startsWith('http')) {
-    window.open(item.path, '_blank', 'noopener')
-  } else {
-    router.push(item.path)
-  }
-  mobileOpen.value = false
-}
 
 function onScroll() {
   const y = window.scrollY
@@ -192,7 +181,9 @@ onUnmounted(() => {
             >
           </div>
           <div class="logo-text">
-            <h1>Lex<span class="geo">Geo</span><span class="cat">Cat</span></h1>
+            <div class="logo-title">
+              Lex<span class="geo">Geo</span><span class="cat">Cat</span>
+            </div>
             <div class="subtitle">
               Derecho · Catastro · Geomática · Software
             </div>
@@ -362,32 +353,44 @@ onUnmounted(() => {
             />
           </span>
           <div class="nav-dropdown-content">
-            <a
+            <router-link
               v-for="child in item.children"
               :key="child.id"
-              href="javascript:void(0)"
-              @click="navigateTo(child.id)"
+              :to="child.path"
+              @click="mobileOpen = false"
             >
               <i
                 aria-hidden="true"
                 :class="'fa-solid ' + child.icon"
                 style="margin-right: 8px; font-size: 11px"
               />{{ child.label }}
-            </a>
+            </router-link>
           </div>
         </div>
         <a
-          v-else
-          href="javascript:void(0)"
+          v-else-if="item.external"
+          :href="item.path"
           class="nav-link"
-          :class="{ active: $route.path === item.path }"
-          @click="navigateTo(item.id)"
+          target="_blank"
+          rel="noopener"
         >
           <i
             aria-hidden="true"
             :class="'fa-solid ' + item.icon"
           />{{ item.label }}
         </a>
+        <router-link
+          v-else
+          :to="item.path"
+          class="nav-link"
+          active-class="active"
+          @click="mobileOpen = false"
+        >
+          <i
+            aria-hidden="true"
+            :class="'fa-solid ' + item.icon"
+          />{{ item.label }}
+        </router-link>
       </template>
     </div>
   </nav>
@@ -551,28 +554,40 @@ onUnmounted(() => {
               v-for="child in item.children"
               :key="child.id"
             >
-              <a
-                href="javascript:void(0)"
-                @click="navigateTo(child.id)"
+              <router-link
+                :to="child.path"
+                @click="mobileOpen = false"
               >
                 <i
                   aria-hidden="true"
                   :class="'fa-solid ' + child.icon"
                 />{{ child.label }}
-              </a>
+              </router-link>
             </li>
           </ul>
         </li>
-        <li v-else>
+        <li v-else-if="item.external">
           <a
-            href="javascript:void(0)"
-            @click="navigateTo(item.id)"
+            :href="item.path"
+            target="_blank"
+            rel="noopener"
           >
             <i
               aria-hidden="true"
               :class="'fa-solid ' + item.icon"
             />{{ item.label }}
           </a>
+        </li>
+        <li v-else>
+          <router-link
+            :to="item.path"
+            @click="mobileOpen = false"
+          >
+            <i
+              aria-hidden="true"
+              :class="'fa-solid ' + item.icon"
+            />{{ item.label }}
+          </router-link>
         </li>
       </template>
     </ul>

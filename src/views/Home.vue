@@ -46,7 +46,7 @@ onMounted(() => {
       { id: 'ordenamiento', label: 'Ordenamiento' },
       { id: 'geografia', label: 'Geografía' },
       { id: 'topogeodesia', label: 'Topografía' },
-      { id: 'geomantica', label: 'Geomática' },
+      { id: 'geomatica', label: 'Geomática' },
       { id: 'desarrollo', label: 'Software' },
     ],
   }
@@ -358,7 +358,7 @@ onUnmounted(() => {
         </router-link>
         <router-link
           class="cat-card reveal esp-geomatica"
-          to="/pages/geomantica.html"
+          to="/pages/geomatica.html"
         >
           <i
             aria-hidden="true"
