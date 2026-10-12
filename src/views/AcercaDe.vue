@@ -206,7 +206,7 @@ onUnmounted(() => {
             </router-link>
             <a
               class="btn btn-ghost"
-              href="https://lexgeocat.blogspot.com/"
+              href="https://lexgeocat17.blogspot.com/"
             ><i
               aria-hidden="true"
               class="fa-solid fa-newspaper"

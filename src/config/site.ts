@@ -16,8 +16,8 @@ export const SITE = {
     whatsapp: 'https://wa.me/59176711790',
   },
   blog: {
-    url: 'https://lexgeocat.blogspot.com/',
-    feed: 'https://lexgeocat.blogspot.com/feeds/posts/default',
+    url: 'https://lexgeocat17.blogspot.com/',
+    feed: 'https://lexgeocat17.blogspot.com/feeds/posts/default',
   },
   worker: 'https://stats.lexgeocat.workers.dev',
   goatcounter: 'https://lexgeocat.goatcounter.com',

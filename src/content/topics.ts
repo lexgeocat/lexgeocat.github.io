@@ -54,7 +54,7 @@ export const TOPICS: TopicConfig[] = [
       },
     ],
     blogCta: '¿Quieres profundizar en Derecho?',
-    blogCtaHref: 'https://lexgeocat.blogspot.com/search/label/Derecho',
+    blogCtaHref: 'https://lexgeocat17.blogspot.com/search/label/Derecho',
   },
   {
     slug: 'catastro',
@@ -86,7 +86,7 @@ export const TOPICS: TopicConfig[] = [
       },
     ],
     blogCta: '¿Quieres profundizar en Catastro?',
-    blogCtaHref: 'https://lexgeocat.blogspot.com/search/label/Catastro',
+    blogCtaHref: 'https://lexgeocat17.blogspot.com/search/label/Catastro',
   },
   {
     slug: 'ordenamiento',
@@ -118,7 +118,7 @@ export const TOPICS: TopicConfig[] = [
       },
     ],
     blogCta: '¿Quieres profundizar en Ordenamiento?',
-    blogCtaHref: 'https://lexgeocat.blogspot.com/search/label/Ordenamiento%20Territorial',
+    blogCtaHref: 'https://lexgeocat17.blogspot.com/search/label/Ordenamiento%20Territorial',
   },
   {
     slug: 'geografia',
@@ -274,7 +274,7 @@ export const TOPICS: TopicConfig[] = [
     blogLimit: 10,
     features: [],
     blogCta: '¿Buscas más material?',
-    blogCtaHref: 'https://lexgeocat.blogspot.com/search/label/Recursos',
+    blogCtaHref: 'https://lexgeocat17.blogspot.com/search/label/Recursos',
   },
 ]
 
