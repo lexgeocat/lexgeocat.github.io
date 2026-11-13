@@ -28,5 +28,6 @@ export interface BloggerEntry {
 export interface BloggerFeed {
   feed?: {
     entry?: BloggerEntry[]
+    openSearch$totalResults?: BloggerText
   }
 }

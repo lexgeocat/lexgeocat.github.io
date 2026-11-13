@@ -1,10 +1,12 @@
 .contact-wrap {
   display: grid;
-  grid-template-columns: 1fr 1.2fr;
+  grid-template-columns: 1fr 1.15fr;
   gap: var(--sp-12);
+  align-items: start;
 
-  @media (width <= 768px) {
+  @media (width <= 860px) {
     grid-template-columns: 1fr;
+    gap: var(--sp-8);
   }
 }
 
@@ -12,12 +14,13 @@
   h3 {
     font-family: var(--font-display);
     font-size: var(--fs-2xl-2);
-    font-weight: 700;
+    font-weight: 400;
     margin-bottom: 14px;
+    color: var(--text);
   }
 
   p {
-    font-size: var(--fs-md-3);
+    font-size: var(--fs-md-4);
     color: var(--text2);
     line-height: var(--lh-normal);
     margin-bottom: var(--sp-6);
@@ -26,45 +29,71 @@
 
 .contact-item {
   display: flex;
-  gap: 14px;
+  gap: 16px;
   margin-bottom: var(--sp-5);
   align-items: flex-start;
+  padding: 14px 16px;
+  background-color: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  transition: border-color 0.25s var(--ease);
+
+  &:hover {
+    border-color: var(--copper-bd);
+  }
 }
 
 .contact-icon {
   width: 42px;
   height: 42px;
-  border-radius: 8px;
-  background: var(--copper-lt);
+  border-radius: 10px;
+  background-color: var(--copper-lt);
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: var(--fs-body);
   color: var(--copper);
   flex-shrink: 0;
-  border: 1px solid var(--color-badge-def);
+  border: 1px solid var(--copper-bd);
 }
 
 .contact-text {
   h4 {
-    font-size: 0.85rem;
-    font-weight: 600;
-    margin-bottom: 2px;
+    font-size: var(--fs-sm-3);
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 3px;
     font-family: var(--font-heading);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
   }
 
   p {
-    font-size: var(--fs-base);
+    font-size: var(--fs-md);
     color: var(--text2);
     margin: 0;
+    line-height: 1.45;
   }
 }
 
 .cf-form {
-  background: var(--card);
+  background-color: var(--card);
   border: 1px solid var(--border);
-  border-radius: var(--r);
+  border-radius: var(--rm);
   padding: var(--sp-8);
+  box-shadow: var(--sh2);
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--copper), var(--sapphire));
+  }
 
   .form-group {
     margin-bottom: 18px;
@@ -73,7 +102,7 @@
   label {
     display: block;
     font-family: var(--font-heading);
-    font-size: var(--fs-sm-3);
+    font-size: var(--fs-xs);
     font-weight: 600;
     color: var(--text2);
     margin-bottom: 7px;
@@ -85,47 +114,53 @@
   textarea,
   select {
     width: 100%;
-    padding: var(--sp-3) var(--sp-4);
-    background: var(--bg2);
+    padding: 12px 16px;
+    background-color: var(--bg2);
     border: 1px solid var(--border);
-    border-radius: 8px;
+    border-radius: var(--rs);
     color: var(--text);
     font-family: var(--font-body);
     font-size: var(--fs-md-3);
-    transition: all 0.25s;
+    transition: all 0.22s var(--ease);
     outline: none;
+
+    &::placeholder {
+      color: var(--text3);
+    }
 
     &:focus {
       border-color: var(--copper);
-      box-shadow: var(--sh-copper);
-      background: var(--card);
+      box-shadow: 0 0 0 3px var(--color-glow-copper);
+      background-color: var(--card);
     }
   }
 
   textarea {
-    min-height: 120px;
+    min-height: 130px;
     resize: vertical;
   }
 
   .btn-submit {
-    background: var(--copper);
-    color: var(--bg);
+    background-color: var(--copper);
+    color: #fff;
     border: none;
     padding: 13px var(--sp-8);
-    border-radius: 8px;
-    font-family: var(--font-body);
+    border-radius: var(--rs);
+    font-family: var(--font-heading);
     font-weight: 600;
-    font-size: var(--fs-md-3);
+    font-size: var(--fs-base);
+    letter-spacing: 0.04em;
     cursor: pointer;
-    transition: all 0.25s;
+    transition: all 0.25s var(--ease);
     display: inline-flex;
     align-items: center;
     gap: var(--sp-2);
     width: 100%;
     justify-content: center;
+    box-shadow: var(--sh-copper);
 
     &:hover {
-      background: var(--copper2);
+      background-color: var(--copper2);
       transform: translateY(-2px);
       box-shadow: var(--sh-copper-h);
     }
@@ -138,32 +173,94 @@
 
 /* ── Quick-contact CTA box (Home) ── */
 .cf-form-cta {
-  padding: var(--sp-8);
+  padding: var(--sp-10) var(--sp-8);
   text-align: center;
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: var(--r);
+  background:
+    radial-gradient(circle at top right, var(--color-glow-copper), transparent 60%),
+    radial-gradient(circle at bottom left, var(--color-glow-sapphire), transparent 60%),
+    var(--card);
+  border: 1px solid var(--border2);
+  border-radius: var(--rm);
+  box-shadow: var(--sh2);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--copper), var(--sapphire));
+  }
+
+  .cta-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 5px 12px;
+    border-radius: 999px;
+    background-color: var(--copper-lt);
+    border: 1px solid var(--copper-bd);
+    font-family: var(--font-mono);
+    font-size: var(--fs-2xs);
+    font-weight: 600;
+    color: var(--copper);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: var(--sp-4);
+  }
 
   .cta-lead {
-    font-size: var(--fs-lg);
-    font-weight: 600;
+    font-family: var(--font-display);
+    font-size: var(--fs-2xl);
+    font-weight: 400;
     color: var(--text);
-    margin-bottom: var(--sp-3);
+    margin-bottom: var(--sp-2);
+  }
+
+  .cta-sub {
+    font-size: var(--fs-md);
+    color: var(--text2);
+    max-width: 420px;
+    margin-bottom: var(--sp-5);
+    line-height: var(--lh-normal);
   }
 
   .cta-email {
-    font-size: 0.85rem;
-    color: var(--text2);
-    margin-bottom: var(--sp-5);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    border-radius: var(--rs);
+    background-color: var(--bg2);
+    border: 1px solid var(--border);
+    font-family: var(--font-mono);
+    font-size: var(--fs-sm-3);
+    color: var(--text);
+    margin-bottom: var(--sp-6);
 
     i {
       color: var(--copper);
     }
   }
+
+  .cta-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+    width: 100%;
+  }
 }
 
 .contact-wa-wrap {
-  margin-top: var(--sp-8);
+  margin-top: var(--sp-6);
 
   .btn-whatsapp {
     display: inline-flex;

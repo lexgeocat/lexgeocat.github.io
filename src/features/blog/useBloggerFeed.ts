@@ -63,7 +63,7 @@ function parseEntry(e: BloggerEntry, overrideCls?: string, overrideLabel?: strin
   }
 }
 
-function jsonpFetch(url: string): Promise<BloggerEntry[]> {
+function jsonpFetch(url: string): Promise<{ entries: BloggerEntry[]; total: number }> {
   return new Promise((resolve, reject) => {
     const cbId = '_lgc_' + Math.random().toString(36).slice(2, 11)
     let done = false
@@ -82,7 +82,12 @@ function jsonpFetch(url: string): Promise<BloggerEntry[]> {
       try {
         delete (window as unknown as Record<string, unknown>)[cbId]
       } catch {}
-      resolve(data?.feed?.entry || [])
+      const list = data?.feed?.entry || []
+      const rawTotal = parseInt(data?.feed?.openSearch$totalResults?.$t || '', 10)
+      resolve({
+        entries: list,
+        total: !isNaN(rawTotal) && rawTotal > 0 ? rawTotal : list.length,
+      })
     }
 
     const s = document.createElement('script')
@@ -109,6 +114,7 @@ export function useBloggerFeed(options: {
   categoryLabel?: string
 }) {
   const entries = ref<BlogEntry[]>([])
+  const totalResults = ref(0)
   const loading = ref(false)
   const error = ref('')
 
@@ -118,9 +124,11 @@ export function useBloggerFeed(options: {
     try {
       const labelPart = options.label ? `/-/${encodeURIComponent(options.label)}` : ''
       const url = `${SITE.blog.feed}${labelPart}?max-results=${options.limit ?? 3}`
-      const raw = await jsonpFetch(url)
-      entries.value = raw
-        .map((e) => parseEntry(e, options.categoryCls, options.categoryLabel))
+      const res = await jsonpFetch(url)
+      entries.value = res.entries.map((e) =>
+        parseEntry(e, options.categoryCls, options.categoryLabel),
+      )
+      totalResults.value = res.total
     } catch (e) {
       error.value = e instanceof Error ? e.message : 'Error cargando artículos'
     } finally {
@@ -128,5 +136,5 @@ export function useBloggerFeed(options: {
     }
   }
 
-  return { entries, loading, error, load }
+  return { entries, totalResults, loading, error, load }
 }

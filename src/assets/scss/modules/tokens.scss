@@ -1,190 +1,203 @@
 /* ═══════════════════════════════════════════════════════════════════
-   LEX GEO CAT — DESIGN TOKENS v3.0
-   Fuente única de verdad. Ningún módulo usa valores literales.
+   LEX GEO CAT — DESIGN TOKENS v4.0 (Perceptual Color Science & UI/UX)
+   Fuente única de verdad. Armonía cromática OKLCH + Contraste APCA/WCAG.
    ═══════════════════════════════════════════════════════════════════ */
 
 :root {
   /* ══════════════════════════════════════
      1. PALETA BASE — Modo oscuro (default)
+        Jerarquía de luminancia atmosférica
      ══════════════════════════════════════ */
 
-  --color-bg-primary: #0c1220; /* Azul noche institucional          */
-  --color-bg-surface: #111827; /* Superficie oscura                 */
-  --color-bg-card: #1a2236; /* Tarjeta elevada                   */
-  --color-border: #1f2e45; /* Borde sutil                       */
+  --color-bg-primary: #080d18; /* Azul abisal institucional (L* 5%)  */
+  --color-bg-surface: #0e1626; /* Superficie seccional (L* 9%)       */
+  --color-bg-card: #141f35; /* Tarjeta elevada (L* 13%)           */
+  --color-bg-elevated: #1b2944; /* Superficie interactiva (L* 17%)    */
+  --color-border: #1f2f4a; /* Borde estructural sutil            */
+  --color-border-strong: #2c4266; /* Borde énfasis medio                */
+  --color-border-highlight: #3d5a88; /* Borde especular hover              */
 
   /* ══════════════════════════════════════
      2. ACENTOS CROMÁTICOS INSTITUCIONALES
+        Calibrados para alto contraste sobre fondo oscuro
      ══════════════════════════════════════ */
 
-  --color-copper: #b87333; /* Cobre técnico — acento primario   */
-  --color-copper-glow: #d4924a; /* Cobre brillante — hover / glow    */
-  --color-sapphire: #2a6496; /* Zafiro geodésico — secundario     */
-  --color-sapphire-glow: #3a7ab2; /* Zafiro brillante                  */
-  --color-amber: #f0a500; /* Ámbar — solo highlights críticos  */
-  --color-success: #22c55e; /* Verde éxito (WhatsApp, estados)   */
-  --color-success-dark: #16a34a; /* Verde éxito hover                 */
+  --color-copper: #cc843a; /* Bronce-cobre legal — primario      */
+  --color-copper-glow: #e39d52; /* Bronce luminoso — hover / foco     */
+  --color-copper-deep: #a36222; /* Bronce profundo — active           */
+  --color-sapphire: #3282c4; /* Zafiro geodésico — secundario      */
+  --color-sapphire-glow: #4ea0e6; /* Zafiro cartográfico brillante      */
+  --color-teal: #18a999; /* Esmeralda GIS / Catastro           */
+  --color-teal-glow: #28c7b5; /* Esmeralda luminoso                 */
+  --color-amber: #f59e0b; /* Ámbar — alertas y destacados       */
+  --color-success: #10b981; /* Verde éxito / WhatsApp             */
+  --color-success-dark: #059669; /* Verde éxito hover                  */
+  --color-success-glow: rgb(16 185 129 / 28%);
 
   /* ══════════════════════════════════════
      3. COLORES DE ESPECIALIDADES
-        (usados en cat-cards y placeholders)
+        Armonizados en luminosidad perceptual
      ══════════════════════════════════════ */
 
-  --color-esp-derecho: #c8a020; /* Oro legal                   */
-  --color-esp-derecho-2: #daa520; /* Oro legal claro              */
-  --color-esp-catastro: #1a5c8a; /* Azul catastral               */
-  --color-esp-catastro-2: #2c7be5; /* Azul catastral claro         */
-  --color-esp-ordenamiento: #d4a843; /* Ámbar territorial            */
-  --color-esp-geografia: #1a7a9a; /* Azul geográfico              */
-  --color-esp-topografia: #c8660c; /* Naranja topográfico          */
-  --color-esp-geomatica: #3a5e3a; /* Verde geomática              */
-  --color-esp-geomatica-2: #20b2aa; /* Verde GIS claro              */
-  --color-esp-software: #7c6fc8; /* Púrpura software             */
+  --color-esp-derecho: #dca03a; /* Oro jurídico                       */
+  --color-esp-derecho-2: #eab658; /* Oro jurídico claro                 */
+  --color-esp-catastro: #269bc0; /* Cian-zafiro catastral              */
+  --color-esp-catastro-2: #44b8dc; /* Azul catastral claro               */
+  --color-esp-ordenamiento: #d8963c; /* Ámbar territorial                  */
+  --color-esp-geografia: #2898bd; /* Azul geográfico                    */
+  --color-esp-topografia: #e07b24; /* Cobre topográfico                  */
+  --color-esp-geomatica: #2ca87e; /* Esmeralda geomática                */
+  --color-esp-geomatica-2: #45c49a; /* Verde SIG claro                    */
+  --color-esp-software: #8c7ae6; /* Índigo-violeta software            */
 
-  /* Fondos/gradientes de especialidades para placeholders */
-  --color-esp-derecho-bg-from: #4a1b0c;
-  --color-esp-derecho-bg-to: #8b3e1a;
-  --color-esp-catastro-bg-from: #0a2a2a;
-  --color-esp-catastro-bg-to: #0f5555;
-  --color-esp-ordenamiento-bg-from: #0d1b2a;
-  --color-esp-ordenamiento-bg-to: #1b3148;
-  --color-esp-geografia-bg-from: #0a2a3a;
-  --color-esp-geografia-bg-to: #1a4a6a;
-  --color-esp-topografia-bg-from: #2a1a0a;
-  --color-esp-topografia-bg-to: #5a3a1a;
-  --color-esp-geomatica-bg-from: #1a2e1a;
-  --color-esp-geomatica-bg-to: #2d5c2d;
-  --color-esp-software-bg-from: #1a1a2e;
-  --color-esp-software-bg-to: #2b2b5c;
+  /* Fondos/gradientes de especialidades para cabeceras y tarjetas */
+  --color-esp-derecho-bg-from: #2d180a;
+  --color-esp-derecho-bg-to: #5c3114;
+  --color-esp-catastro-bg-from: #092230;
+  --color-esp-catastro-bg-to: #12435e;
+  --color-esp-ordenamiento-bg-from: #281b0b;
+  --color-esp-ordenamiento-bg-to: #523716;
+  --color-esp-geografia-bg-from: #0a2336;
+  --color-esp-geografia-bg-to: #154568;
+  --color-esp-topografia-bg-from: #2b1608;
+  --color-esp-topografia-bg-to: #592e12;
+  --color-esp-geomatica-bg-from: #0b261e;
+  --color-esp-geomatica-bg-to: #164d3c;
+  --color-esp-software-bg-from: #191636;
+  --color-esp-software-bg-to: #312b68;
 
   /* ══════════════════════════════════════
      4. COLORES REDES SOCIALES
      ══════════════════════════════════════ */
 
   --color-social-facebook: #1877f2;
-  --color-social-twitter: #000;
+  --color-social-twitter: #0f1419;
   --color-social-whatsapp: #25d366;
   --color-social-linkedin: #0a66c2;
   --color-social-telegram: #08c;
-  --color-social-youtube: #f00;
+  --color-social-youtube: #f03;
 
   /* ══════════════════════════════════════
-     5. TEXTO
+     5. TEXTO — Contraste APCA / WCAG AAA
      ══════════════════════════════════════ */
 
-  --color-text-primary: #e8e2d5; /* Pergamino legal                 */
-  --color-text-secondary: #8a97aa; /* Gris azulado suave              */
-  --color-text-muted: #4a5568; /* Texto terciario                 */
+  --color-text-primary: #f2efe9; /* Pergamino alabastro (16.5:1)       */
+  --color-text-secondary: #a6b5cc; /* Pizarra plateada (8.3:1)           */
+  --color-text-muted: #7889a4; /* Peltre técnico (4.8:1 WCAG AA)     */
+  --color-text-subtle: #4e5f7a; /* Texto decorativo / deshabilitado   */
 
   /* ══════════════════════════════════════
      6. EFECTOS — líneas, glow, grid
      ══════════════════════════════════════ */
 
-  --color-grid-line: rgb(42 100 150 / 10%);
-  --color-glow-copper: rgb(184 115 51 / 18%);
-  --color-glow-sapphire: rgb(42 100 150 / 20%);
-  --color-glow-amber: rgb(240 165 0 / 15%);
+  --color-grid-line: rgb(50 130 196 / 9%);
+  --color-glow-copper: rgb(204 132 58 / 18%);
+  --color-glow-sapphire: rgb(50 130 196 / 20%);
+  --color-glow-amber: rgb(245 158 11 / 15%);
+  --color-glow-teal: rgb(24 169 153 / 18%);
 
   /* Superposiciones (overlays) */
-  --color-overlay: rgb(10 12 16 / 92%);
-  --color-overlay-card: rgb(0 0 0 / 70%);
+  --color-overlay: rgb(6 10 18 / 88%);
+  --color-overlay-card: rgb(6 10 18 / 68%);
 
   /* Fondos de badge */
-  --color-badge-law: rgb(124 59 30 / 85%);
-  --color-badge-cat: rgb(0 180 166 / 85%);
-  --color-badge-gis: rgb(58 94 58 / 85%);
-  --color-badge-topo: rgb(200 102 12 / 85%);
-  --color-badge-orden: rgb(212 168 67 / 85%);
-  --color-badge-geo: rgb(26 122 154 / 85%);
-  --color-badge-software: rgb(124 111 200 / 85%);
-  --color-badge-tec: rgb(10 12 16 / 85%);
-  --color-badge-def: rgb(201 168 76 / 85%);
-  --color-badge-gold: rgb(201 168 76 / 80%);
-  --color-badge-vigente: #3ca05a;
-  --color-badge-derogada: #c83232;
-  --color-badge-modificada: #c8a032;
-  --color-badge-teal: rgb(0 180 166 / 80%);
-  --color-badge-white: rgb(240 237 230 / 80%);
-  --color-badge-white-text: #0a0c10;
-  --color-badge-bluedark: rgb(44 62 80 / 80%);
+  --color-badge-law: rgb(146 74 28 / 90%);
+  --color-badge-cat: rgb(16 142 132 / 90%);
+  --color-badge-gis: rgb(32 128 96 / 90%);
+  --color-badge-topo: rgb(196 98 16 / 90%);
+  --color-badge-orden: rgb(186 132 38 / 90%);
+  --color-badge-geo: rgb(26 118 158 / 90%);
+  --color-badge-software: rgb(108 92 196 / 90%);
+  --color-badge-tec: rgb(15 23 42 / 90%);
+  --color-badge-def: rgb(204 132 58 / 45%);
+  --color-badge-gold: rgb(204 132 58 / 88%);
+  --color-badge-vigente: #34d399;
+  --color-badge-derogada: #f87171;
+  --color-badge-modificada: #fbbf24;
+  --color-badge-teal: rgb(24 169 153 / 88%);
+  --color-badge-white: rgb(242 239 233 / 92%);
+  --color-badge-white-text: #080d18;
+  --color-badge-bluedark: rgb(30 48 76 / 88%);
 
   /* Sombras de overlay */
-  --color-shadow-overlay: rgb(0 0 0 / 60%);
+  --color-shadow-overlay: rgb(0 0 0 / 65%);
 
   /* Header backgrounds */
-  --hdr-bg: rgb(12 18 32 / 65%);
-  --hdr-bg-scrolled: rgb(12 18 32 / 92%);
+  --hdr-bg: rgb(8 13 24 / 78%);
+  --hdr-bg-scrolled: rgb(8 13 24 / 94%);
 
   /* Gradiente hero light */
-  --color-hero-light-1: #f5f2e8;
-  --color-hero-light-2: #eeead8;
-  --color-hero-light-3: #e5e0d0;
-  --color-hero-light-fade: #e8e4d4;
+  --color-hero-light-1: #f8f6f1;
+  --color-hero-light-2: #f1ede4;
+  --color-hero-light-3: #e7e1d4;
+  --color-hero-light-fade: #ebe6da;
 
   /* ══════════════════════════════════════
-     7. TIPOGRAFÍA — familias
+     7. TIPOGRAFÍA — arquitectura editorial y técnica
+        - Display: DM Serif Display (Autoridad jurídica / editorial)
+        - Heading/UI: Inter (Precisión neo-grotesca y alta legibilidad)
+        - Brand: Syne (Identidad geométrica de marca)
+        - Mono: JetBrains Mono (Coordenadas, códigos, métricas)
      ══════════════════════════════════════ */
 
-  --font-display: 'DM Serif Display', georgia, serif;
-  --font-heading: 'Syne', system-ui, sans-serif;
-  --font-body: 'Inter', system-ui, sans-serif;
-  --font-mono: 'JetBrains Mono', monospace;
+  --font-display: 'DM Serif Display', georgia, 'Times New Roman', serif;
+  --font-heading: 'Inter', -apple-system, blinkmacsystemfont, 'Segoe UI', sans-serif;
+  --font-brand: 'Syne', 'Inter', system-ui, sans-serif;
+  --font-body: 'Inter', -apple-system, blinkmacsystemfont, 'Segoe UI', sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, 'Cascadia Code', monospace;
 
   /* ══════════════════════════════════════
-     8. ESCALA TIPOGRÁFICA COMPLETA
-        Nomenclatura: --fs-{size}
-        xs → 3xs cubre todo el rango usado.
-        Las tallas de sección hero/h1/h2/h3
-        conservan sus nombres semánticos.
+     8. ESCALA TIPOGRÁFICA MODULAR
      ══════════════════════════════════════ */
 
-  /* Escala fija (módulos de detalle) */
-  --fs-2xs: 0.62rem; /* badges, eyebrows más pequeños        */
-  --fs-xs: 0.68rem; /* fechas, tags pequeños                */
-  --fs-sm: 0.72rem; /* labels caps, meta                    */
-  --fs-sm-2: 0.75rem; /* meta secundario                      */
-  --fs-sm-3: 0.78rem; /* texto UI pequeño                     */
-  --fs-base: 0.82rem; /* base UI (botones, inputs)            */
-  --fs-md: 0.86rem; /* excerpt, snippets                    */
-  --fs-md-2: 0.88rem; /* párrafo secundario                   */
-  --fs-md-3: 0.9rem; /* párrafo / labels form                */
-  --fs-md-4: 0.92rem; /* párrafo                              */
-  --fs-body: 1rem; /* cuerpo principal                     */
-  --fs-lg: 1.05rem; /* párrafo destacado                    */
-  --fs-lg-2: 1.08rem; /* blockquote                           */
-  --fs-xl: 1.1rem; /* svc-title, feature title             */
-  --fs-xl-2: 1.15rem; /* card title                           */
-  --fs-xl-3: 1.2rem; /* h4 section                           */
-  --fs-xl-4: 1.25rem; /* h3 article                           */
-  --fs-xl-5: 1.3rem; /* logo, modal h3                       */
-  --fs-2xl: 1.4rem; /* footer brand, contact h3             */
-  --fs-2xl-2: 1.5rem; /* blog-cta h3, contact info h3         */
-  --fs-2xl-3: 1.55rem; /* article h2                           */
-  --fs-2xl-4: 1.6rem; /* .cot-total-amount, at-t mobile       */
-  --fs-2xl-5: 1.8rem; /* hstat-n, svc-hstat-n base            */
-  --fs-3xl: 2rem; /* svc-hstat-n desktop                  */
-  --fs-3xl-2: 2.4rem; /* .at-t, .about-badge-n base           */
-  --fs-3xl-3: 2.5rem; /* about-badge-n                        */
+  --fs-2xs: 0.65rem; /* 10.4px — badges, micro-labels        */
+  --fs-xs: 0.72rem; /* 11.5px — fechas, tags, metadatos     */
+  --fs-sm: 0.76rem; /* 12.2px — nav links, eyebrows         */
+  --fs-sm-2: 0.8rem; /* 12.8px — meta secundario             */
+  --fs-sm-3: 0.84rem; /* 13.4px — texto UI compacto           */
+  --fs-base: 0.875rem; /* 14px   — botones, controles UI       */
+  --fs-md: 0.9rem; /* 14.4px — excerpts, resúmenes         */
+  --fs-md-2: 0.925rem; /* 14.8px — descripciones de tarjeta    */
+  --fs-md-3: 0.95rem; /* 15.2px — inputs, cuerpo compacto     */
+  --fs-md-4: 0.975rem; /* 15.6px — párrafo estándar            */
+  --fs-body: 1rem; /* 16px   — cuerpo base                 */
+  --fs-lg: 1.0625rem; /* 17px   — lectura editorial / lead    */
+  --fs-lg-2: 1.125rem; /* 18px   — citas y subtítulos          */
+  --fs-xl: 1.15rem; /* 18.4px — títulos de servicio         */
+  --fs-xl-2: 1.22rem; /* 19.5px — títulos de tarjeta          */
+  --fs-xl-3: 1.28rem; /* 20.5px — h4 de sección               */
+  --fs-xl-4: 1.35rem; /* 21.6px — h3 artículo                 */
+  --fs-xl-5: 1.42rem; /* 22.7px — modal h3                    */
+  --fs-2xl: 1.5rem; /* 24px   — marca footer, h3 destacado  */
+  --fs-2xl-2: 1.625rem; /* 26px   — encabezados de bloque       */
+  --fs-2xl-3: 1.75rem; /* 28px   — h2 de artículo              */
+  --fs-2xl-4: 1.85rem; /* 29.6px — totales y titulares móviles */
+  --fs-2xl-5: 2rem; /* 32px   — contadores estadísticos     */
+  --fs-3xl: 2.25rem; /* 36px   — métricas desktop            */
+  --fs-3xl-2: 2.5rem; /* 40px   — íconos principales y h1 art */
+  --fs-3xl-3: 2.75rem; /* 44px   — insignia numérica           */
 
-  /* Escala responsiva (secciones estructurales) */
-  --fs-hero: clamp(3.2rem, 7.5vw, 6.5rem);
-  --fs-h1: clamp(2rem, 4vw, 3.2rem);
-  --fs-h2: clamp(1.5rem, 2.5vw, 2.1rem);
-  --fs-h3: 1.2rem;
+  /* Escala fluida responsiva (secciones estructurales) */
+  --fs-hero: clamp(2.75rem, 5.6vw + 1rem, 5.25rem);
+  --fs-h1: clamp(2.1rem, 3.5vw + 0.8rem, 3.4rem);
+  --fs-h2: clamp(1.65rem, 2.4vw + 0.6rem, 2.45rem);
+  --fs-h3: 1.25rem;
 
   /* ══════════════════════════════════════
      9. LINE-HEIGHT & LETTER-SPACING
      ══════════════════════════════════════ */
 
-  --lh-tight: 1.1;
+  --lh-tight: 1.15;
+  --lh-snug: 1.32;
   --lh-normal: 1.65;
-  --lh-loose: 1.75;
-  --ls-wide: 0.08em;
-  --ls-caps: 0.12em;
-  --ls-mono: 0.04em;
+  --lh-loose: 1.78;
+  --ls-tight: -0.02em;
+  --ls-wide: 0.06em;
+  --ls-caps: 0.1em;
+  --ls-mono: 0.03em;
 
   /* ══════════════════════════════════════
-    10. SPACING — escala 4-point
+    10. SPACING — escala armónica 4-point
      ══════════════════════════════════════ */
 
   --sp-1: 4px;
@@ -204,44 +217,44 @@
   --sp-20: 80px;
 
   /* ══════════════════════════════════════
-    11. GEOMETRÍA — radios
+    11. GEOMETRÍA — radios arquitectónicos
      ══════════════════════════════════════ */
 
-  --rs: 4px; /* micro (tags, chips)                    */
-  --r: 10px; /* radio estándar (cards, inputs)         */
-  --rm: 12px; /* radio medio                            */
-  --rl: 18px; /* radio grande (modales, secciones CTA)  */
+  --rs: 6px; /* micro (tags, chips, badges)            */
+  --r: 12px; /* radio estándar (cards, inputs)         */
+  --rm: 16px; /* radio medio (paneles, acordeones)      */
+  --rl: 22px; /* radio grande (modales, secciones CTA)  */
 
   /* ══════════════════════════════════════
-    12. SOMBRAS
+    12. SOMBRAS — Elevación multicapa realista
      ══════════════════════════════════════ */
 
-  --sh: 0 1px 3px rgb(0 0 0 / 40%), 0 1px 2px rgb(0 0 0 / 30%);
-  --sh2: 0 8px 28px rgb(0 0 0 / 50%), 0 2px 8px rgb(0 0 0 / 30%);
-  --sh3: 0 20px 56px rgb(0 0 0 / 60%), 0 4px 12px rgb(0 0 0 / 40%);
-  --sh-copper: 0 4px 20px rgb(184 115 51 / 20%), 0 1px 4px rgb(184 115 51 / 12%);
-  --sh-copper-h: 0 8px 32px rgb(184 115 51 / 32%), 0 2px 8px rgb(184 115 51 / 18%);
-  --sh-sapphire: 0 4px 20px rgb(42 100 150 / 18%);
-  --sh-inset: inset 0 1px 0 rgb(255 255 255 / 4%);
+  --sh: 0 2px 6px rgb(0 0 0 / 32%), 0 1px 2px rgb(0 0 0 / 24%);
+  --sh2: 0 12px 32px -4px rgb(0 0 0 / 48%), 0 4px 12px -2px rgb(0 0 0 / 32%);
+  --sh3: 0 24px 64px -8px rgb(0 0 0 / 62%), 0 8px 20px -4px rgb(0 0 0 / 42%);
+  --sh-copper: 0 4px 20px rgb(204 132 58 / 24%), 0 1px 4px rgb(204 132 58 / 14%);
+  --sh-copper-h: 0 10px 32px rgb(204 132 58 / 36%), 0 3px 10px rgb(204 132 58 / 22%);
+  --sh-sapphire: 0 4px 20px rgb(50 130 196 / 24%);
+  --sh-inset: inset 0 1px 0 rgb(255 255 255 / 6%);
 
   /* ══════════════════════════════════════
-    13. EASING
+    13. EASING — Curvas físicas naturales
      ══════════════════════════════════════ */
 
-  --ease: cubic-bezier(0.4, 0, 0.2, 1);
-  --ease-out: cubic-bezier(0, 0, 0.2, 1);
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
 
   /* ══════════════════════════════════════
     14. LAYOUT
      ══════════════════════════════════════ */
 
-  --con: 1240px;
+  --con: 1260px;
   --h: 72px; /* altura del header fijo */
+  --nav-h: 44px; /* altura de la barra de navegación */
 
   /* ══════════════════════════════════════
-    15. ALIASES OPERACIONALES
-        (nombran el ROL, no el valor)
+    15. ALIASES OPERACIONALES SEMÁNTICOS
      ══════════════════════════════════════ */
 
   --bg: var(--color-bg-primary);
@@ -249,101 +262,135 @@
   --bg3: var(--color-bg-card);
   --card: var(--color-bg-card);
   --card2: var(--color-bg-surface);
-  --card3: #1e2d45;
+  --card3: var(--color-bg-elevated);
   --copper: var(--color-copper);
   --copper2: var(--color-copper-glow);
-  --copper-lt: rgb(184 115 51 / 7%);
+  --copper-lt: rgb(204 132 58 / 11%);
+  --copper-bd: rgb(204 132 58 / 28%);
   --sapphire: var(--color-sapphire);
   --sapphire2: var(--color-sapphire-glow);
-  --sapphire-lt: rgb(42 100 150 / 7%);
+  --sapphire-lt: rgb(50 130 196 / 11%);
+  --sapphire-bd: rgb(50 130 196 / 28%);
+  --teal: var(--color-teal);
+  --teal2: var(--color-teal-glow);
+  --teal-lt: rgb(24 169 153 / 11%);
+  --teal-bd: rgb(24 169 153 / 28%);
+  --gold: var(--color-esp-derecho);
+  --gold-lt: rgb(220 160 58 / 12%);
   --amber: var(--color-amber);
-  --amber-lt: rgb(240 165 0 / 7%);
+  --amber-lt: rgb(245 158 11 / 11%);
   --text: var(--color-text-primary);
   --text2: var(--color-text-secondary);
   --text3: var(--color-text-muted);
-  --text4: #3a4558;
+  --text4: var(--color-text-subtle);
   --border: var(--color-border);
-  --border2: #28384f;
-  --border3: #38506a;
+  --border2: var(--color-border-strong);
+  --border3: var(--color-border-highlight);
 }
 
-/* ══════════════════════════════════════
-   TEMA CLARO — sobreescribe solo lo necesario
-   ══════════════════════════════════════ */
+/* ═══════════════════════════════════════════════════════════════════
+   TEMA CLARO — Papel Algodón Institucional & Tinta Oxford
+   Calibrado con ciencia del color para lectura prolongada sin fatiga
+   ═══════════════════════════════════════════════════════════════════ */
 
 [data-theme='light'] {
-  --color-bg-primary: #f2efe8; /* Pergamino cálido                  */
-  --color-bg-surface: #fafaf8; /* Papel marfil                      */
-  --color-bg-card: #fff;
-  --color-border: #ddd8ce;
-  --color-copper: #9a5f22; /* Cobre oscuro — mejor contraste    */
-  --color-copper-glow: #b8732e;
-  --color-sapphire: #1e5280; /* Zafiro oscuro                     */
-  --color-sapphire-glow: #2a6496;
-  --color-amber: #c87800;
+  --color-bg-primary: #f6f4ef; /* Papel archivo cálido (Alabaster)   */
+  --color-bg-surface: #ede9df; /* Piedra cálida para secciones       */
+  --color-bg-card: #fff; /* Superficie de tarjeta pura         */
+  --color-bg-elevated: #faf8f4; /* Superficie hover cálida            */
+  --color-border: #dcd6ca; /* Borde piedra sutil                 */
+  --color-border-strong: #c5bdb0; /* Borde estructural                  */
+  --color-border-highlight: #9e9484; /* Borde énfasis                      */
+  --color-copper: #9a5312; /* Bronce soberano oscuro (5.7:1)     */
+  --color-copper-glow: #b8661d; /* Bronce cálido hover                */
+  --color-copper-deep: #7c410c;
+  --color-sapphire: #15548a; /* Zafiro marino profundo (7.5:1)     */
+  --color-sapphire-glow: #1f6db0;
+  --color-teal: #0d6e63; /* Esmeralda cartográfico oscuro      */
+  --color-teal-glow: #12877a;
+  --color-amber: #b45309;
 
-  /* Especialidades en modo claro (ligera saturación extra) */
-  --color-esp-derecho: #9a6010;
-  --color-esp-catastro: #1a4a72;
-  --color-esp-topografia: #a84e08;
-  --color-esp-geomatica: #2e4a2e;
-  --color-esp-software: #5a4fa8;
+  /* Especialidades en modo claro (óptimo contraste sobre blanco/marfil) */
+  --color-esp-derecho: #965a0e;
+  --color-esp-derecho-2: #b8731a;
+  --color-esp-catastro: #135d78;
+  --color-esp-catastro-2: #1c7ca0;
+  --color-esp-ordenamiento: #945910;
   --color-esp-geografia: #145e7a;
-  --color-text-primary: #141c2a;
-  --color-text-secondary: #4a5568;
-  --color-text-muted: #8a97aa;
-  --color-grid-line: rgb(30 82 128 / 6%);
-  --color-glow-copper: rgb(154 95 34 / 10%);
-  --color-glow-sapphire: rgb(30 82 128 / 10%);
-  --color-overlay: rgb(242 239 232 / 92%);
-  --color-overlay-card: rgb(0 0 0 / 12%);
-  --color-badge-law: rgb(124 59 30 / 85%);
-  --color-badge-cat: rgb(0 120 110 / 80%);
-  --color-badge-gis: rgb(58 94 58 / 80%);
-  --color-badge-topo: rgb(200 102 12 / 85%);
-  --color-badge-orden: rgb(212 168 67 / 85%);
-  --color-badge-geo: rgb(26 122 154 / 85%);
-  --color-badge-software: rgb(124 111 200 / 85%);
-  --color-badge-tec: rgb(10 12 16 / 80%);
-  --color-badge-def: rgb(201 168 76 / 85%);
-  --color-badge-gold: rgb(201 168 76 / 75%);
-  --color-badge-teal: rgb(0 160 146 / 75%);
-  --color-badge-white: rgb(240 237 230 / 85%);
-  --color-badge-white-text: #0a0c10;
-  --color-badge-bluedark: rgb(44 62 80 / 80%);
-  --color-shadow-overlay: rgb(0 0 0 / 30%);
-  --hdr-bg: rgb(242 239 232 / 65%);
-  --hdr-bg-scrolled: rgb(242 239 232 / 94%);
-  --color-hero-light-1: #f5f2e8;
-  --color-hero-light-2: #eeead8;
-  --color-hero-light-3: #e5e0d0;
-  --color-hero-light-fade: #e8e4d4;
+  --color-esp-topografia: #a34c0a;
+  --color-esp-geomatica: #18694e;
+  --color-esp-geomatica-2: #228b68;
+  --color-esp-software: #5243ab;
+
+  /* Texto en modo claro — Tinta profunda y pizarra equilibrada */
+  --color-text-primary: #0f172a; /* Tinta Oxford (16.8:1)              */
+  --color-text-secondary: #334155; /* Pizarra carbón (9.6:1)             */
+  --color-text-muted: #55657a; /* Acero técnico (5.5:1 WCAG AA)      */
+  --color-text-subtle: #8492a6;
+  --color-grid-line: rgb(21 84 138 / 6%);
+  --color-glow-copper: rgb(154 83 18 / 11%);
+  --color-glow-sapphire: rgb(21 84 138 / 11%);
+  --color-glow-teal: rgb(13 110 99 / 11%);
+  --color-overlay: rgb(15 23 42 / 60%);
+  --color-overlay-card: rgb(15 23 42 / 14%);
+  --color-badge-law: rgb(136 64 20 / 92%);
+  --color-badge-cat: rgb(13 110 99 / 92%);
+  --color-badge-gis: rgb(24 105 78 / 92%);
+  --color-badge-topo: rgb(163 76 10 / 92%);
+  --color-badge-orden: rgb(148 89 16 / 92%);
+  --color-badge-geo: rgb(20 94 122 / 92%);
+  --color-badge-software: rgb(82 67 171 / 92%);
+  --color-badge-tec: rgb(15 23 42 / 88%);
+  --color-badge-def: rgb(154 83 18 / 32%);
+  --color-badge-gold: rgb(154 83 18 / 90%);
+  --color-badge-vigente: #15803d;
+  --color-badge-derogada: #b91c1c;
+  --color-badge-modificada: #b45309;
+  --color-badge-teal: rgb(13 110 99 / 90%);
+  --color-badge-white: rgb(255 255 255 / 94%);
+  --color-badge-white-text: #0f172a;
+  --color-badge-bluedark: rgb(21 84 138 / 90%);
+  --color-shadow-overlay: rgb(15 23 42 / 28%);
+  --hdr-bg: rgb(246 244 239 / 82%);
+  --hdr-bg-scrolled: rgb(246 244 239 / 95%);
+  --color-hero-light-1: #faf8f4;
+  --color-hero-light-2: #f2efe7;
+  --color-hero-light-3: #e8e2d5;
+  --color-hero-light-fade: #ede8dc;
   --bg: var(--color-bg-primary);
   --bg2: var(--color-bg-surface);
-  --bg3: #eeead8;
+  --bg3: #e4dfd3;
   --card: var(--color-bg-card);
   --card2: var(--color-bg-surface);
-  --card3: #e8e4da;
+  --card3: var(--color-bg-elevated);
   --copper: var(--color-copper);
   --copper2: var(--color-copper-glow);
-  --copper-lt: rgb(154 95 34 / 7%);
+  --copper-lt: rgb(154 83 18 / 9%);
+  --copper-bd: rgb(154 83 18 / 25%);
   --sapphire: var(--color-sapphire);
   --sapphire2: var(--color-sapphire-glow);
-  --sapphire-lt: rgb(30 82 128 / 7%);
+  --sapphire-lt: rgb(21 84 138 / 9%);
+  --sapphire-bd: rgb(21 84 138 / 25%);
+  --teal: var(--color-teal);
+  --teal2: var(--color-teal-glow);
+  --teal-lt: rgb(13 110 99 / 9%);
+  --teal-bd: rgb(13 110 99 / 25%);
+  --gold: var(--color-esp-derecho);
+  --gold-lt: rgb(150 90 14 / 10%);
   --amber: var(--color-amber);
-  --amber-lt: rgb(200 120 0 / 7%);
+  --amber-lt: rgb(180 83 9 / 9%);
   --text: var(--color-text-primary);
   --text2: var(--color-text-secondary);
   --text3: var(--color-text-muted);
-  --text4: #b0bacb;
+  --text4: var(--color-text-subtle);
   --border: var(--color-border);
-  --border2: #ccc8bc;
-  --border3: #a8a49c;
-  --sh: 0 1px 3px rgb(0 0 0 / 7%), 0 1px 2px rgb(0 0 0 / 5%);
-  --sh2: 0 8px 28px rgb(0 0 0 / 9%), 0 2px 8px rgb(0 0 0 / 6%);
-  --sh3: 0 20px 56px rgb(0 0 0 / 12%), 0 4px 12px rgb(0 0 0 / 8%);
-  --sh-copper: 0 4px 20px rgb(154 95 34 / 15%), 0 1px 4px rgb(154 95 34 / 8%);
-  --sh-copper-h: 0 8px 32px rgb(154 95 34 / 25%), 0 2px 8px rgb(154 95 34 / 12%);
-  --sh-sapphire: 0 4px 20px rgb(30 82 128 / 12%);
-  --sh-inset: inset 0 1px 0 rgb(255 255 255 / 80%);
+  --border2: var(--color-border-strong);
+  --border3: var(--color-border-highlight);
+  --sh: 0 2px 5px rgb(15 23 42 / 5%), 0 1px 2px rgb(15 23 42 / 4%);
+  --sh2: 0 12px 30px -4px rgb(15 23 42 / 9%), 0 4px 10px -2px rgb(15 23 42 / 5%);
+  --sh3: 0 24px 56px -8px rgb(15 23 42 / 14%), 0 8px 18px -4px rgb(15 23 42 / 7%);
+  --sh-copper: 0 4px 18px rgb(154 83 18 / 16%), 0 1px 4px rgb(154 83 18 / 8%);
+  --sh-copper-h: 0 10px 28px rgb(154 83 18 / 24%), 0 3px 8px rgb(154 83 18 / 12%);
+  --sh-sapphire: 0 4px 18px rgb(21 84 138 / 15%);
+  --sh-inset: inset 0 1px 0 rgb(255 255 255 / 90%);
 }

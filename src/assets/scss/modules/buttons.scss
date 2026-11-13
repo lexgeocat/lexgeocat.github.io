@@ -1,23 +1,35 @@
-/* ═══════════════════════════════════════
-   BUTTONS — sin valores hardcodeados
-   ═══════════════════════════════════════ */
+/* ═══════════════════════════════════════════════════════════════════
+   BUTTONS — Sistema de acciones con jerarquía táctil y alto contraste
+   ═══════════════════════════════════════════════════════════════════ */
 
 .btn {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: var(--sp-2);
-  padding: 11px var(--sp-7);
-  border-radius: 6px;
+  padding: 12px var(--sp-6);
+  border-radius: var(--rs);
   font-family: var(--font-heading);
   font-weight: 600;
   font-size: var(--fs-base);
-  letter-spacing: var(--ls-caps);
-  text-transform: uppercase;
-  transition: all 0.28s var(--ease);
+  letter-spacing: 0.04em;
+  transition:
+    transform 0.24s var(--ease),
+    box-shadow 0.24s var(--ease),
+    background-color 0.24s var(--ease),
+    border-color 0.24s var(--ease),
+    color 0.24s var(--ease);
   cursor: pointer;
-  border: none;
+  border: 1px solid transparent;
   text-decoration: none;
-  line-height: 1.4;
+  line-height: 1.35;
+  white-space: nowrap;
+  user-select: none;
+
+  i {
+    font-size: 0.92em;
+    transition: transform 0.22s var(--ease);
+  }
 
   &[disabled],
   &:disabled {
@@ -28,60 +40,84 @@
     pointer-events: none;
   }
 
-  /* Botón primario — Cobre institucional */
-  &-gold {
-    background: var(--copper);
+  /* Botón primario — Bronce-Cobre institucional */
+  &-gold,
+  &-primary {
+    background-color: var(--copper);
     color: #fff;
-    box-shadow: var(--sh-copper);
+    box-shadow: var(--sh-copper), var(--sh-inset);
 
     &:hover {
-      background: var(--copper2);
+      background-color: var(--copper2);
       color: #fff;
       transform: translateY(-2px);
-      box-shadow: var(--sh-copper-h);
+      box-shadow: var(--sh-copper-h), var(--sh-inset);
+    }
+
+    &:active {
+      transform: translateY(0);
     }
   }
 
   /* Botón secundario — Zafiro geodésico */
   &-teal {
-    background: var(--sapphire);
+    background-color: var(--sapphire);
     color: #fff;
-    box-shadow: var(--sh-sapphire);
+    box-shadow: var(--sh-sapphire), var(--sh-inset);
 
     &:hover {
-      background: var(--sapphire2);
+      background-color: var(--sapphire2);
       color: #fff;
       transform: translateY(-2px);
-      box-shadow: 0 var(--sp-2) var(--sp-7) var(--color-glow-sapphire);
+      box-shadow:
+        0 var(--sp-2) var(--sp-6) var(--color-glow-sapphire),
+        var(--sh-inset);
+    }
+
+    &:active {
+      transform: translateY(0);
     }
   }
 
-  /* Botón outline */
+  /* Botón outline / ghost */
   &-ghost {
-    background: transparent;
+    background-color: color-mix(in srgb, var(--card) 65%, transparent);
     color: var(--text);
-    border: 1px solid var(--border3);
+    border-color: var(--border2);
     box-shadow: var(--sh-inset);
 
     &:hover {
       border-color: var(--copper);
       color: var(--copper);
       transform: translateY(-2px);
-      background: var(--copper-lt);
+      background-color: var(--copper-lt);
+      box-shadow: var(--sh);
+    }
+
+    &:active {
+      transform: translateY(0);
     }
   }
 
   /* WhatsApp */
   &-whatsapp {
-    background: var(--color-success) !important;
+    background-color: var(--color-success) !important;
     color: #fff !important;
-    box-shadow: 0 var(--sp-1) var(--sp-4) var(--color-success) !important;
+    box-shadow:
+      0 4px 16px var(--color-success-glow),
+      var(--sh-inset) !important;
 
     &:hover {
-      background: var(--color-success-dark) !important;
+      background-color: var(--color-success-dark) !important;
       transform: translateY(-2px);
-      box-shadow: 0 var(--sp-2) var(--sp-6) var(--color-success-dark) !important;
+      box-shadow:
+        0 8px 24px var(--color-success-glow),
+        var(--sh-inset) !important;
       color: #fff !important;
+    }
+
+    &:active {
+      transform: translateY(0);
     }
   }
 }

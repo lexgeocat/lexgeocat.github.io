@@ -1,170 +1,115 @@
 /* ═══════════════════════════════════════════════════════════════════════
-   ESPECIALIDADES — tokens de color por área
-    
-   Centraliza toda la paleta cromática de las 7 especialidades.
-   Reemplaza los 70+ style="" inline de index.html y servicios.html.
-
-   USO: añadir clase .esp-{nombre} al .cat-card correspondiente.
+   ESPECIALIDADES — Sistema cromático perceptual por disciplina
+   Centraliza toda la paleta de las 7 áreas técnicas y jurídicas.
    ═══════════════════════════════════════════════════════════════════════ */
 
-/* ── Derecho ── */
+/* ── 1. Derecho ── */
 .esp-derecho {
   --c1: var(--color-esp-derecho-bg-from);
   --c2: var(--color-esp-derecho-bg-to);
   --cc: var(--color-esp-derecho);
-  --ctag-bg: var(--copper-lt);
-  --ctag-bd: var(--color-esp-derecho-2);
+  --ctag-bg: color-mix(in srgb, var(--color-esp-derecho) 12%, transparent);
+  --ctag-bd: color-mix(in srgb, var(--color-esp-derecho) 32%, transparent);
 }
 
-/* ── Catastro ── */
+/* ── 2. Catastro ── */
 .esp-catastro {
   --c1: var(--color-esp-catastro-bg-from);
   --c2: var(--color-esp-catastro-bg-to);
   --cc: var(--color-esp-catastro);
-  --ctag-bg: var(--teal-lt);
-  --ctag-bd: var(--color-esp-catastro-2);
-
-  .ci {
-    color: var(--teal);
-  }
-
-  .cat-tag {
-    color: var(--teal);
-    background: var(--teal-lt);
-    border-color: var(--color-esp-catastro-2);
-  }
+  --ctag-bg: color-mix(in srgb, var(--color-esp-catastro) 12%, transparent);
+  --ctag-bd: color-mix(in srgb, var(--color-esp-catastro) 32%, transparent);
 }
 
-/* ── Ordenamiento ── */
+/* ── 3. Ordenamiento Territorial ── */
 .esp-ordenamiento {
   --c1: var(--color-esp-ordenamiento-bg-from);
   --c2: var(--color-esp-ordenamiento-bg-to);
   --cc: var(--color-esp-ordenamiento);
-  --ctag-bg: var(--copper-lt);
-  --ctag-bd: var(--color-esp-derecho-2);
+  --ctag-bg: color-mix(in srgb, var(--color-esp-ordenamiento) 12%, transparent);
+  --ctag-bd: color-mix(in srgb, var(--color-esp-ordenamiento) 32%, transparent);
 }
 
-/* ── Geografía ── */
+/* ── 4. Geografía ── */
 .esp-geografia {
   --c1: var(--color-esp-geografia-bg-from);
   --c2: var(--color-esp-geografia-bg-to);
   --cc: var(--color-esp-geografia);
-  --ctag-bg: var(--sapphire-lt);
-  --ctag-bd: var(--color-esp-geografia);
-
-  .ci,
-  .cat-tag {
-    color: var(--color-esp-geografia);
-  }
-
-  .cat-tag {
-    background: var(--sapphire-lt);
-    border-color: var(--color-esp-geografia);
-  }
+  --ctag-bg: color-mix(in srgb, var(--color-esp-geografia) 12%, transparent);
+  --ctag-bd: color-mix(in srgb, var(--color-esp-geografia) 32%, transparent);
 }
 
-/* ── Topografía y Geodesia ── */
+/* ── 5. Topografía y Geodesia ── */
 .esp-topografia {
   --c1: var(--color-esp-topografia-bg-from);
   --c2: var(--color-esp-topografia-bg-to);
   --cc: var(--color-esp-topografia);
-  --ctag-bg: var(--copper-lt);
-  --ctag-bd: var(--color-esp-topografia);
-
-  .ci,
-  .cat-tag {
-    color: var(--color-esp-topografia);
-  }
-
-  .cat-tag {
-    background: var(--copper-lt);
-    border-color: var(--color-esp-topografia);
-  }
+  --ctag-bg: color-mix(in srgb, var(--color-esp-topografia) 12%, transparent);
+  --ctag-bd: color-mix(in srgb, var(--color-esp-topografia) 32%, transparent);
 }
 
-/* ── Geomática ── */
+/* ── 6. Geomática ── */
 .esp-geomatica {
   --c1: var(--color-esp-geomatica-bg-from);
   --c2: var(--color-esp-geomatica-bg-to);
   --cc: var(--color-esp-geomatica);
-  --ctag-bg: var(--sapphire-lt);
-  --ctag-bd: var(--color-esp-geomatica-2);
-
-  .ci,
-  .cat-tag {
-    color: var(--color-esp-geomatica);
-  }
-
-  .cat-tag {
-    background: var(--sapphire-lt);
-    border-color: var(--color-esp-geomatica);
-  }
+  --ctag-bg: color-mix(in srgb, var(--color-esp-geomatica) 12%, transparent);
+  --ctag-bd: color-mix(in srgb, var(--color-esp-geomatica) 32%, transparent);
 }
 
-/* ── Desarrollo de Software ── */
+/* ── 7. Desarrollo de Software ── */
 .esp-software {
   --c1: var(--color-esp-software-bg-from);
   --c2: var(--color-esp-software-bg-to);
   --cc: var(--color-esp-software);
-  --ctag-bg: var(--sapphire-lt);
-  --ctag-bd: var(--color-esp-software);
-
-  .ci,
-  .cat-tag {
-    color: var(--color-esp-software);
-  }
-
-  .cat-tag {
-    background: var(--sapphire-lt);
-    border-color: var(--color-esp-software);
-  }
+  --ctag-bg: color-mix(in srgb, var(--color-esp-software) 12%, transparent);
+  --ctag-bd: color-mix(in srgb, var(--color-esp-software) 32%, transparent);
 }
 
 /* ═══════════════════════════════════════════════════════════════════════
-   AREA-ICON-LG — estilos de icono de área en servicios.html
-   (también hardcodeados antes, ahora centralizados aquí)
+   AREA-ICON-LG — Insignias de cabecera de área en Servicios
    ═══════════════════════════════════════════════════════════════════════ */
 
 .area-icon-lg {
   &.area-derecho {
-    background: var(--copper-lt);
-    border-color: var(--color-esp-derecho);
-    color: var(--copper);
+    background-color: color-mix(in srgb, var(--color-esp-derecho) 12%, transparent);
+    border-color: color-mix(in srgb, var(--color-esp-derecho) 35%, transparent);
+    color: var(--color-esp-derecho);
   }
 
   &.area-catastro {
-    background: var(--sapphire-lt);
-    border-color: var(--color-esp-catastro);
-    color: var(--sapphire);
+    background-color: color-mix(in srgb, var(--color-esp-catastro) 12%, transparent);
+    border-color: color-mix(in srgb, var(--color-esp-catastro) 35%, transparent);
+    color: var(--color-esp-catastro);
   }
 
   &.area-ordenamiento {
-    background: var(--copper-lt);
-    border-color: var(--color-esp-ordenamiento);
-    color: var(--copper);
+    background-color: color-mix(in srgb, var(--color-esp-ordenamiento) 12%, transparent);
+    border-color: color-mix(in srgb, var(--color-esp-ordenamiento) 35%, transparent);
+    color: var(--color-esp-ordenamiento);
   }
 
   &.area-geografia {
-    background: var(--sapphire-lt);
-    border-color: var(--color-esp-geografia);
+    background-color: color-mix(in srgb, var(--color-esp-geografia) 12%, transparent);
+    border-color: color-mix(in srgb, var(--color-esp-geografia) 35%, transparent);
     color: var(--color-esp-geografia);
   }
 
   &.area-topografia {
-    background: var(--copper-lt);
-    border-color: var(--color-esp-topografia);
+    background-color: color-mix(in srgb, var(--color-esp-topografia) 12%, transparent);
+    border-color: color-mix(in srgb, var(--color-esp-topografia) 35%, transparent);
     color: var(--color-esp-topografia);
   }
 
   &.area-geomatica {
-    background: var(--sapphire-lt);
-    border-color: var(--color-esp-geomatica);
+    background-color: color-mix(in srgb, var(--color-esp-geomatica) 12%, transparent);
+    border-color: color-mix(in srgb, var(--color-esp-geomatica) 35%, transparent);
     color: var(--color-esp-geomatica);
   }
 
   &.area-software {
-    background: var(--sapphire-lt);
-    border-color: var(--color-esp-software);
+    background-color: color-mix(in srgb, var(--color-esp-software) 12%, transparent);
+    border-color: color-mix(in srgb, var(--color-esp-software) 35%, transparent);
     color: var(--color-esp-software);
   }
 }

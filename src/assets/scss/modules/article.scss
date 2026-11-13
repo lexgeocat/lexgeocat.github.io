@@ -242,18 +242,19 @@
 .dl-btn {
   font-size: var(--fs-sm);
   font-weight: 700;
-  color: var(--bg);
-  background: var(--copper);
+  color: #fff;
+  background-color: var(--copper);
   padding: var(--sp-3) var(--sp-6);
-  border-radius: var(--sp-2);
+  border-radius: var(--rs);
   display: inline-flex;
   align-items: center;
   gap: var(--sp-2);
-  transition: all 0.3s;
+  transition: all 0.3s var(--ease);
   white-space: nowrap;
 
   &:hover {
-    background: var(--copper2);
+    background-color: var(--copper2);
+    color: #fff;
     transform: translateY(-2px);
     box-shadow: var(--sh-copper-h);
   }

@@ -34,8 +34,8 @@ for (const woff of ['fa-solid-900.woff2', 'fa-regular-400.woff2', 'fa-brands-400
 // Tipografías — solo los pesos usados en el código (@fontsource)
 const wanted = {
   'dm-serif-display': ['400.css', '400-italic.css'],
-  syne: ['400.css', '600.css', '700.css', '800.css'],
-  inter: ['400.css', '600.css', '700.css'],
+  syne: ['400.css', '500.css', '600.css', '700.css', '800.css'],
+  inter: ['400.css', '500.css', '600.css', '700.css'],
   'jetbrains-mono': ['400.css', '600.css'],
 }
 for (const [pkg, files] of Object.entries(wanted)) {

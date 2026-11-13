@@ -1,5 +1,5 @@
 #ft {
-  background: var(--color-bg-primary);
+  background-color: var(--color-bg-primary);
   color: var(--text);
   position: relative;
   overflow: hidden;
@@ -30,7 +30,7 @@
 .ft-main {
   max-width: var(--con);
   margin: 0 auto;
-  padding: var(--sp-14) var(--sp-7) var(--sp-10);
+  padding: var(--sp-16) var(--sp-7) var(--sp-10);
   position: relative;
   z-index: 1;
 }
@@ -53,11 +53,12 @@
 
 .ft-brand {
   h3 {
-    font-family: var(--font-display);
+    font-family: var(--font-brand);
     font-size: var(--fs-2xl);
     font-weight: 800;
     color: var(--text);
     margin-bottom: var(--sp-1);
+    letter-spacing: -0.01em;
 
     span.geo {
       color: var(--sapphire);
@@ -69,18 +70,18 @@
   }
 
   .ft-tagline {
-    font-size: 0.72rem;
+    font-size: var(--fs-2xs);
     color: var(--text3);
     text-transform: uppercase;
-    letter-spacing: var(--ls-wide);
+    letter-spacing: var(--ls-caps);
     margin-bottom: var(--sp-4);
-    font-family: var(--font-heading);
+    font-family: var(--font-mono);
   }
 
   p {
-    font-size: 0.85rem;
+    font-size: var(--fs-md);
     color: var(--text2);
-    max-width: 300px;
+    max-width: 340px;
     line-height: var(--lh-normal);
     margin-bottom: var(--sp-5);
   }
@@ -91,21 +92,21 @@
 }
 
 .ft-contact-list {
-  margin-bottom: var(--sp-4);
+  margin-bottom: var(--sp-5);
 }
 
 .ft-contact-row {
   display: flex;
   align-items: center;
   gap: var(--sp-2);
-  margin-bottom: 6px;
-  font-size: var(--fs-base);
+  margin-bottom: 8px;
+  font-size: var(--fs-sm-3);
   color: var(--text2);
 
   i {
     color: var(--copper);
-    font-size: 11px;
-    width: 16px;
+    font-size: 12px;
+    width: 18px;
     text-align: center;
   }
 
@@ -119,39 +120,40 @@
   gap: var(--sp-2);
 
   a {
-    width: 36px;
-    height: 36px;
+    width: 38px;
+    height: 38px;
     border-radius: 8px;
-    background: var(--card);
+    background-color: var(--card);
     display: flex;
     align-items: center;
     justify-content: center;
     color: var(--text2);
-    transition: all 0.25s;
+    transition: all 0.24s var(--ease);
     font-size: 14px;
     border: 1px solid var(--border);
 
     &:hover {
-      background: var(--copper);
-      color: var(--bg);
+      background-color: var(--copper);
+      color: #fff;
       border-color: var(--copper);
       transform: translateY(-2px);
+      box-shadow: var(--sh-copper);
     }
   }
 }
 
 .ft-col {
   h4 {
-    font-family: var(--font-heading);
-    font-size: 0.68rem;
-    font-weight: 700;
+    font-family: var(--font-mono);
+    font-size: var(--fs-xs);
+    font-weight: 600;
     text-transform: uppercase;
-    letter-spacing: var(--ls-wide);
+    letter-spacing: var(--ls-caps);
     margin-bottom: var(--sp-5);
     color: var(--copper);
 
     @media (width <= 600px) {
-      font-size: 0.64rem;
+      font-size: var(--fs-2xs);
       margin-bottom: var(--sp-3);
     }
   }
@@ -165,25 +167,26 @@
   }
 
   a {
-    font-size: 0.85rem;
+    font-size: var(--fs-md);
     color: var(--text2);
-    display: flex;
+    display: inline-flex;
     align-items: center;
     gap: var(--sp-2);
-    transition: all 0.22s;
+    transition: all 0.22s var(--ease);
 
     &:hover {
       color: var(--copper);
-      padding-left: var(--sp-1);
+      transform: translateX(3px);
     }
 
     i {
-      font-size: 10px;
-      color: var(--color-badge-def);
+      font-size: 9px;
+      color: var(--copper);
+      opacity: 0.75;
     }
 
     @media (width <= 600px) {
-      font-size: 0.8rem;
+      font-size: var(--fs-sm-3);
     }
   }
 }
@@ -214,7 +217,7 @@
   gap: var(--sp-3);
 
   &-left {
-    font-size: 0.78rem;
+    font-size: var(--fs-xs);
     color: var(--text3);
   }
 
@@ -223,9 +226,9 @@
     gap: var(--sp-4);
 
     a {
-      font-size: 0.78rem;
+      font-size: var(--fs-xs);
       color: var(--text3);
-      transition: color 0.2s;
+      transition: color 0.2s var(--ease);
 
       &:hover {
         color: var(--copper);

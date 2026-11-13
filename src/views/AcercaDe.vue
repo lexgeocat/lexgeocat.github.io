@@ -40,10 +40,10 @@ onUnmounted(() => {
           </div>
           <div class="about-badge-wrap">
             <div class="about-badge-n">
-              5
+              7
             </div>
             <div class="about-badge-l">
-              Especialidades
+              Áreas Técnicas
             </div>
           </div>
         </div>

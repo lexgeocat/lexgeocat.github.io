@@ -61,6 +61,11 @@
   justify-content: space-between;
   gap: 14px;
   margin-bottom: 32px;
+  padding: 16px 20px;
+  background-color: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--rm);
+  box-shadow: var(--sh);
   flex-wrap: wrap;
 }
 
@@ -267,11 +272,7 @@
 }
 
 .norm-card:hover .norm-card-cover-tags {
-  transform: translateY(-3px) scale(1.06);
-}
-
-.norm-card:hover .norm-card-cover-tags {
-  transform: translateY(-3px) scale(1.06);
+  transform: translateY(-3px) scale(1.04);
 }
 
 .norm-card-cover-numeral {

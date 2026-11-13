@@ -1,13 +1,21 @@
 <script setup lang="ts">
-import { onMounted, onUnmounted } from 'vue'
+import { onMounted, onUnmounted, watch } from 'vue'
 import { useReveal, useCounters } from '../shared/composables/useReveal'
 import boliviaMap from '@/assets/img/fd-bolivia-map.svg?url'
 import { SITE } from '../config/site'
 import { useBloggerFeed } from '../features/blog/useBloggerFeed'
 import BlogCard from '../features/blog/BlogCard.vue'
 
-const { entries: blogEntries, load: loadBlog } = useBloggerFeed({ limit: 3 })
-const { entries: recursosEntries, load: loadRecursos } = useBloggerFeed({
+const {
+  entries: blogEntries,
+  totalResults: blogTotal,
+  load: loadBlog,
+} = useBloggerFeed({ limit: 3 })
+const {
+  entries: recursosEntries,
+  totalResults: recursosTotal,
+  load: loadRecursos,
+} = useBloggerFeed({
   label: 'Recursos',
   limit: 6,
   categoryCls: 'def',
@@ -17,6 +25,21 @@ const reveal = useReveal()
 const counters = useCounters()
 
 let onMouseMove: ((e: MouseEvent) => void) | null = null
+
+function updateStatEl(id: string, count: number, suffix = '') {
+  const el = document.getElementById(id)
+  if (!el) return
+  el.setAttribute('data-count', String(count))
+  el.textContent = `${count}${suffix}`
+}
+
+watch(blogTotal, (val) => {
+  if (val > 0) updateStatEl('stat-articulos', val, '+')
+})
+
+watch(recursosTotal, (val) => {
+  if (val > 0) updateStatEl('stat-recursos', val, '+')
+})
 
 onMounted(() => {
   requestAnimationFrame(() => {
@@ -31,12 +54,11 @@ onMounted(() => {
     onMouseMove = (e: MouseEvent) => {
       const x = e.clientX / window.innerWidth - 0.5
       const y = e.clientY / window.innerHeight - 0.5
-      bgMap.style.transform = `translate(${x * 30}px, ${y * 30}px)`
+      bgMap.style.transform = `translate(${x * 24}px, ${y * 24}px)`
     }
-    window.addEventListener('mousemove', onMouseMove)
+    window.addEventListener('mousemove', onMouseMove, { passive: true })
   }
 
-  // Blogger feed loader for stats and blog posts
   const CFG = {
     bloggerFeed: SITE.blog.feed,
     blogUrl: SITE.blog.url,
@@ -51,20 +73,16 @@ onMounted(() => {
     ],
   }
 
-  // Set especialidades stat
-  const statEsp = document.getElementById('stat-especialidades')
-  if (statEsp) {
-    const prof = CFG.profesiones.length
-    statEsp.setAttribute('data-count', String(prof))
-    statEsp.textContent = String(prof)
-    setTimeout(() => counters.observe(), 100)
-  }
-  // Load blog grid
+  updateStatEl('stat-articulos', 24, '+')
+  updateStatEl('stat-especialidades', CFG.profesiones.length)
+  updateStatEl('stat-servicios', 40, '+')
+  updateStatEl('stat-recursos', 15, '+')
+  setTimeout(() => counters.observe(), 80)
+
   if (CFG.bloggerFeed) {
     loadBlog()
   }
 
-  // Load recursos grid
   loadRecursos()
 })
 
@@ -73,8 +91,6 @@ onUnmounted(() => {
   counters.disconnect()
   if (onMouseMove) window.removeEventListener('mousemove', onMouseMove)
 })
-
-// ─── Utility functions (ported from main.js) ───
 </script>
 
 <template>
@@ -95,14 +111,43 @@ onUnmounted(() => {
     <div class="c">
       <div class="hero-grid">
         <div class="hero-content">
+          <div class="hero-eyebrow">
+            <span
+              class="pulse-dot"
+              aria-hidden="true"
+            />
+            <span>LA PAZ · BOLIVIA</span>
+            <span class="eyebrow-sep">|</span>
+            <span class="eyebrow-hl">INGENIERÍA TERRITORIAL &amp; DERECHO</span>
+          </div>
+
           <h1 class="hero-title">
             Lex <span class="accent-teal">Geo</span><span class="accent-gold">Cat</span>
-            <span class="line-sub">Derecho, Catastro y Ordenamiento Territorial, Geografía y Geomática</span>
+            <span class="line-sub">Derecho, Catastro, Ordenamiento Territorial y Geomática</span>
           </h1>
+
           <p class="hero-desc">
-            Plataforma especializada en consultoría, recursos y formación técnica en materia legal,
-            catastral y sistemas de información geográfica adaptados al contexto boliviano.
+            Plataforma especializada en consultoría técnico-jurídica, recursos normativos y
+            sistemas de información geográfica adaptados al marco legal y territorial de Bolivia.
           </p>
+
+          <div class="hero-creds">
+            <span class="hcred-pill">
+              <i
+                aria-hidden="true"
+                class="fa-solid fa-gavel"
+              />
+              Abogado · <strong>R.P.A. {{ SITE.rpa }}</strong>
+            </span>
+            <span class="hcred-pill">
+              <i
+                aria-hidden="true"
+                class="fa-solid fa-compass-drafting"
+              />
+              S.I.B. Nacional · <strong>R.N.T. {{ SITE.rnt }}</strong>
+            </span>
+          </div>
+
           <div class="hero-btns">
             <router-link
               class="btn btn-gold"
@@ -111,7 +156,16 @@ onUnmounted(() => {
               <i
                 aria-hidden="true"
                 class="fa-solid fa-briefcase"
-              /> Ver Servicios
+              /> Catálogo y Cotizador
+            </router-link>
+            <router-link
+              class="btn btn-teal"
+              to="/pages/normativa.html"
+            >
+              <i
+                aria-hidden="true"
+                class="fa-solid fa-scale-balanced"
+              /> Biblioteca Normativa
             </router-link>
             <a
               class="btn btn-ghost"
@@ -121,26 +175,15 @@ onUnmounted(() => {
               class="fa-solid fa-newspaper"
             /> Explorar Blog</a>
           </div>
+
           <div class="hero-stats">
-            <div class="hstat">
-              <div
-                id="stat-articulos"
-                class="hstat-n"
-                data-count="0"
-              >
-                0
-              </div>
-              <div class="hstat-l">
-                Artículos
-              </div>
-            </div>
             <div class="hstat">
               <div
                 id="stat-especialidades"
                 class="hstat-n"
-                data-count="0"
+                data-count="7"
               >
-                0
+                7
               </div>
               <div class="hstat-l">
                 Especialidades
@@ -150,9 +193,9 @@ onUnmounted(() => {
               <div
                 id="stat-servicios"
                 class="hstat-n"
-                data-count="0"
+                data-count="40"
               >
-                0
+                40+
               </div>
               <div class="hstat-l">
                 Servicios
@@ -160,11 +203,23 @@ onUnmounted(() => {
             </div>
             <div class="hstat">
               <div
+                id="stat-articulos"
+                class="hstat-n"
+                data-count="24"
+              >
+                24+
+              </div>
+              <div class="hstat-l">
+                Artículos
+              </div>
+            </div>
+            <div class="hstat">
+              <div
                 id="stat-recursos"
                 class="hstat-n"
-                data-count="0"
+                data-count="15"
               >
-                0
+                15+
               </div>
               <div class="hstat-l">
                 Recursos
@@ -181,56 +236,81 @@ onUnmounted(() => {
               :data="boliviaMap"
               aria-hidden="true"
             />
-            <div class="fd-card fdc-1 reveal">
-              <i
-                aria-hidden="true"
-                class="fa-solid fa-scale-balanced"
-              />
-              <div>
-                <h4>Derecho</h4>
-                <p>Civil, Constitucional, Administrativo</p>
+            <router-link
+              to="/pages/derecho.html"
+              class="fd-card fdc-1 reveal"
+            >
+              <div class="fd-icon">
+                <i
+                  aria-hidden="true"
+                  class="fa-solid fa-scale-balanced"
+                />
               </div>
-            </div>
-            <div class="fd-card fdc-2 reveal">
-              <i
-                aria-hidden="true"
-                class="fa-solid fa-map-location-dot"
-              />
               <div>
-                <h4>Catastro y Ordenamiento Territorial</h4>
-                <p>Valoración catastral, SIG Areas Urbanas y Rurales</p>
+                <h4>Derecho Territorial</h4>
+                <p>Civil, Agrario, Registral y Notarial</p>
               </div>
-            </div>
-            <div class="fd-card fdc-3 reveal">
-              <i
-                aria-hidden="true"
-                class="fa-solid fa-mountain"
-              />
+            </router-link>
+            <router-link
+              to="/pages/catastro.html"
+              class="fd-card fdc-2 reveal"
+            >
+              <div class="fd-icon">
+                <i
+                  aria-hidden="true"
+                  class="fa-solid fa-map-location-dot"
+                />
+              </div>
+              <div>
+                <h4>Catastro y Ordenamiento</h4>
+                <p>Valuación predial, SIG urbano y rural</p>
+              </div>
+            </router-link>
+            <router-link
+              to="/pages/topogeodesia.html"
+              class="fd-card fdc-3 reveal"
+            >
+              <div class="fd-icon">
+                <i
+                  aria-hidden="true"
+                  class="fa-solid fa-mountain"
+                />
+              </div>
               <div>
                 <h4>Topografía y Geodesia</h4>
-                <p>GNSS, redes y precisión</p>
+                <p>GNSS, redes SIRGAS-BOL y precisión</p>
               </div>
-            </div>
-            <div class="fd-card fdc-4 reveal">
-              <i
-                aria-hidden="true"
-                class="fa-solid fa-layer-group"
-              />
+            </router-link>
+            <router-link
+              to="/pages/geomatica.html"
+              class="fd-card fdc-4 reveal"
+            >
+              <div class="fd-icon">
+                <i
+                  aria-hidden="true"
+                  class="fa-solid fa-layer-group"
+                />
+              </div>
               <div>
                 <h4>Geografía y Geomática</h4>
-                <p>SIG, Cartografia y Geoprocesamiento</p>
+                <p>PostGIS, QGIS y Teledetección</p>
               </div>
-            </div>
-            <div class="fd-card fdc-5 reveal">
-              <i
-                aria-hidden="true"
-                class="fa-solid fa-code"
-              />
+            </router-link>
+            <router-link
+              to="/pages/desarrollo-software.html"
+              class="fd-card fdc-5 reveal"
+            >
+              <div class="fd-icon">
+                <i
+                  aria-hidden="true"
+                  class="fa-solid fa-code"
+                />
+              </div>
               <div>
-                <h4>Software &amp; Web</h4>
-                <p>Aplicaciones a medida</p>
+                <h4>Software &amp; Web GIS</h4>
+                <p>Geoportales y aplicaciones a medida</p>
               </div>
-            </div>
+            </router-link>
           </div>
         </div>
       </div>
@@ -274,7 +354,7 @@ onUnmounted(() => {
           <span class="cat-tag"><i
             aria-hidden="true"
             class="fa-solid fa-arrow-right"
-          /> Explorar</span>
+          /> Explorar área</span>
         </router-link>
         <router-link
           class="cat-card reveal esp-catastro"
@@ -294,7 +374,7 @@ onUnmounted(() => {
           <span class="cat-tag"><i
             aria-hidden="true"
             class="fa-solid fa-arrow-right"
-          /> Explorar</span>
+          /> Explorar área</span>
         </router-link>
         <router-link
           class="cat-card reveal esp-ordenamiento"
@@ -314,7 +394,7 @@ onUnmounted(() => {
           <span class="cat-tag"><i
             aria-hidden="true"
             class="fa-solid fa-arrow-right"
-          /> Explorar</span>
+          /> Explorar área</span>
         </router-link>
         <router-link
           class="cat-card reveal esp-geografia"
@@ -334,7 +414,7 @@ onUnmounted(() => {
           <span class="cat-tag"><i
             aria-hidden="true"
             class="fa-solid fa-arrow-right"
-          /> Explorar</span>
+          /> Explorar área</span>
         </router-link>
         <router-link
           class="cat-card reveal esp-topografia"
@@ -354,7 +434,7 @@ onUnmounted(() => {
           <span class="cat-tag"><i
             aria-hidden="true"
             class="fa-solid fa-arrow-right"
-          /> Explorar</span>
+          /> Explorar área</span>
         </router-link>
         <router-link
           class="cat-card reveal esp-geomatica"
@@ -374,7 +454,7 @@ onUnmounted(() => {
           <span class="cat-tag"><i
             aria-hidden="true"
             class="fa-solid fa-arrow-right"
-          /> Explorar</span>
+          /> Explorar área</span>
         </router-link>
         <router-link
           class="cat-card reveal esp-software"
@@ -394,7 +474,7 @@ onUnmounted(() => {
           <span class="cat-tag"><i
             aria-hidden="true"
             class="fa-solid fa-arrow-right"
-          /> Explorar</span>
+          /> Explorar área</span>
         </router-link>
       </div>
     </div>
@@ -402,7 +482,7 @@ onUnmounted(() => {
 
   <section
     id="blog-section"
-    class="sec-stripe"
+    class="sec"
   >
     <div class="c">
       <div class="sh center">
@@ -477,18 +557,18 @@ onUnmounted(() => {
       <div class="sh center">
         <span class="sl">Contacto</span>
         <h2 class="st">
-          Contacto Rápido
+          Contacto Directo
         </h2>
         <p class="sd">
-          Consultas profesionales, colaboraciones o asesoramiento directo.
+          Consultas profesionales, diagnósticos técnico-legales o asesoramiento especializado.
         </p>
       </div>
       <div class="contact-wrap">
         <div class="contact-info">
-          <h3>Información de Contacto</h3>
+          <h3>Información Institucional</h3>
           <p>
-            Disponible para consultas en derecho, catastro, GIS y servicios relacionados con la
-            gestión territorial y el ordenamiento urbano en Bolivia.
+            Disponible para consultas en derecho, catastro, sistemas de información geográfica y
+            proyectos de gestión territorial y ordenamiento urbano en Bolivia.
           </p>
           <div class="contact-item">
             <div class="contact-icon">
@@ -499,7 +579,7 @@ onUnmounted(() => {
             </div>
             <div class="contact-text">
               <h4>Ubicación</h4>
-              <p>Viacha, Departamento de La Paz, Bolivia</p>
+              <p>Viacha · Departamento de La Paz, Bolivia</p>
             </div>
           </div>
           <div class="contact-item">
@@ -522,11 +602,8 @@ onUnmounted(() => {
               />
             </div>
             <div class="contact-text">
-              <h4>Registros Profesionales</h4>
-              <p>S.I.B. — R.N.T. Nº {{ SITE.rnt }}</p>
-              <p style="margin-top: 4px">
-                R.P.A. — Nº {{ SITE.rpa }}
-              </p>
+              <h4>Registros Profesionales Habilitados</h4>
+              <p>S.I.B. — R.N.T. Nº {{ SITE.rnt }} · R.P.A. — Nº {{ SITE.rpa }}</p>
             </div>
           </div>
           <div class="contact-wa-wrap">
@@ -538,29 +615,50 @@ onUnmounted(() => {
             ><i
               aria-hidden="true"
               class="fa-brands fa-whatsapp"
-            /> Escríbeme por WhatsApp</a>
+            /> Consulta rápida por WhatsApp</a>
           </div>
         </div>
         <div class="cf-form-cta">
-          <p class="cta-lead">
-            ¿Quieres contactarme directamente?
+          <span class="cta-badge">
+            <i
+              aria-hidden="true"
+              class="fa-solid fa-clock"
+            /> Respuesta en menos de 24h hábiles
+          </span>
+          <h3 class="cta-lead">
+            ¿Necesitas una cotización o diagnóstico?
+          </h3>
+          <p class="cta-sub">
+            Simula el presupuesto referencial de tu trámite o proyecto en línea, o envíame los
+            detalles mediante el formulario de contacto.
           </p>
-          <p class="cta-email">
+          <div class="cta-email">
             <i
               aria-hidden="true"
               class="fa-solid fa-envelope"
             />
             <strong>lexgeocat@gmail.com</strong>
-          </p>
-          <router-link
-            class="btn btn-gold"
-            to="/pages/contacto.html"
-          >
-            <i
-              aria-hidden="true"
-              class="fa-solid fa-envelope"
-            /> Ir al formulario de contacto
-          </router-link>
+          </div>
+          <div class="cta-actions">
+            <router-link
+              class="btn btn-gold"
+              to="/pages/contacto.html"
+            >
+              <i
+                aria-hidden="true"
+                class="fa-solid fa-paper-plane"
+              /> Formulario de contacto
+            </router-link>
+            <router-link
+              class="btn btn-ghost"
+              to="/pages/servicios.html"
+            >
+              <i
+                aria-hidden="true"
+                class="fa-solid fa-calculator"
+              /> Cotizador de servicios
+            </router-link>
+          </div>
         </div>
       </div>
     </div>

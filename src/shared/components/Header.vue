@@ -171,7 +171,7 @@ onUnmounted(() => {
       <div class="logo-wrap">
         <router-link
           to="/"
-          style="display: flex; align-items: center; gap: 12px; text-decoration: none"
+          class="logo-link"
         >
           <div class="logo-icon">
             <img
@@ -348,8 +348,7 @@ onUnmounted(() => {
             />{{ item.label }}
             <i
               aria-hidden="true"
-              class="fa-solid fa-chevron-down"
-              style="margin-left: 4px; font-size: 10px"
+              class="fa-solid fa-chevron-down nav-chevron"
             />
           </span>
           <div class="nav-dropdown-content">
@@ -362,7 +361,6 @@ onUnmounted(() => {
               <i
                 aria-hidden="true"
                 :class="'fa-solid ' + child.icon"
-                style="margin-right: 8px; font-size: 11px"
               />{{ child.label }}
             </router-link>
           </div>
@@ -395,6 +393,14 @@ onUnmounted(() => {
     </div>
   </nav>
 
+  <!-- Mobile menu backdrop -->
+  <div
+    class="mob-backdrop"
+    :class="{ open: mobileOpen }"
+    aria-hidden="true"
+    @click="mobileOpen = false"
+  />
+
   <!-- Mobile menu -->
   <div
     id="mob-menu"
@@ -406,27 +412,16 @@ onUnmounted(() => {
     aria-label="Menú de navegación"
   >
     <div class="mob-menu-hd">
-      <div style="display: flex; align-items: center; gap: 10px">
-        <div
-          class="logo-icon"
-          style="width: 34px; height: 34px"
-        >
+      <div class="mob-brand">
+        <div class="mob-brand-icon">
           <i
             aria-hidden="true"
             class="fa-solid fa-map-location-dot"
-            style="color: var(--copper2); font-size: 14px"
           />
         </div>
-        <span
-          style="
-            font-family: var(--font-display);
-            font-size: 1.15rem;
-            font-weight: 800;
-            color: var(--text);
-          "
-        >{{ SITE.name.slice(0, 3) }}<span style="color: var(--sapphire)">Geo</span><span style="color: var(--copper)">Cat</span></span>
+        <span class="mob-brand-title">{{ SITE.name.slice(0, 3) }}<span class="geo">Geo</span><span class="cat">Cat</span></span>
       </div>
-      <div style="display: flex; align-items: center; gap: 8px">
+      <div class="mob-actions">
         <button
           aria-label="Cambiar tema"
           class="icon-btn th-btn-mob"

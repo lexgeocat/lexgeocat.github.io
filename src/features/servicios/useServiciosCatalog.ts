@@ -13,67 +13,67 @@ export interface CategorySpec {
 export const CAT_CONFIG: Record<string, CategorySpec> = {
   'Derecho Civil': {
     icon: 'fa-handshake',
-    color: 'var(--copper)',
+    color: 'var(--color-esp-derecho)',
     subtitle: 'Contratos, propiedad, familia y sucesiones',
   },
   'Derecho Agrario': {
     icon: 'fa-seedling',
-    color: '#3a5e3a',
+    color: 'var(--color-esp-geomatica)',
     subtitle: 'Tierra, INRA y comunidades',
   },
   'Derecho Minero': {
     icon: 'fa-gem',
-    color: '#c8660c',
+    color: 'var(--color-esp-topografia)',
     subtitle: 'Concesiones, recursos y sociedades',
   },
   'Derecho Corporativo': {
     icon: 'fa-building',
-    color: '#c8660c',
+    color: 'var(--color-esp-ordenamiento)',
     subtitle: 'Sociedades, registros y compliance',
   },
   Catastro: {
     icon: 'fa-draw-polygon',
-    color: 'var(--sapphire)',
+    color: 'var(--color-esp-catastro)',
     subtitle: 'Campo, fichas prediales y diagnóstico',
   },
   Topografía: {
     icon: 'fa-ruler-combined',
-    color: '#c8660c',
+    color: 'var(--color-esp-topografia)',
     subtitle: 'Campo, procesamiento y cartografía',
   },
   'Topografía / Geodesia': {
     icon: 'fa-satellite',
-    color: '#c8660c',
+    color: 'var(--color-esp-topografia)',
     subtitle: 'GNSS, control altimétrico y SIRGAS-BOL',
   },
   Geomática: {
     icon: 'fa-map',
-    color: '#3a5e3a',
+    color: 'var(--color-esp-geomatica)',
     subtitle: 'Análisis espacial y visualización',
   },
   'Geomática / Teledetección': {
     icon: 'fa-satellite-dish',
-    color: '#3a5e3a',
+    color: 'var(--color-esp-geomatica)',
     subtitle: 'Imágenes Sentinel, Landsat y NDVI',
   },
   'Geomática / Software': {
     icon: 'fa-code',
-    color: '#3a5e3a',
+    color: 'var(--color-esp-geomatica)',
     subtitle: 'Python, GeoPandas y automatización GIS',
   },
   Software: {
     icon: 'fa-globe',
-    color: '#7c6fc8',
+    color: 'var(--color-esp-software)',
     subtitle: 'Frontend, backend y geoespacial',
   },
   'Software / Geomática': {
     icon: 'fa-map-location-dot',
-    color: '#7c6fc8',
+    color: 'var(--color-esp-software)',
     subtitle: 'Visores GIS y aplicaciones web',
   },
   'Software / GIS': {
     icon: 'fa-map-location-dot',
-    color: '#7c6fc8',
+    color: 'var(--color-esp-software)',
     subtitle: 'Visores GIS y aplicaciones web',
   },
 }

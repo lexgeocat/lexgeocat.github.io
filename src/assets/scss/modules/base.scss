@@ -9,6 +9,7 @@
 html {
   font-size: 16px;
   scroll-behavior: smooth;
+  text-size-adjust: 100%;
 }
 
 body {
@@ -16,9 +17,15 @@ body {
   font-size: var(--fs-body);
   line-height: var(--lh-normal);
   color: var(--text);
-  background: var(--bg);
+  background-color: var(--bg);
+  font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+  text-rendering: optimizelegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+  transition:
+    background-color 0.28s var(--ease),
+    color 0.28s var(--ease);
 }
 
 img {
@@ -30,15 +37,20 @@ img {
 a {
   color: var(--copper);
   text-decoration: none;
-  transition: color 0.2s;
+  transition: color 0.2s var(--ease);
 
   &:hover {
     color: var(--copper2);
   }
 }
 
+:focus-visible {
+  outline: 2px solid var(--copper);
+  outline-offset: 2px;
+}
+
 ::selection {
-  background: var(--copper);
+  background-color: var(--copper);
   color: #fff;
 }
 
@@ -49,24 +61,33 @@ h4,
 h5 {
   line-height: var(--lh-tight);
   color: var(--text);
+  text-wrap: balance;
 }
 
 h1,
 h2 {
   font-family: var(--font-display);
   font-weight: 400;
-  letter-spacing: -0.01em;
+  letter-spacing: -0.015em;
 }
 
 h3 {
   font-family: var(--font-heading);
   font-weight: 700;
+  letter-spacing: var(--ls-tight);
+  line-height: var(--lh-snug);
 }
 
 h4,
 h5 {
   font-family: var(--font-heading);
   font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: var(--lh-snug);
+}
+
+p {
+  text-wrap: pretty;
 }
 
 .navbar,
@@ -95,14 +116,11 @@ h5 {
 
 .reveal {
   opacity: 0;
-  transform: translateY(20px);
+  transform: translateY(18px);
   transition:
-    opacity 0.65s var(--ease-out),
-    transform 0.65s var(--ease-out);
-
-  /* F. El delay se calcula por índice visual (asignado por useReveal como
-     custom property --reveal-i, no por batch de IntersectionObserver). */
-  transition-delay: calc(var(--reveal-i, 0) * 0.1s);
+    opacity 0.6s var(--ease-out),
+    transform 0.6s var(--ease-out);
+  transition-delay: calc(var(--reveal-i, 0) * 0.08s);
 
   &.visible {
     opacity: 1;
@@ -113,26 +131,27 @@ h5 {
 /* Línea decorativa institucional — firma visual */
 .inst-line {
   display: block;
-  width: 40px;
+  width: 44px;
   height: 2px;
   background: linear-gradient(90deg, var(--copper), var(--sapphire));
-  border-radius: 1px;
+  border-radius: 2px;
   margin-bottom: 16px;
 }
 
 ::-webkit-scrollbar {
-  width: 5px;
+  width: 6px;
+  height: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--bg2);
+  background-color: var(--bg2);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--border3);
+  background-color: var(--border2);
   border-radius: 3px;
 
   &:hover {
-    background: var(--copper);
+    background-color: var(--copper);
   }
 }

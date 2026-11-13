@@ -57,17 +57,19 @@ function renderServicios(catalog: Awaited<ReturnType<typeof loadServiciosCatalog
     let html = ''
     catKeys.forEach((cat, idx) => {
       const isFirst = idx === 0
-      const cfg = CAT_CONFIG[cat] ?? { icon: 'fa-tag', color: 'var(--text2)', subtitle: '' }
-      const iconStyles = `background: rgba(42,100,150,0.1); border-color: rgba(42,100,150,0.2); color: ${cfg.color};`
+      const cfg = CAT_CONFIG[cat] ?? { icon: 'fa-tag', color: 'var(--copper)', subtitle: '' }
+      const iconStyles = `color: ${cfg.color};`
       const iconHtml = cfg.icon ? `<i aria-hidden="true" class="fa-solid ${cfg.icon}"></i>` : ''
+      const list = categorias[cat] ?? []
+      const countLabel = `${list.length} ${list.length === 1 ? 'servicio' : 'servicios'}`
       html += `<div class="specialty-group">`
       html += `<div class="specialty-header${isFirst ? ' open' : ''}" data-action="toggle-spec">`
       html += `<div class="spec-header-left"><div class="spec-icon" style="${iconStyles}">${iconHtml}</div><div>`
       html += `<div class="spec-title">${escHtml(cat)}</div>`
       if (cfg.subtitle) html += `<div class="spec-subtitle">${escHtml(cfg.subtitle)}</div>`
-      html += `</div></div><i aria-hidden="true" class="fa-solid fa-chevron-down spec-chevron"></i></div>`
+      html += `</div></div><div class="spec-header-right"><span class="spec-count">${countLabel}</span><i aria-hidden="true" class="fa-solid fa-chevron-down spec-chevron"></i></div></div>`
       html += `<div class="specialty-body${isFirst ? ' open' : ''}"><div class="specialty-body-inner"><div class="services-grid">`
-      categorias[cat]!.forEach((svc) => {
+      list.forEach((svc) => {
         const tagsHtml = svc.tags?.length
           ? `<div class="svc-item-tags">${svc.tags.map((t: string) => `<span class="svc-item-tag">${escHtml(t)}</span>`).join('')}</div>`
           : ''
@@ -258,6 +260,87 @@ onUnmounted(() => {
           <h4>Formación Académica</h4>
           <p>UMSA · Catastro & Ord. Territorial<br>UPEA · Licenciatura en Derecho</p>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="svc-jump-wrap">
+    <div class="c">
+      <div
+        class="svc-jump-bar"
+        role="navigation"
+        aria-label="Navegación rápida de áreas de servicio"
+      >
+        <button
+          type="button"
+          class="svc-jump-btn"
+          @click="scrollToPanel('panel-derecho')"
+        >
+          <i
+            aria-hidden="true"
+            class="fa-solid fa-scale-balanced"
+          /> Derecho
+        </button>
+        <button
+          type="button"
+          class="svc-jump-btn"
+          @click="scrollToPanel('panel-catastro')"
+        >
+          <i
+            aria-hidden="true"
+            class="fa-solid fa-map-location-dot"
+          /> Catastro
+        </button>
+        <button
+          type="button"
+          class="svc-jump-btn"
+          @click="scrollToPanel('panel-ordenamiento')"
+        >
+          <i
+            aria-hidden="true"
+            class="fa-solid fa-compass-drafting"
+          /> Ordenamiento
+        </button>
+        <button
+          type="button"
+          class="svc-jump-btn"
+          @click="scrollToPanel('panel-geografia')"
+        >
+          <i
+            aria-hidden="true"
+            class="fa-solid fa-earth-americas"
+          /> Geografía
+        </button>
+        <button
+          type="button"
+          class="svc-jump-btn"
+          @click="scrollToPanel('panel-topografia')"
+        >
+          <i
+            aria-hidden="true"
+            class="fa-solid fa-mountain"
+          /> Topografía y Geodesia
+        </button>
+        <button
+          type="button"
+          class="svc-jump-btn"
+          @click="scrollToPanel('panel-geomatica')"
+        >
+          <i
+            aria-hidden="true"
+            class="fa-solid fa-layer-group"
+          /> Geomática
+        </button>
+        <button
+          type="button"
+          class="svc-jump-btn"
+          @click="scrollToPanel('panel-software')"
+        >
+          <i
+            aria-hidden="true"
+            class="fa-solid fa-code"
+          /> Software
+        </button>
       </div>
     </div>
   </div>

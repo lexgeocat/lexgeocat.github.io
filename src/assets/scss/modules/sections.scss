@@ -2,18 +2,33 @@
 .sec-dark,
 .sec-muted,
 .sec-stripe {
-  padding: 80px 0;
+  padding: 88px 0;
+  position: relative;
+
+  @media (width <= 768px) {
+    padding: 64px 0;
+  }
+}
+
+.sec {
+  background-color: var(--bg);
 }
 
 .sec-dark,
 .sec-muted,
 .sec-stripe {
-  background: var(--bg2);
+  background-color: var(--bg2);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
 }
 
 /* Section header */
 .sh {
   margin-bottom: 52px;
+
+  @media (width <= 768px) {
+    margin-bottom: 36px;
+  }
 
   &.center {
     text-align: center;
@@ -24,35 +39,35 @@
   }
 }
 
-/* Section label */
+/* Section label (Eyebrow) */
 .sl {
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  font-family: var(--font-heading);
-  font-size: 0.66rem;
-  font-weight: 700;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 600;
   letter-spacing: var(--ls-caps);
   text-transform: uppercase;
   color: var(--copper);
-  margin-bottom: 14px;
+  margin-bottom: 12px;
 
   &::before {
     content: '';
     display: inline-block;
-    width: 20px;
-    height: 1.5px;
+    width: 22px;
+    height: 2px;
     background: linear-gradient(90deg, var(--copper), var(--sapphire));
-    border-radius: 1px;
+    border-radius: 2px;
   }
 
   &::after {
     content: '';
     display: inline-block;
     width: 6px;
-    height: 1.5px;
-    background: var(--sapphire);
-    border-radius: 1px;
+    height: 6px;
+    background-color: var(--sapphire);
+    border-radius: 50%;
   }
 }
 
@@ -61,23 +76,25 @@
   font-family: var(--font-display);
   font-size: var(--fs-h2);
   font-weight: 400;
+  line-height: 1.14;
   margin-bottom: 14px;
-  letter-spacing: -0.01em;
+  letter-spacing: -0.015em;
+  color: var(--text);
 
   @media (width <= 768px) {
-    font-size: 1.7rem;
+    font-size: 1.8rem;
   }
 
   @media (width <= 480px) {
-    font-size: 1.45rem;
+    font-size: 1.55rem;
   }
 }
 
 /* Section description */
 .sd {
   color: var(--text2);
-  max-width: 580px;
-  font-size: 1rem;
+  max-width: 620px;
+  font-size: var(--fs-lg);
   line-height: var(--lh-normal);
 }
 
@@ -99,7 +116,7 @@
 /* Grids */
 .g {
   display: grid;
-  gap: 18px;
+  gap: 22px;
 }
 
 .g2 {
@@ -109,17 +126,21 @@
 .g3 {
   grid-template-columns: repeat(3, 1fr);
 
-  @media (width <= 900px) {
+  @media (width <= 960px) {
     grid-template-columns: repeat(2, 1fr);
   }
 }
 
 .g4 {
   grid-template-columns: repeat(4, 1fr);
+
+  @media (width <= 1024px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
 .g-auto {
-  grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
 }
 
 @media (width <= 768px) {
@@ -128,26 +149,38 @@
   .g4,
   .g-auto {
     grid-template-columns: 1fr;
+    gap: 16px;
   }
 }
 
 /* Page hero */
 .page-hero {
-  padding: calc(var(--h) + 44px + 48px) 0 48px;
-  background: var(--bg);
+  padding: calc(var(--h) + var(--nav-h) + 52px) 0 56px;
+  background-color: var(--bg2);
   position: relative;
   overflow: hidden;
   border-bottom: 1px solid var(--border);
+
+  @media (width <= 900px) {
+    padding: calc(var(--h) + 40px) 0 44px;
+  }
 
   &::before {
     content: '';
     position: absolute;
     inset: 0;
     background-image:
+      radial-gradient(circle at 80% 20%, var(--color-glow-copper), transparent 55%),
+      radial-gradient(circle at 15% 85%, var(--color-glow-sapphire), transparent 55%),
       linear-gradient(var(--color-grid-line) 1px, transparent 1px),
       linear-gradient(90deg, var(--color-grid-line) 1px, transparent 1px);
-    background-size: 48px 48px;
-    opacity: 0.4;
+    background-size:
+      100% 100%,
+      100% 100%,
+      48px 48px,
+      48px 48px;
+    opacity: 0.85;
+    pointer-events: none;
   }
 
   &::after {
@@ -172,13 +205,14 @@
   }
 
   .st {
+    font-size: var(--fs-h1);
     color: var(--text);
-    margin-bottom: 10px;
+    margin-bottom: 12px;
   }
 
   .sd {
     color: var(--text2);
-    max-width: 640px;
+    max-width: 660px;
   }
 
   .sl {
@@ -187,17 +221,26 @@
 }
 
 .page-hero-icon {
-  font-size: 2.2rem;
+  width: 56px;
+  height: 56px;
+  border-radius: 14px;
+  background-color: var(--copper-lt);
+  border: 1px solid var(--copper-bd);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
   color: var(--copper);
-  margin-bottom: 16px;
+  margin-bottom: 18px;
+  box-shadow: var(--sh);
 }
 
 .page-wrap {
   max-width: var(--con);
   margin: 0 auto;
-  padding: calc(var(--h) + 44px + 24px) 28px 60px;
+  padding: calc(var(--h) + var(--nav-h) + 28px) 28px 64px;
 }
 
 .page-content {
-  padding: 60px 0;
+  padding: 64px 0;
 }
