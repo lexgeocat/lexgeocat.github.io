@@ -180,7 +180,7 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
                 <i
                   aria-hidden="true"
                   class="fa-solid fa-chevron-right"
-                />Sobre Mí
+                />Sobre Nosotros
               </router-link>
             </li>
             <li>

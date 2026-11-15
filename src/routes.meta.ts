@@ -73,10 +73,10 @@ export const ROUTES: RouteSeo[] = [
   },
   {
     path: '/pages/acerca-de.html',
-    crumb: 'Sobre Mí',
-    title: 'Cristian Ruiz Quiroga — Abogado y Técnico Catastral | LexGeoCat',
+    crumb: 'Sobre Nosotros',
+    title: 'Sobre Nosotros — Equipo, Misión y Visión | LexGeoCat',
     description:
-      'Licenciado en Derecho (R.P.A. 13437938CBRQ) y Técnico en Catastro y Ordenamiento Territorial (R.N.T. 970285). Viacha, La Paz.',
+      'Equipo multidisciplinario en Derecho, Catastro, Ordenamiento Territorial, Topografía, Geomática y Software en La Paz - Bolivia. Registros R.P.A. 13437938CBRQ y R.N.T. 970285.',
   },
   {
     path: '/pages/contacto.html',

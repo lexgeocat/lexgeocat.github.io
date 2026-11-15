@@ -76,8 +76,8 @@ import { SITE } from '../config/site'
           >
             <i
               aria-hidden="true"
-              class="fa-solid fa-user"
-            /> Sobre Mí
+              class="fa-solid fa-users"
+            /> Sobre Nosotros
           </router-link>
           <router-link
             class="btn btn-ghost"
@@ -90,7 +90,7 @@ import { SITE } from '../config/site'
           </router-link>
         </div>
         <p style="font-size: 0.85rem; color: var(--text3)">
-          También podés escribirme directamente a
+          También puedes escribirnos directamente a
           <strong style="color: var(--text2)">{{ SITE.email }}</strong>
         </p>
       </div>

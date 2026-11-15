@@ -5,7 +5,7 @@ export const SITE = {
   email: 'lexgeocat@gmail.com',
   whatsapp: '+59176711790',
   whatsappNumber: '59176711790',
-  location: 'Viacha, La Paz — Bolivia',
+  location: 'La Paz - Bolivia',
   founder: 'Cristian B. Ruiz Quiroga',
   rnt: '970285',
   rpa: '13437938CBRQ',

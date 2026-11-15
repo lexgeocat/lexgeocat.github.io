@@ -28,8 +28,8 @@ onUnmounted(() => {
         <p><em>Última actualización: junio 2026</em></p>
         <h2>1. Responsable</h2>
         <p>
-          LexGeoCat, operado por Cristian B. Ruiz Q., con sede en Viacha, Departamento de La Paz,
-          Bolivia. Contacto: lexgeocat@gmail.com.
+          LexGeoCat, firma técnico-jurídica dirigida por Cristian B. Ruiz Q., con sede en
+          La Paz - Bolivia. Contacto: lexgeocat@gmail.com.
         </p>
         <h2>2. Datos que recopilamos</h2>
         <p>

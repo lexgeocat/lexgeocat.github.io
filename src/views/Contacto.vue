@@ -26,7 +26,7 @@ onUnmounted(() => {
       </div>
       <span class="sl">Contacto</span>
       <h1 class="st">
-        Escríbeme
+        Escríbenos
       </h1>
       <p class="sd">
         Consultas profesionales, colaboraciones o asesoramiento en derecho, catastro y geomática.
@@ -73,12 +73,12 @@ onUnmounted(() => {
             <div class="contact-icon">
               <i
                 aria-hidden="true"
-                class="fa-solid fa-id-card"
+                class="fa-solid fa-clock"
               />
             </div>
             <div class="contact-text">
-              <h4>Registro</h4>
-              <p>SIB — R.N.T. Nº {{ SITE.rnt }}</p>
+              <h4>Atención y Cobertura</h4>
+              <p>Presencial en La Paz · Consultoría remota en toda Bolivia (&lt; 24h hábiles)</p>
             </div>
           </div>
           <a

@@ -216,54 +216,6 @@ onUnmounted(() => {
     </div>
   </section>
 
-  <div
-    class="c"
-    style="padding-top: 32px; padding-bottom: 32px"
-  >
-    <div class="creds-banner reveal">
-      <div class="cred-badge">
-        <div class="cred-badge-icon">
-          <i
-            aria-hidden="true"
-            class="fa-solid fa-gavel"
-          />
-        </div>
-        <div class="cred-badge-info">
-          <h4>Registro Público de Abogacía</h4>
-          <p>Tribunal Supremo de Justicia — Bolivia</p>
-          <code>R.P.A. Nº {{ SITE.rpa }}</code>
-        </div>
-      </div>
-      <div class="creds-divider" />
-      <div class="cred-badge">
-        <div class="cred-badge-icon">
-          <i
-            aria-hidden="true"
-            class="fa-solid fa-compass-drafting"
-          />
-        </div>
-        <div class="cred-badge-info">
-          <h4>Sociedad de Ingenieros de Bolivia</h4>
-          <p>Técnico Universitario Superior — Catastro y Ord. Territorial</p>
-          <code>R.N.T. Nº {{ SITE.rnt }}</code>
-        </div>
-      </div>
-      <div class="creds-divider" />
-      <div class="cred-badge">
-        <div class="cred-badge-icon">
-          <i
-            aria-hidden="true"
-            class="fa-solid fa-university"
-          />
-        </div>
-        <div class="cred-badge-info">
-          <h4>Formación Académica</h4>
-          <p>UMSA · Catastro & Ord. Territorial<br>UPEA · Licenciatura en Derecho</p>
-        </div>
-      </div>
-    </div>
-  </div>
-
   <div class="svc-jump-wrap">
     <div class="c">
       <div
@@ -362,17 +314,14 @@ onUnmounted(() => {
             <div>
               <h2>Asesoría Legal Territorial</h2>
               <p>
-                Consultoría jurídica especializada en el sistema de derechos reales boliviano,
-                normativa territorial y procesos registrales. Doble habilitación: Abogado (R.P.A.) e
-                Ingeniero Catastral (R.N.T.), lo que permite una visión técnico-jurídica única en
-                Bolivia.
+                Consultoría jurídica especializada en derechos reales, normativa territorial y
+                procesos registrales en Bolivia, con un enfoque técnico-jurídico integrado.
               </p>
               <div class="area-creds">
                 <span class="area-cred"><i
                   aria-hidden="true"
-                  class="fa-solid fa-certificate"
-                /> R.P.A. Nº
-                  {{ SITE.rpa }}</span><span class="area-cred"><i
+                  class="fa-solid fa-scale-balanced"
+                /> Derechos Reales y Normativa</span><span class="area-cred"><i
                   aria-hidden="true"
                   class="fa-solid fa-globe"
                 /> Cobertura Nacional</span><span class="area-cred"><i
@@ -418,12 +367,11 @@ onUnmounted(() => {
               <div class="area-creds">
                 <span class="area-cred"><i
                   aria-hidden="true"
-                  class="fa-solid fa-certificate"
-                /> R.N.T. Nº
-                  {{ SITE.rnt }}</span><span class="area-cred"><i
+                  class="fa-solid fa-map"
+                /> Catastro Multifinalitario</span><span class="area-cred"><i
                   aria-hidden="true"
-                  class="fa-solid fa-graduation-cap"
-                /> TUS — UMSA</span><span class="area-cred"><i
+                  class="fa-solid fa-layer-group"
+                /> SIG y Avalúo Predial</span><span class="area-cred"><i
                   aria-hidden="true"
                   class="fa-solid fa-building"
                 /> Catastro Urbano y
@@ -788,7 +736,7 @@ onUnmounted(() => {
       <div class="contact-strip reveal">
         <h3>¿Tienes un proyecto en mente?</h3>
         <p>
-          Consulta inicial gratuita. Respondo en menos de 24 horas hábiles. Sin compromiso de
+          Consulta inicial gratuita. Respondemos en menos de 24 horas hábiles. Sin compromiso de
           contratación.
         </p>
         <div class="contact-strip-btns">

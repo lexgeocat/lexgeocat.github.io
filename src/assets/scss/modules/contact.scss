@@ -74,6 +74,16 @@
     margin: 0;
     line-height: 1.45;
   }
+
+  a {
+    color: var(--copper);
+    font-weight: 600;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
 }
 
 .cf-form {

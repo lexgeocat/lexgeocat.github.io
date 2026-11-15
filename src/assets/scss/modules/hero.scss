@@ -10,12 +10,10 @@
 
   /* Modo claro: degradado radial cálido con textura cartográfica limpia */
   [data-color-scheme='light'] & {
-    background: radial-gradient(
-      ellipse 120% 100% at 50% 35%,
-      var(--color-hero-light-1) 0%,
-      var(--color-hero-light-2) 50%,
-      var(--color-hero-light-3) 100%
-    );
+    background: radial-gradient(ellipse 120% 100% at 50% 35%,
+        var(--color-hero-light-1) 0%,
+        var(--color-hero-light-2) 50%,
+        var(--color-hero-light-3) 100%);
   }
 
   /* Animaciones de entrada escalonadas del hero */
@@ -31,16 +29,12 @@
     animation: hero-slide-up 0.75s var(--ease-out) 0.25s both;
   }
 
-  &-creds {
-    animation: hero-slide-up 0.75s var(--ease-out) 0.32s both;
-  }
-
   &-btns {
-    animation: hero-slide-up 0.75s var(--ease-out) 0.4s both;
+    animation: hero-slide-up 0.75s var(--ease-out) 0.35s both;
   }
 
   &-stats {
-    animation: hero-slide-up 0.75s var(--ease-out) 0.52s both;
+    animation: hero-slide-up 0.75s var(--ease-out) 0.45s both;
   }
 
   &-bg {
@@ -84,11 +78,9 @@
     pointer-events: none;
 
     [data-color-scheme='light'] & {
-      background: radial-gradient(
-        ellipse 85% 75% at 50% 45%,
-        transparent 40%,
-        var(--color-hero-light-fade) 100%
-      );
+      background: radial-gradient(ellipse 85% 75% at 50% 45%,
+          transparent 40%,
+          var(--color-hero-light-fade) 100%);
     }
   }
 
@@ -165,9 +157,9 @@
 
   &-title {
     font-family: var(--font-display);
-    font-size: var(--fs-hero);
+    font-size: var(--fs-h1);
     font-weight: 400;
-    line-height: 1.04;
+    line-height: 1.12;
     color: var(--text);
     margin-bottom: 20px;
     letter-spacing: -0.02em;
@@ -179,19 +171,6 @@
     .accent-gold {
       color: var(--copper);
     }
-
-    .line-sub {
-      font-family: var(--font-heading);
-      font-style: normal;
-      font-weight: 600;
-      color: var(--text2);
-      font-size: clamp(1.1rem, 2.1vw, 1.55rem);
-      display: block;
-      margin-top: 14px;
-      letter-spacing: -0.01em;
-      text-shadow: none;
-      line-height: 1.35;
-    }
   }
 
   &-desc {
@@ -199,39 +178,7 @@
     color: var(--text2);
     max-width: 560px;
     line-height: var(--lh-normal);
-    margin-bottom: 24px;
-  }
-
-  /* Píldoras de respaldo oficial (R.P.A. y R.N.T.) */
-  &-creds {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
     margin-bottom: 32px;
-
-    .hcred-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 6px 12px;
-      border-radius: var(--rs);
-      background-color: color-mix(in srgb, var(--bg2) 85%, transparent);
-      border: 1px solid var(--border);
-      font-size: var(--fs-xs);
-      color: var(--text2);
-
-      i {
-        color: var(--copper);
-        font-size: 11px;
-      }
-
-      strong {
-        font-family: var(--font-mono);
-        font-weight: 600;
-        color: var(--text);
-        font-size: 0.7rem;
-      }
-    }
   }
 
   &-btns {
@@ -307,7 +254,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 4;
+    z-index: 6;
   }
 
   .floating-dashboard {
@@ -347,11 +294,265 @@
   .fd-bg-map {
     position: relative;
     z-index: 1;
-    width: 82%;
-    height: 82%;
-    object-fit: contain;
+    width: 92%;
+    height: 92%;
+    overflow: visible;
     pointer-events: none;
-    filter: drop-shadow(0 12px 32px rgb(0 0 0 / 35%));
+    transform: translate3d(var(--fd-px, 0), var(--fd-py, 0), 0);
+    transition: transform 0.25s ease-out;
+    filter: drop-shadow(0 12px 32px rgb(0 0 0 / 28%));
+
+    .bol-grid-line {
+      stroke: var(--border);
+      stroke-width: 0.7;
+      stroke-dasharray: 2 4;
+      opacity: 0.65;
+    }
+
+    .bol-coords {
+      fill: var(--texto-3);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 7.5px;
+      letter-spacing: 0.04em;
+      opacity: 0.78;
+    }
+
+    .bol-territory-fill {
+      stroke: var(--copper);
+      stroke-width: 1.5;
+      stroke-linejoin: round;
+      transition: stroke-width 0.3s ease;
+    }
+
+    .bol-thematic-layer {
+      transition: opacity 0.35s ease;
+    }
+
+    .bol-layer-catastro {
+      stroke: var(--copper);
+      stroke-width: 0.9;
+      opacity: 0.14;
+    }
+
+    .bol-layer-geomatica {
+      opacity: 0.08;
+    }
+
+    .bol-scanline {
+      fill: var(--color-glow-sapphire);
+      stroke: none;
+      opacity: 0;
+      transition: opacity 0.35s ease;
+      animation: lgc-scan 6s linear infinite;
+    }
+
+    .bol-triangulation {
+      stroke: var(--sapphire);
+      stroke-width: 0.7;
+      stroke-dasharray: 3 3;
+      fill: none;
+      opacity: 0.28;
+      transition: opacity 0.35s ease, stroke-width 0.35s ease;
+    }
+
+    .bol-arc {
+      fill: none;
+      stroke-linecap: round;
+      opacity: 0.55;
+      transition: opacity 0.35s ease, stroke-width 0.35s ease;
+    }
+
+    .bol-arc-main {
+      stroke: var(--copper);
+      stroke-width: 1.5;
+      stroke-dasharray: 5 5;
+      animation: lgc-dash 18s linear infinite;
+    }
+
+    .bol-arc-sec {
+      stroke: var(--sapphire);
+      stroke-width: 1.1;
+      stroke-dasharray: 4 6;
+      animation: lgc-dash 24s linear infinite reverse;
+    }
+
+    .bol-pulse {
+      fill: none;
+      stroke: var(--copper);
+      stroke-width: 1.2;
+      transform-box: fill-box;
+      transform-origin: center;
+      animation: lgc-pulse-ring 3.4s ease-out infinite;
+    }
+
+    .bol-pulse-2 {
+      stroke: var(--sapphire);
+      animation-delay: 1.7s;
+    }
+
+    .bol-node-ring {
+      fill: var(--superficie);
+      stroke: var(--copper);
+      stroke-width: 1.6;
+      transition: stroke-width 0.3s ease;
+    }
+
+    .bol-node-core {
+      fill: var(--copper);
+    }
+
+    .bol-node-halo-sec {
+      fill: var(--color-glow-sapphire);
+      stroke: var(--sapphire);
+      stroke-width: 0.8;
+      opacity: 0.75;
+      transition: opacity 0.3s ease;
+    }
+
+    .bol-node-dot-sec {
+      fill: var(--sapphire);
+    }
+
+    .bol-node-label {
+      fill: var(--texto-2);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 7.5px;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      transition: fill 0.3s ease;
+    }
+
+    .bol-compass-bg {
+      fill: var(--superficie);
+      fill-opacity: 0.86;
+      stroke: var(--border2);
+      stroke-width: 0.9;
+    }
+
+    .bol-compass-ring {
+      fill: none;
+      stroke: var(--border);
+      stroke-width: 0.7;
+      stroke-dasharray: 2 2;
+    }
+
+    .bol-compass-north {
+      fill: var(--copper);
+    }
+
+    .bol-compass-north-shade {
+      fill: var(--copper);
+      opacity: 0.55;
+    }
+
+    .bol-compass-south {
+      fill: var(--texto-3);
+      opacity: 0.45;
+    }
+
+    .bol-compass-hub {
+      fill: var(--superficie);
+      stroke: var(--copper);
+      stroke-width: 1;
+    }
+
+    .bol-compass-n {
+      fill: var(--copper);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 7px;
+      font-weight: 700;
+    }
+
+    .bol-hud-card {
+      fill: var(--superficie);
+      fill-opacity: 0.88;
+      stroke: var(--border2);
+      stroke-width: 0.9;
+    }
+
+    .bol-hud-title {
+      fill: var(--texto-2);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 7px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+    }
+
+    .bol-scale-fill {
+      fill: var(--copper);
+    }
+
+    .bol-scale-empty {
+      fill: none;
+      stroke: var(--copper);
+      stroke-width: 0.8;
+    }
+
+    .bol-hud-unit {
+      fill: var(--texto-3);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 7px;
+      font-weight: 600;
+    }
+
+    &.is-layer-derecho,
+    &.is-layer-catastro {
+      .bol-layer-catastro {
+        opacity: 0.65;
+      }
+
+      .bol-territory-fill {
+        stroke-width: 2.1;
+      }
+    }
+
+    &.is-layer-topogeodesia {
+      .bol-triangulation {
+        opacity: 0.9;
+        stroke-width: 1;
+      }
+
+      .bol-node-halo-sec {
+        opacity: 1;
+      }
+
+      .bol-node-label {
+        fill: var(--texto);
+      }
+    }
+
+    &.is-layer-geomatica {
+      .bol-layer-geomatica {
+        opacity: 0.6;
+      }
+
+      .bol-scanline {
+        opacity: 0.85;
+      }
+    }
+
+    &.is-layer-software {
+      .bol-arc {
+        opacity: 0.95;
+        stroke-width: 1.9;
+      }
+
+      .bol-arc-main {
+        animation-duration: 9s;
+      }
+
+      .bol-arc-sec {
+        animation-duration: 12s;
+      }
+
+      .bol-node-ring {
+        stroke-width: 2.2;
+      }
+
+      .bol-node-halo-sec {
+        opacity: 1;
+      }
+    }
   }
 
   .fd-card {
@@ -427,61 +628,115 @@
   }
 
   /* Posicionamiento orbital equilibrado alrededor del mapa de Bolivia */
+  .fd-card.is-active {
+    border-color: var(--copper);
+    transform: translateY(-2px);
+  }
+
   .fdc-1 {
-    top: 4%;
-    right: 2%;
+    top: 2%;
+    right: 0;
     animation: lgc-float1 6s ease-in-out infinite;
   }
 
   .fdc-2 {
-    top: 14%;
-    left: -4%;
+    top: 15%;
+    left: -2%;
     animation: lgc-float2 7s ease-in-out infinite;
   }
 
   .fdc-3 {
-    bottom: 24%;
-    left: -6%;
+    bottom: 26%;
+    left: -3%;
     animation: lgc-float3 8s ease-in-out infinite;
   }
 
   .fdc-4 {
-    top: 44%;
-    right: -4%;
+    top: 48%;
+    right: -2%;
     animation: lgc-float2 6.5s ease-in-out infinite;
   }
 
   .fdc-5 {
-    bottom: 4%;
-    right: 6%;
+    bottom: 2%;
+    right: 4%;
     animation: lgc-float1 7.5s ease-in-out infinite;
   }
 
-  @media (width <= 1024px) {
+  @media (width <=1024px) {
     &-grid {
       grid-template-columns: 1fr;
-      gap: 40px;
+      gap: 36px;
     }
 
     &-content {
       max-width: 100%;
     }
 
-    .hero-visual {
-      display: none;
+    .floating-dashboard {
+      height: auto;
+      max-width: 100%;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+
+      &::before,
+      &::after {
+        display: none;
+      }
+    }
+
+    .fd-bg-map {
+      grid-column: 1 / -1;
+      justify-self: center;
+      width: 100%;
+      max-width: 340px;
+      height: auto;
+      aspect-ratio: 1;
+      transform: none;
+    }
+
+    .fd-card {
+      position: static;
+      width: 100%;
+      animation: none;
+    }
+
+    .fdc-5 {
+      grid-column: 1 / -1;
     }
   }
 
-  @media (width <= 768px) {
+  @media (width <=560px) {
+    .floating-dashboard {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .fd-bg-map {
+      transform: none;
+      transition: none;
+
+      .bol-scanline,
+      .bol-arc-main,
+      .bol-arc-sec,
+      .bol-pulse {
+        animation: none;
+      }
+    }
+
+    .fd-card {
+      animation: none;
+    }
+  }
+
+  @media (width <=768px) {
     padding: calc(var(--h) + 36px) 20px 64px;
     min-height: auto;
 
     &-title {
-      font-size: clamp(2.2rem, 8.5vw, 3.2rem);
-    }
-
-    &-title .line-sub {
-      font-size: clamp(0.98rem, 3.5vw, 1.25rem);
+      font-size: clamp(1.85rem, 6.8vw, 2.5rem);
     }
 
     &-desc {
@@ -507,7 +762,7 @@
     }
   }
 
-  @media (width <= 480px) {
+  @media (width <=480px) {
     &-btns {
       flex-direction: column;
 
@@ -570,5 +825,34 @@
 
   50% {
     transform: translateY(-6px);
+  }
+}
+
+@keyframes lgc-dash {
+  to {
+    stroke-dashoffset: -100;
+  }
+}
+
+@keyframes lgc-pulse-ring {
+  0% {
+    transform: scale(0.45);
+    opacity: 0.85;
+  }
+
+  75%,
+  100% {
+    transform: scale(2.1);
+    opacity: 0;
+  }
+}
+
+@keyframes lgc-scan {
+  0% {
+    transform: translateY(0);
+  }
+
+  100% {
+    transform: translateY(340px);
   }
 }

@@ -113,8 +113,8 @@ const router = createRouter({
       component: () => import('../views/AcercaDe.vue'),
       meta: {
         ...seo('/pages/acerca-de.html'),
-        navLabel: 'Sobre Mí',
-        navIcon: 'fa-user',
+        navLabel: 'Sobre Nosotros',
+        navIcon: 'fa-users',
       },
     },
     {

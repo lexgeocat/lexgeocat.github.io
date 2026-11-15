@@ -1,10 +1,36 @@
 <script setup lang="ts">
-import { onMounted, onUnmounted, watch } from 'vue'
+import { onMounted, onUnmounted, ref, watch } from 'vue'
 import { useReveal, useCounters } from '../shared/composables/useReveal'
-import boliviaMap from '@/assets/img/fd-bolivia-map.svg?url'
+import BoliviaMapSvg from '@/shared/components/BoliviaMapSvg.vue'
+import type { HeroMapLayer } from '@/shared/components/bolivia-map'
 import { SITE } from '../config/site'
 import { useBloggerFeed } from '../features/blog/useBloggerFeed'
 import BlogCard from '../features/blog/BlogCard.vue'
+
+const activeMapLayer = ref<HeroMapLayer>(null)
+const mapParallax = ref({ x: 0, y: 0 })
+
+function setMapLayer(layer: HeroMapLayer) {
+  activeMapLayer.value = layer
+}
+
+function handleHeroVisualMove(e: MouseEvent) {
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+  const target = e.currentTarget as HTMLElement | null
+  if (!target) return
+  const rect = target.getBoundingClientRect()
+  if (!rect.width || !rect.height) return
+  const nx = (e.clientX - rect.left) / rect.width - 0.5
+  const ny = (e.clientY - rect.top) / rect.height - 0.5
+  mapParallax.value = {
+    x: Number((nx * 6).toFixed(2)),
+    y: Number((ny * 6).toFixed(2)),
+  }
+}
+
+function resetHeroVisualMove() {
+  mapParallax.value = { x: 0, y: 0 }
+}
 
 const {
   entries: blogEntries,
@@ -122,31 +148,14 @@ onUnmounted(() => {
           </div>
 
           <h1 class="hero-title">
-            Lex <span class="accent-teal">Geo</span><span class="accent-gold">Cat</span>
-            <span class="line-sub">Derecho, Catastro, Ordenamiento Territorial y Geomática</span>
+            Derecho, <span class="accent-gold">Catastro</span>, Ordenamiento Territorial y
+            <span class="accent-teal">Geomática</span>
           </h1>
 
           <p class="hero-desc">
             Plataforma especializada en consultoría técnico-jurídica, recursos normativos y
             sistemas de información geográfica adaptados al marco legal y territorial de Bolivia.
           </p>
-
-          <div class="hero-creds">
-            <span class="hcred-pill">
-              <i
-                aria-hidden="true"
-                class="fa-solid fa-gavel"
-              />
-              Abogado · <strong>R.P.A. {{ SITE.rpa }}</strong>
-            </span>
-            <span class="hcred-pill">
-              <i
-                aria-hidden="true"
-                class="fa-solid fa-compass-drafting"
-              />
-              S.I.B. Nacional · <strong>R.N.T. {{ SITE.rnt }}</strong>
-            </span>
-          </div>
 
           <div class="hero-btns">
             <router-link
@@ -228,17 +237,30 @@ onUnmounted(() => {
           </div>
         </div>
 
-        <div class="hero-visual">
-          <div class="floating-dashboard">
-            <img
+        <div
+          class="hero-visual"
+          @mousemove="handleHeroVisualMove"
+          @mouseleave="resetHeroVisualMove"
+        >
+          <div
+            class="floating-dashboard"
+            :style="{
+              '--fd-px': `${mapParallax.x}px`,
+              '--fd-py': `${mapParallax.y}px`,
+            }"
+          >
+            <BoliviaMapSvg
               class="fd-bg-map"
-              :src="boliviaMap"
-              alt=""
-              aria-hidden="true"
-            >
+              :active-layer="activeMapLayer"
+            />
             <router-link
               to="/pages/derecho.html"
-              class="fd-card fdc-1 reveal"
+              class="fd-card fdc-1"
+              :class="{ 'is-active': activeMapLayer === 'derecho' }"
+              @mouseenter="setMapLayer('derecho')"
+              @mouseleave="setMapLayer(null)"
+              @focus="setMapLayer('derecho')"
+              @blur="setMapLayer(null)"
             >
               <div class="fd-icon">
                 <i
@@ -253,7 +275,12 @@ onUnmounted(() => {
             </router-link>
             <router-link
               to="/pages/catastro.html"
-              class="fd-card fdc-2 reveal"
+              class="fd-card fdc-2"
+              :class="{ 'is-active': activeMapLayer === 'catastro' }"
+              @mouseenter="setMapLayer('catastro')"
+              @mouseleave="setMapLayer(null)"
+              @focus="setMapLayer('catastro')"
+              @blur="setMapLayer(null)"
             >
               <div class="fd-icon">
                 <i
@@ -268,7 +295,12 @@ onUnmounted(() => {
             </router-link>
             <router-link
               to="/pages/topogeodesia.html"
-              class="fd-card fdc-3 reveal"
+              class="fd-card fdc-3"
+              :class="{ 'is-active': activeMapLayer === 'topogeodesia' }"
+              @mouseenter="setMapLayer('topogeodesia')"
+              @mouseleave="setMapLayer(null)"
+              @focus="setMapLayer('topogeodesia')"
+              @blur="setMapLayer(null)"
             >
               <div class="fd-icon">
                 <i
@@ -283,7 +315,12 @@ onUnmounted(() => {
             </router-link>
             <router-link
               to="/pages/geomatica.html"
-              class="fd-card fdc-4 reveal"
+              class="fd-card fdc-4"
+              :class="{ 'is-active': activeMapLayer === 'geomatica' }"
+              @mouseenter="setMapLayer('geomatica')"
+              @mouseleave="setMapLayer(null)"
+              @focus="setMapLayer('geomatica')"
+              @blur="setMapLayer(null)"
             >
               <div class="fd-icon">
                 <i
@@ -298,7 +335,12 @@ onUnmounted(() => {
             </router-link>
             <router-link
               to="/pages/desarrollo-software.html"
-              class="fd-card fdc-5 reveal"
+              class="fd-card fdc-5"
+              :class="{ 'is-active': activeMapLayer === 'software' }"
+              @mouseenter="setMapLayer('software')"
+              @mouseleave="setMapLayer(null)"
+              @focus="setMapLayer('software')"
+              @blur="setMapLayer(null)"
             >
               <div class="fd-icon">
                 <i
@@ -579,31 +621,36 @@ onUnmounted(() => {
             </div>
             <div class="contact-text">
               <h4>Ubicación</h4>
-              <p>Viacha · Departamento de La Paz, Bolivia</p>
+              <p>{{ SITE.location }}</p>
             </div>
           </div>
           <div class="contact-item">
             <div class="contact-icon">
               <i
                 aria-hidden="true"
-                class="fa-solid fa-envelope"
+                class="fa-solid fa-globe"
               />
             </div>
             <div class="contact-text">
-              <h4>Correo Electrónico</h4>
-              <p>lexgeocat@gmail.com</p>
+              <h4>Cobertura y Modalidad</h4>
+              <p>Atención presencial en La Paz y consultoría remota en toda Bolivia</p>
             </div>
           </div>
           <div class="contact-item">
             <div class="contact-icon">
               <i
                 aria-hidden="true"
-                class="fa-solid fa-id-card"
+                class="fa-solid fa-id-badge"
               />
             </div>
             <div class="contact-text">
-              <h4>Registros Profesionales Habilitados</h4>
-              <p>S.I.B. — R.N.T. Nº {{ SITE.rnt }} · R.P.A. — Nº {{ SITE.rpa }}</p>
+              <h4>Respaldo Profesional</h4>
+              <p>
+                Habilitación legal, catastral y equipo técnico en
+                <router-link to="/pages/acerca-de.html">
+                  Sobre Nosotros
+                </router-link>
+              </p>
             </div>
           </div>
           <div class="contact-wa-wrap">
@@ -629,7 +676,7 @@ onUnmounted(() => {
             ¿Necesitas una cotización o diagnóstico?
           </h3>
           <p class="cta-sub">
-            Simula el presupuesto referencial de tu trámite o proyecto en línea, o envíame los
+            Simula el presupuesto referencial de tu trámite o proyecto en línea, o envíanos los
             detalles mediante el formulario de contacto.
           </p>
           <div class="cta-email">
@@ -637,7 +684,7 @@ onUnmounted(() => {
               aria-hidden="true"
               class="fa-solid fa-envelope"
             />
-            <strong>lexgeocat@gmail.com</strong>
+            <strong>{{ SITE.email }}</strong>
           </div>
           <div class="cta-actions">
             <router-link
