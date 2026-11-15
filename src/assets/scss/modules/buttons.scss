@@ -40,15 +40,15 @@
     pointer-events: none;
   }
 
-  /* Botón primario — Bronce-Cobre institucional */
+  /* Botón primario — Color Primario del tema activo */
   &-gold,
   &-primary {
-    background-color: var(--copper);
+    background-color: var(--primario);
     color: #fff;
     box-shadow: var(--sh-copper), var(--sh-inset);
 
     &:hover {
-      background-color: var(--copper2);
+      background-color: var(--primario-h);
       color: #fff;
       transform: translateY(-2px);
       box-shadow: var(--sh-copper-h), var(--sh-inset);

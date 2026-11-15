@@ -1,14 +1,25 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted, watch } from 'vue'
+import { computed, ref, onMounted, onUnmounted, watch } from 'vue'
 import { SITE } from '../../config/site'
 import { useTheme } from '../composables/useTheme'
+import { PRIMARIOS } from '../theme/tema'
+import IconoTema from './IconoTema.vue'
+import ConfiguradorTema from './ConfiguradorTema.vue'
 import { useGoatCounter, FLAG_CDN } from '../composables/useGoatCounter'
 import { useFocusTrap } from '../composables/useFocusTrap'
 import isotipo from '@/assets/img/isotipo.webp'
 import { useRouter } from 'vue-router'
 
-const { toggle } = useTheme()
+const { config, esOscuro, alternarEsquema } = useTheme()
 const router = useRouter()
+
+const menuTemaDesktop = ref(false)
+const menuTemaMovil = ref(false)
+const refMenuTemaDesktop = ref<HTMLElement | null>(null)
+const refMenuTemaMovil = ref<HTMLElement | null>(null)
+const swatchPrimario = computed(
+  () => (PRIMARIOS.find((p) => p.id === config.value.primary) ?? PRIMARIOS[0]).swatch,
+)
 
 const mobileOpen = ref(false)
 const scrolled = ref(false)
@@ -143,20 +154,40 @@ function toggleMobDropdown(id: string) {
   openMobDropdown.value = openMobDropdown.value === id ? null : id
 }
 
-function onEsc(e: KeyboardEvent) {
+function onKeyDown(e: KeyboardEvent) {
+  if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key.toLowerCase() === 't') {
+    e.preventDefault()
+    alternarEsquema()
+    return
+  }
   if (e.key !== 'Escape') return
   searchOpen.value = false
   mobileOpen.value = false
+  menuTemaDesktop.value = false
+  menuTemaMovil.value = false
+}
+
+function onClickFueraTema(e: MouseEvent) {
+  const target = e.target as Node | null
+  if (!target) return
+  if (menuTemaDesktop.value && !refMenuTemaDesktop.value?.contains(target)) {
+    menuTemaDesktop.value = false
+  }
+  if (menuTemaMovil.value && !refMenuTemaMovil.value?.contains(target)) {
+    menuTemaMovil.value = false
+  }
 }
 
 onMounted(() => {
   window.addEventListener('scroll', onScroll, { passive: true })
-  document.addEventListener('keydown', onEsc)
+  document.addEventListener('keydown', onKeyDown)
+  document.addEventListener('mousedown', onClickFueraTema)
   load()
 })
 onUnmounted(() => {
   window.removeEventListener('scroll', onScroll)
-  document.removeEventListener('keydown', onEsc)
+  document.removeEventListener('keydown', onKeyDown)
+  document.removeEventListener('mousedown', onClickFueraTema)
 })
 </script>
 
@@ -291,21 +322,50 @@ onUnmounted(() => {
             class="fa-solid fa-magnifying-glass"
           />
         </button>
-        <button
-          aria-label="Cambiar tema"
-          class="icon-btn th-btn"
-          type="button"
-          @click="toggle"
+        <div
+          ref="refMenuTemaDesktop"
+          class="nav-tema-grupo"
         >
-          <i
-            aria-hidden="true"
-            class="fa-solid fa-moon"
-          />
-          <i
-            aria-hidden="true"
-            class="fa-solid fa-sun"
-          />
-        </button>
+          <button
+            type="button"
+            class="nav-btn-tema"
+            title="Cambiar entre modo claro y oscuro (Ctrl+Shift+T)"
+            :aria-label="esOscuro ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'"
+            @click="alternarEsquema"
+          >
+            <IconoTema
+              tipo="tema"
+              :oscuro="esOscuro"
+              :tam="15"
+            />
+            <span>{{ esOscuro ? 'Claro' : 'Oscuro' }}</span>
+          </button>
+          <button
+            type="button"
+            :class="['nav-btn-paleta', { activo: menuTemaDesktop }]"
+            aria-label="Personalizar tema (Primary, Surface, Preset, Layout)"
+            aria-haspopup="dialog"
+            :aria-expanded="menuTemaDesktop"
+            title="Personalizar tema y paleta de colores"
+            @click="menuTemaDesktop = !menuTemaDesktop"
+          >
+            <IconoTema
+              tipo="paleta"
+              :tam="15"
+              :color="swatchPrimario"
+            />
+          </button>
+
+          <div
+            v-if="menuTemaDesktop"
+            class="nav-tema-popover"
+          >
+            <ConfiguradorTema
+              variante="popover"
+              @cerrar="menuTemaDesktop = false"
+            />
+          </div>
+        </div>
         <button
           aria-label="Menú"
           class="icon-btn ham"
@@ -421,21 +481,48 @@ onUnmounted(() => {
         <span class="mob-brand-title">{{ SITE.name.slice(0, 3) }}<span class="geo">Geo</span><span class="cat">Cat</span></span>
       </div>
       <div class="mob-actions">
-        <button
-          aria-label="Cambiar tema"
-          class="icon-btn th-btn-mob"
-          type="button"
-          @click="toggle"
+        <div
+          ref="refMenuTemaMovil"
+          class="nav-tema-grupo"
         >
-          <i
-            aria-hidden="true"
-            class="fa-solid fa-moon"
-          />
-          <i
-            aria-hidden="true"
-            class="fa-solid fa-sun"
-          />
-        </button>
+          <button
+            type="button"
+            class="nav-btn-tema"
+            :aria-label="esOscuro ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'"
+            @click="alternarEsquema"
+          >
+            <IconoTema
+              tipo="tema"
+              :oscuro="esOscuro"
+              :tam="15"
+            />
+            <span>{{ esOscuro ? 'Claro' : 'Oscuro' }}</span>
+          </button>
+          <button
+            type="button"
+            :class="['nav-btn-paleta', { activo: menuTemaMovil }]"
+            aria-label="Personalizar tema"
+            aria-haspopup="dialog"
+            :aria-expanded="menuTemaMovil"
+            @click="menuTemaMovil = !menuTemaMovil"
+          >
+            <IconoTema
+              tipo="paleta"
+              :tam="15"
+              :color="swatchPrimario"
+            />
+          </button>
+
+          <div
+            v-if="menuTemaMovil"
+            class="nav-tema-popover"
+          >
+            <ConfiguradorTema
+              variante="popover"
+              @cerrar="menuTemaMovil = false"
+            />
+          </div>
+        </div>
         <button
           class="mob-close"
           type="button"

@@ -53,6 +53,13 @@
     <!-- ── 1b. FILTERS ────────────────────────────────────────────────── -->
 
     <!-- Subtle glow used on La Paz dot and north arrow -->
+    <filter id="filter-glow-gold" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="1.4" result="blur" />
+      <feMerge>
+        <feMergeNode in="blur" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
  
 
     <!-- Panel drop-shadow: soft, low offset — premium feel -->
@@ -78,6 +85,10 @@
 
     <!-- ── 1e. STYLES: animations + component classes ─────────────────── -->
     <style type="text/css"><![CDATA[
+      :root {
+        color-scheme: dark light;
+        background: transparent;
+      }
 
       /* ── Animation keyframes ───────────────────────────────────────── */
 

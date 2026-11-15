@@ -9,7 +9,7 @@
   border-bottom: 1px solid var(--border);
 
   /* Modo claro: degradado radial cálido con textura cartográfica limpia */
-  [data-theme='light'] & {
+  [data-color-scheme='light'] & {
     background: radial-gradient(
       ellipse 120% 100% at 50% 35%,
       var(--color-hero-light-1) 0%,
@@ -70,7 +70,7 @@
       opacity: 0.22;
     }
 
-    [data-theme='light'] &::after {
+    [data-color-scheme='light'] &::after {
       background-color: var(--color-copper);
       opacity: 0.24;
     }
@@ -83,7 +83,7 @@
     background: radial-gradient(ellipse 85% 75% at 50% 45%, transparent 42%, var(--bg) 100%);
     pointer-events: none;
 
-    [data-theme='light'] & {
+    [data-color-scheme='light'] & {
       background: radial-gradient(
         ellipse 85% 75% at 50% 45%,
         transparent 40%,

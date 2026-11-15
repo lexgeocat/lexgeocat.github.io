@@ -172,8 +172,8 @@ async function handleLogin() {
     font-weight: 800;
     color: var(--color-text-primary);
 
-    .geo { color: var(--color-sapphire-glow); }
-    .cat { color: var(--color-copper-glow); }
+    .geo { color: inherit; }
+    .cat { color: inherit; }
   }
 
   &__sub {

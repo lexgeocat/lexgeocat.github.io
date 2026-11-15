@@ -1,9 +1,10 @@
 #ft {
-  background-color: var(--color-bg-primary);
-  color: var(--text);
+  background: var(--nav-bg);
+  color: var(--nav-texto);
   position: relative;
   overflow: hidden;
-  border-top: 1px solid var(--border);
+  border-top: 1px solid var(--nav-borde);
+  transition: background 0.3s var(--ease), color 0.3s var(--ease), border-color 0.3s var(--ease);
 
   &::before {
     content: '';
@@ -12,7 +13,12 @@
     left: 0;
     right: 0;
     height: 2px;
-    background: linear-gradient(90deg, var(--copper) 0%, var(--sapphire) 50%, var(--copper) 100%);
+    background: linear-gradient(
+      90deg,
+      var(--nav-accent) 0%,
+      var(--sapphire) 50%,
+      var(--nav-accent) 100%
+    );
   }
 
   &::after {
@@ -65,29 +71,36 @@
     object-fit: contain;
     flex-shrink: 0;
     display: block;
+    transition: filter 0.25s var(--ease);
+
+    [data-color-scheme='light']:not([data-nav-claro='true']) & {
+      filter: brightness(0.92) contrast(1.12);
+    }
+
+    [data-nav-claro='true'] & {
+      filter: brightness(0.68) contrast(1.32) saturate(1.16)
+        drop-shadow(0 1px 1.5px rgb(15 23 42 / 26%));
+    }
   }
 
   h3 {
     font-family: var(--font-brand);
     font-size: var(--fs-2xl);
     font-weight: 800;
-    color: var(--text);
+    color: var(--nav-brand-lex);
     margin-bottom: 2px;
     line-height: 1.05;
     letter-spacing: -0.01em;
 
-    span.geo {
-      color: var(--sapphire);
-    }
-
+    span.geo,
     span.cat {
-      color: var(--copper);
+      color: inherit;
     }
   }
 
   .ft-tagline {
     font-size: var(--fs-2xs);
-    color: var(--text3);
+    color: var(--nav-texto-mutado);
     text-transform: uppercase;
     letter-spacing: var(--ls-caps);
     font-family: var(--font-mono);
@@ -95,7 +108,7 @@
 
   p {
     font-size: var(--fs-md);
-    color: var(--text2);
+    color: var(--nav-texto);
     max-width: 340px;
     line-height: var(--lh-normal);
     margin-bottom: var(--sp-5);
@@ -116,10 +129,10 @@
   gap: var(--sp-2);
   margin-bottom: 8px;
   font-size: var(--fs-sm-3);
-  color: var(--text2);
+  color: var(--nav-texto);
 
   i {
-    color: var(--copper);
+    color: var(--nav-accent);
     font-size: 12px;
     width: 18px;
     text-align: center;
@@ -138,19 +151,19 @@
     width: 38px;
     height: 38px;
     border-radius: 8px;
-    background-color: var(--card);
+    background-color: var(--nav-pill-bg);
     display: flex;
     align-items: center;
     justify-content: center;
-    color: var(--text2);
+    color: var(--nav-texto);
     transition: all 0.24s var(--ease);
     font-size: 14px;
-    border: 1px solid var(--border);
+    border: 1px solid var(--nav-pill-borde, var(--nav-borde));
 
     &:hover {
-      background-color: var(--copper);
+      background-color: var(--primario);
       color: #fff;
-      border-color: var(--copper);
+      border-color: var(--primario);
       transform: translateY(-2px);
       box-shadow: var(--sh-copper);
     }
@@ -165,7 +178,7 @@
     text-transform: uppercase;
     letter-spacing: var(--ls-caps);
     margin-bottom: var(--sp-5);
-    color: var(--copper);
+    color: var(--nav-accent);
 
     @media (width <= 600px) {
       font-size: var(--fs-2xs);
@@ -183,20 +196,20 @@
 
   a {
     font-size: var(--fs-md);
-    color: var(--text2);
+    color: var(--nav-texto);
     display: inline-flex;
     align-items: center;
     gap: var(--sp-2);
     transition: all 0.22s var(--ease);
 
     &:hover {
-      color: var(--copper);
+      color: var(--nav-accent);
       transform: translateX(3px);
     }
 
     i {
       font-size: 9px;
-      color: var(--copper);
+      color: var(--nav-accent);
       opacity: 0.75;
     }
 
@@ -215,7 +228,7 @@
 
   hr {
     border: none;
-    border-top: 1px solid var(--border);
+    border-top: 1px solid var(--nav-borde);
   }
 }
 
@@ -233,7 +246,7 @@
 
   &-left {
     font-size: var(--fs-xs);
-    color: var(--text3);
+    color: var(--nav-texto-mutado);
   }
 
   &-right {
@@ -242,11 +255,11 @@
 
     a {
       font-size: var(--fs-xs);
-      color: var(--text3);
+      color: var(--nav-texto-mutado);
       transition: color 0.2s var(--ease);
 
       &:hover {
-        color: var(--copper);
+        color: var(--nav-accent);
       }
     }
   }

@@ -684,8 +684,8 @@
   }
 
   &.active {
-    background: var(--copper);
-    border-color: var(--copper);
+    background-color: var(--primario);
+    border-color: var(--primario);
     color: #fff;
   }
 }
@@ -694,7 +694,7 @@
    Los containers (cover, modal-cover) ya se adaptan al tema porque usan
    color-mix con var(--card) y var(--text). Solo necesitamos asegurar
    legibilidad de las tags translúcidas y del panel meta. */
-[data-theme='dark'] {
+[data-color-scheme='dark'] {
   .norm-card-cover-numeral,
   .norm-card-cover-tag {
     background: color-mix(in srgb, var(--card) 96%, transparent);

@@ -1,8 +1,5 @@
 <template>
-  <div
-    id="admin-app"
-    data-theme="light"
-  >
+  <div id="admin-app">
     <div
       v-if="loading"
       class="admin-boot"
@@ -154,18 +151,18 @@ async function onSignOut() {
 .admin-sidebar {
   width: 250px;
   flex-shrink: 0;
-  background: var(--color-bg-primary);
-  color: var(--color-text-primary);
+  background: var(--nav-bg);
+  color: var(--nav-texto);
   display: flex;
   flex-direction: column;
   position: sticky;
   top: 0;
   height: 100vh;
-  border-right: 1px solid var(--border);
+  border-right: 1px solid var(--nav-borde);
 
   &__header {
     padding: 24px 20px;
-    border-bottom: 1px solid rgb(255 255 255 / 8%);
+    border-bottom: 1px solid var(--nav-borde);
   }
 
   &__nav {
@@ -178,7 +175,7 @@ async function onSignOut() {
 
   &__footer {
     padding: 16px 18px 20px;
-    border-top: 1px solid rgb(255 255 255 / 8%);
+    border-top: 1px solid var(--nav-borde);
     display: flex;
     flex-direction: column;
     gap: 10px;
@@ -188,11 +185,11 @@ async function onSignOut() {
     display: flex;
     align-items: center;
     gap: 8px;
-    color: var(--color-text-secondary);
+    color: var(--nav-texto-mutado);
     font-size: 0.8rem;
 
     i {
-      color: var(--copper2);
+      color: var(--nav-texto-cab);
       font-size: 1rem;
     }
   }
@@ -216,16 +213,24 @@ async function onSignOut() {
     object-fit: contain;
     flex-shrink: 0;
     display: block;
+    transition: filter 0.25s var(--ease);
+
+    [data-nav-claro='true'] & {
+      filter: brightness(0.68) contrast(1.32) saturate(1.16)
+        drop-shadow(0 1px 1.5px rgb(15 23 42 / 26%));
+    }
   }
 
   &__mark {
     font-family: var(--font-display);
     font-size: 1.3rem;
     font-weight: 800;
-    color: #fff;
+    color: var(--nav-brand-lex);
 
-    .geo { color: var(--sapphire2); }
-    .cat { color: var(--copper2); }
+    .geo,
+    .cat {
+      color: inherit;
+    }
   }
 
   &__sub {
@@ -236,7 +241,7 @@ async function onSignOut() {
     font-weight: 600;
     letter-spacing: 0.1em;
     text-transform: uppercase;
-    color: var(--color-text-secondary);
+    color: var(--nav-texto-mutado);
   }
 }
 
@@ -244,7 +249,7 @@ async function onSignOut() {
   display: flex;
   align-items: center;
   gap: 10px;
-  color: var(--color-text-secondary);
+  color: var(--nav-texto);
   text-decoration: none;
   padding: 10px 14px;
   border-radius: 8px;
@@ -260,14 +265,14 @@ async function onSignOut() {
   }
 
   &:hover {
-    background: rgb(255 255 255 / 6%);
-    color: #fff;
+    background: var(--nav-hover);
+    color: var(--nav-hover-texto);
   }
 
   &.router-link-active {
-    background: var(--copper);
-    color: #fff;
-    box-shadow: var(--sh-copper);
+    background: var(--nav-activo-bg);
+    color: var(--nav-activo-texto);
+    box-shadow: var(--nav-activo-sombra);
   }
 }
 
@@ -328,10 +333,10 @@ async function onSignOut() {
   font-weight: 700;
   cursor: pointer;
   transition: all 0.18s;
-  background: var(--copper);
+  background: var(--primario);
   color: #fff;
 
-  &:hover { background: var(--copper2); transform: translateY(-1px); }
+  &:hover { background: var(--primario-h); transform: translateY(-1px); }
   &:active { transform: translateY(0); }
 
   &--sm { padding: 6px 12px; font-size: 0.75rem; }

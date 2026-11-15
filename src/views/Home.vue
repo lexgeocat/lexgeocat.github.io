@@ -230,12 +230,12 @@ onUnmounted(() => {
 
         <div class="hero-visual">
           <div class="floating-dashboard">
-            <object
+            <img
               class="fd-bg-map"
-              type="image/svg+xml"
-              :data="boliviaMap"
+              :src="boliviaMap"
+              alt=""
               aria-hidden="true"
-            />
+            >
             <router-link
               to="/pages/derecho.html"
               class="fd-card fdc-1 reveal"

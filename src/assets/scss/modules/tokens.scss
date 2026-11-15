@@ -1,138 +1,198 @@
 /* ═══════════════════════════════════════════════════════════════════
-   LEX GEO CAT — DESIGN TOKENS v4.0 (Perceptual Color Science & UI/UX)
-   Fuente única de verdad. Armonía cromática OKLCH + Contraste APCA/WCAG.
+   LEX GEO CAT — DESIGN TOKENS v5.0 (Sistema Verona · Legal-Hub Engine)
+   Valores base de respaldo; tema.ts inyecta los 5 ejes en runtime.
    ═══════════════════════════════════════════════════════════════════ */
 
 :root {
-  /* ══════════════════════════════════════
-     1. PALETA BASE — Modo oscuro (default)
-        Jerarquía de luminancia atmosférica
+   /* ══════════════════════════════════════
+     1. SISTEMA VERONA — Fallback base (Oxford Imperial: Light · Cobalt + Slate · Aura)
      ══════════════════════════════════════ */
 
-  --color-bg-primary: #080d18; /* Azul abisal institucional (L* 5%)  */
-  --color-bg-surface: #0e1626; /* Superficie seccional (L* 9%)       */
-  --color-bg-card: #141f35; /* Tarjeta elevada (L* 13%)           */
-  --color-bg-elevated: #1b2944; /* Superficie interactiva (L* 17%)    */
-  --color-border: #1f2f4a; /* Borde estructural sutil            */
-  --color-border-strong: #2c4266; /* Borde énfasis medio                */
-  --color-border-highlight: #3d5a88; /* Borde especular hover              */
+   --bg: #f1f5f9;
+   --superficie: #fff;
+   --superficie-2: #f8fafc;
+   --superficie-3: #e2e8f0;
+   --borde: #cbd5e1;
+   --borde-fuerte: #94a3b8;
+   --texto: #0f172a;
+   --texto-2: #334155;
+   --texto-3: #64748b;
+   --primario: #1d4ed8;
+   --primario-h: #1e40af;
+   --primario-texto: #1d4ed8;
+   --primario-claro: rgb(29 78 216 / 11%);
+   --primario-borde: rgb(29 78 216 / 30%);
+   --dorado: #b45309;
+   --dorado-bg: rgb(217 119 6 / 11%);
+   --dorado-borde: rgb(217 119 6 / 28%);
+   --ok: #047857;
+   --ok-bg: rgb(5 150 105 / 11%);
+   --ok-borde: rgb(5 150 105 / 28%);
+   --adv: #b45309;
+   --adv-bg: rgb(217 119 6 / 12%);
+   --adv-borde: rgb(217 119 6 / 30%);
+   --err: #b91c1c;
+   --err-bg: rgb(220 38 38 / 10%);
+   --err-borde: rgb(220 38 38 / 26%);
+   --info: #1d4ed8;
+   --info-bg: rgb(29 78 216 / 11%);
+   --info-borde: rgb(29 78 216 / 28%);
+   --violeta: #6d28d9;
+   --violeta-bg: rgb(109 40 217 / 10%);
+   --violeta-borde: rgb(109 40 217 / 26%);
+   --nav-bg: linear-gradient(180deg, #0b1933 0%, #0f2447 55%, #09152b 100%);
+   --nav-bg-solido: #0b1933;
+   --nav-popover-bg: #102446;
+   --nav-borde: rgb(148 163 184 / 20%);
+   --nav-texto: #dbeafe;
+   --nav-texto-mutado: #93c5fd;
+   --nav-texto-cab: #60a5fa;
+   --nav-hover: rgb(59 130 246 / 20%);
+   --nav-hover-texto: #fff;
+   --nav-titulo: #fff;
+   --nav-pill-bg: rgb(255 255 255 / 6%);
+   --nav-pill-borde: rgb(148 163 184 / 20%);
+   --nav-activo-bg: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+   --nav-activo-texto: #fff;
+   --nav-activo-sombra: 0 2px 12px rgb(29 78 216 / 42%), inset 0 1px 0 rgb(255 255 255 / 20%);
+   --nav-logo-bg: linear-gradient(135deg, #1d4ed8 0%, #2563eb 100%);
+   --nav-logo-borde: rgb(96 165 250 / 45%);
+   --nav-logo-color: #fff;
+   --nav-brand-lex: #fff;
+   --nav-brand-geo: #fff;
+   --nav-brand-cat: #fff;
+   --nav-accent: #60a5fa;
+   --bar-bg: linear-gradient(180deg, #0b1933 0%, #0f2447 100%);
+   --bar-bg-2: #0f2447;
+   --bar-borde: rgb(148 163 184 / 20%);
+   --bar-texto: #f8fafc;
+   --bar-texto-2: #cbd5e1;
+   --bar-texto-3: #94a3b8;
+   --radio-sm: 6px;
+   --radio: 10px;
+   --radio-lg: 14px;
+   --sombra-xs: 0 1px 2px rgb(15 23 42 / 6%);
+   --sombra: 0 1px 3px rgb(15 23 42 / 8%), 0 1px 2px -1px rgb(15 23 42 / 6%);
+   --sombra-md: 0 4px 10px -1px rgb(15 23 42 / 10%), 0 2px 4px -2px rgb(15 23 42 / 6%);
+   --sombra-lg: 0 12px 30px -4px rgb(15 23 42 / 18%), 0 4px 6px -2px rgb(15 23 42 / 6%);
 
-  /* ══════════════════════════════════════
-     2. ACENTOS CROMÁTICOS INSTITUCIONALES
-        Calibrados para alto contraste sobre fondo oscuro
+   /* ══════════════════════════════════════
+     2. ALIASES DE COLOR BASE Y ACENTOS INSTITUCIONALES
      ══════════════════════════════════════ */
 
-  --color-copper: #cc843a; /* Bronce-cobre legal — primario      */
-  --color-copper-glow: #e39d52; /* Bronce luminoso — hover / foco     */
-  --color-copper-deep: #a36222; /* Bronce profundo — active           */
-  --color-sapphire: #3282c4; /* Zafiro geodésico — secundario      */
-  --color-sapphire-glow: #4ea0e6; /* Zafiro cartográfico brillante      */
-  --color-teal: #18a999; /* Esmeralda GIS / Catastro           */
-  --color-teal-glow: #28c7b5; /* Esmeralda luminoso                 */
-  --color-amber: #f59e0b; /* Ámbar — alertas y destacados       */
-  --color-success: #10b981; /* Verde éxito / WhatsApp             */
-  --color-success-dark: #059669; /* Verde éxito hover                  */
-  --color-success-glow: rgb(16 185 129 / 28%);
+   --color-bg-primary: var(--bg);
+   --color-bg-surface: var(--superficie-2);
+   --color-bg-card: var(--superficie);
+   --color-bg-elevated: var(--superficie-3);
+   --color-border: var(--borde);
+   --color-border-strong: var(--borde-fuerte);
+   --color-border-highlight: var(--borde-fuerte);
+   --color-copper: var(--primario-texto);
+   --color-copper-glow: var(--primario-h);
+   --color-copper-deep: var(--primario-h);
+   --color-sapphire: #15548a;
+   --color-sapphire-glow: #1f6db0;
+   --color-teal: #0d6e63;
+   --color-teal-glow: #12877a;
+   --color-amber: var(--dorado);
+   --color-success: #10b981;
+   --color-success-dark: #059669;
+   --color-success-glow: rgb(16 185 129 / 28%);
 
-  /* ══════════════════════════════════════
+   /* ══════════════════════════════════════
      3. COLORES DE ESPECIALIDADES
         Armonizados en luminosidad perceptual
      ══════════════════════════════════════ */
 
-  --color-esp-derecho: #dca03a; /* Oro jurídico                       */
-  --color-esp-derecho-2: #eab658; /* Oro jurídico claro                 */
-  --color-esp-catastro: #269bc0; /* Cian-zafiro catastral              */
-  --color-esp-catastro-2: #44b8dc; /* Azul catastral claro               */
-  --color-esp-ordenamiento: #d8963c; /* Ámbar territorial                  */
-  --color-esp-geografia: #2898bd; /* Azul geográfico                    */
-  --color-esp-topografia: #e07b24; /* Cobre topográfico                  */
-  --color-esp-geomatica: #2ca87e; /* Esmeralda geomática                */
-  --color-esp-geomatica-2: #45c49a; /* Verde SIG claro                    */
-  --color-esp-software: #8c7ae6; /* Índigo-violeta software            */
+   --color-esp-derecho: #965a0e;
+   --color-esp-derecho-2: #b8731a;
+   --color-esp-catastro: #135d78;
+   --color-esp-catastro-2: #1c7ca0;
+   --color-esp-ordenamiento: #945910;
+   --color-esp-geografia: #145e7a;
+   --color-esp-topografia: #a34c0a;
+   --color-esp-geomatica: #18694e;
+   --color-esp-geomatica-2: #228b68;
+   --color-esp-software: #5243ab;
 
-  /* Fondos/gradientes de especialidades para cabeceras y tarjetas */
-  --color-esp-derecho-bg-from: #2d180a;
-  --color-esp-derecho-bg-to: #5c3114;
-  --color-esp-catastro-bg-from: #092230;
-  --color-esp-catastro-bg-to: #12435e;
-  --color-esp-ordenamiento-bg-from: #281b0b;
-  --color-esp-ordenamiento-bg-to: #523716;
-  --color-esp-geografia-bg-from: #0a2336;
-  --color-esp-geografia-bg-to: #154568;
-  --color-esp-topografia-bg-from: #2b1608;
-  --color-esp-topografia-bg-to: #592e12;
-  --color-esp-geomatica-bg-from: #0b261e;
-  --color-esp-geomatica-bg-to: #164d3c;
-  --color-esp-software-bg-from: #191636;
-  --color-esp-software-bg-to: #312b68;
+   /* Fondos/gradientes de especialidades para cabeceras y tarjetas */
+   --color-esp-derecho-bg-from: #2d180a;
+   --color-esp-derecho-bg-to: #5c3114;
+   --color-esp-catastro-bg-from: #092230;
+   --color-esp-catastro-bg-to: #12435e;
+   --color-esp-ordenamiento-bg-from: #281b0b;
+   --color-esp-ordenamiento-bg-to: #523716;
+   --color-esp-geografia-bg-from: #0a2336;
+   --color-esp-geografia-bg-to: #154568;
+   --color-esp-topografia-bg-from: #2b1608;
+   --color-esp-topografia-bg-to: #592e12;
+   --color-esp-geomatica-bg-from: #0b261e;
+   --color-esp-geomatica-bg-to: #164d3c;
+   --color-esp-software-bg-from: #191636;
+   --color-esp-software-bg-to: #312b68;
 
-  /* ══════════════════════════════════════
+   /* ══════════════════════════════════════
      4. COLORES REDES SOCIALES
      ══════════════════════════════════════ */
 
-  --color-social-facebook: #1877f2;
-  --color-social-twitter: #0f1419;
-  --color-social-whatsapp: #25d366;
-  --color-social-linkedin: #0a66c2;
-  --color-social-telegram: #08c;
-  --color-social-youtube: #f03;
+   --color-social-facebook: #1877f2;
+   --color-social-twitter: #0f1419;
+   --color-social-whatsapp: #25d366;
+   --color-social-linkedin: #0a66c2;
+   --color-social-telegram: #08c;
+   --color-social-youtube: #f03;
 
-  /* ══════════════════════════════════════
-     5. TEXTO — Contraste APCA / WCAG AAA
+   /* ══════════════════════════════════════
+     5. TEXTO Y EFECTOS
      ══════════════════════════════════════ */
 
-  --color-text-primary: #f2efe9; /* Pergamino alabastro (16.5:1)       */
-  --color-text-secondary: #a6b5cc; /* Pizarra plateada (8.3:1)           */
-  --color-text-muted: #7889a4; /* Peltre técnico (4.8:1 WCAG AA)     */
-  --color-text-subtle: #4e5f7a; /* Texto decorativo / deshabilitado   */
+   --color-text-primary: var(--texto);
+   --color-text-secondary: var(--texto-2);
+   --color-text-muted: var(--texto-3);
+   --color-text-subtle: var(--texto-3);
+   --color-grid-line: rgb(29 78 216 / 6%);
+   --color-glow-copper: rgb(29 78 216 / 11%);
+   --color-glow-sapphire: rgb(21 84 138 / 10%);
+   --color-glow-amber: rgb(217 119 6 / 12%);
+   --color-glow-teal: rgb(13 110 99 / 10%);
 
-  /* ══════════════════════════════════════
-     6. EFECTOS — líneas, glow, grid
-     ══════════════════════════════════════ */
+   /* Superposiciones (overlays) */
+   --color-overlay: rgb(15 23 42 / 60%);
+   --color-overlay-card: rgb(15 23 42 / 14%);
 
-  --color-grid-line: rgb(50 130 196 / 9%);
-  --color-glow-copper: rgb(204 132 58 / 18%);
-  --color-glow-sapphire: rgb(50 130 196 / 20%);
-  --color-glow-amber: rgb(245 158 11 / 15%);
-  --color-glow-teal: rgb(24 169 153 / 18%);
+   /* Fondos de badge */
+   --color-badge-law: rgb(136 64 20 / 92%);
+   --color-badge-cat: rgb(13 110 99 / 92%);
+   --color-badge-gis: rgb(24 105 78 / 92%);
+   --color-badge-topo: rgb(163 76 10 / 92%);
+   --color-badge-orden: rgb(148 89 16 / 92%);
+   --color-badge-geo: rgb(20 94 122 / 92%);
+   --color-badge-software: rgb(82 67 171 / 92%);
+   --color-badge-tec: rgb(15 23 42 / 88%);
+   --color-badge-def: rgb(154 83 18 / 32%);
+   --color-badge-gold: rgb(154 83 18 / 90%);
+   --color-badge-vigente: #15803d;
+   --color-badge-derogada: #b91c1c;
+   --color-badge-modificada: #b45309;
+   --color-badge-teal: rgb(13 110 99 / 90%);
+   --color-badge-white: rgb(255 255 255 / 94%);
+   --color-badge-white-text: #0f172a;
+   --color-badge-bluedark: rgb(21 84 138 / 90%);
 
-  /* Superposiciones (overlays) */
-  --color-overlay: rgb(6 10 18 / 88%);
-  --color-overlay-card: rgb(6 10 18 / 68%);
+   /* Sombras de overlay */
+   --color-shadow-overlay: rgb(15 23 42 / 28%);
 
-  /* Fondos de badge */
-  --color-badge-law: rgb(146 74 28 / 90%);
-  --color-badge-cat: rgb(16 142 132 / 90%);
-  --color-badge-gis: rgb(32 128 96 / 90%);
-  --color-badge-topo: rgb(196 98 16 / 90%);
-  --color-badge-orden: rgb(186 132 38 / 90%);
-  --color-badge-geo: rgb(26 118 158 / 90%);
-  --color-badge-software: rgb(108 92 196 / 90%);
-  --color-badge-tec: rgb(15 23 42 / 90%);
-  --color-badge-def: rgb(204 132 58 / 45%);
-  --color-badge-gold: rgb(204 132 58 / 88%);
-  --color-badge-vigente: #34d399;
-  --color-badge-derogada: #f87171;
-  --color-badge-modificada: #fbbf24;
-  --color-badge-teal: rgb(24 169 153 / 88%);
-  --color-badge-white: rgb(242 239 233 / 92%);
-  --color-badge-white-text: #080d18;
-  --color-badge-bluedark: rgb(30 48 76 / 88%);
+   /* Header backgrounds */
+   --hdr-bg: color-mix(in srgb, var(--nav-bg-solido) 90%, transparent);
+   --hdr-bg-scrolled: color-mix(in srgb, var(--nav-bg-solido) 97%, transparent);
 
-  /* Sombras de overlay */
-  --color-shadow-overlay: rgb(0 0 0 / 65%);
+   /* Gradiente hero light */
+   --color-hero-light-1: var(--superficie);
+   --color-hero-light-2: var(--superficie-2);
+   --color-hero-light-3: var(--bg);
+   --color-hero-light-fade: var(--bg);
 
-  /* Header backgrounds */
-  --hdr-bg: rgb(8 13 24 / 78%);
-  --hdr-bg-scrolled: rgb(8 13 24 / 94%);
-
-  /* Gradiente hero light */
-  --color-hero-light-1: #f8f6f1;
-  --color-hero-light-2: #f1ede4;
-  --color-hero-light-3: #e7e1d4;
-  --color-hero-light-fade: #ebe6da;
-
-  /* ══════════════════════════════════════
+   /* ══════════════════════════════════════
      7. TIPOGRAFÍA — arquitectura editorial y técnica
         - Display: DM Serif Display (Autoridad jurídica / editorial)
         - Heading/UI: Inter (Precisión neo-grotesca y alta legibilidad)
@@ -140,257 +200,313 @@
         - Mono: JetBrains Mono (Coordenadas, códigos, métricas)
      ══════════════════════════════════════ */
 
-  --font-display: 'DM Serif Display', georgia, 'Times New Roman', serif;
-  --font-heading: 'Inter', -apple-system, blinkmacsystemfont, 'Segoe UI', sans-serif;
-  --font-brand: 'Syne', 'Inter', system-ui, sans-serif;
-  --font-body: 'Inter', -apple-system, blinkmacsystemfont, 'Segoe UI', sans-serif;
-  --font-mono: 'JetBrains Mono', ui-monospace, 'Cascadia Code', monospace;
+   --font-display: 'DM Serif Display', georgia, 'Times New Roman', serif;
+   --font-heading: 'Inter', -apple-system, blinkmacsystemfont, 'Segoe UI', sans-serif;
+   --font-brand: 'Syne', 'Inter', system-ui, sans-serif;
+   --font-body: 'Inter', -apple-system, blinkmacsystemfont, 'Segoe UI', sans-serif;
+   --font-mono: 'JetBrains Mono', ui-monospace, 'Cascadia Code', monospace;
 
-  /* ══════════════════════════════════════
+   /* ══════════════════════════════════════
      8. ESCALA TIPOGRÁFICA MODULAR
      ══════════════════════════════════════ */
 
-  --fs-2xs: 0.65rem; /* 10.4px — badges, micro-labels        */
-  --fs-xs: 0.72rem; /* 11.5px — fechas, tags, metadatos     */
-  --fs-sm: 0.76rem; /* 12.2px — nav links, eyebrows         */
-  --fs-sm-2: 0.8rem; /* 12.8px — meta secundario             */
-  --fs-sm-3: 0.84rem; /* 13.4px — texto UI compacto           */
-  --fs-base: 0.875rem; /* 14px   — botones, controles UI       */
-  --fs-md: 0.9rem; /* 14.4px — excerpts, resúmenes         */
-  --fs-md-2: 0.925rem; /* 14.8px — descripciones de tarjeta    */
-  --fs-md-3: 0.95rem; /* 15.2px — inputs, cuerpo compacto     */
-  --fs-md-4: 0.975rem; /* 15.6px — párrafo estándar            */
-  --fs-body: 1rem; /* 16px   — cuerpo base                 */
-  --fs-lg: 1.0625rem; /* 17px   — lectura editorial / lead    */
-  --fs-lg-2: 1.125rem; /* 18px   — citas y subtítulos          */
-  --fs-xl: 1.15rem; /* 18.4px — títulos de servicio         */
-  --fs-xl-2: 1.22rem; /* 19.5px — títulos de tarjeta          */
-  --fs-xl-3: 1.28rem; /* 20.5px — h4 de sección               */
-  --fs-xl-4: 1.35rem; /* 21.6px — h3 artículo                 */
-  --fs-xl-5: 1.42rem; /* 22.7px — modal h3                    */
-  --fs-2xl: 1.5rem; /* 24px   — marca footer, h3 destacado  */
-  --fs-2xl-2: 1.625rem; /* 26px   — encabezados de bloque       */
-  --fs-2xl-3: 1.75rem; /* 28px   — h2 de artículo              */
-  --fs-2xl-4: 1.85rem; /* 29.6px — totales y titulares móviles */
-  --fs-2xl-5: 2rem; /* 32px   — contadores estadísticos     */
-  --fs-3xl: 2.25rem; /* 36px   — métricas desktop            */
-  --fs-3xl-2: 2.5rem; /* 40px   — íconos principales y h1 art */
-  --fs-3xl-3: 2.75rem; /* 44px   — insignia numérica           */
+   --fs-2xs: 0.65rem;
 
-  /* Escala fluida responsiva (secciones estructurales) */
-  --fs-hero: clamp(2.75rem, 5.6vw + 1rem, 5.25rem);
-  --fs-h1: clamp(2.1rem, 3.5vw + 0.8rem, 3.4rem);
-  --fs-h2: clamp(1.65rem, 2.4vw + 0.6rem, 2.45rem);
-  --fs-h3: 1.25rem;
+   /* 10.4px — badges, micro-labels        */
+   --fs-xs: 0.72rem;
 
-  /* ══════════════════════════════════════
+   /* 11.5px — fechas, tags, metadatos     */
+   --fs-sm: 0.76rem;
+
+   /* 12.2px — nav links, eyebrows         */
+   --fs-sm-2: 0.8rem;
+
+   /* 12.8px — meta secundario             */
+   --fs-sm-3: 0.84rem;
+
+   /* 13.4px — texto UI compacto           */
+   --fs-base: 0.875rem;
+
+   /* 14px   — botones, controles UI       */
+   --fs-md: 0.9rem;
+
+   /* 14.4px — excerpts, resúmenes         */
+   --fs-md-2: 0.925rem;
+
+   /* 14.8px — descripciones de tarjeta    */
+   --fs-md-3: 0.95rem;
+
+   /* 15.2px — inputs, cuerpo compacto     */
+   --fs-md-4: 0.975rem;
+
+   /* 15.6px — párrafo estándar            */
+   --fs-body: 1rem;
+
+   /* 16px   — cuerpo base                 */
+   --fs-lg: 1.0625rem;
+
+   /* 17px   — lectura editorial / lead    */
+   --fs-lg-2: 1.125rem;
+
+   /* 18px   — citas y subtítulos          */
+   --fs-xl: 1.15rem;
+
+   /* 18.4px — títulos de servicio         */
+   --fs-xl-2: 1.22rem;
+
+   /* 19.5px — títulos de tarjeta          */
+   --fs-xl-3: 1.28rem;
+
+   /* 20.5px — h4 de sección               */
+   --fs-xl-4: 1.35rem;
+
+   /* 21.6px — h3 artículo                 */
+   --fs-xl-5: 1.42rem;
+
+   /* 22.7px — modal h3                    */
+   --fs-2xl: 1.5rem;
+
+   /* 24px   — marca footer, h3 destacado  */
+   --fs-2xl-2: 1.625rem;
+
+   /* 26px   — encabezados de bloque       */
+   --fs-2xl-3: 1.75rem;
+
+   /* 28px   — h2 de artículo              */
+   --fs-2xl-4: 1.85rem;
+
+   /* 29.6px — totales y titulares móviles */
+   --fs-2xl-5: 2rem;
+
+   /* 32px   — contadores estadísticos     */
+   --fs-3xl: 2.25rem;
+
+   /* 36px   — métricas desktop            */
+   --fs-3xl-2: 2.5rem;
+
+   /* 40px   — íconos principales y h1 art */
+   --fs-3xl-3: 2.75rem;
+
+   /* 44px   — insignia numérica           */
+
+   /* Escala fluida responsiva (secciones estructurales) */
+   --fs-hero: clamp(2.75rem, 5.6vw + 1rem, 5.25rem);
+   --fs-h1: clamp(2.1rem, 3.5vw + 0.8rem, 3.4rem);
+   --fs-h2: clamp(1.65rem, 2.4vw + 0.6rem, 2.45rem);
+   --fs-h3: 1.25rem;
+
+   /* ══════════════════════════════════════
      9. LINE-HEIGHT & LETTER-SPACING
      ══════════════════════════════════════ */
 
-  --lh-tight: 1.15;
-  --lh-snug: 1.32;
-  --lh-normal: 1.65;
-  --lh-loose: 1.78;
-  --ls-tight: -0.02em;
-  --ls-wide: 0.06em;
-  --ls-caps: 0.1em;
-  --ls-mono: 0.03em;
+   --lh-tight: 1.15;
+   --lh-snug: 1.32;
+   --lh-normal: 1.65;
+   --lh-loose: 1.78;
+   --ls-tight: -0.02em;
+   --ls-wide: 0.06em;
+   --ls-caps: 0.1em;
+   --ls-mono: 0.03em;
 
-  /* ══════════════════════════════════════
+   /* ══════════════════════════════════════
     10. SPACING — escala armónica 4-point
      ══════════════════════════════════════ */
 
-  --sp-1: 4px;
-  --sp-2: 8px;
-  --sp-3: 12px;
-  --sp-4: 16px;
-  --sp-5: 20px;
-  --sp-6: 24px;
-  --sp-7: 28px;
-  --sp-8: 32px;
-  --sp-9: 36px;
-  --sp-10: 40px;
-  --sp-11: 44px;
-  --sp-12: 48px;
-  --sp-14: 56px;
-  --sp-16: 64px;
-  --sp-20: 80px;
+   --sp-1: 4px;
+   --sp-2: 8px;
+   --sp-3: 12px;
+   --sp-4: 16px;
+   --sp-5: 20px;
+   --sp-6: 24px;
+   --sp-7: 28px;
+   --sp-8: 32px;
+   --sp-9: 36px;
+   --sp-10: 40px;
+   --sp-11: 44px;
+   --sp-12: 48px;
+   --sp-14: 56px;
+   --sp-16: 64px;
+   --sp-20: 80px;
 
-  /* ══════════════════════════════════════
+   /* ══════════════════════════════════════
     11. GEOMETRÍA — radios arquitectónicos
      ══════════════════════════════════════ */
 
-  --rs: 6px; /* micro (tags, chips, badges)            */
-  --r: 12px; /* radio estándar (cards, inputs)         */
-  --rm: 16px; /* radio medio (paneles, acordeones)      */
-  --rl: 22px; /* radio grande (modales, secciones CTA)  */
+   --rs: 6px;
 
-  /* ══════════════════════════════════════
+   /* micro (tags, chips, badges)            */
+   --r: 12px;
+
+   /* radio estándar (cards, inputs)         */
+   --rm: 16px;
+
+   /* radio medio (paneles, acordeones)      */
+   --rl: 22px;
+
+   /* radio grande (modales, secciones CTA)  */
+
+   /* ══════════════════════════════════════
     12. SOMBRAS — Elevación multicapa realista
      ══════════════════════════════════════ */
 
-  --sh: 0 2px 6px rgb(0 0 0 / 32%), 0 1px 2px rgb(0 0 0 / 24%);
-  --sh2: 0 12px 32px -4px rgb(0 0 0 / 48%), 0 4px 12px -2px rgb(0 0 0 / 32%);
-  --sh3: 0 24px 64px -8px rgb(0 0 0 / 62%), 0 8px 20px -4px rgb(0 0 0 / 42%);
-  --sh-copper: 0 4px 20px rgb(204 132 58 / 24%), 0 1px 4px rgb(204 132 58 / 14%);
-  --sh-copper-h: 0 10px 32px rgb(204 132 58 / 36%), 0 3px 10px rgb(204 132 58 / 22%);
-  --sh-sapphire: 0 4px 20px rgb(50 130 196 / 24%);
-  --sh-inset: inset 0 1px 0 rgb(255 255 255 / 6%);
+   --sh: 0 2px 6px rgb(0 0 0 / 32%), 0 1px 2px rgb(0 0 0 / 24%);
+   --sh2: 0 12px 32px -4px rgb(0 0 0 / 48%), 0 4px 12px -2px rgb(0 0 0 / 32%);
+   --sh3: 0 24px 64px -8px rgb(0 0 0 / 62%), 0 8px 20px -4px rgb(0 0 0 / 42%);
+   --sh-copper: 0 4px 20px rgb(204 132 58 / 24%), 0 1px 4px rgb(204 132 58 / 14%);
+   --sh-copper-h: 0 10px 32px rgb(204 132 58 / 36%), 0 3px 10px rgb(204 132 58 / 22%);
+   --sh-sapphire: 0 4px 20px rgb(50 130 196 / 24%);
+   --sh-inset: inset 0 1px 0 rgb(255 255 255 / 6%);
 
-  /* ══════════════════════════════════════
+   /* ══════════════════════════════════════
     13. EASING — Curvas físicas naturales
      ══════════════════════════════════════ */
 
-  --ease: cubic-bezier(0.22, 1, 0.36, 1);
-  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
-  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+   --ease: cubic-bezier(0.22, 1, 0.36, 1);
+   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+   --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
 
-  /* ══════════════════════════════════════
+   /* ══════════════════════════════════════
     14. LAYOUT
      ══════════════════════════════════════ */
 
-  --con: 1260px;
-  --h: 72px; /* altura del header fijo */
-  --nav-h: 44px; /* altura de la barra de navegación */
+   --con: 1260px;
+   --h: 72px;
 
-  /* ══════════════════════════════════════
+   /* altura del header fijo */
+   --nav-h: 44px;
+
+   /* altura de la barra de navegación */
+
+   /* ══════════════════════════════════════
     15. ALIASES OPERACIONALES SEMÁNTICOS
      ══════════════════════════════════════ */
 
-  --bg: var(--color-bg-primary);
-  --bg2: var(--color-bg-surface);
-  --bg3: var(--color-bg-card);
-  --card: var(--color-bg-card);
-  --card2: var(--color-bg-surface);
-  --card3: var(--color-bg-elevated);
-  --copper: var(--color-copper);
-  --copper2: var(--color-copper-glow);
-  --copper-lt: rgb(204 132 58 / 11%);
-  --copper-bd: rgb(204 132 58 / 28%);
-  --sapphire: var(--color-sapphire);
-  --sapphire2: var(--color-sapphire-glow);
-  --sapphire-lt: rgb(50 130 196 / 11%);
-  --sapphire-bd: rgb(50 130 196 / 28%);
-  --teal: var(--color-teal);
-  --teal2: var(--color-teal-glow);
-  --teal-lt: rgb(24 169 153 / 11%);
-  --teal-bd: rgb(24 169 153 / 28%);
-  --gold: var(--color-esp-derecho);
-  --gold-lt: rgb(220 160 58 / 12%);
-  --amber: var(--color-amber);
-  --amber-lt: rgb(245 158 11 / 11%);
-  --text: var(--color-text-primary);
-  --text2: var(--color-text-secondary);
-  --text3: var(--color-text-muted);
-  --text4: var(--color-text-subtle);
-  --border: var(--color-border);
-  --border2: var(--color-border-strong);
-  --border3: var(--color-border-highlight);
+   --bg2: var(--superficie-2);
+   --bg3: var(--superficie-3);
+   --card: var(--superficie);
+   --card2: var(--superficie-2);
+   --card3: var(--superficie-3);
+   --copper: var(--primario-texto);
+   --copper2: var(--primario-h);
+   --copper-lt: var(--primario-claro);
+   --copper-bd: var(--primario-borde);
+   --sapphire: var(--color-sapphire);
+   --sapphire2: var(--color-sapphire-glow);
+   --sapphire-lt: rgb(21 84 138 / 9%);
+   --sapphire-bd: rgb(21 84 138 / 25%);
+   --teal: var(--color-teal);
+   --teal2: var(--color-teal-glow);
+   --teal-lt: rgb(13 110 99 / 9%);
+   --teal-bd: rgb(13 110 99 / 25%);
+   --gold: var(--color-esp-derecho);
+   --gold-lt: var(--dorado-bg);
+   --amber: var(--dorado);
+   --amber-lt: var(--dorado-bg);
+   --text: var(--texto);
+   --text2: var(--texto-2);
+   --text3: var(--texto-3);
+   --text4: var(--texto-3);
+   --border: var(--borde);
+   --border2: var(--borde-fuerte);
+   --border3: var(--borde-fuerte);
 }
 
 /* ═══════════════════════════════════════════════════════════════════
-   TEMA CLARO — Papel Algodón Institucional & Tinta Oxford
-   Calibrado con ciencia del color para lectura prolongada sin fatiga
+   OVERRIDES BASE POR ESQUEMA DE COLOR (Verona Color Scheme)
    ═══════════════════════════════════════════════════════════════════ */
 
-[data-theme='light'] {
-  --color-bg-primary: #f6f4ef; /* Papel archivo cálido (Alabaster)   */
-  --color-bg-surface: #ede9df; /* Piedra cálida para secciones       */
-  --color-bg-card: #fff; /* Superficie de tarjeta pura         */
-  --color-bg-elevated: #faf8f4; /* Superficie hover cálida            */
-  --color-border: #dcd6ca; /* Borde piedra sutil                 */
-  --color-border-strong: #c5bdb0; /* Borde estructural                  */
-  --color-border-highlight: #9e9484; /* Borde énfasis                      */
-  --color-copper: #9a5312; /* Bronce soberano oscuro (5.7:1)     */
-  --color-copper-glow: #b8661d; /* Bronce cálido hover                */
-  --color-copper-deep: #7c410c;
-  --color-sapphire: #15548a; /* Zafiro marino profundo (7.5:1)     */
-  --color-sapphire-glow: #1f6db0;
-  --color-teal: #0d6e63; /* Esmeralda cartográfico oscuro      */
-  --color-teal-glow: #12877a;
-  --color-amber: #b45309;
+[data-color-scheme='light'] {
+   color-scheme: light;
 
-  /* Especialidades en modo claro (óptimo contraste sobre blanco/marfil) */
-  --color-esp-derecho: #965a0e;
-  --color-esp-derecho-2: #b8731a;
-  --color-esp-catastro: #135d78;
-  --color-esp-catastro-2: #1c7ca0;
-  --color-esp-ordenamiento: #945910;
-  --color-esp-geografia: #145e7a;
-  --color-esp-topografia: #a34c0a;
-  --color-esp-geomatica: #18694e;
-  --color-esp-geomatica-2: #228b68;
-  --color-esp-software: #5243ab;
+   --sh: 0 2px 5px rgb(15 23 42 / 5%), 0 1px 2px rgb(15 23 42 / 4%);
+   --sh2: 0 12px 30px -4px rgb(15 23 42 / 9%), 0 4px 10px -2px rgb(15 23 42 / 5%);
+   --sh3: 0 24px 56px -8px rgb(15 23 42 / 14%), 0 8px 18px -4px rgb(15 23 42 / 7%);
+   --sh-copper: 0 4px 18px rgb(29 78 216 / 18%), 0 1px 4px rgb(29 78 216 / 10%);
+   --sh-copper-h: 0 10px 28px rgb(29 78 216 / 26%), 0 3px 8px rgb(29 78 216 / 14%);
+   --sh-sapphire: 0 4px 18px rgb(21 84 138 / 15%);
+   --sh-inset: inset 0 1px 0 rgb(255 255 255 / 90%);
+}
 
-  /* Texto en modo claro — Tinta profunda y pizarra equilibrada */
-  --color-text-primary: #0f172a; /* Tinta Oxford (16.8:1)              */
-  --color-text-secondary: #334155; /* Pizarra carbón (9.6:1)             */
-  --color-text-muted: #55657a; /* Acero técnico (5.5:1 WCAG AA)      */
-  --color-text-subtle: #8492a6;
-  --color-grid-line: rgb(21 84 138 / 6%);
-  --color-glow-copper: rgb(154 83 18 / 11%);
-  --color-glow-sapphire: rgb(21 84 138 / 11%);
-  --color-glow-teal: rgb(13 110 99 / 11%);
-  --color-overlay: rgb(15 23 42 / 60%);
-  --color-overlay-card: rgb(15 23 42 / 14%);
-  --color-badge-law: rgb(136 64 20 / 92%);
-  --color-badge-cat: rgb(13 110 99 / 92%);
-  --color-badge-gis: rgb(24 105 78 / 92%);
-  --color-badge-topo: rgb(163 76 10 / 92%);
-  --color-badge-orden: rgb(148 89 16 / 92%);
-  --color-badge-geo: rgb(20 94 122 / 92%);
-  --color-badge-software: rgb(82 67 171 / 92%);
-  --color-badge-tec: rgb(15 23 42 / 88%);
-  --color-badge-def: rgb(154 83 18 / 32%);
-  --color-badge-gold: rgb(154 83 18 / 90%);
-  --color-badge-vigente: #15803d;
-  --color-badge-derogada: #b91c1c;
-  --color-badge-modificada: #b45309;
-  --color-badge-teal: rgb(13 110 99 / 90%);
-  --color-badge-white: rgb(255 255 255 / 94%);
-  --color-badge-white-text: #0f172a;
-  --color-badge-bluedark: rgb(21 84 138 / 90%);
-  --color-shadow-overlay: rgb(15 23 42 / 28%);
-  --hdr-bg: rgb(246 244 239 / 82%);
-  --hdr-bg-scrolled: rgb(246 244 239 / 95%);
-  --color-hero-light-1: #faf8f4;
-  --color-hero-light-2: #f2efe7;
-  --color-hero-light-3: #e8e2d5;
-  --color-hero-light-fade: #ede8dc;
-  --bg: var(--color-bg-primary);
-  --bg2: var(--color-bg-surface);
-  --bg3: #e4dfd3;
-  --card: var(--color-bg-card);
-  --card2: var(--color-bg-surface);
-  --card3: var(--color-bg-elevated);
-  --copper: var(--color-copper);
-  --copper2: var(--color-copper-glow);
-  --copper-lt: rgb(154 83 18 / 9%);
-  --copper-bd: rgb(154 83 18 / 25%);
-  --sapphire: var(--color-sapphire);
-  --sapphire2: var(--color-sapphire-glow);
-  --sapphire-lt: rgb(21 84 138 / 9%);
-  --sapphire-bd: rgb(21 84 138 / 25%);
-  --teal: var(--color-teal);
-  --teal2: var(--color-teal-glow);
-  --teal-lt: rgb(13 110 99 / 9%);
-  --teal-bd: rgb(13 110 99 / 25%);
-  --gold: var(--color-esp-derecho);
-  --gold-lt: rgb(150 90 14 / 10%);
-  --amber: var(--color-amber);
-  --amber-lt: rgb(180 83 9 / 9%);
-  --text: var(--color-text-primary);
-  --text2: var(--color-text-secondary);
-  --text3: var(--color-text-muted);
-  --text4: var(--color-text-subtle);
-  --border: var(--color-border);
-  --border2: var(--color-border-strong);
-  --border3: var(--color-border-highlight);
-  --sh: 0 2px 5px rgb(15 23 42 / 5%), 0 1px 2px rgb(15 23 42 / 4%);
-  --sh2: 0 12px 30px -4px rgb(15 23 42 / 9%), 0 4px 10px -2px rgb(15 23 42 / 5%);
-  --sh3: 0 24px 56px -8px rgb(15 23 42 / 14%), 0 8px 18px -4px rgb(15 23 42 / 7%);
-  --sh-copper: 0 4px 18px rgb(154 83 18 / 16%), 0 1px 4px rgb(154 83 18 / 8%);
-  --sh-copper-h: 0 10px 28px rgb(154 83 18 / 24%), 0 3px 8px rgb(154 83 18 / 12%);
-  --sh-sapphire: 0 4px 18px rgb(21 84 138 / 15%);
-  --sh-inset: inset 0 1px 0 rgb(255 255 255 / 90%);
+[data-color-scheme='dark'] {
+   color-scheme: dark;
+
+   --bg: #0f172a;
+   --superficie: #1e293b;
+   --superficie-2: #162032;
+   --superficie-3: #283548;
+   --borde: #334155;
+   --borde-fuerte: #475569;
+   --texto: #f1f5f9;
+   --texto-2: #cbd5e1;
+   --texto-3: #94a3b8;
+   --primario: #d97706;
+   --primario-h: #f59e0b;
+   --primario-texto: #fbbf24;
+   --primario-claro: rgb(245 158 11 / 16%);
+   --primario-borde: rgb(245 158 11 / 38%);
+   --dorado: #fbbf24;
+   --dorado-bg: rgb(245 158 11 / 16%);
+   --dorado-borde: rgb(251 191 36 / 36%);
+   --nav-bg: linear-gradient(180deg, #090e1c 0%, #0f172a 100%);
+   --nav-bg-solido: #090e1c;
+   --nav-popover-bg: #1e293b;
+   --nav-borde: rgb(148 163 184 / 15%);
+   --nav-texto: #cbd5e1;
+   --nav-texto-mutado: #94a3b8;
+   --nav-texto-cab: #64748b;
+   --nav-hover: rgb(245 158 11 / 15%);
+   --nav-hover-texto: #fff;
+   --nav-titulo: #f8fafc;
+   --nav-pill-bg: rgb(255 255 255 / 5%);
+   --nav-pill-borde: rgb(148 163 184 / 18%);
+   --nav-brand-lex: #f1f5f9;
+   --nav-brand-geo: #f1f5f9;
+   --nav-brand-cat: #f1f5f9;
+   --nav-accent: #fbbf24;
+   --bar-bg: linear-gradient(180deg, #1a263b 0%, #162032 100%);
+   --bar-bg-2: #162032;
+   --bar-borde: #334155;
+   --bar-texto: #f1f5f9;
+   --bar-texto-2: #cbd5e1;
+   --bar-texto-3: #94a3b8;
+
+   /* Especialidades optimizadas sobre superficie oscura */
+   --color-esp-derecho: #dca03a;
+   --color-esp-derecho-2: #eab658;
+   --color-esp-catastro: #269bc0;
+   --color-esp-catastro-2: #44b8dc;
+   --color-esp-ordenamiento: #d8963c;
+   --color-esp-geografia: #2898bd;
+   --color-esp-topografia: #e07b24;
+   --color-esp-geomatica: #2ca87e;
+   --color-esp-geomatica-2: #45c49a;
+   --color-esp-software: #8c7ae6;
+   --color-sapphire: #4ea0e6;
+   --color-sapphire-glow: #7cc0f8;
+   --sapphire-lt: rgb(50 130 196 / 12%);
+   --sapphire-bd: rgb(50 130 196 / 28%);
+   --color-teal: #28c7b5;
+   --color-teal-glow: #4be2d0;
+   --teal-lt: rgb(24 169 153 / 12%);
+   --teal-bd: rgb(24 169 153 / 28%);
+   --color-badge-law: rgb(146 74 28 / 90%);
+   --color-badge-cat: rgb(16 142 132 / 90%);
+   --color-badge-gis: rgb(32 128 96 / 90%);
+   --color-badge-topo: rgb(196 98 16 / 90%);
+   --color-badge-orden: rgb(186 132 38 / 90%);
+   --color-badge-geo: rgb(26 118 158 / 90%);
+   --color-badge-software: rgb(108 92 196 / 90%);
+   --color-badge-tec: rgb(15 23 42 / 90%);
+   --color-badge-def: rgb(204 132 58 / 45%);
+   --color-badge-gold: rgb(204 132 58 / 88%);
+   --color-badge-vigente: #34d399;
+   --color-badge-derogada: #f87171;
+   --color-badge-modificada: #fbbf24;
+   --color-badge-teal: rgb(24 169 153 / 88%);
+   --color-badge-white: rgb(242 239 233 / 92%);
+   --color-badge-white-text: #080d18;
+   --color-badge-bluedark: rgb(30 48 76 / 88%);
+   --color-overlay: rgb(6 10 18 / 88%);
+   --color-overlay-card: rgb(6 10 18 / 68%);
+   --color-shadow-overlay: rgb(0 0 0 / 65%);
 }

@@ -1,35 +1,67 @@
-import { ref, watch } from 'vue'
+import { computed, getCurrentInstance, onUnmounted, ref } from 'vue'
+import {
+  actualizarConfigTema,
+  alternarColorScheme,
+  aplicarPerfilTema,
+  aplicarTemaAlDocumento,
+  obtenerConfigTema,
+  suscribirConfigTema,
+  type ColorScheme,
+  type ConfigTema,
+} from '../theme/tema'
 
-const THEME_KEY = 'lgc-theme'
-const isDark = ref(true)
+const config = ref<ConfigTema>(obtenerConfigTema())
 
-function getInitialTheme(): boolean {
-  try {
-    const saved = localStorage.getItem(THEME_KEY)
-    if (saved) return saved === 'dark'
-    if (window.matchMedia?.('(prefers-color-scheme: dark)').matches) return true
-  } catch {}
-  return true
-}
+// Aplicación síncrona inicial para evitar parpadeos de color al arrancar.
+aplicarTemaAlDocumento(config.value)
 
-function applyTheme(dark: boolean) {
-  document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light')
+let suscriptores = 0
+let desuscribirGlobal: (() => void) | null = null
+
+export function initTheme(): void {
+  const actual = obtenerConfigTema()
+  config.value = actual
+  aplicarTemaAlDocumento(actual)
 }
 
 export function useTheme() {
-  isDark.value = getInitialTheme()
-  applyTheme(isDark.value)
-
-  watch(isDark, (val) => {
-    applyTheme(val)
-    try {
-      localStorage.setItem(THEME_KEY, val ? 'dark' : 'light')
-    } catch {}
-  })
-
-  function toggle() {
-    isDark.value = !isDark.value
+  if (suscriptores === 0 && !desuscribirGlobal) {
+    desuscribirGlobal = suscribirConfigTema((c) => {
+      config.value = c
+    })
+  }
+  if (getCurrentInstance()) {
+    suscriptores++
+    onUnmounted(() => {
+      suscriptores = Math.max(0, suscriptores - 1)
+      if (suscriptores === 0 && desuscribirGlobal) {
+        desuscribirGlobal()
+        desuscribirGlobal = null
+      }
+    })
   }
 
-  return { isDark, toggle }
+  const esOscuro = computed(() => config.value.colorScheme === 'dark')
+
+  function toggle(): ColorScheme {
+    return alternarColorScheme()
+  }
+
+  function actualizar(parcial: Partial<ConfigTema>) {
+    actualizarConfigTema(parcial)
+  }
+
+  function aplicarPerfil(id: string) {
+    aplicarPerfilTema(id)
+  }
+
+  return {
+    config,
+    isDark: esOscuro,
+    esOscuro,
+    toggle,
+    alternarEsquema: toggle,
+    actualizar,
+    aplicarPerfil,
+  }
 }
