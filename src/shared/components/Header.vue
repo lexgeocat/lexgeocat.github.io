@@ -4,11 +4,10 @@ import { SITE } from '../../config/site'
 import { useTheme } from '../composables/useTheme'
 import { useGoatCounter, FLAG_CDN } from '../composables/useGoatCounter'
 import { useFocusTrap } from '../composables/useFocusTrap'
-import logonoche from '@/assets/img/logo-noche.webp'
-import logodia from '@/assets/img/logo-dia.webp'
+import isotipo from '@/assets/img/isotipo.webp'
 import { useRouter } from 'vue-router'
 
-const { isDark, toggle } = useTheme()
+const { toggle } = useTheme()
 const router = useRouter()
 
 const mobileOpen = ref(false)
@@ -176,8 +175,8 @@ onUnmounted(() => {
           <div class="logo-icon">
             <img
               id="hdr-logo"
-              :src="isDark ? logonoche : logodia"
-              alt="LexGeoCat Logo"
+              :src="isotipo"
+              alt="Isotipo LexGeoCat"
             >
           </div>
           <div class="logo-text">

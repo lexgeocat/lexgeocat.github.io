@@ -1,6 +1,4 @@
 import { ref, watch } from 'vue'
-import logonoche from '@/assets/img/logo-noche.webp'
-import logodia from '@/assets/img/logo-dia.webp'
 
 const THEME_KEY = 'lgc-theme'
 const isDark = ref(true)
@@ -16,8 +14,6 @@ function getInitialTheme(): boolean {
 
 function applyTheme(dark: boolean) {
   document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light')
-  const logo = document.getElementById('hdr-logo') as HTMLImageElement | null
-  if (logo) logo.src = dark ? logonoche : logodia
 }
 
 export function useTheme() {

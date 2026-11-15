@@ -22,8 +22,16 @@
             to="/admin/servicios"
             class="admin-brand"
           >
-            <span class="admin-brand__mark">Lex<span class="geo">Geo</span><span class="cat">Cat</span></span>
-            <span class="admin-brand__sub">Panel administrativo</span>
+            <img
+              :src="isotipo"
+              alt=""
+              aria-hidden="true"
+              class="admin-brand__logo"
+            >
+            <div>
+              <span class="admin-brand__mark">Lex<span class="geo">Geo</span><span class="cat">Cat</span></span>
+              <span class="admin-brand__sub">Panel administrativo</span>
+            </div>
           </router-link>
         </div>
         <nav class="admin-sidebar__nav">
@@ -113,6 +121,7 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
 import { useAdminAuth } from './composables/useAdminAuth'
+import isotipo from '@/assets/img/isotipo.webp'
 
 const { user, loading, signOut } = useAdminAuth()
 const router = useRouter()
@@ -197,7 +206,17 @@ async function onSignOut() {
 
 .admin-brand {
   text-decoration: none;
-  display: block;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  &__logo {
+    width: 34px;
+    height: 34px;
+    object-fit: contain;
+    flex-shrink: 0;
+    display: block;
+  }
 
   &__mark {
     font-family: var(--font-display);

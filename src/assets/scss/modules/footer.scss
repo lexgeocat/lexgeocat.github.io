@@ -52,12 +52,28 @@
 }
 
 .ft-brand {
+  .ft-brand-head {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-3);
+    margin-bottom: var(--sp-4);
+  }
+
+  .ft-brand-logo {
+    width: 44px;
+    height: 44px;
+    object-fit: contain;
+    flex-shrink: 0;
+    display: block;
+  }
+
   h3 {
     font-family: var(--font-brand);
     font-size: var(--fs-2xl);
     font-weight: 800;
     color: var(--text);
-    margin-bottom: var(--sp-1);
+    margin-bottom: 2px;
+    line-height: 1.05;
     letter-spacing: -0.01em;
 
     span.geo {
@@ -74,7 +90,6 @@
     color: var(--text3);
     text-transform: uppercase;
     letter-spacing: var(--ls-caps);
-    margin-bottom: var(--sp-4);
     font-family: var(--font-mono);
   }
 

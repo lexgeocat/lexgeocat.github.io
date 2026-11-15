@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue'
 import { SITE } from '../../config/site'
+import isotipo from '@/assets/img/isotipo.webp'
 
 const showTop = ref(false)
 
@@ -27,9 +28,19 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
     <div class="ft-main">
       <div class="ft-grid">
         <div class="ft-brand">
-          <h3>Lex<span class="geo">Geo</span><span class="cat">Cat</span></h3>
-          <div class="ft-tagline">
-            {{ SITE.tagline }}
+          <div class="ft-brand-head">
+            <img
+              :src="isotipo"
+              alt=""
+              aria-hidden="true"
+              class="ft-brand-logo"
+            >
+            <div>
+              <h3>Lex<span class="geo">Geo</span><span class="cat">Cat</span></h3>
+              <div class="ft-tagline">
+                {{ SITE.tagline }}
+              </div>
+            </div>
           </div>
           <p>
             Consultoría profesional en derecho territorial, catastro, geomática y tecnología
