@@ -207,7 +207,7 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
       <hr>
     </div>
     <div class="ft-btm">
-      <span class="ft-btm-left">© {{ SITE.name }} — Todos los derechos reservados</span>
+      <span class="ft-btm-left">© {{ SITE.name }} — Todos los derechos reservados - It's for you ADZC</span>
       <div class="ft-btm-right">
         <router-link to="/pages/privacidad.html">
           Privacidad
