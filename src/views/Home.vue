@@ -269,7 +269,7 @@ onUnmounted(() => {
                 />
               </div>
               <div>
-                <h4>Derecho Territorial</h4>
+                <h4>Derecho</h4>
                 <p>Civil, Agrario, Registral y Notarial</p>
               </div>
             </router-link>
@@ -289,7 +289,7 @@ onUnmounted(() => {
                 />
               </div>
               <div>
-                <h4>Catastro y Ordenamiento</h4>
+                <h4>Catastro y Ordenamiento Territorial</h4>
                 <p>Valuación predial, SIG urbano y rural</p>
               </div>
             </router-link>
