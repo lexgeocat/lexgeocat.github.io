@@ -9,8 +9,6 @@ defineProps<{ entry: BlogEntry }>()
   <a
     class="blog-card"
     :href="entry.url"
-    target="_blank"
-    rel="noopener"
   >
     <div class="blog-card-thumb">
       <img

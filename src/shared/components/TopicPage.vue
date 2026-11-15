@@ -126,8 +126,6 @@ onUnmounted(() => {
             topic.blogCtaHref ||
               `${SITE.blog.url}search/label/${encodeURIComponent(topic.blogLabel)}`
           "
-          target="_blank"
-          rel="noopener"
         >
           <i
             aria-hidden="true"

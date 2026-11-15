@@ -159,19 +159,22 @@ h4,h5{font-family:var(--font-heading);font-weight:600;line-height:var(--lh-tight
 #ld.hide{opacity:0;visibility:hidden;pointer-events:none}
 #ld .logo-loader{width:64px;height:64px;position:relative;display:flex;align-items:center;justify-content:center}
 #ld .logo-loader img{width:46px;height:46px;object-fit:contain;animation:pulseLogo 1.6s var(--ease) infinite}
-#ld span{font-family:var(--font-brand);font-size:1.05rem;font-weight:800;color:#fff;letter-spacing:.06em}
+#ld span{font-family:var(--font-brand);font-size:1.05rem;font-weight:800;color:#fff;letter-spacing:.02em;display:inline-flex;align-items:center;gap:8px}
 @keyframes pulseLogo{0%,100%{transform:scale(1);opacity:.9}50%{transform:scale(1.06);opacity:1}}
+/* ── Blog Brand Badge ── */
+.blog-badge{display:inline-flex;align-items:center;justify-content:center;padding:3px 9px;border-radius:6px;background:#3b82f6;color:#080f21;font-family:var(--font-heading);font-size:.64em;font-weight:800;letter-spacing:.04em;line-height:1.15;text-transform:uppercase;text-decoration:none;transition:transform .2s var(--ease),background .2s var(--ease);flex-shrink:0}
+a.blog-badge:hover{background:#60a5fa;color:#080f21;transform:translateY(-1px)}
 /* ── Header ── */
 #hdr{position:fixed;top:0;left:0;right:0;z-index:1000;height:var(--h);background:var(--nav-bg);border-bottom:1px solid var(--nav-borde);backdrop-filter:blur(16px) saturate(1.3);-webkit-backdrop-filter:blur(16px) saturate(1.3);transition:all .3s var(--ease)}
 #hdr.scrolled{box-shadow:0 6px 24px rgba(2,6,23,.28)}
 .hi{display:flex;align-items:center;justify-content:space-between;height:var(--h);max-width:var(--con);margin:0 auto;padding:0 28px}
-.logo-wrap{display:flex;align-items:center;gap:12px}
+.logo-wrap{display:flex;align-items:center;gap:14px}
 .logo-icon{width:46px;height:46px;flex-shrink:0;display:flex;align-items:center;justify-content:center;border-radius:10px;background:var(--nav-pill-bg);border:1px solid var(--nav-borde);padding:4px;transition:border-color .25s var(--ease),transform .25s var(--ease)}
-.logo-wrap a:hover .logo-icon{border-color:var(--nav-accent);transform:scale(1.03)}
+.logo-brand-link:hover .logo-icon{border-color:var(--nav-accent);transform:scale(1.03)}
 @media(max-width:600px){.logo-icon{width:38px;height:38px}.logo-wrap h1{font-size:1.12rem!important}.logo-text .subtitle{display:none}}
 .logo-icon img{width:100%;height:100%;object-fit:contain;display:block}
-.logo-wrap h1{font-family:var(--font-brand);font-size:1.35rem;font-weight:800;color:var(--nav-brand-lex);letter-spacing:-.01em;line-height:1.05;margin:0}
-.logo-wrap h1 a{color:inherit;text-decoration:none}
+.logo-wrap h1{font-family:var(--font-brand);font-size:1.35rem;font-weight:800;color:var(--nav-brand-lex);letter-spacing:-.01em;line-height:1.05;margin:0;display:flex;align-items:center;gap:8px;flex-wrap:nowrap}
+.logo-wrap h1 a.brand-text-link{color:inherit;text-decoration:none}
 .logo-wrap h1 span.geo,.logo-wrap h1 span.cat{color:inherit}
 .logo-text .subtitle{font-family:var(--font-mono);font-size:.6rem;font-weight:400;color:var(--nav-texto-mutado);letter-spacing:.08em;text-transform:uppercase;margin-top:2px}
 .hi .Header .description-wrapper{display:none}
@@ -419,7 +422,7 @@ h4,h5{font-family:var(--font-heading);font-weight:600;line-height:var(--lh-tight
 .ft-grid{display:grid;grid-template-columns:1.6fr 1fr 1fr;gap:48px}
 .ft-brand-head{display:flex;align-items:center;gap:12px;margin-bottom:14px}
 .ft-brand-logo{width:44px;height:44px;object-fit:contain;flex-shrink:0;display:block}
-.ft-brand h3{font-family:var(--font-brand);font-size:1.5rem;font-weight:800;color:var(--nav-brand-lex);margin-bottom:2px;line-height:1.05;letter-spacing:-.01em}
+.ft-brand h3{font-family:var(--font-brand);font-size:1.5rem;font-weight:800;color:var(--nav-brand-lex);margin-bottom:2px;line-height:1.05;letter-spacing:-.01em;display:inline-flex;align-items:center;gap:8px}
 .ft-brand h3 span.geo,.ft-brand h3 span.cat{color:inherit}
 .ft-tagline{font-family:var(--font-mono);font-size:.66rem;color:var(--nav-texto-mutado);text-transform:uppercase;letter-spacing:var(--ls-wide)}
 .ft-brand p{font-size:.86rem;color:var(--nav-texto);opacity:.85;max-width:320px;line-height:var(--lh-normal);margin-bottom:18px}
@@ -592,24 +595,25 @@ h4,h5{font-family:var(--font-heading);font-weight:600;line-height:var(--lh-tight
       <div class='logo-loader'>
         <img alt='{{SITE_NAME}}' src='{{ISOTIPO_URL}}' />
       </div>
-      <span>{{SITE_NAME}}</span>
+      <span>{{SITE_NAME}} <span class='blog-badge'>BLOG</span></span>
     </div>
 
     <div id='hdr'>
       <div class='hi'>
         <div class='logo-wrap'>
-          <a href='{{SITE_URL}}/'
-            style='display:flex;align-items:center;gap:14px;text-decoration:none'>
+          <a aria-label='Ir al portal principal {{SITE_NAME}}' class='logo-brand-link'
+            href='{{SITE_URL}}/' style='display:flex;align-items:center;text-decoration:none'>
             <div class='logo-icon'>
               <img alt='{{SITE_NAME}}' src='{{ISOTIPO_URL}}' />
             </div>
-            <div class='logo-text'>
-              <h1>
-                <a href='{{SITE_URL}}/'>{{SITE_NAME}}</a>
-              </h1>
-              <div class='subtitle'>{{SITE_TAGLINE}}</div>
-            </div>
           </a>
+          <div class='logo-text'>
+            <h1>
+              <a class='brand-text-link' href='{{SITE_URL}}/'>{{SITE_NAME}}</a>
+              <a aria-label='Inicio del Blog {{SITE_NAME}}' class='blog-badge' expr:href='data:blog.homepageUrl'>BLOG</a>
+            </h1>
+            <div class='subtitle'>{{SITE_TAGLINE}}</div>
+          </div>
         </div>
 
         <b:section id='header' maxwidgets='1' showaddelement='no'>
@@ -756,7 +760,7 @@ h4,h5{font-family:var(--font-heading);font-weight:600;line-height:var(--lh-tight
           <div class='logo-icon' style='width:36px;height:36px'>
             <img alt='{{SITE_NAME}}' src='{{ISOTIPO_URL}}' />
           </div>
-          <span style='font-family:var(--font-brand);font-size:1.15rem;font-weight:800;color:var(--text)'>{{SITE_NAME}}</span>
+          <span style='font-family:var(--font-brand);font-size:1.15rem;font-weight:800;color:var(--text);display:inline-flex;align-items:center;gap:7px'>{{SITE_NAME}} <span class='blog-badge'>BLOG</span></span>
         </div>
         <div style='display:flex;align-items:center;gap:8px'>
           <button aria-label='Cambiar tema' class='icon-btn th-btn-mob' id='th-btn-mob'
@@ -1396,7 +1400,7 @@ h4,h5{font-family:var(--font-heading);font-weight:600;line-height:var(--lh-tight
             <div class='ft-brand-head'>
               <img alt='{{SITE_NAME}}' class='ft-brand-logo' src='{{ISOTIPO_URL}}' />
               <div>
-                <h3>{{SITE_NAME}}</h3>
+                <h3>{{SITE_NAME}} <span class='blog-badge'>BLOG</span></h3>
                 <div class='ft-tagline'>{{SITE_TAGLINE}}</div>
               </div>
             </div>

@@ -428,8 +428,6 @@ onUnmounted(() => {
           v-else-if="item.external"
           :href="item.path"
           class="nav-link"
-          target="_blank"
-          rel="noopener"
         >
           <i
             aria-hidden="true"
@@ -650,8 +648,7 @@ onUnmounted(() => {
         <li v-else-if="item.external">
           <a
             :href="item.path"
-            target="_blank"
-            rel="noopener"
+            @click="mobileOpen = false"
           >
             <i
               aria-hidden="true"
