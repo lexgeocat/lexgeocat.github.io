@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted } from 'vue'
 import { useReveal } from '../shared/composables/useReveal'
+import { SITE } from '../config/site'
 const reveal = useReveal()
 onMounted(() => {
   requestAnimationFrame(() => {
@@ -28,8 +29,8 @@ onUnmounted(() => {
         <p><em>Última actualización: junio 2026</em></p>
         <h2>1. Responsable</h2>
         <p>
-          LexGeoCat, firma técnico-jurídica dirigida por Cristian B. Ruiz Q., con sede en
-          La Paz - Bolivia. Contacto: lexgeocat@gmail.com.
+          LexGeoCat, firma técnico-jurídica dirigida por {{ SITE.founder }}, con sede en
+          {{ SITE.location }}. Contacto: {{ SITE.email }}.
         </p>
         <h2>2. Datos que recopilamos</h2>
         <p>

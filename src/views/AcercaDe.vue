@@ -1,11 +1,19 @@
 <script setup lang="ts">
-import { onMounted, onUnmounted } from 'vue'
+import { computed, onMounted, onUnmounted, ref } from 'vue'
 import { useReveal } from '../shared/composables/useReveal'
 import { SITE } from '../config/site'
+import { FOUNDER_PROFILE, TEAM_BY_SPECIALTY, type TeamSpecialtyKey } from '../content/team'
 import logoSib from '../assets/img/logo-sib.jpg'
 import logoRpa from '../assets/img/logo-rpa.jpg'
 
 const reveal = useReveal()
+const selectedSpecialty = ref<TeamSpecialtyKey | 'all'>('all')
+
+const filteredProfessionals = computed(() =>
+  selectedSpecialty.value === 'all'
+    ? TEAM_BY_SPECIALTY
+    : TEAM_BY_SPECIALTY.filter((member) => member.specialtyKey === selectedSpecialty.value),
+)
 
 onMounted(() => {
   requestAnimationFrame(() => {
@@ -28,14 +36,26 @@ onUnmounted(() => {
     <div class="c">
       <div class="about-wrap">
         <div class="about-img-wrap">
-          <div class="about-img-ph">
+          <div
+            v-if="FOUNDER_PROFILE.photo"
+            class="about-img"
+          >
+            <img
+              :src="FOUNDER_PROFILE.photo"
+              :alt="FOUNDER_PROFILE.photoAlt"
+            >
+          </div>
+          <div
+            v-else
+            class="about-img-ph"
+          >
             <div>
               <i
                 aria-hidden="true"
-                class="fa-solid fa-users about-img-ph-icon"
+                class="fa-solid fa-user-tie about-img-ph-icon"
               />
               <div class="about-img-ph-name">
-                {{ SITE.name }}
+                {{ FOUNDER_PROFILE.name }}
               </div>
               <div class="about-img-ph-loc">
                 {{ SITE.location }}
@@ -58,22 +78,22 @@ onUnmounted(() => {
             class="st"
             style="color: var(--text)"
           >
-            {{ SITE.name }} — Consultoría Técnico-Jurídica
+            {{ FOUNDER_PROFILE.name }}
           </h1>
           <p class="about-subtitle">
-            Equipo interdisciplinario y red colaborativa de profesionales del territorio en
-            {{ SITE.location }}
+            {{ FOUNDER_PROFILE.role }} · {{ SITE.name }}
           </p>
           <p>
-            Somos una firma y plataforma técnica especializada en integrar el derecho territorial
-            con el catastro, el ordenamiento territorial, la topografía, la geomática y el
-            desarrollo de software geoespacial para el contexto normativo de Bolivia.
+            <strong>{{ SITE.name }}</strong> es una firma y plataforma interdisciplinaria con sede
+            en <strong>{{ SITE.location }}</strong>, dedicada a integrar el derecho territorial con
+            el catastro, el ordenamiento territorial, la topografía, la geomática y el desarrollo de
+            software geoespacial para el contexto boliviano.
           </p>
           <p>
-            Bajo la dirección de <strong>{{ SITE.founder }}</strong> (T.U.S. en Catastro y
-            Ordenamiento Territorial — UMSA; Licenciado en Derecho — UPEA), articulamos una red de
-            especialistas y colegas colaboradores en ingeniería, geodesia y tecnología para abordar
-            proyectos integrales con respaldo jurídico y precisión técnica.
+            Bajo la conducción de <strong>{{ FOUNDER_PROFILE.name }}</strong>
+            ({{ FOUNDER_PROFILE.degrees.join('; ') }}), articulamos una red abierta de especialistas
+            y profesionales colaboradores que se integran progresivamente por disciplina para
+            atender proyectos de alta complejidad en todo el país.
           </p>
 
           <h3 class="about-h3">
@@ -134,68 +154,6 @@ onUnmounted(() => {
             </a>
           </div>
 
-          <h3 class="about-h3">
-            Equipo y red multidisciplinaria
-          </h3>
-          <div class="about-team-grid">
-            <article class="about-team-card">
-              <div class="about-team-icon">
-                <i
-                  aria-hidden="true"
-                  class="fa-solid fa-scale-balanced"
-                />
-              </div>
-              <div>
-                <h4>Dirección Técnico-Jurídica</h4>
-                <p>
-                  {{ SITE.founder }} · Conducción legal, saneamiento predial y gestión catastral.
-                </p>
-              </div>
-            </article>
-            <article class="about-team-card">
-              <div class="about-team-icon">
-                <i
-                  aria-hidden="true"
-                  class="fa-solid fa-mountain"
-                />
-              </div>
-              <div>
-                <h4>Topografía y Geodesia</h4>
-                <p>
-                  Profesionales asociados en levantamientos GNSS, estación total y red SIRGAS-BOL.
-                </p>
-              </div>
-            </article>
-            <article class="about-team-card">
-              <div class="about-team-icon">
-                <i
-                  aria-hidden="true"
-                  class="fa-solid fa-layer-group"
-                />
-              </div>
-              <div>
-                <h4>Geomática y Web GIS</h4>
-                <p>
-                  Especialistas colaboradores en PostGIS, QGIS, teledetección y geoportales web.
-                </p>
-              </div>
-            </article>
-            <article class="about-team-card">
-              <div class="about-team-icon">
-                <i
-                  aria-hidden="true"
-                  class="fa-solid fa-handshake"
-                />
-              </div>
-              <div>
-                <h4>Alianzas con Colegas</h4>
-                <p>
-                  Colaboración abierta con abogados, arquitectos, ingenieros y equipos municipales.
-                </p>
-              </div>
-            </article>
-          </div>
-
           <div class="about-actions">
             <router-link
               class="btn btn-gold"
@@ -219,7 +177,96 @@ onUnmounted(() => {
     </div>
   </section>
 
-  <section class="sec">
+  <section
+    id="equipo-especialidades"
+    class="sec"
+  >
+    <div class="c">
+      <div class="sh center">
+        <span class="sl">Equipo y Red Profesional</span>
+        <h2 class="st">
+          Profesionales por Especialidad
+        </h2>
+        <p class="sd">
+          Espacio destinado a los especialistas y profesionales colaboradores que se integran a
+          {{ SITE.name }} en cada una de nuestras siete áreas técnicas y jurídicas.
+        </p>
+      </div>
+
+      <div
+        class="team-filters"
+        role="tablist"
+        aria-label="Filtrar profesionales por especialidad"
+      >
+        <button
+          type="button"
+          class="team-filter-btn"
+          :class="{ 'is-active': selectedSpecialty === 'all' }"
+          @click="selectedSpecialty = 'all'"
+        >
+          Todas ({{ TEAM_BY_SPECIALTY.length }})
+        </button>
+        <button
+          v-for="item in TEAM_BY_SPECIALTY"
+          :key="item.id"
+          type="button"
+          class="team-filter-btn"
+          :class="{ 'is-active': selectedSpecialty === item.specialtyKey }"
+          @click="selectedSpecialty = item.specialtyKey"
+        >
+          <i
+            aria-hidden="true"
+            class="fa-solid"
+            :class="item.icon"
+          />
+          {{ item.specialtyLabel }}
+        </button>
+      </div>
+
+      <div class="team-profiles-grid">
+        <div
+          v-for="member in filteredProfessionals"
+          :key="member.id"
+          class="team-profile"
+          :class="member.specialtyClass"
+        >
+          <div class="team-profile-photo">
+            <img
+              v-if="member.photo"
+              :src="member.photo"
+              :alt="`${member.name} — ${member.specialtyLabel}`"
+              loading="lazy"
+            >
+            <div
+              v-else
+              class="team-profile-fallback"
+            >
+              <i
+                aria-hidden="true"
+                class="fa-solid fa-user"
+              />
+            </div>
+          </div>
+          <router-link
+            :to="member.specialtyRoute"
+            class="team-profile-spec"
+          >
+            <i
+              aria-hidden="true"
+              class="fa-solid"
+              :class="member.icon"
+            />
+            {{ member.specialtyLabel }}
+          </router-link>
+          <p class="team-profile-name">
+            {{ member.name }}
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec-stripe">
     <div class="c">
       <div class="sh center">
         <span class="sl">Identidad Institucional</span>
@@ -266,7 +313,7 @@ onUnmounted(() => {
     </div>
   </section>
 
-  <section class="sec-stripe">
+  <section class="sec">
     <div class="c">
       <div class="at-body">
         <h2>Metodología de intervención y competencias</h2>

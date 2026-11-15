@@ -6,7 +6,7 @@ export const SITE = {
   whatsapp: '+59176711790',
   whatsappNumber: '59176711790',
   location: 'La Paz - Bolivia',
-  founder: 'Cristian B. Ruiz Quiroga',
+  founder: 'Cristian Brayan Ruiz Quiroga',
   rnt: '970285',
   rpa: '13437938CBRQ',
   social: {
