@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vue-tsc --noEmit && vite build && node scripts/prerender-routes.mjs",
+    "build": "vue-tsc --noEmit && vite build && node scripts/prerender-routes.mjs && node scripts/build-blogger-theme.mjs",
+    "build:blogger": "node scripts/build-blogger-theme.mjs",
     "prebuild": "node scripts/generate-sitemap.mjs",
     "preview": "vite preview",
     "typecheck": "vue-tsc --noEmit",
