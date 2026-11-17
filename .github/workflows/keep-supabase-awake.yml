@@ -10,12 +10,17 @@ jobs:
   ping:
     runs-on: ubuntu-latest
     steps:
-      - name: Ping servicios table
+      - name: Ping sitio LexGeoCat (Supabase)
         run: |
-          curl -s -o /dev/null -w "%{http_code}\n" \
+          curl -fsS -o /dev/null -w "LexGeoCat Supabase HTTP %{http_code}\n" \
             -H "apikey: ${ANON_KEY}" \
             -H "Authorization: Bearer ${ANON_KEY}" \
-            "${SUPABASE_URL}/rest/v1/servicios?select=count&limit=1"
+            "${SUPABASE_URL}/rest/v1/servicios?select=id&limit=1"
         env:
           SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
           ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+
+      - name: Ping IurisCore Licencias + Supabase (respaldo)
+        run: |
+          curl -fsS -w "IurisCore Worker: %{http_code}\n" \
+            "https://iuriscore-licencias.lexgeocat.workers.dev/health?db=1"
