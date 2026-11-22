@@ -5,7 +5,7 @@
 .ic-hero {
   position: relative;
   overflow: hidden;
-  padding: 58px 0 46px;
+  padding: calc(var(--h) + var(--nav-h) + 42px) 0 56px;
   background: radial-gradient(circle at 85% 12%, var(--primario-claro) 0%, transparent 55%),
     var(--bg);
   border-bottom: 1px solid var(--border);
@@ -50,8 +50,8 @@
 
 .ic-hero-title {
   font-family: var(--font-heading);
-  font-size: clamp(2rem, 4vw, 3rem);
-  line-height: 1.12;
+  font-size: clamp(1.85rem, 3.3vw, 2.7rem);
+  line-height: 1.15;
   margin: 0 0 var(--sp-4);
   color: var(--text);
   letter-spacing: var(--ls-tight);
@@ -991,6 +991,10 @@
 }
 
 @media (width <= 960px) {
+  .ic-hero {
+    padding: calc(var(--h) + 32px) 0 42px;
+  }
+
   .ic-hero-grid,
   .ic-home-showcase,
   .ic-plat-grid {
