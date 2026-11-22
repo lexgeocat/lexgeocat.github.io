@@ -6,6 +6,7 @@ import type { HeroMapLayer } from '@/shared/components/bolivia-map'
 import { SITE } from '../config/site'
 import { useBloggerFeed } from '../features/blog/useBloggerFeed'
 import BlogCard from '../features/blog/BlogCard.vue'
+import iuriscoreLogo from '@/assets/img/iuriscore-logo.png'
 
 const activeMapLayer = ref<HeroMapLayer>(null)
 const mapParallax = ref({ x: 0, y: 0 })
@@ -552,6 +553,144 @@ onUnmounted(() => {
           aria-hidden="true"
           class="fa-solid fa-newspaper"
         /> Ver todos en el Blog</a>
+      </div>
+    </div>
+  </section>
+
+  <section
+    id="iuriscore-destacado"
+    class="sec"
+  >
+    <div class="c">
+      <div class="ic-home-showcase reveal">
+        <div class="ic-home-texto">
+          <span class="sl">SOFTWARE JURÍDICO · PRODUCTO OFICIAL</span>
+          <div class="ic-home-head">
+            <img
+              :src="iuriscoreLogo"
+              alt="IurisCore Legal Hub"
+              class="ic-home-logo"
+            >
+            <div>
+              <h2 class="st">
+                IurisCore · Legal Hub
+              </h2>
+              <p class="ic-home-sub">
+                Windows 10/11 (32/64 bits) · Windows 7 Offline · Android
+              </p>
+            </div>
+          </div>
+          <p class="ic-home-desc">
+            Administra expedientes, clientes, escritos, modelos automatizados en Word/Redactor
+            propio con impresión 1:1, códigos en organigramas interactivos y jurisprudencia del TSJ
+            y TCP <strong>sin depender de internet ni pagar servidores mensuales</strong>. Conecta tu
+            cuenta de Google Drive para sincronizar de forma cifrada e incremental entre tu PC y tu
+            celular.
+          </p>
+          <div class="ic-home-bullets">
+            <span><i
+              aria-hidden="true"
+              class="fa-solid fa-shield-halved"
+            /> Privacidad 100 % Local-First + ChaCha20</span>
+            <span><i
+              aria-hidden="true"
+              class="fa-solid fa-file-word"
+            /> IurisCore Redactor Independiente</span>
+            <span><i
+              aria-hidden="true"
+              class="fa-solid fa-diagram-project"
+            /> Organigramas y Flujogramas</span>
+            <span><i
+              aria-hidden="true"
+              class="fa-solid fa-mobile-screen-button"
+            /> Licencia unificada PC + Android</span>
+          </div>
+          <div class="ic-home-ctas">
+            <router-link
+              class="btn btn-gold"
+              to="/pages/iuriscore.html"
+            >
+              <i
+                aria-hidden="true"
+                class="fa-solid fa-scale-balanced"
+              /> Explorar IurisCore y Planes
+            </router-link>
+            <a
+              class="btn btn-teal"
+              :href="SITE.iuriscore.descargar"
+              target="_blank"
+              rel="noopener"
+            >
+              <i
+                aria-hidden="true"
+                class="fa-solid fa-download"
+              /> Descargar prueba gratuita (7 días)
+            </a>
+            <a
+              class="btn btn-ghost"
+              :href="SITE.iuriscore.comprar"
+              target="_blank"
+              rel="noopener"
+            >
+              <i
+                aria-hidden="true"
+                class="fa-solid fa-qrcode"
+              /> Adquirir licencia QR
+            </a>
+          </div>
+        </div>
+        <div class="ic-home-visual">
+          <div class="ic-preview-card">
+            <div class="ic-preview-top">
+              <span class="ic-dot" />
+              <span class="ic-dot" />
+              <span class="ic-dot" />
+              <span class="ic-preview-tit">Ecosistema IurisCore · PC &amp; Android</span>
+            </div>
+            <ul class="ic-preview-lista">
+              <li>
+                <i
+                  aria-hidden="true"
+                  class="fa-solid fa-folder-open"
+                />
+                <div>
+                  <strong>Expedientes y Escritos</strong>
+                  <span>Control completo de partes, actuaciones y archivos locales</span>
+                </div>
+              </li>
+              <li>
+                <i
+                  aria-hidden="true"
+                  class="fa-solid fa-pen-nib"
+                />
+                <div>
+                  <strong>Redactor Forense 1:1</strong>
+                  <span>Impresión exacta en Carta, Oficio y A4 sin márgenes desplazados</span>
+                </div>
+              </li>
+              <li>
+                <i
+                  aria-hidden="true"
+                  class="fa-solid fa-gavel"
+                />
+                <div>
+                  <strong>Jurisprudencia TSJ &amp; TCP + Normativa</strong>
+                  <span>Biblioteca offline y mapas jerárquicos por libro, título y artículo</span>
+                </div>
+              </li>
+              <li>
+                <i
+                  aria-hidden="true"
+                  class="fa-solid fa-rotate"
+                />
+                <div>
+                  <strong>Sync Incremental Cifrada</strong>
+                  <span>Transfiere solo los cambios entre ordenador y celular</span>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
       </div>
     </div>
   </section>

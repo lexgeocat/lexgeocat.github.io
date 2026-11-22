@@ -133,8 +133,9 @@ const router = createRouter({
       component: () => import('../views/Recursos.vue'),
       meta: {
         ...seo('/pages/recursos.html'),
-        navLabel: 'Recursos',
+        navLabel: 'Todos los recursos',
         navIcon: 'fa-folder-open',
+        navGroup: 'Recursos',
       },
     },
     {
@@ -145,6 +146,17 @@ const router = createRouter({
         ...seo('/pages/normativa.html'),
         navLabel: 'Normativa',
         navIcon: 'fa-gavel',
+      },
+    },
+    {
+      path: '/pages/iuriscore.html',
+      name: 'iuriscore',
+      component: () => import('../views/IurisCore.vue'),
+      meta: {
+        ...seo('/pages/iuriscore.html'),
+        navLabel: 'IurisCore · Legal Hub',
+        navIcon: 'fa-scale-balanced',
+        navGroup: 'Recursos',
       },
     },
     {

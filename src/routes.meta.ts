@@ -100,6 +100,13 @@ export const ROUTES: RouteSeo[] = [
       'Leyes, códigos, decretos, jurisprudencia y doctrina del ordenamiento jurídico boliviano, con descarga en PDF.',
   },
   {
+    path: '/pages/iuriscore.html',
+    crumb: 'IurisCore',
+    title: 'IurisCore · Software Jurídico Local-First para Abogados en Bolivia | LexGeoCat',
+    description:
+      'Suite jurídica multiplataforma (Windows 10/11, Windows 7 Offline y Android): expedientes, redactor forense 1:1, normativa en organigrama, flujogramas, jurisprudencia TSJ/TCP y sincronización cifrada.',
+  },
+  {
     path: '/pages/privacidad.html',
     crumb: 'Privacidad',
     title: 'Política de Privacidad | LexGeoCat',

@@ -78,6 +78,11 @@ const NAV_ORDER = [
   'contacto',
 ]
 
+const NAV_GROUP_META: Record<string, { id: string; icon: string }> = {
+  Especialidades: { id: 'temas', icon: 'fa-tags' },
+  Recursos: { id: 'recursos', icon: 'fa-folder-open' },
+}
+
 function buildNav(): NavItem[] {
   const routes = router.getRoutes()
   const items: NavItem[] = []
@@ -109,7 +114,11 @@ function buildNav(): NavItem[] {
   })
 
   for (const [groupLabel, children] of Object.entries(grouped)) {
-    items.push({ id: 'temas', label: groupLabel, icon: 'fa-tags', path: '', children })
+    const meta = NAV_GROUP_META[groupLabel] ?? {
+      id: groupLabel.toLowerCase(),
+      icon: 'fa-folder',
+    }
+    items.push({ id: meta.id, label: groupLabel, icon: meta.icon, path: '', children })
   }
 
   return items.sort((a, b) => {

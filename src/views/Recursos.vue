@@ -1,12 +1,55 @@
 <script setup lang="ts">
 import TopicPage from '../shared/components/TopicPage.vue'
 import { getTopic } from '../content/topics'
+import { SITE } from '../config/site'
+import iuriscoreLogo from '@/assets/img/iuriscore-logo.png'
 const topic = getTopic('recursos')!
 </script>
 
 <template>
   <TopicPage :topic="topic">
     <template #before-features>
+      <div class="ic-promo-banner reveal">
+        <div class="ic-promo-izq">
+          <img
+            :src="iuriscoreLogo"
+            alt="Logo IurisCore Legal Hub"
+            class="ic-promo-logo"
+          >
+          <div>
+            <span class="ic-badge-producto">Software Jurídico Propio · Windows &amp; Android</span>
+            <h3>IurisCore · Legal Hub + Redactor Forense</h3>
+            <p>
+              Suite jurídica Local-First para abogados en Bolivia: expedientes, modelos .docx con
+              variables, normativa en organigrama, flujogramas procesales, jurisprudencia TSJ/TCP y
+              sincronización cifrada en tu Google Drive.
+            </p>
+          </div>
+        </div>
+        <div class="ic-promo-acciones">
+          <router-link
+            class="btn btn-gold"
+            to="/pages/iuriscore.html"
+          >
+            <i
+              aria-hidden="true"
+              class="fa-solid fa-rocket"
+            /> Ver producto y precios
+          </router-link>
+          <a
+            class="btn btn-ghost"
+            :href="SITE.iuriscore.descargar"
+            target="_blank"
+            rel="noopener"
+          >
+            <i
+              aria-hidden="true"
+              class="fa-solid fa-download"
+            /> Descargar gratis
+          </a>
+        </div>
+      </div>
+
       <div
         class="g g-auto"
         style="margin-bottom: 48px"

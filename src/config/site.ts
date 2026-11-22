@@ -21,4 +21,11 @@ export const SITE = {
   },
   worker: 'https://stats.lexgeocat.workers.dev',
   goatcounter: 'https://lexgeocat.goatcounter.com',
+  iuriscore: {
+    api: 'https://iuriscore-licencias.lexgeocat.workers.dev',
+    comprar: 'https://iuriscore-licencias.lexgeocat.workers.dev/comprar',
+    descargar: 'https://iuriscore-licencias.lexgeocat.workers.dev/descargar',
+    privacidad: 'https://iuriscore-licencias.lexgeocat.workers.dev/privacidad',
+    terminos: 'https://iuriscore-licencias.lexgeocat.workers.dev/terminos',
+  },
 }
