@@ -265,6 +265,27 @@
   }
 }
 
+.ic-plat-actions {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-top: 6px;
+}
+
+.ic-dl-btn {
+  width: 100%;
+  justify-content: space-between;
+  padding: 10px 14px;
+  font-size: var(--fs-sm);
+}
+
+.ic-dl-meta {
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  opacity: 0.85;
+}
+
 .ic-mod-selector {
   display: flex;
   flex-wrap: wrap;

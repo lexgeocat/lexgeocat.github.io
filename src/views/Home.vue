@@ -606,37 +606,26 @@ onUnmounted(() => {
             /> Licencia unificada PC + Android</span>
           </div>
           <div class="ic-home-ctas">
-            <router-link
+            <a
               class="btn btn-gold"
+              :href="SITE.iuriscore.home"
+              target="_blank"
+              rel="noopener"
+            >
+              <i
+                aria-hidden="true"
+                class="fa-solid fa-up-right-from-square"
+              /> Sitio oficial IurisCore
+            </a>
+            <router-link
+              class="btn btn-ghost"
               to="/pages/iuriscore.html"
             >
               <i
                 aria-hidden="true"
                 class="fa-solid fa-scale-balanced"
-              /> Explorar IurisCore y Planes
+              /> Ficha técnica y descargas
             </router-link>
-            <a
-              class="btn btn-teal"
-              :href="SITE.iuriscore.descargar"
-              target="_blank"
-              rel="noopener"
-            >
-              <i
-                aria-hidden="true"
-                class="fa-solid fa-download"
-              /> Descargar prueba gratuita (7 días)
-            </a>
-            <a
-              class="btn btn-ghost"
-              :href="SITE.iuriscore.comprar"
-              target="_blank"
-              rel="noopener"
-            >
-              <i
-                aria-hidden="true"
-                class="fa-solid fa-qrcode"
-              /> Adquirir licencia QR
-            </a>
           </div>
         </div>
         <div class="ic-home-visual">

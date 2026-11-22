@@ -22,6 +22,7 @@ export const SITE = {
   worker: 'https://stats.lexgeocat.workers.dev',
   goatcounter: 'https://lexgeocat.goatcounter.com',
   iuriscore: {
+    home: 'https://iuriscore-licencias.lexgeocat.workers.dev/',
     api: 'https://iuriscore-licencias.lexgeocat.workers.dev',
     comprar: 'https://iuriscore-licencias.lexgeocat.workers.dev/comprar',
     descargar: 'https://iuriscore-licencias.lexgeocat.workers.dev/descargar',

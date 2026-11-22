@@ -176,32 +176,22 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
           <h4>Plataforma</h4>
           <ul>
             <li>
+              <a
+                :href="SITE.iuriscore.home"
+                target="_blank"
+                rel="noopener"
+              ><i
+                aria-hidden="true"
+                class="fa-solid fa-chevron-right"
+              />Sitio oficial IurisCore</a>
+            </li>
+            <li>
               <router-link to="/pages/iuriscore.html">
                 <i
                   aria-hidden="true"
                   class="fa-solid fa-chevron-right"
-                />IurisCore · Legal Hub
+                />Ficha IurisCore
               </router-link>
-            </li>
-            <li>
-              <a
-                :href="SITE.iuriscore.descargar"
-                target="_blank"
-                rel="noopener"
-              ><i
-                aria-hidden="true"
-                class="fa-solid fa-chevron-right"
-              />Descargar IurisCore</a>
-            </li>
-            <li>
-              <a
-                :href="SITE.iuriscore.comprar"
-                target="_blank"
-                rel="noopener"
-              ><i
-                aria-hidden="true"
-                class="fa-solid fa-chevron-right"
-              />Licencias IurisCore</a>
             </li>
             <li>
               <router-link to="/pages/acerca-de.html">

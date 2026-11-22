@@ -26,12 +26,21 @@ interface RespuestaCatalogoApi {
   modalidades?: ModalidadCatalogo[]
 }
 
+interface ArchivoDescargaInfo {
+  nombreArchivo: string
+  url: string
+  tamanoMb: number | null
+}
+
 interface InfoActualizacion {
   ok: boolean
   version: string | null
   url_descarga?: string
   tamano_mb?: number | null
   notas?: string
+  descargas?: Partial<
+    Record<'win10_64' | 'win10_32' | 'win7_64' | 'win7_32' | 'android_apk', ArchivoDescargaInfo>
+  >
 }
 
 interface MediaGaleriaItem {
@@ -182,12 +191,9 @@ const faqs = [
   },
 ]
 
-const whatsappVenta = computed(() => {
-  const txt = encodeURIComponent(
-    'Hola, quiero información y asesoría para adquirir una licencia de IurisCore Legal Hub.',
-  )
-  return `https://wa.me/${SITE.whatsappNumber}?text=${txt}`
-})
+function textoTamanoMb(mb: number | null | undefined): string {
+  return mb ? `${Number(mb).toFixed(1)} MB` : 'Directo'
+}
 
 onMounted(async () => {
   requestAnimationFrame(() => reveal.observe())
@@ -261,37 +267,25 @@ onUnmounted(() => {
           <div class="ic-cta-row">
             <a
               class="btn btn-gold"
-              :href="infoVer?.url_descarga || SITE.iuriscore.descargar"
+              :href="SITE.iuriscore.home"
               target="_blank"
               rel="noopener"
+            >
+              <i
+                aria-hidden="true"
+                class="fa-solid fa-up-right-from-square"
+              />
+              Sitio oficial IurisCore
+            </a>
+            <a
+              class="btn btn-teal"
+              href="#descargas"
             >
               <i
                 aria-hidden="true"
                 class="fa-solid fa-download"
               />
-              Descargar prueba gratis (7 días)
-            </a>
-            <a
-              class="btn btn-teal"
-              href="#planes"
-            >
-              <i
-                aria-hidden="true"
-                class="fa-solid fa-tags"
-              />
-              Ver planes y precios
-            </a>
-            <a
-              class="btn btn-whatsapp"
-              :href="whatsappVenta"
-              target="_blank"
-              rel="noopener"
-            >
-              <i
-                aria-hidden="true"
-                class="fa-brands fa-whatsapp"
-              />
-              Consultar por WhatsApp
+              Descargas directas
             </a>
           </div>
 
@@ -689,7 +683,10 @@ onUnmounted(() => {
     </div>
   </section>
 
-  <section class="sec-stripe">
+  <section
+    id="descargas"
+    class="sec-stripe"
+  >
     <div class="c">
       <div class="sh center">
         <span class="sl">MULTIPLATAFORMA REAL</span>
@@ -697,7 +694,7 @@ onUnmounted(() => {
           Descarga la edición exacta para tu equipo
         </h2>
         <p class="sd">
-          Una misma licencia se vincula con tu cuenta de Google en tu oficina y en tu teléfono.
+          Instaladores oficiales alojados en el portal de IurisCore. Una misma licencia activa PC y Android.
         </p>
       </div>
 
@@ -719,12 +716,6 @@ onUnmounted(() => {
               <i
                 aria-hidden="true"
                 class="fa-solid fa-check"
-              /> Versiones de 64 bits (x64) y 32 bits (x86)
-            </li>
-            <li>
-              <i
-                aria-hidden="true"
-                class="fa-solid fa-check"
               /> Impresión física 1:1 en Carta, Oficio y A4
             </li>
             <li>
@@ -734,14 +725,27 @@ onUnmounted(() => {
               /> Actualizaciones firmadas con 1 clic
             </li>
           </ul>
-          <a
-            class="btn btn-gold"
-            :href="SITE.iuriscore.descargar"
-            target="_blank"
-            rel="noopener"
-          >
-            Descargar para Windows
-          </a>
+          <div class="ic-plat-actions">
+            <a
+              class="btn btn-gold ic-dl-btn"
+              :href="infoVer?.descargas?.win10_64?.url || infoVer?.url_descarga || SITE.iuriscore.descargar"
+              target="_blank"
+              rel="noopener"
+            >
+              <span>Windows 64-bit (.exe)</span>
+              <span class="ic-dl-meta">{{ textoTamanoMb(infoVer?.descargas?.win10_64?.tamanoMb ?? infoVer?.tamano_mb) }}</span>
+            </a>
+            <a
+              v-if="infoVer?.descargas?.win10_32?.url"
+              class="btn btn-ghost ic-dl-btn"
+              :href="infoVer.descargas.win10_32.url"
+              target="_blank"
+              rel="noopener"
+            >
+              <span>Windows 32-bit (.exe)</span>
+              <span class="ic-dl-meta">{{ textoTamanoMb(infoVer.descargas.win10_32.tamanoMb) }}</span>
+            </a>
+          </div>
         </article>
 
         <article class="ic-plat-card">
@@ -761,12 +765,6 @@ onUnmounted(() => {
               <i
                 aria-hidden="true"
                 class="fa-solid fa-check"
-              /> Compatible 64-bit (x64) y 32-bit (ia32)
-            </li>
-            <li>
-              <i
-                aria-hidden="true"
-                class="fa-solid fa-check"
               /> Incluye IurisCore Redactor y Sync Drive
             </li>
             <li>
@@ -776,14 +774,38 @@ onUnmounted(() => {
               /> Comparte la misma base de datos SQLite
             </li>
           </ul>
-          <a
-            class="btn btn-ghost"
-            :href="whatsappVenta"
-            target="_blank"
-            rel="noopener"
-          >
-            Solicitar instalador Win7
-          </a>
+          <div class="ic-plat-actions">
+            <a
+              v-if="infoVer?.descargas?.win7_64?.url"
+              class="btn btn-teal ic-dl-btn"
+              :href="infoVer.descargas.win7_64.url"
+              target="_blank"
+              rel="noopener"
+            >
+              <span>Win 7 64-bit (.exe)</span>
+              <span class="ic-dl-meta">{{ textoTamanoMb(infoVer.descargas.win7_64.tamanoMb) }}</span>
+            </a>
+            <a
+              v-if="infoVer?.descargas?.win7_32?.url"
+              class="btn btn-ghost ic-dl-btn"
+              :href="infoVer.descargas.win7_32.url"
+              target="_blank"
+              rel="noopener"
+            >
+              <span>Win 7 32-bit (.exe)</span>
+              <span class="ic-dl-meta">{{ textoTamanoMb(infoVer.descargas.win7_32.tamanoMb) }}</span>
+            </a>
+            <a
+              v-if="!infoVer?.descargas?.win7_64?.url && !infoVer?.descargas?.win7_32?.url"
+              class="btn btn-ghost ic-dl-btn"
+              :href="SITE.iuriscore.descargar"
+              target="_blank"
+              rel="noopener"
+            >
+              <span>Ver en Centro de Descargas</span>
+              <span class="ic-dl-meta">Portal ↗</span>
+            </a>
+          </div>
         </article>
 
         <article class="ic-plat-card">
@@ -803,13 +825,7 @@ onUnmounted(() => {
               <i
                 aria-hidden="true"
                 class="fa-solid fa-check"
-              /> Gestos táctiles (zoom con 2 dedos y rotación)
-            </li>
-            <li>
-              <i
-                aria-hidden="true"
-                class="fa-solid fa-check"
-              /> Visor interno PDF y DOCX sin apps externas
+              /> Gestos táctiles y visor PDF / DOCX integrado
             </li>
             <li>
               <i
@@ -818,14 +834,17 @@ onUnmounted(() => {
               /> Sync incremental rápida con tu Google Drive
             </li>
           </ul>
-          <a
-            class="btn btn-teal"
-            :href="whatsappVenta"
-            target="_blank"
-            rel="noopener"
-          >
-            Obtener APK Android
-          </a>
+          <div class="ic-plat-actions">
+            <a
+              class="btn btn-teal ic-dl-btn"
+              :href="infoVer?.descargas?.android_apk?.url || SITE.iuriscore.descargar"
+              target="_blank"
+              rel="noopener"
+            >
+              <span>{{ infoVer?.descargas?.android_apk?.url ? 'Descargar Android (.apk)' : 'Centro de Descargas Android' }}</span>
+              <span class="ic-dl-meta">{{ infoVer?.descargas?.android_apk?.url ? textoTamanoMb(infoVer.descargas.android_apk.tamanoMb) : 'Portal ↗' }}</span>
+            </a>
+          </div>
         </article>
       </div>
     </div>
@@ -971,65 +990,28 @@ onUnmounted(() => {
           </p>
         </div>
       </div>
-    </div>
-  </section>
 
-  <section class="sec">
-    <div class="c">
-      <div class="ic-cta-final">
-        <h2>Lleva tu estudio jurídico al siguiente nivel</h2>
-        <p>
-          Descarga la prueba gratuita de 7 días sin tarjeta ni compromisos, organiza tus primeros
-          expedientes y comprueba la velocidad de IurisCore en Windows y Android.
-        </p>
-        <div class="ic-cta-row ic-cta-center">
-          <a
-            class="btn btn-gold"
-            :href="SITE.iuriscore.descargar"
-            target="_blank"
-            rel="noopener"
-          >
-            <i
-              aria-hidden="true"
-              class="fa-solid fa-download"
-            /> Descargar IurisCore ahora
-          </a>
-          <a
-            class="btn btn-teal"
-            :href="SITE.iuriscore.comprar"
-            target="_blank"
-            rel="noopener"
-          >
-            <i
-              aria-hidden="true"
-              class="fa-solid fa-qrcode"
-            /> Comprar licencia QR
-          </a>
-          <a
-            class="btn btn-whatsapp"
-            :href="whatsappVenta"
-            target="_blank"
-            rel="noopener"
-          >
-            <i
-              aria-hidden="true"
-              class="fa-brands fa-whatsapp"
-            /> Soporte por WhatsApp
-          </a>
-        </div>
-        <div class="ic-cta-legal">
-          <a
-            :href="SITE.iuriscore.privacidad"
-            target="_blank"
-            rel="noopener"
-          >Política de Privacidad de IurisCore</a>
-          ·
-          <a
-            :href="SITE.iuriscore.terminos"
-            target="_blank"
-            rel="noopener"
-          >Términos del Servicio de IurisCore</a>
-        </div>
+      <div
+        class="ic-cta-legal"
+        style="text-align: center; margin-top: 28px"
+      >
+        <a
+          :href="SITE.iuriscore.home"
+          target="_blank"
+          rel="noopener"
+        >Sitio oficial IurisCore</a>
+        ·
+        <a
+          :href="SITE.iuriscore.privacidad"
+          target="_blank"
+          rel="noopener"
+        >Política de Privacidad</a>
+        ·
+        <a
+          :href="SITE.iuriscore.terminos"
+          target="_blank"
+          rel="noopener"
+        >Términos del Servicio</a>
       </div>
     </div>
   </section>

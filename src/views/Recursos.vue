@@ -27,26 +27,26 @@ const topic = getTopic('recursos')!
           </div>
         </div>
         <div class="ic-promo-acciones">
-          <router-link
-            class="btn btn-gold"
-            to="/pages/iuriscore.html"
-          >
-            <i
-              aria-hidden="true"
-              class="fa-solid fa-rocket"
-            /> Ver producto y precios
-          </router-link>
           <a
-            class="btn btn-ghost"
-            :href="SITE.iuriscore.descargar"
+            class="btn btn-gold"
+            :href="SITE.iuriscore.home"
             target="_blank"
             rel="noopener"
           >
             <i
               aria-hidden="true"
-              class="fa-solid fa-download"
-            /> Descargar gratis
+              class="fa-solid fa-up-right-from-square"
+            /> Sitio oficial IurisCore
           </a>
+          <router-link
+            class="btn btn-ghost"
+            to="/pages/iuriscore.html"
+          >
+            <i
+              aria-hidden="true"
+              class="fa-solid fa-circle-info"
+            /> Ficha y descargas
+          </router-link>
         </div>
       </div>
 
