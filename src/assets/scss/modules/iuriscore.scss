@@ -286,6 +286,64 @@
   opacity: 0.85;
 }
 
+.ic-tipo-switch {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 5px;
+  border-radius: var(--rm);
+  background-color: var(--superficie-2);
+  border: 1px solid var(--border);
+  width: fit-content;
+  margin: 0 auto var(--sp-5);
+}
+
+.ic-tipo-btn {
+  border: 0;
+  background-color: transparent;
+  color: var(--text2);
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: var(--fs-sm);
+  padding: 9px 18px;
+  border-radius: var(--rs);
+  cursor: pointer;
+  transition: all 0.2s var(--ease);
+
+  &:hover {
+    color: var(--text);
+  }
+
+  &.activo {
+    background-color: var(--primario);
+    color: #fff;
+    box-shadow: var(--sh-copper);
+  }
+}
+
+.ic-est-banner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  max-width: 780px;
+  margin: 0 auto var(--sp-6);
+  padding: 12px 18px;
+  border-radius: var(--rs);
+  background-color: var(--ok-bg);
+  border: 1px solid var(--ok-borde);
+  color: var(--text);
+  font-size: var(--fs-sm);
+  text-align: left;
+
+  i {
+    color: var(--ok);
+    font-size: 1.15rem;
+    flex: none;
+  }
+}
+
 .ic-mod-selector {
   display: flex;
   flex-wrap: wrap;
@@ -321,9 +379,53 @@
 
 .ic-pricing-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: var(--sp-6);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--sp-5);
   align-items: stretch;
+
+  &.estudiante {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    max-width: 960px;
+    margin: 0 auto;
+  }
+}
+
+.ic-plan-facturado {
+  margin: 0;
+  font-size: var(--fs-sm);
+  color: var(--text2);
+}
+
+.ic-ent-band {
+  margin-top: var(--sp-7);
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--sp-5);
+}
+
+.ic-ent-card {
+  background-color: var(--card);
+  border: 1px dashed var(--primario-borde);
+  border-radius: var(--rm);
+  padding: var(--sp-6);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: var(--sp-4);
+  box-shadow: var(--sh);
+
+  h3 {
+    margin: 8px 0 6px;
+    font-size: var(--fs-lg);
+    color: var(--text);
+  }
+
+  p {
+    margin: 0;
+    font-size: var(--fs-sm);
+    color: var(--text2);
+    line-height: 1.55;
+  }
 }
 
 .ic-plan-card {
@@ -997,8 +1099,14 @@
 
   .ic-hero-grid,
   .ic-home-showcase,
-  .ic-plat-grid {
+  .ic-plat-grid,
+  .ic-ent-band {
     grid-template-columns: minmax(0, 1fr);
+  }
+
+  .ic-pricing-grid,
+  .ic-pricing-grid.estudiante {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .ic-trust-grid {
@@ -1015,7 +1123,9 @@
 
 @media (width <= 600px) {
   .ic-trust-grid,
-  .ic-home-bullets {
+  .ic-home-bullets,
+  .ic-pricing-grid,
+  .ic-pricing-grid.estudiante {
     grid-template-columns: minmax(0, 1fr);
   }
 

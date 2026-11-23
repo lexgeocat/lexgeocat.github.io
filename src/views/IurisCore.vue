@@ -64,7 +64,23 @@ const PLANES_RESPALDO: PlanCatalogo[] = [
     nombre: 'Pro Mensual',
     duracion_dias: 30,
     gracia_offline_dias: 15,
-    precio_base_bs: 49,
+    precio_base_bs: 59,
+    activo: true,
+  },
+  {
+    id: 'pro_trimestral',
+    nombre: 'Pro Trimestral',
+    duracion_dias: 90,
+    gracia_offline_dias: 20,
+    precio_base_bs: 149,
+    activo: true,
+  },
+  {
+    id: 'pro_semestral',
+    nombre: 'Pro Semestral',
+    duracion_dias: 180,
+    gracia_offline_dias: 30,
+    precio_base_bs: 269,
     activo: true,
   },
   {
@@ -72,15 +88,31 @@ const PLANES_RESPALDO: PlanCatalogo[] = [
     nombre: 'Pro Anual',
     duracion_dias: 365,
     gracia_offline_dias: 30,
-    precio_base_bs: 390,
+    precio_base_bs: 449,
     activo: true,
   },
   {
-    id: 'perpetua',
-    nombre: 'Licencia Perpetua',
-    duracion_dias: null,
-    gracia_offline_dias: 365,
-    precio_base_bs: 890,
+    id: 'est_mensual',
+    nombre: 'Estudiante Mensual',
+    duracion_dias: 30,
+    gracia_offline_dias: 15,
+    precio_base_bs: 29,
+    activo: true,
+  },
+  {
+    id: 'est_semestral',
+    nombre: 'Estudiante Semestral',
+    duracion_dias: 180,
+    gracia_offline_dias: 30,
+    precio_base_bs: 129,
+    activo: true,
+  },
+  {
+    id: 'est_anual',
+    nombre: 'Estudiante Anual',
+    duracion_dias: 365,
+    gracia_offline_dias: 30,
+    precio_base_bs: 219,
     activo: true,
   },
 ]
@@ -93,6 +125,7 @@ const MODALIDADES_RESPALDO: ModalidadCatalogo[] = [
 
 const planes = ref<PlanCatalogo[]>(PLANES_RESPALDO)
 const modalidades = ref<ModalidadCatalogo[]>(MODALIDADES_RESPALDO)
+const tipoTarifa = ref<'profesional' | 'estudiante'>('profesional')
 const modSelId = ref<string>('individual')
 const infoVer = ref<InfoActualizacion | null>(null)
 const galeriaMedia = ref<MediaGaleriaItem[]>([])
@@ -102,11 +135,22 @@ const faqAbierta = ref<number | null>(0)
 
 const reveal = useReveal()
 
+const modalidadesVisibles = computed(() => modalidades.value.filter((m) => m.id !== 'estudio_10'))
+
 const modalidadActiva = computed(
-  () => modalidades.value.find((m) => m.id === modSelId.value) ?? modalidades.value[0],
+  () => modalidadesVisibles.value.find((m) => m.id === modSelId.value) ?? modalidadesVisibles.value[0],
 )
 
-const planesVisibles = computed(() => planes.value.filter((p) => p.id !== 'prueba' && p.activo))
+const ORDEN_PRO = ['pro_mensual', 'pro_trimestral', 'pro_semestral', 'pro_anual']
+const ORDEN_EST = ['est_mensual', 'est_semestral', 'est_anual']
+
+const planesVisibles = computed(() => {
+  const pref = tipoTarifa.value === 'estudiante' ? 'est_' : 'pro_'
+  const orden = tipoTarifa.value === 'estudiante' ? ORDEN_EST : ORDEN_PRO
+  return planes.value
+    .filter((p) => p.activo && p.id.startsWith(pref))
+    .sort((a, b) => orden.indexOf(a.id) - orden.indexOf(b.id))
+})
 
 const portadaPc = computed(
   () => galeriaMedia.value.find((i) => i.tipo === 'portada_pc') ?? null,
@@ -149,18 +193,36 @@ function etiquetaTipoMedia(tipo: MediaGaleriaItem['tipo']): string {
 }
 
 function precioPlan(p: PlanCatalogo) {
+  const esEst = p.id.startsWith('est_')
   const m = modalidadActiva.value
-  const eq = m?.max_equipos ?? 1
-  const desc = m?.descuento_pct ?? 0
+  const eq = esEst ? 1 : (m?.max_equipos ?? 1)
+  const desc = esEst ? 0 : (m?.descuento_pct ?? 0)
   const bruto = p.precio_base_bs * eq
   const total = Math.round(bruto * (1 - desc / 100))
   const ahorro = bruto - total
-  return { total, bruto, ahorro, eq, desc }
+  const dias = p.duracion_dias ?? 30
+  const meses = dias >= 360 ? 12 : Math.max(1, Math.round(dias / 30))
+  const equivNum = Math.round((total / meses) * 10) / 10
+  const equiv = equivNum % 1 === 0 ? String(equivNum) : equivNum.toFixed(1)
+  const baseMensual =
+    planes.value.find((x) => x.id === (esEst ? 'est_mensual' : 'pro_mensual'))?.precio_base_bs ??
+    (esEst ? 29 : 59)
+  const ahorroMensualPct =
+    meses > 1 ? Math.round((1 - p.precio_base_bs / (baseMensual * meses)) * 100) : 0
+  return { total, bruto, ahorro, eq, desc, equiv, meses, ahorroMensualPct }
 }
 
 function linkComprar(planId: string): string {
-  return `${SITE.iuriscore.comprar}?plan=${encodeURIComponent(planId)}&mod=${encodeURIComponent(modSelId.value)}`
+  const modEf = planId.startsWith('est_') ? 'individual' : modSelId.value
+  return `${SITE.iuriscore.comprar}?plan=${encodeURIComponent(planId)}&mod=${encodeURIComponent(modEf)}`
 }
+
+const whatsappPerpetua = computed(() => {
+  const txt = encodeURIComponent(
+    'Hola, quiero cotizar una Licencia Perpetua o paquete Estudio Jurídico (10+ puestos) de IurisCore.',
+  )
+  return `https://wa.me/${SITE.whatsappNumber}?text=${txt}`
+})
 
 function onKeyDown(e: KeyboardEvent) {
   if (e.key === 'Escape' && lightboxItem.value) {
@@ -186,8 +248,8 @@ const faqs = [
     a: 'Sí. Además de la edición moderna para Windows 10/11 (32 y 64 bits), ofrecemos una edición Legacy Offline para Windows 7 (32 y 64 bits) que no requiere WebView2 ni conexión permanente a internet.',
   },
   {
-    q: '¿Cómo puedo pagar y activar mi licencia en Bolivia?',
-    a: 'Puedes probar IurisCore gratis durante 7 días. Al elegir tu plan desde el portal de compra, generas tu QR Simple bancario al instante, reportas tu comprobante y recibes tu clave oficial en tu correo y WhatsApp.',
+    q: '¿Qué ocurre al vencer la prueba gratuita de 3 días o al renovar mi plan?',
+    a: 'Tus expedientes y documentos siempre se conservan intactos en tu dispositivo. Al finalizar los 3 días de prueba, el sistema te solicita activar un plan (Mensual, Trimestral, Semestral, Anual o Tarifa Estudiante -50 %). Si renuevas antes de vencer conservas un 15 % de descuento preferencial.',
   },
 ]
 
@@ -856,23 +918,45 @@ onUnmounted(() => {
   >
     <div class="c">
       <div class="sh center">
-        <span class="sl">PLANES Y LICENCIAS</span>
+        <span class="sl">PLANES Y LICENCIAS · BOLIVIA</span>
         <h2 class="st">
-          Elige tu plan en Bolivianos (QR Simple)
+          Invierte menos que un memorial al mes
         </h2>
         <p class="sd">
-          Todos los planes incluyen soporte en Bolivia, actualizaciones de mantenimiento y uso
-          simultáneo PC + Android.
+          Todos los planes incluyen soporte en Bolivia, pago por QR Simple, derecho a renovación
+          preferencial (-15 %) y uso simultáneo PC + Android.
         </p>
       </div>
 
       <div
+        class="ic-tipo-switch"
+        role="group"
+        aria-label="Seleccionar categoría de tarifa"
+      >
+        <button
+          type="button"
+          :class="['ic-tipo-btn', { activo: tipoTarifa === 'profesional' }]"
+          @click="tipoTarifa = 'profesional'"
+        >
+          Abogados y Estudios
+        </button>
+        <button
+          type="button"
+          :class="['ic-tipo-btn', { activo: tipoTarifa === 'estudiante' }]"
+          @click="tipoTarifa = 'estudiante'"
+        >
+          Estudiantes de Derecho (-50 %)
+        </button>
+      </div>
+
+      <div
+        v-if="tipoTarifa === 'profesional'"
         class="ic-mod-selector"
         role="group"
         aria-label="Seleccionar modalidad de equipos"
       >
         <button
-          v-for="m in modalidades"
+          v-for="m in modalidadesVisibles"
           :key="m.id"
           type="button"
           :class="['ic-mod-btn', { activo: modSelId === m.id }]"
@@ -883,43 +967,61 @@ onUnmounted(() => {
           }}{{ m.descuento_pct > 0 ? ` · -${m.descuento_pct}%` : '' }})
         </button>
       </div>
+      <div
+        v-else
+        class="ic-est-banner"
+      >
+        <i
+          aria-hidden="true"
+          class="fa-solid fa-graduation-cap"
+        />
+        <span>
+          <strong>Tarifa Universitaria (-50 %):</strong> 1 PC Windows + 1 Android con acceso íntegro.
+          Validación con matrícula o carnet universitario al confirmar QR.
+        </span>
+      </div>
 
-      <div class="ic-pricing-grid">
+      <div :class="['ic-pricing-grid', { estudiante: tipoTarifa === 'estudiante' }]">
         <article
           v-for="p in planesVisibles"
           :key="p.id"
-          :class="['ic-plan-card', { destacado: p.id === 'pro_anual' }]"
+          :class="[
+            'ic-plan-card',
+            { destacado: p.id === 'pro_anual' || p.id === 'est_semestral' },
+          ]"
         >
           <span
             v-if="p.id === 'pro_anual'"
             class="ic-plan-badge"
-          >Más popular</span>
+          >Más popular · -37 %</span>
+          <span
+            v-else-if="p.id === 'est_semestral'"
+            class="ic-plan-badge"
+          >Recomendado</span>
+          <span
+            v-else-if="precioPlan(p).ahorroMensualPct > 0"
+            class="ic-plan-ahorro"
+          >Ahorra {{ precioPlan(p).ahorroMensualPct }} % vs mensual</span>
+
           <h3 class="ic-plan-nombre">
             {{ p.nombre }}
           </h3>
           <div class="ic-plan-precio">
-            <strong>Bs {{ precioPlan(p).total }}</strong>
-            <span>
-              {{ p.duracion_dias ? `/ ${p.duracion_dias} días` : '· Pago único' }}
-            </span>
+            <strong>Bs {{ precioPlan(p).equiv }}</strong>
+            <span>/ mes</span>
           </div>
+          <p class="ic-plan-facturado">
+            Facturado <strong>Bs {{ precioPlan(p).total }}</strong> · {{ p.duracion_dias ?? 30 }} días ·
+            {{ precioPlan(p).eq }}
+            {{ precioPlan(p).eq === 1 ? 'puesto PC + Android' : 'puestos PC + Android' }}
+          </p>
           <span
             v-if="precioPlan(p).ahorro > 0"
             class="ic-plan-ahorro"
           >
-            Ahorras Bs {{ precioPlan(p).ahorro }} (-{{ precioPlan(p).desc }}%)
+            Ahorras Bs {{ precioPlan(p).ahorro }} por volumen (-{{ precioPlan(p).desc }} %)
           </span>
           <ul class="ic-plan-lista">
-            <li>
-              <i
-                aria-hidden="true"
-                class="fa-solid fa-circle-check"
-              />
-              <span>{{ precioPlan(p).eq }}
-                {{
-                  precioPlan(p).eq === 1 ? 'puesto PC + cupo Android' : 'puestos PC + Android'
-                }}</span>
-            </li>
             <li>
               <i
                 aria-hidden="true"
@@ -939,11 +1041,14 @@ onUnmounted(() => {
                 aria-hidden="true"
                 class="fa-solid fa-circle-check"
               />
-              <span>Activación por cuenta Google y respaldo con clave IC3</span>
+              <span>Renovación preferencial (-15 %) antes de vencer</span>
             </li>
           </ul>
           <a
-            :class="['btn', p.id === 'pro_anual' ? 'btn-gold' : 'btn-teal']"
+            :class="[
+              'btn',
+              p.id === 'pro_anual' || p.id === 'est_semestral' ? 'btn-gold' : 'btn-teal',
+            ]"
             :href="linkComprar(p.id)"
             target="_blank"
             rel="noopener"
@@ -955,6 +1060,53 @@ onUnmounted(() => {
             Adquirir con QR
           </a>
         </article>
+      </div>
+
+      <div class="ic-ent-band">
+        <div class="ic-ent-card">
+          <div>
+            <span class="ic-badge-producto">Licencia Perpetua &amp; Bufetes (10+ PCs)</span>
+            <h3>Cotización Corporativa a Consulta</h3>
+            <p>
+              Pago único de por vida de la versión adquirida con 12 meses de actualizaciones mayores,
+              soporte prioritario e inducción personalizada.
+            </p>
+          </div>
+          <a
+            class="btn btn-ghost"
+            :href="whatsappPerpetua"
+            target="_blank"
+            rel="noopener"
+          >
+            <i
+              aria-hidden="true"
+              class="fa-brands fa-whatsapp"
+            />
+            Consultar Perpetua o Bufete
+          </a>
+        </div>
+        <div class="ic-ent-card">
+          <div>
+            <span class="ic-badge-producto">Derecho a Renovación</span>
+            <h3>Congela tu tarifa + 15 % de descuento</h3>
+            <p>
+              Al renovar tu plan antes del vencimiento mantienes tu tarifa inicial y recibes un 15 %
+              de descuento de fidelidad sin interrumpir tus expedientes.
+            </p>
+          </div>
+          <a
+            class="btn btn-gold"
+            :href="linkComprar('pro_anual')"
+            target="_blank"
+            rel="noopener"
+          >
+            <i
+              aria-hidden="true"
+              class="fa-solid fa-shield-halved"
+            />
+            Asegurar Pro Anual
+          </a>
+        </div>
       </div>
     </div>
   </section>
